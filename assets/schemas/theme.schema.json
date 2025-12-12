@@ -1,0 +1,296 @@
+{
+  "$defs": {
+    "HeaderFooterStrategy": {
+      "description": "Header and footer positioning strategy.\n\nDefines reserved areas at top/bottom that widgets must avoid during auto-layout.",
+      "properties": {
+        "header_height": {
+          "default": "15%",
+          "description": "Header area height (reserved at top)",
+          "title": "Header Height",
+          "type": "string"
+        },
+        "footer_height": {
+          "default": "10%",
+          "description": "Footer area height (reserved at bottom)",
+          "title": "Footer Height",
+          "type": "string"
+        },
+        "header_position": {
+          "default": "fixed_top_left",
+          "description": "Header positioning strategy",
+          "enum": [
+            "fixed_top_left",
+            "centered",
+            "floating"
+          ],
+          "title": "Header Position",
+          "type": "string"
+        },
+        "footer_position": {
+          "default": "fixed_bottom_left",
+          "description": "Footer positioning strategy",
+          "enum": [
+            "fixed_bottom_left",
+            "centered",
+            "floating"
+          ],
+          "title": "Footer Position",
+          "type": "string"
+        },
+        "header_decoration": {
+          "default": "underline_accent",
+          "description": "Header decoration style",
+          "enum": [
+            "none",
+            "underline_accent",
+            "border_bottom",
+            "background_block"
+          ],
+          "title": "Header Decoration",
+          "type": "string"
+        },
+        "footer_decoration": {
+          "default": "none",
+          "description": "Footer decoration style",
+          "enum": [
+            "none",
+            "border_top",
+            "background_block"
+          ],
+          "title": "Footer Decoration",
+          "type": "string"
+        }
+      },
+      "title": "HeaderFooterStrategy",
+      "type": "object"
+    },
+    "Typography": {
+      "description": "Typography system with semantic tokens.",
+      "properties": {
+        "h1": {
+          "$ref": "#/$defs/TypographyToken",
+          "default": {
+            "size": 60,
+            "weight": "bold",
+            "line_height": 1.1
+          },
+          "description": "Primary heading style"
+        },
+        "h2": {
+          "$ref": "#/$defs/TypographyToken",
+          "default": {
+            "size": 40,
+            "weight": "medium",
+            "line_height": 1.2
+          },
+          "description": "Secondary heading style"
+        },
+        "h3": {
+          "$ref": "#/$defs/TypographyToken",
+          "default": {
+            "size": 28,
+            "weight": "medium",
+            "line_height": 1.3
+          },
+          "description": "Tertiary heading style"
+        },
+        "body": {
+          "$ref": "#/$defs/TypographyToken",
+          "default": {
+            "size": 18,
+            "weight": "regular",
+            "line_height": 1.5
+          },
+          "description": "Body text style"
+        },
+        "caption": {
+          "$ref": "#/$defs/TypographyToken",
+          "default": {
+            "size": 14,
+            "weight": "regular",
+            "line_height": 1.4
+          },
+          "description": "Caption/small text style"
+        }
+      },
+      "title": "Typography",
+      "type": "object"
+    },
+    "TypographyToken": {
+      "description": "Typography token for a specific text style.",
+      "properties": {
+        "size": {
+          "description": "Font size in pixels",
+          "title": "Size",
+          "type": "integer"
+        },
+        "weight": {
+          "default": "regular",
+          "description": "Font weight",
+          "enum": [
+            "thin",
+            "light",
+            "regular",
+            "medium",
+            "semibold",
+            "bold",
+            "black"
+          ],
+          "title": "Weight",
+          "type": "string"
+        },
+        "line_height": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Line height multiplier",
+          "title": "Line Height"
+        }
+      },
+      "required": [
+        "size"
+      ],
+      "title": "TypographyToken",
+      "type": "object"
+    }
+  },
+  "description": "Comprehensive theme configuration for multi-slide presentations.\n\nDefines global styling that applies across multiple slides including:\n- Layout spacing (margins and gutters)\n- Header/footer positioning and reserved areas\n- Sequence patterns for slide backgrounds\n- Typography tokens\n- Color palette",
+  "properties": {
+    "id": {
+      "default": "default_theme",
+      "description": "Unique theme identifier",
+      "title": "Id",
+      "type": "string"
+    },
+    "margin_x": {
+      "default": "40px",
+      "description": "Horizontal page margin",
+      "title": "Margin X",
+      "type": "string"
+    },
+    "margin_y": {
+      "default": "30px",
+      "description": "Vertical page margin",
+      "title": "Margin Y",
+      "type": "string"
+    },
+    "gutter": {
+      "default": "20px",
+      "description": "Spacing between widgets/slots",
+      "title": "Gutter",
+      "type": "string"
+    },
+    "header_footer": {
+      "$ref": "#/$defs/HeaderFooterStrategy"
+    },
+    "sequence_pattern": {
+      "default": "uniform",
+      "description": "How slides alternate/transition visually",
+      "enum": [
+        "uniform",
+        "alternating_background",
+        "section_break"
+      ],
+      "title": "Sequence Pattern",
+      "type": "string"
+    },
+    "typography": {
+      "$ref": "#/$defs/Typography"
+    },
+    "primary_color": {
+      "default": "#000000",
+      "description": "Primary brand color",
+      "title": "Primary Color",
+      "type": "string"
+    },
+    "secondary_color": {
+      "default": "#666666",
+      "description": "Secondary brand color",
+      "title": "Secondary Color",
+      "type": "string"
+    },
+    "accent_color": {
+      "default": "#0066cc",
+      "description": "Accent/highlight color",
+      "title": "Accent Color",
+      "type": "string"
+    },
+    "background_color": {
+      "default": "#ffffff",
+      "description": "Default background color",
+      "title": "Background Color",
+      "type": "string"
+    },
+    "text_color": {
+      "default": "#000000",
+      "description": "Default text color",
+      "title": "Text Color",
+      "type": "string"
+    },
+    "primary_background": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Primary background (image path or color) for alternating pattern",
+      "title": "Primary Background"
+    },
+    "secondary_background": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Secondary background (image path or color) for alternating pattern",
+      "title": "Secondary Background"
+    },
+    "font_family": {
+      "default": "sans-serif",
+      "description": "Primary font family",
+      "title": "Font Family",
+      "type": "string"
+    },
+    "heading_font": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Font for headings (if different)",
+      "title": "Heading Font"
+    },
+    "base_font_size": {
+      "default": "16px",
+      "description": "Base font size (deprecated - use typography.body.size)",
+      "title": "Base Font Size",
+      "type": "string"
+    },
+    "line_height": {
+      "default": "1.5",
+      "description": "Base line height (deprecated - use typography.body.line_height)",
+      "title": "Line Height",
+      "type": "string"
+    }
+  },
+  "title": "Theme",
+  "type": "object"
+}

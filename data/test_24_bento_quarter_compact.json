@@ -1,0 +1,39 @@
+{
+  "strategy": "Bento.Quarter",
+  "width": 800,
+  "height": 600,
+  "theme": {
+    "primary_color": "#65a30d",
+    "accent_color": "#bef264"
+  },
+  "style": {
+    "gap": "12px",
+    "padding": "16px"
+  },
+  "widgets": {
+    "quadrant_1": {
+      "type": "Type.Heading",
+      "parameters": {
+        "text": "Item 1"
+      }
+    },
+    "quadrant_2": {
+      "type": "Type.Heading",
+      "parameters": {
+        "text": "Item 2"
+      }
+    },
+    "quadrant_3": {
+      "type": "Type.Heading",
+      "parameters": {
+        "text": "Item 3"
+      }
+    },
+    "quadrant_4": {
+      "type": "Type.Heading",
+      "parameters": {
+        "text": "Item 4"
+      }
+    }
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "strategy": "Bento.Quarter",
+  "width": 1920,
+  "height": 1080,
+  "theme": {
+    "primary_color": "#78350f",
+    "accent_color": "#f59e0b"
+  },
+  "style": {
+    "gap": "18px",
+    "padding": "26px"
+  },
+  "widgets": {
+    "quadrant_1": {
+      "type": "Type.Quote",
+      "parameters": {
+        "text": "Design is intelligence made visible.",
+        "citation": "Alina Wheeler"
+      }
+    },
+    "quadrant_2": {
+      "type": "Type.Quote",
+      "parameters": {
+        "text": "Less is more.",
+        "citation": "Mies van der Rohe"
+      }
+    },
+    "quadrant_3": {
+      "type": "Type.Body",
+      "parameters": {
+        "text": "Minimalism in modern design emphasizes clarity."
+      }
+    },
+    "quadrant_4": {
+      "type": "Type.Heading",
+      "parameters": {
+        "text": "Design Wisdom"
+      }
+    }
+  }
+}

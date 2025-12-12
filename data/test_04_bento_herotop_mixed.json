@@ -1,0 +1,36 @@
+{
+  "strategy": "Bento.HeroTop",
+  "width": 1920,
+  "height": 1080,
+  "theme": {
+    "primary_color": "#7c3aed",
+    "accent_color": "#c4b5fd"
+  },
+  "style": {
+    "gap": "32px",
+    "padding": "40px"
+  },
+  "widgets": {
+    "hero": {
+      "type": "Type.Heading",
+      "parameters": {
+        "text": "The Future of Design",
+        "style": "bold",
+        "align": "center"
+      }
+    },
+    "footer_1": {
+      "type": "Type.Body",
+      "parameters": {
+        "text": "Innovation starts here."
+      }
+    },
+    "footer_2": {
+      "type": "Data.BigNum",
+      "parameters": {
+        "value": 42,
+        "label": "Projects"
+      }
+    }
+  }
+}

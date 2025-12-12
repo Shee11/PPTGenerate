@@ -1,0 +1,40 @@
+{% extends "base.html.j2" %}
+
+{% block layout_styles %}
+.cinematic-split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: {{ gutter }};
+    height: 100%;
+}
+
+.cinematic-panel {
+    min-height: 100%;
+}
+{% endblock %}
+
+{% block layout_content %}
+<div class="layout-content">
+    <div class="cinematic-split">
+        {% set left_widget = widgets.get('left') %}
+        <div class="cinematic-panel widget" data-role="left">
+            {% set widget = left_widget %}
+            {% if widget %}
+                {% include 'widgets/_widget_content.html.j2' %}
+            {% else %}
+                <div class="empty-slot">Empty left panel</div>
+            {% endif %}
+        </div>
+        
+        {% set right_widget = widgets.get('right') %}
+        <div class="cinematic-panel widget" data-role="right">
+            {% set widget = right_widget %}
+            {% if widget %}
+                {% include 'widgets/_widget_content.html.j2' %}
+            {% else %}
+                <div class="empty-slot">Empty right panel</div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

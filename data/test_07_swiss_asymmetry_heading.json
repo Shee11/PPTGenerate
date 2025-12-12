@@ -1,0 +1,22 @@
+{
+  "strategy": "Swiss.Asymmetry",
+  "width": 1920,
+  "height": 1080,
+  "theme": {
+    "primary_color": "#000000",
+    "accent_color": "#ff6600"
+  },
+  "style": {
+    "gap": "24px",
+    "padding": "36px"
+  },
+  "widgets": {
+    "content": {
+      "type": "Type.Heading",
+      "parameters": {
+        "text": "Modernist Principles",
+        "style": "bold"
+      }
+    }
+  }
+}

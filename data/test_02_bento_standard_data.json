@@ -1,0 +1,36 @@
+{
+  "strategy": "Bento.Standard",
+  "width": 1920,
+  "height": 1080,
+  "theme": {
+    "primary_color": "#059669",
+    "accent_color": "#34d399"
+  },
+  "style": {
+    "gap": "20px",
+    "padding": "28px"
+  },
+  "widgets": {
+    "cell_1": {
+      "type": "Data.BigNum",
+      "parameters": {
+        "value": 1234,
+        "label": "Total Users"
+      }
+    },
+    "cell_2": {
+      "type": "Data.BigNum",
+      "parameters": {
+        "value": 5678,
+        "label": "Revenue"
+      }
+    },
+    "cell_3": {
+      "type": "Type.List",
+      "parameters": {
+        "items": "Q1: 100\nQ2: 150\nQ3: 200",
+        "list_type": "unordered"
+      }
+    }
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "strategy": "Swiss.SplitTypo",
+  "width": 1920,
+  "height": 1080,
+  "theme": {
+    "primary_color": "#1a1a1a",
+    "accent_color": "#666666"
+  },
+  "style": {
+    "gap": "20px",
+    "padding": "40px"
+  },
+  "widgets": {
+    "headline": {
+      "type": "Type.Display",
+      "parameters": {
+        "text": "CLARITY",
+        "style": "bold"
+      }
+    },
+    "body": {
+      "type": "Type.Quote",
+      "parameters": {
+        "text": "Good design is as little design as possible.",
+        "citation": "Dieter Rams"
+      }
+    }
+  }
+}

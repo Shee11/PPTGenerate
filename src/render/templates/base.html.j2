@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UCE Render - {{ strategy }}</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            {% for var_name, var_value in theme_vars.items() %}
+            {{ var_name }}: {{ var_value }};
+            {% endfor %}
+        }
+        
+        body {
+            font-family: var(--font-family);
+            font-size: var(--font-size-base);
+            line-height: var(--line-height);
+            color: var(--color-text);
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .layout-container {
+            width: {{ canvas_width }}px;
+            height: {{ canvas_height }}px;
+            background-color: var(--color-background);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            padding: {{ margin_y }} {{ margin_x }};
+            {% for prop_name, prop_value in style_props.items() %}
+            {{ prop_name }}: {{ prop_value }};
+            {% endfor %}
+        }
+        
+        /* Header/Footer reserved areas */
+        .layout-header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: {{ header_height }};
+            padding: 0 {{ margin_x }};
+            display: flex;
+            align-items: center;
+            {% if header_position == 'centered' %}
+            justify-content: center;
+            text-align: center;
+            {% elif header_position == 'floating' %}
+            justify-content: center;
+            padding-top: calc({{ margin_y }} / 2);
+            {% else %}
+            justify-content: flex-start;
+            {% endif %}
+            {% if header_decoration == 'underline_accent' %}
+            border-bottom: 2px solid var(--color-accent);
+            {% elif header_decoration == 'border_bottom' %}
+            border-bottom: 1px solid var(--color-secondary);
+            {% elif header_decoration == 'background_block' %}
+            background-color: var(--color-primary);
+            color: white;
+            {% endif %}
+        }
+        
+        .layout-footer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: {{ footer_height }};
+            padding: 0 {{ margin_x }};
+            display: flex;
+            align-items: center;
+            {% if footer_position == 'centered' %}
+            justify-content: center;
+            text-align: center;
+            {% else %}
+            justify-content: flex-start;
+            {% endif %}
+            {% if footer_decoration == 'border_top' %}
+            border-top: 1px solid var(--color-secondary);
+            {% elif footer_decoration == 'background_block' %}
+            background-color: var(--color-primary);
+            color: white;
+            {% endif %}
+        }
+        
+        /* Content area (widgets auto-layout here, avoiding header/footer) */
+        .layout-content {
+            position: absolute;
+            top: {{ header_height }};
+            bottom: {{ footer_height }};
+            left: 0;
+            right: 0;
+            padding: 0 {{ margin_x }};
+        }
+        
+        .widget {
+            border-radius: var(--border-radius, 8px);
+            background: white;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        /* Typography tokens from theme */
+        h1 {
+            font-size: var(--font-h1-size);
+            font-weight: var(--font-h1-weight);
+            line-height: var(--font-h1-line-height);
+            font-family: var(--font-heading);
+        }
+        
+        h2 {
+            font-size: var(--font-h2-size);
+            font-weight: var(--font-h2-weight);
+            line-height: var(--font-h2-line-height);
+            font-family: var(--font-heading);
+        }
+        
+        h3 {
+            font-size: var(--font-h3-size);
+            font-weight: var(--font-h3-weight);
+            line-height: var(--font-h3-line-height);
+            font-family: var(--font-heading);
+        }
+        
+        p, .widget-type-body {
+            font-size: var(--font-body-size);
+            font-weight: var(--font-body-weight);
+            line-height: var(--font-body-line-height);
+        }
+        
+        .caption, small {
+            font-size: var(--font-caption-size);
+            font-weight: var(--font-caption-weight);
+            line-height: var(--font-caption-line-height);
+        }
+        
+        {% block layout_styles %}
+        {% endblock %}
+    </style>
+</head>
+<body>
+    <div class="layout-container">
+        {% block layout_content %}
+        {% endblock %}
+    </div>
+</body>
+</html>

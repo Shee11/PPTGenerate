@@ -1,0 +1,29 @@
+{
+  "strategy": "Cinematic.Split_30_70",
+  "width": 1920,
+  "height": 1080,
+  "theme": {
+    "primary_color": "#450a0a",
+    "accent_color": "#fca5a5"
+  },
+  "style": {
+    "gap": "18px",
+    "padding": "36px"
+  },
+  "widgets": {
+    "sidebar": {
+      "type": "Type.Display",
+      "parameters": {
+        "text": "ACT I",
+        "style": "bold"
+      }
+    },
+    "stage": {
+      "type": "Type.List",
+      "parameters": {
+        "items": "Scene 1: Introduction\nScene 2: Rising\nScene 3: Climax",
+        "list_type": "unordered"
+      }
+    }
+  }
+}

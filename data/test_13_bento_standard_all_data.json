@@ -1,0 +1,38 @@
+{
+  "strategy": "Bento.Standard",
+  "width": 1920,
+  "height": 1080,
+  "theme": {
+    "primary_color": "#14532d",
+    "accent_color": "#22c55e"
+  },
+  "style": {
+    "gap": "20px",
+    "padding": "28px"
+  },
+  "widgets": {
+    "cell_1": {
+      "type": "Data.BigNum",
+      "parameters": {
+        "value": 99.9,
+        "label": "Uptime %"
+      }
+    },
+    "cell_2": {
+      "type": "Data.Trend",
+      "parameters": {
+        "value": 1234,
+        "change": 15.5,
+        "direction": "up",
+        "label": "Users"
+      }
+    },
+    "cell_3": {
+      "type": "Type.List",
+      "parameters": {
+        "items": "Mon: 20\nTue: 35\nWed: 50",
+        "list_type": "unordered"
+      }
+    }
+  }
+}

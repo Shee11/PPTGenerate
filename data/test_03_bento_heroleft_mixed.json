@@ -1,0 +1,37 @@
+{
+  "strategy": "Bento.HeroLeft",
+  "width": 1920,
+  "height": 1080,
+  "theme": {
+    "primary_color": "#dc2626",
+    "accent_color": "#fca5a5"
+  },
+  "style": {
+    "gap": "16px",
+    "padding": "24px"
+  },
+  "widgets": {
+    "hero": {
+      "type": "Type.Display",
+      "parameters": {
+        "text": "INNOVATION",
+        "style": "bold",
+        "align": "center"
+      }
+    },
+    "side_1": {
+      "type": "Type.Quote",
+      "parameters": {
+        "text": "Design is thinking made visible.",
+        "citation": "Saul Bass"
+      }
+    },
+    "side_2": {
+      "type": "Type.List",
+      "parameters": {
+        "items": "React\nVue\nAngular",
+        "list_type": "unordered"
+      }
+    }
+  }
+}

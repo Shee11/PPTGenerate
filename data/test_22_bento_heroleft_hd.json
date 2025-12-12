@@ -1,0 +1,35 @@
+{
+  "strategy": "Bento.HeroLeft",
+  "width": 1280,
+  "height": 720,
+  "theme": {
+    "primary_color": "#0ea5e9",
+    "accent_color": "#7dd3fc"
+  },
+  "style": {
+    "gap": "16px",
+    "padding": "24px"
+  },
+  "widgets": {
+    "hero": {
+      "type": "Type.Heading",
+      "parameters": {
+        "text": "HD Ready",
+        "style": "bold"
+      }
+    },
+    "side_1": {
+      "type": "Type.Body",
+      "parameters": {
+        "text": "720p resolution."
+      }
+    },
+    "side_2": {
+      "type": "Data.BigNum",
+      "parameters": {
+        "value": 921600,
+        "label": "Pixels"
+      }
+    }
+  }
+}

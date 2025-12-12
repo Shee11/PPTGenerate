@@ -1,0 +1,33 @@
+{
+  "description": "Heading typography for section titles.\n\nMinimum size: S\n\nParameters:\n- text (str): Heading text content\n- level (int): Heading level 1-6 (default: 2)\n- align (str): Text alignment - \"left\", \"center\", \"right\", \"justify\" (default: \"left\")",
+  "properties": {
+    "atom_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Reference to atom data",
+      "title": "Atom Id"
+    },
+    "parameters": {
+      "additionalProperties": true,
+      "description": "Widget-specific parameters",
+      "title": "Parameters",
+      "type": "object"
+    }
+  },
+  "title": "TypeHeadingWidget",
+  "type": "object",
+  "widget_type": "Type.Heading",
+  "allowed_sizes": [
+    "S",
+    "M",
+    "L",
+    "XL"
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "strategy": "Bento.Quarter",
+  "width": 1920,
+  "height": 1080,
+  "theme": {
+    "primary_color": "#1e40af",
+    "accent_color": "#60a5fa"
+  },
+  "style": {
+    "gap": "22px",
+    "padding": "30px"
+  },
+  "widgets": {
+    "quadrant_1": {
+      "type": "Data.BigNum",
+      "parameters": {
+        "value": 42000,
+        "label": "Users"
+      }
+    },
+    "quadrant_2": {
+      "type": "Data.BigNum",
+      "parameters": {
+        "value": 3500,
+        "label": "Projects"
+      }
+    },
+    "quadrant_3": {
+      "type": "Data.BigNum",
+      "parameters": {
+        "value": 99,
+        "label": "Quality"
+      }
+    },
+    "quadrant_4": {
+      "type": "Data.BigNum",
+      "parameters": {
+        "value": 24,
+        "label": "Hours"
+      }
+    }
+  }
+}

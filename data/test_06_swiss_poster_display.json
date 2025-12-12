@@ -1,0 +1,23 @@
+{
+  "strategy": "Swiss.Poster",
+  "width": 1920,
+  "height": 1080,
+  "theme": {
+    "primary_color": "#000000",
+    "background_color": "#ffffff"
+  },
+  "style": {
+    "gap": "0px",
+    "padding": "64px"
+  },
+  "widgets": {
+    "headline": {
+      "type": "Type.Display",
+      "parameters": {
+        "text": "BAUHAUS",
+        "style": "bold",
+        "align": "center"
+      }
+    }
+  }
+}

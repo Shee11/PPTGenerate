@@ -1,0 +1,28 @@
+{
+  "strategy": "Cinematic.Split_30_70",
+  "width": 1920,
+  "height": 1080,
+  "theme": {
+    "primary_color": "#1a1a1a",
+    "accent_color": "#00d4ff"
+  },
+  "style": {
+    "gap": "16px",
+    "padding": "40px"
+  },
+  "widgets": {
+    "sidebar": {
+      "type": "Type.Quote",
+      "parameters": {
+        "text": "Every frame tells a story."
+      }
+    },
+    "stage": {
+      "type": "Type.List",
+      "parameters": {
+        "items": "Chapter 1\nChapter 2\nChapter 3\nChapter 4",
+        "list_type": "ordered"
+      }
+    }
+  }
+}

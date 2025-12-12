@@ -1,0 +1,24 @@
+{
+  "strategy": "Swiss.Poster",
+  "theme": {
+    "primary_color": "#000000",
+    "background_color": "#ffffff",
+    "font_family": "Helvetica Neue, Helvetica, Arial, sans-serif",
+    "base_font_size": "18px"
+  },
+  "style": {
+    "theme_name": "swiss",
+    "gap": "0px",
+    "padding": "48px"
+  },
+  "widgets": {
+    "headline": {
+      "type": "Type.Display",
+      "parameters": {
+        "text": "Typography First",
+        "style": "bold",
+        "align": "center"
+      }
+    }
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "strategy": "Swiss.SplitTypo",
+  "width": 1920,
+  "height": 1080,
+  "theme": {
+    "primary_color": "#18181b",
+    "accent_color": "#e4e4e7"
+  },
+  "style": {
+    "gap": "28px",
+    "padding": "44px"
+  },
+  "widgets": {
+    "headline": {
+      "type": "Type.Quote",
+      "parameters": {
+        "text": "Perfection is achieved when there is nothing left to take away.",
+        "citation": "Antoine de Saint-Exupéry"
+      }
+    },
+    "body": {
+      "type": "Type.Body",
+      "parameters": {
+        "text": "This principle defines minimalist design philosophy."
+      }
+    }
+  }
+}

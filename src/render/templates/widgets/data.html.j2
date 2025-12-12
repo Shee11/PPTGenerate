@@ -1,0 +1,78 @@
+{# Data and metrics widgets rendering #}
+{% if widget_type == 'Data.BigNum' %}
+<div class="widget-data-bignum">
+    {% set color_map = {
+        'primary': 'var(--color-primary)',
+        'accent': 'var(--color-accent)',
+        'success': '#10b981',
+        'warning': '#f59e0b',
+        'danger': '#ef4444'
+    } %}
+    <div class="bignum-value" style="color: {{ color_map.get(widget_data.color, 'var(--color-text)') }}; font-size: 3rem; font-weight: bold;">
+        {% if widget_data.format == 'currency' %}
+            ${{ widget_data.value }}
+        {% elif widget_data.format == 'percentage' %}
+            {{ widget_data.value }}%
+        {% else %}
+            {{ widget_data.value }}
+        {% endif %}
+    </div>
+    <div class="bignum-label" style="color: var(--color-secondary); margin-top: 0.5rem;">
+        {{ widget_data.label }}
+    </div>
+</div>
+
+{% elif widget_type == 'Data.Trend' %}
+<div class="widget-data-trend">
+    {% set color_map = {
+        'primary': 'var(--color-primary)',
+        'accent': 'var(--color-accent)',
+        'success': '#10b981',
+        'warning': '#f59e0b',
+        'danger': '#ef4444'
+    } %}
+    {% set direction_color = {
+        'up': '#10b981',
+        'down': '#ef4444',
+        'flat': '#6b7280'
+    } %}
+    <div class="trend-value" style="font-size: 2rem; font-weight: bold;">
+        {{ widget_data.value }}
+    </div>
+    <div class="trend-change" style="color: {{ direction_color.get(widget_data.direction, '#6b7280') }};">
+        {% if widget_data.direction == 'up' %}↑{% elif widget_data.direction == 'down' %}↓{% else %}→{% endif %} {{ widget_data.change }}
+    </div>
+    <div class="trend-label" style="color: var(--color-secondary);">
+        {{ widget_data.label }}
+    </div>
+</div>
+
+{% elif widget_type == 'Data.Progress' %}
+<div class="widget-data-progress">
+    {% set color_map = {
+        'primary': 'var(--color-primary)',
+        'accent': 'var(--color-accent)',
+        'success': '#10b981',
+        'warning': '#f59e0b',
+        'danger': '#ef4444'
+    } %}
+    <div class="progress-label" style="margin-bottom: 0.5rem;">{{ widget_data.label }}</div>
+    {% if widget_data.type == 'bar' %}
+    <div class="progress-bar" style="width: 100%; height: 20px; background: #e0e0e0; border-radius: 10px; overflow: hidden;">
+        <div class="progress-fill" style="width: {{ (widget_data.value / widget_data.max * 100) }}%; height: 100%; background: {{ color_map.get(widget_data.color, 'var(--color-accent)') }};"></div>
+    </div>
+    {% if widget_data.show_percentage %}
+    <div class="progress-percentage" style="margin-top: 0.25rem; font-size: 0.875rem; color: var(--color-secondary);">
+        {{ (widget_data.value / widget_data.max * 100)|round(1) }}%
+    </div>
+    {% endif %}
+    {% else %}
+    <div class="progress-circular">{{ widget_data.value }}/{{ widget_data.max }}</div>
+    {% endif %}
+</div>
+
+{% else %}
+<div class="widget-data-unknown">
+    <p>Unknown data widget: {{ widget_type }}</p>
+</div>
+{% endif %}

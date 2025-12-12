@@ -1,0 +1,41 @@
+{
+  "strategy": "Swiss.Poster",
+  "width": 1920,
+  "height": 1080,
+  "theme": {
+    "id": "corp_modern_v1",
+    "margin_x": "40px",
+    "margin_y": "30px",
+    "gutter": "20px",
+    "header_footer": {
+      "header_height": "15%",
+      "footer_height": "10%",
+      "header_position": "fixed_top_left",
+      "footer_position": "fixed_bottom_left",
+      "header_decoration": "underline_accent",
+      "footer_decoration": "none"
+    },
+    "sequence_pattern": "alternating_background",
+    "typography": {
+      "h1": { "size": 60, "weight": "bold", "line_height": 1.1 },
+      "h2": { "size": 40, "weight": "medium", "line_height": 1.2 },
+      "body": { "size": 18, "weight": "regular", "line_height": 1.5 }
+    },
+    "primary_color": "#2563eb",
+    "secondary_color": "#64748b",
+    "accent_color": "#f59e0b",
+    "background_color": "#ffffff",
+    "text_color": "#1e293b",
+    "font_family": "Inter, system-ui, sans-serif"
+  },
+  "widgets": {
+    "headline": {
+      "type": "Type.Display",
+      "parameters": {
+        "text": "Swiss Design Meets Modern Grid",
+        "style": "bold",
+        "align": "left"
+      }
+    }
+  }
+}

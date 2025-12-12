@@ -1,0 +1,22 @@
+{
+  "strategy": "Cinematic.FullBleed",
+  "width": 1920,
+  "height": 1080,
+  "theme": {
+    "primary_color": "#000000",
+    "accent_color": "#ffffff"
+  },
+  "style": {
+    "gap": "0px",
+    "padding": "60px"
+  },
+  "widgets": {
+    "stage": {
+      "type": "Data.BigNum",
+      "parameters": {
+        "value": 2.39,
+        "label": "Anamorphic Ratio"
+      }
+    }
+  }
+}

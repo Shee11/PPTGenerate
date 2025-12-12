@@ -1,0 +1,48 @@
+{
+  "strategy": "Bento.Standard",
+  "width": 1920,
+  "height": 1080,
+  "theme": {
+    "primary_color": "#8b5cf6",
+    "accent_color": "#c4b5fd"
+  },
+  "style": {
+    "gap": "24px",
+    "padding": "32px"
+  },
+  "widgets": {
+    "cell_1": {
+      "type": "Type.Display",
+      "parameters": {
+        "text": "DISPLAY",
+        "style": "bold"
+      }
+    },
+    "cell_2": {
+      "type": "Type.Heading",
+      "parameters": {
+        "text": "Heading"
+      }
+    },
+    "cell_3": {
+      "type": "Type.Body",
+      "parameters": {
+        "text": "Body text here."
+      }
+    },
+    "cell_4": {
+      "type": "Type.Quote",
+      "parameters": {
+        "text": "Quote text.",
+        "citation": "Author"
+      }
+    },
+    "cell_5": {
+      "type": "Type.List",
+      "parameters": {
+        "items": "Item 1\nItem 2\nItem 3",
+        "list_type": "unordered"
+      }
+    }
+  }
+}

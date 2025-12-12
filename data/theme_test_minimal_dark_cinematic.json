@@ -1,0 +1,49 @@
+{
+  "strategy": "Cinematic.Split_50_50",
+  "width": 1920,
+  "height": 1080,
+  "theme": {
+    "id": "minimal_dark_v1",
+    "margin_x": "60px",
+    "margin_y": "40px",
+    "gutter": "24px",
+    "header_footer": {
+      "header_height": "20%",
+      "footer_height": "10%",
+      "header_position": "centered",
+      "footer_position": "centered",
+      "header_decoration": "none",
+      "footer_decoration": "none"
+    },
+    "sequence_pattern": "section_break",
+    "typography": {
+      "h1": { "size": 72, "weight": "black", "line_height": 1.0 },
+      "h2": { "size": 48, "weight": "bold", "line_height": 1.1 },
+      "body": { "size": 20, "weight": "light", "line_height": 1.6 }
+    },
+    "primary_color": "#ffffff",
+    "secondary_color": "#94a3b8",
+    "accent_color": "#06b6d4",
+    "background_color": "#0f172a",
+    "text_color": "#f1f5f9",
+    "primary_background": "#1e293b",
+    "secondary_background": "#0f172a",
+    "font_family": "Helvetica Neue, Arial, sans-serif"
+  },
+  "widgets": {
+    "left": {
+      "type": "Type.Display",
+      "parameters": {
+        "text": "Dark Theme",
+        "style": "bold",
+        "align": "center"
+      }
+    },
+    "right": {
+      "type": "Type.Body",
+      "parameters": {
+        "text": "Minimal dark theme with centered header strategy and section break sequence pattern."
+      }
+    }
+  }
+}

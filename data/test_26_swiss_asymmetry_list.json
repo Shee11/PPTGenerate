@@ -1,0 +1,22 @@
+{
+  "strategy": "Swiss.Asymmetry",
+  "width": 1920,
+  "height": 1080,
+  "theme": {
+    "primary_color": "#000000",
+    "accent_color": "#ff0000"
+  },
+  "style": {
+    "gap": "24px",
+    "padding": "40px"
+  },
+  "widgets": {
+    "content": {
+      "type": "Type.List",
+      "parameters": {
+        "items": "Grid System\nSans-serif Typography\nAsymmetric Layout\nWhite Space",
+        "list_type": "unordered"
+      }
+    }
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "description": "Blockquote widget for quotations.\n\nMinimum size: S\n\nParameters:\n- text (str): Quote text content\n- citation (str, optional): Attribution/source\n- align (str): Text alignment - \"left\", \"center\", \"right\" (default: \"left\")",
+  "properties": {
+    "atom_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Reference to atom data",
+      "title": "Atom Id"
+    },
+    "parameters": {
+      "additionalProperties": true,
+      "description": "Widget-specific parameters",
+      "title": "Parameters",
+      "type": "object"
+    }
+  },
+  "title": "TypeQuoteWidget",
+  "type": "object",
+  "widget_type": "Type.Quote",
+  "allowed_sizes": [
+    "S",
+    "M",
+    "L",
+    "XL"
+  ]
+}

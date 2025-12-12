@@ -1,0 +1,33 @@
+{
+  "description": "Large numerical display for key metrics.\n\nMinimum size: S\n\nParameters:\n- value (int | float): Numerical value to display\n- label (str): Label text for the metric\n- color (str): Color theme - \"primary\", \"accent\", \"success\", \"warning\", \"danger\" (default: \"primary\")\n- format (str): Number format - \"number\", \"currency\", \"percentage\" (default: \"number\")\n- show_label (bool): Whether to show the label (default: True)",
+  "properties": {
+    "atom_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Reference to atom data",
+      "title": "Atom Id"
+    },
+    "parameters": {
+      "additionalProperties": true,
+      "description": "Widget-specific parameters",
+      "title": "Parameters",
+      "type": "object"
+    }
+  },
+  "title": "DataBigNumWidget",
+  "type": "object",
+  "widget_type": "Data.BigNum",
+  "allowed_sizes": [
+    "S",
+    "M",
+    "L",
+    "XL"
+  ]
+}

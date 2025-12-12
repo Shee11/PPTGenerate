@@ -1,0 +1,45 @@
+{
+  "strategy": "Bento.Quarter",
+  "width": 1920,
+  "height": 1080,
+  "theme": {
+    "primary_color": "#0891b2",
+    "accent_color": "#22d3ee"
+  },
+  "style": {
+    "gap": "20px",
+    "padding": "30px"
+  },
+  "widgets": {
+    "quadrant_1": {
+      "type": "Data.BigNum",
+      "parameters": {
+        "value": 9876,
+        "label": "Total"
+      }
+    },
+    "quadrant_2": {
+      "type": "Data.BigNum",
+      "parameters": {
+        "value": 5432,
+        "label": "Active"
+      }
+    },
+    "quadrant_3": {
+      "type": "Type.List",
+      "parameters": {
+        "items": "Jan: 50\nFeb: 75\nMar: 100",
+        "list_type": "unordered"
+      }
+    },
+    "quadrant_4": {
+      "type": "Data.Trend",
+      "parameters": {
+        "value": 342,
+        "change": 12.5,
+        "direction": "up",
+        "label": "Revenue"
+      }
+    }
+  }
+}

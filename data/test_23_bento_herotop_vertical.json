@@ -1,0 +1,36 @@
+{
+  "strategy": "Bento.HeroTop",
+  "width": 1080,
+  "height": 1920,
+  "theme": {
+    "primary_color": "#f43f5e",
+    "accent_color": "#fda4af"
+  },
+  "style": {
+    "gap": "24px",
+    "padding": "32px"
+  },
+  "widgets": {
+    "hero": {
+      "type": "Type.Display",
+      "parameters": {
+        "text": "VERTICAL",
+        "style": "bold",
+        "align": "center"
+      }
+    },
+    "footer_1": {
+      "type": "Type.Body",
+      "parameters": {
+        "text": "Mobile-first portrait."
+      }
+    },
+    "footer_2": {
+      "type": "Type.List",
+      "parameters": {
+        "items": "Instagram\nTikTok\nSnapchat",
+        "list_type": "unordered"
+      }
+    }
+  }
+}

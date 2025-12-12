@@ -1,0 +1,44 @@
+{
+  "strategy": "Bento.HeroLeft",
+  "width": 1920,
+  "height": 1080,
+  "theme": {
+    "primary_color": "#581c87",
+    "accent_color": "#c084fc"
+  },
+  "style": {
+    "gap": "20px",
+    "padding": "30px"
+  },
+  "widgets": {
+    "hero": {
+      "type": "Type.Display",
+      "parameters": {
+        "text": "SHOWCASE",
+        "style": "bold"
+      }
+    },
+    "side_1": {
+      "type": "Data.BigNum",
+      "parameters": {
+        "value": 8,
+        "label": "Widget Types"
+      }
+    },
+    "side_2": {
+      "type": "Data.Trend",
+      "parameters": {
+        "value": 10,
+        "change": 25,
+        "direction": "up",
+        "label": "Strategies"
+      }
+    },
+    "side_3": {
+      "type": "Type.Quote",
+      "parameters": {
+        "text": "Typography meets data visualization."
+      }
+    }
+  }
+}

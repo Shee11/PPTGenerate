@@ -1,0 +1,36 @@
+{
+  "strategy": "Bento.Standard",
+  "width": 1920,
+  "height": 1080,
+  "theme": {
+    "primary_color": "#2563eb",
+    "accent_color": "#f59e0b",
+    "font_family": "Inter, sans-serif"
+  },
+  "style": {
+    "gap": "24px",
+    "padding": "32px"
+  },
+  "widgets": {
+    "cell_1": {
+      "type": "Type.Display",
+      "parameters": {
+        "text": "Bold Statement",
+        "style": "bold",
+        "align": "center"
+      }
+    },
+    "cell_2": {
+      "type": "Type.Heading",
+      "parameters": {
+        "text": "Main Heading"
+      }
+    },
+    "cell_3": {
+      "type": "Type.Body",
+      "parameters": {
+        "text": "Body text content goes here."
+      }
+    }
+  }
+}

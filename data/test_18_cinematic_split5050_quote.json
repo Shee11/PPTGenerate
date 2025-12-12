@@ -1,0 +1,28 @@
+{
+  "strategy": "Cinematic.Split_50_50",
+  "width": 2560,
+  "height": 1080,
+  "theme": {
+    "primary_color": "#18181b",
+    "accent_color": "#ef4444"
+  },
+  "style": {
+    "gap": "0px",
+    "padding": "60px"
+  },
+  "widgets": {
+    "left": {
+      "type": "Type.Quote",
+      "parameters": {
+        "text": "The cinema is truth 24 times per second.",
+        "citation": "Jean-Luc Godard"
+      }
+    },
+    "right": {
+      "type": "Type.Body",
+      "parameters": {
+        "text": "Film Director & Critic"
+      }
+    }
+  }
+}

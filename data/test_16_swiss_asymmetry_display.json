@@ -1,0 +1,22 @@
+{
+  "strategy": "Swiss.Asymmetry",
+  "width": 1920,
+  "height": 1080,
+  "theme": {
+    "primary_color": "#171717",
+    "accent_color": "#a3a3a3"
+  },
+  "style": {
+    "gap": "20px",
+    "padding": "36px"
+  },
+  "widgets": {
+    "content": {
+      "type": "Type.Display",
+      "parameters": {
+        "text": "CATEGORIES",
+        "style": "bold"
+      }
+    }
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "strategy": "Cinematic.Split_50_50",
+  "width": 1920,
+  "height": 1080,
+  "theme": {
+    "primary_color": "#1a1a2e",
+    "accent_color": "#e94560"
+  },
+  "style": {
+    "gap": "0px",
+    "padding": "48px"
+  },
+  "widgets": {
+    "left": {
+      "type": "Type.Display",
+      "parameters": {
+        "text": "EPIC",
+        "style": "bold",
+        "align": "center"
+      }
+    },
+    "right": {
+      "type": "Type.Heading",
+      "parameters": {
+        "text": "A Visual Odyssey",
+        "align": "center"
+      }
+    }
+  }
+}

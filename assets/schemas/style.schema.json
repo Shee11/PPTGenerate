@@ -1,0 +1,34 @@
+{
+  "description": "Style configuration for layout geometry and spacing.\n\nReferences typography tokens from theme and adds geometric properties\nspecific to a particular layout instance. Style should NOT override\ntheme spacing (gap, padding) - those come from theme's margin/gutter.\n\nTypography tokens from the theme are always used.",
+  "properties": {
+    "theme_name": {
+      "description": "Name of the theme to apply",
+      "title": "Theme Name",
+      "type": "string"
+    },
+    "background": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Override background color",
+      "title": "Background"
+    },
+    "border_radius": {
+      "default": "8px",
+      "description": "Corner radius for widgets",
+      "title": "Border Radius",
+      "type": "string"
+    }
+  },
+  "required": [
+    "theme_name"
+  ],
+  "title": "Style",
+  "type": "object"
+}

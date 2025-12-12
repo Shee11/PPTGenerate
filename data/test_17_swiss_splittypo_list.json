@@ -1,0 +1,29 @@
+{
+  "strategy": "Swiss.SplitTypo",
+  "width": 1920,
+  "height": 1080,
+  "theme": {
+    "primary_color": "#0c0a09",
+    "accent_color": "#78716c"
+  },
+  "style": {
+    "gap": "24px",
+    "padding": "40px"
+  },
+  "widgets": {
+    "headline": {
+      "type": "Type.Heading",
+      "parameters": {
+        "text": "Process",
+        "style": "bold"
+      }
+    },
+    "body": {
+      "type": "Type.List",
+      "parameters": {
+        "items": "Design\nDevelopment\nDeployment\nDelight",
+        "list_type": "ordered"
+      }
+    }
+  }
+}

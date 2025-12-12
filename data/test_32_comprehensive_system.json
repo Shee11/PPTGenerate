@@ -1,0 +1,58 @@
+{
+  "strategy": "Bento.Standard",
+  "width": 1920,
+  "height": 1080,
+  "theme": {
+    "primary_color": "#15803d",
+    "accent_color": "#86efac"
+  },
+  "style": {
+    "gap": "20px",
+    "padding": "28px"
+  },
+  "widgets": {
+    "cell_1": {
+      "type": "Type.Display",
+      "parameters": {
+        "text": "UCE",
+        "style": "bold",
+        "align": "center"
+      }
+    },
+    "cell_2": {
+      "type": "Type.Heading",
+      "parameters": {
+        "text": "Universal Content Engine"
+      }
+    },
+    "cell_3": {
+      "type": "Type.Body",
+      "parameters": {
+        "text": "A comprehensive rendering system for layouts and widgets."
+      }
+    },
+    "cell_4": {
+      "type": "Data.BigNum",
+      "parameters": {
+        "value": 131,
+        "label": "Tests Passing"
+      }
+    },
+    "cell_5": {
+      "type": "Type.List",
+      "parameters": {
+        "items": "Bento Layouts\nSwiss Layouts\nCinematic Layouts",
+        "list_type": "unordered"
+      }
+    },
+    "cell_6": {
+      "type": "Data.Trend",
+      "parameters": {
+        "value": 69,
+        "change": 5,
+        "direction": "up",
+        "label": "Coverage %"
+      }
+    }
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "strategy": "Cinematic.FullBleed",
+  "width": 1920,
+  "height": 1080,
+  "theme": {
+    "primary_color": "#0f0f0f",
+    "accent_color": "#ffd700"
+  },
+  "style": {
+    "gap": "0px",
+    "padding": "80px"
+  },
+  "widgets": {
+    "stage": {
+      "type": "Type.Heading",
+      "parameters": {
+        "text": "The Story Begins",
+        "style": "bold",
+        "align": "center"
+      }
+    }
+  }
+}

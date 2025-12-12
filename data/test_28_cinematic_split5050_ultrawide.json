@@ -1,0 +1,30 @@
+{
+  "strategy": "Cinematic.Split_50_50",
+  "width": 3440,
+  "height": 1440,
+  "theme": {
+    "primary_color": "#0f172a",
+    "accent_color": "#38bdf8"
+  },
+  "style": {
+    "gap": "0px",
+    "padding": "72px"
+  },
+  "widgets": {
+    "left": {
+      "type": "Type.Display",
+      "parameters": {
+        "text": "ULTRAWIDE",
+        "style": "bold",
+        "align": "center"
+      }
+    },
+    "right": {
+      "type": "Type.Heading",
+      "parameters": {
+        "text": "21:9 Immersive Experience",
+        "align": "center"
+      }
+    }
+  }
+}

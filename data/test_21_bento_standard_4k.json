@@ -1,0 +1,36 @@
+{
+  "strategy": "Bento.Standard",
+  "width": 3840,
+  "height": 2160,
+  "theme": {
+    "primary_color": "#6366f1",
+    "accent_color": "#c7d2fe"
+  },
+  "style": {
+    "gap": "48px",
+    "padding": "64px"
+  },
+  "widgets": {
+    "cell_1": {
+      "type": "Type.Display",
+      "parameters": {
+        "text": "4K ULTRA HD",
+        "style": "bold",
+        "align": "center"
+      }
+    },
+    "cell_2": {
+      "type": "Type.Body",
+      "parameters": {
+        "text": "Experience the highest resolution rendering at 3840×2160 pixels."
+      }
+    },
+    "cell_3": {
+      "type": "Data.BigNum",
+      "parameters": {
+        "value": 8294400,
+        "label": "Total Pixels"
+      }
+    }
+  }
+}

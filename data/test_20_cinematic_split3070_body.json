@@ -1,0 +1,27 @@
+{
+  "strategy": "Cinematic.Split_30_70",
+  "width": 1920,
+  "height": 1080,
+  "theme": {
+    "primary_color": "#1c1917",
+    "accent_color": "#fbbf24"
+  },
+  "style": {
+    "gap": "20px",
+    "padding": "44px"
+  },
+  "widgets": {
+    "sidebar": {
+      "type": "Type.Body",
+      "parameters": {
+        "text": "The art of cinematography."
+      }
+    },
+    "stage": {
+      "type": "Type.Body",
+      "parameters": {
+        "text": "Each frame is carefully crafted to evoke emotion."
+      }
+    }
+  }
+}

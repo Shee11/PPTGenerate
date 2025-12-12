@@ -1,0 +1,65 @@
+{# Typography widgets rendering #}
+{% if widget_type == 'Type.Display' %}
+<div class="widget-type-display" style="text-align: {{ widget_data.align }};">
+    {% set font_weight = 'bold' if 'bold' in widget_data.style else 'normal' %}
+    {% set font_style = 'italic' if 'italic' in widget_data.style else 'normal' %}
+    <h1 class="display-text" style="font-weight: {{ font_weight }}; font-style: {{ font_style }};">
+        {{ widget_data.content }}
+    </h1>
+</div>
+
+{% elif widget_type == 'Type.Heading' %}
+<div class="widget-type-heading" style="text-align: {{ widget_data.align }};">
+    {% set level = widget_data.level %}
+    {% if level == 1 %}
+        <h1>{{ widget_data.content }}</h1>
+    {% elif level == 2 %}
+        <h2>{{ widget_data.content }}</h2>
+    {% elif level == 3 %}
+        <h3>{{ widget_data.content }}</h3>
+    {% elif level == 4 %}
+        <h4>{{ widget_data.content }}</h4>
+    {% elif level == 5 %}
+        <h5>{{ widget_data.content }}</h5>
+    {% else %}
+        <h6>{{ widget_data.content }}</h6>
+    {% endif %}
+</div>
+
+{% elif widget_type == 'Type.Body' %}
+<div class="widget-type-body" style="text-align: {{ widget_data.align }};">
+    <p>{{ widget_data.content }}</p>
+</div>
+
+{% elif widget_type == 'Type.List' %}
+<div class="widget-type-list">
+    {% if widget_data.list_type == 'ordered' %}
+        <ol>
+        {% for item in widget_data['items'] %}
+            <li>{{ item }}</li>
+        {% endfor %}
+        </ol>
+    {% else %}
+        <ul>
+        {% for item in widget_data['items'] %}
+            <li>{{ item }}</li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+</div>
+
+{% elif widget_type == 'Type.Quote' %}
+<div class="widget-type-quote" style="text-align: {{ widget_data.align }};">
+    <blockquote>
+        <p>{{ widget_data.content }}</p>
+        {% if widget_data.citation %}
+        <cite>{{ widget_data.citation }}</cite>
+        {% endif %}
+    </blockquote>
+</div>
+
+{% else %}
+<div class="widget-typography-unknown">
+    <p>Unknown typography widget: {{ widget_type }}</p>
+</div>
+{% endif %}

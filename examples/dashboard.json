@@ -1,0 +1,62 @@
+{
+  "strategy": "Bento.Standard",
+  "theme": {
+    "primary_color": "#2563eb",
+    "accent_color": "#7c3aed",
+    "font_family": "Inter, system-ui, sans-serif"
+  },
+  "style": {
+    "theme_name": "default",
+    "gap": "24px",
+    "padding": "32px"
+  },
+  "widgets": {
+    "cell_1": {
+      "type": "Type.Display",
+      "parameters": {
+        "text": "Dashboard",
+        "style": "bold",
+        "align": "center"
+      }
+    },
+    "cell_2": {
+      "type": "Data.BigNum",
+      "parameters": {
+        "value": 1247,
+        "label": "Total Users",
+        "color": "accent"
+      }
+    },
+    "cell_3": {
+      "type": "Data.BigNum",
+      "parameters": {
+        "value": 89,
+        "label": "Active Projects"
+      }
+    },
+    "cell_4": {
+      "type": "Type.Body",
+      "parameters": {
+        "text": "Welcome to the UCE Rendering System. This is a demonstration of the Bento grid layout."
+      }
+    },
+    "cell_5": {
+      "type": "Data.Trend",
+      "parameters": {
+        "value": 342,
+        "change": 12.5,
+        "direction": "up",
+        "label": "Monthly Revenue"
+      }
+    },
+    "cell_6": {
+      "type": "Data.Progress",
+      "parameters": {
+        "value": 75,
+        "max": 100,
+        "label": "Project Completion",
+        "type": "bar"
+      }
+    }
+  }
+}

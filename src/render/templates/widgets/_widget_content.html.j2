@@ -1,0 +1,17 @@
+{# Widget content dispatcher - routes to appropriate widget template #}
+{% set widget_type = widget.type %}
+{% set widget_data = widget.data %}
+
+{% if widget_type.startswith('Type.') %}
+    {% include 'widgets/typography.html.j2' %}
+{% elif widget_type.startswith('Data.') %}
+    {% include 'widgets/data.html.j2' %}
+{% elif widget_type.startswith('Media.') %}
+    {% include 'widgets/media.html.j2' %}
+{% elif widget_type.startswith('Chart.') %}
+    {% include 'widgets/charts.html.j2' %}
+{% else %}
+    <div class="widget-unknown">
+        <p>Unknown widget type: {{ widget_type }}</p>
+    </div>
+{% endif %}

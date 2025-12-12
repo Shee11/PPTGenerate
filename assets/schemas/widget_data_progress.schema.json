@@ -1,0 +1,33 @@
+{
+  "description": "Progress bar or circular progress indicator.\n\nMinimum size: S\n\nParameters:\n- value (int | float): Current progress value\n- max (int | float): Maximum value (default: 100)\n- label (str): Label text for the progress\n- type (str): Progress type - \"bar\" or \"circle\" (default: \"bar\")\n- color (str): Color theme - \"primary\", \"accent\", \"success\", \"warning\", \"danger\" (default: \"primary\")\n- show_percentage (bool): Whether to show percentage (default: True)",
+  "properties": {
+    "atom_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Reference to atom data",
+      "title": "Atom Id"
+    },
+    "parameters": {
+      "additionalProperties": true,
+      "description": "Widget-specific parameters",
+      "title": "Parameters",
+      "type": "object"
+    }
+  },
+  "title": "DataProgressWidget",
+  "type": "object",
+  "widget_type": "Data.Progress",
+  "allowed_sizes": [
+    "S",
+    "M",
+    "L",
+    "XL"
+  ]
+}

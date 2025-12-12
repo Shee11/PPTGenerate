@@ -1,0 +1,22 @@
+{
+  "strategy": "Cinematic.FullBleed",
+  "width": 1920,
+  "height": 1080,
+  "theme": {
+    "primary_color": "#0a0a0a",
+    "accent_color": "#00ff00"
+  },
+  "style": {
+    "gap": "0px",
+    "padding": "50px"
+  },
+  "widgets": {
+    "stage": {
+      "type": "Type.List",
+      "parameters": {
+        "items": "Week 1: $10M\nWeek 2: $15M\nWeek 3: $20M",
+        "list_type": "unordered"
+      }
+    }
+  }
+}
