@@ -1,5 +1,5 @@
 {
-  "description": "List widget for bullet/numbered lists.\n\nMinimum size: S\n\nParameters:\n- items (list[str]): List items\n- list_type (str): List style - \"ordered\", \"unordered\" (default: \"unordered\")",
+  "description": "List widget for bullet/numbered lists.\n\nMinimum size: S\n\nParameters:\n- items (list[str]): List items (required)\n- list_type (str): List style - \"ordered\", \"unordered\" (default: \"unordered\")\n\nStyling (defined in Style config, not widget parameters):\n- font: Typography token from theme\n- foreground: Text color token",
   "properties": {
     "atom_id": {
       "anyOf": [

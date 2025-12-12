@@ -63,6 +63,64 @@ class LayoutEngine:
         cls._strategies[name] = strategy_class
 
     @classmethod
+    def _resolve_widget_style(cls, widget_style, theme: Theme) -> Dict[str, Any]:
+        """Resolve widget style by converting theme tokens to actual values.
+        
+        Args:
+            widget_style: WidgetStyle from Style config with theme token references
+            theme: Theme containing actual values
+            
+        Returns:
+            Dictionary with resolved CSS properties
+        """
+        resolved = {}
+        
+        # Resolve font (typography token) to CSS properties
+        if widget_style.font:
+            typo_token = getattr(theme.typography, widget_style.font, None)
+            if typo_token:
+                resolved["font-size"] = f"{typo_token.size}px"
+                # Map weight names to CSS values
+                weight_map = {
+                    "thin": "100",
+                    "light": "300",
+                    "regular": "400",
+                    "medium": "500",
+                    "semibold": "600",
+                    "bold": "700",
+                    "black": "900",
+                }
+                resolved["font-weight"] = weight_map.get(typo_token.weight, "400")
+                if typo_token.line_height:
+                    resolved["line-height"] = str(typo_token.line_height)
+        
+        # Resolve text alignment
+        if widget_style.align:
+            resolved["text-align"] = widget_style.align
+        
+        # Resolve vertical alignment
+        if widget_style.vertical_align:
+            resolved["vertical-align"] = widget_style.vertical_align
+        
+        # Resolve foreground color (theme color token)
+        if widget_style.foreground:
+            color_value = getattr(theme, widget_style.foreground, None)
+            if color_value:
+                resolved["color"] = color_value
+        
+        # Resolve background color (theme color token)
+        if widget_style.background:
+            bg_value = getattr(theme, widget_style.background, None)
+            if bg_value:
+                resolved["background-color"] = bg_value
+        
+        # Apply border radius if specified
+        if widget_style.border_radius:
+            resolved["border-radius"] = widget_style.border_radius
+        
+        return resolved
+
+    @classmethod
     def calculate(
         cls,
         strategy_name: str,
@@ -131,6 +189,15 @@ class LayoutEngine:
                     f"assignment to slot '{role}'"
                 )
 
+            # VALIDATE: Widget type must have a style defined in Style config
+            widget_style = style.get_widget_style(widget_type)
+            if widget_style is None:
+                from src.common.exceptions import UCERenderError
+                raise UCERenderError(
+                    f"No style defined for widget type '{widget_type}'. "
+                    f"All widget types must be explicitly styled in the Style config."
+                )
+
             # Create widget with parameters
             widget = widget_class(
                 atom_id=widget_config.get("atom_id"),
@@ -146,10 +213,14 @@ class LayoutEngine:
                     slot_size=str(slot.size)
                 )
 
+            # Resolve widget style from Style config and Theme tokens
+            resolved_style = cls._resolve_widget_style(widget_style, theme)
+
             assignments.append(WidgetAssignment(
                 role=role,
                 widget=widget,
-                slot=slot
+                slot=slot,
+                applied_style=resolved_style  # Pass resolved style to assignment
             ))
 
         # Create renderable layout with theme-derived properties
@@ -157,7 +228,7 @@ class LayoutEngine:
             strategy_name=strategy_name,
             widget_assignments=assignments,
             theme_vars=theme.to_css_vars(),
-            style_props=style.to_css_props(),
+            style_props={},  # Style properties now applied per-widget via applied_style
             width=width,
             height=height,
             # Consume theme layout spacing

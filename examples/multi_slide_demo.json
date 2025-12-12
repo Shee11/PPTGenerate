@@ -34,7 +34,39 @@
   },
   "style": {
     "theme_name": "corp_modern_v1",
-    "border_radius": "12px"
+    "widgets": {
+      "Type.Display": {
+        "font": "h1",
+        "align": "center",
+        "foreground": "text_color"
+      },
+      "Type.Heading": {
+        "font": "h2",
+        "align": "left",
+        "foreground": "text_color"
+      },
+      "Type.Body": {
+        "font": "body",
+        "align": "left",
+        "foreground": "text_color"
+      },
+      "Type.List": {
+        "font": "body",
+        "foreground": "text_color"
+      },
+      "Data.BigNum": {
+        "font": "h1",
+        "align": "center",
+        "foreground": "primary_color"
+      },
+      "Data.Progress": {
+        "font": "body",
+        "align": "left",
+        "foreground": "accent_color",
+        "background": "primary_background",
+        "border_radius": "12px"
+      }
+    }
   },
   "slides": [
     {
@@ -46,9 +78,7 @@
         "headline": {
           "type": "Type.Display",
           "parameters": {
-            "text": "Multi-Slide Presentation",
-            "style": "bold",
-            "align": "center"
+            "text": "Multi-Slide Presentation"
           }
         }
       }
@@ -88,16 +118,14 @@
           "type": "Data.BigNum",
           "parameters": {
             "number": 131,
-            "label": "Tests Passing",
-            "color": "primary"
+            "label": "Tests Passing"
           }
         },
         "cell_6": {
           "type": "Data.Progress",
           "parameters": {
             "percentage": 70,
-            "label": "Code Coverage",
-            "color": "accent"
+            "label": "Code Coverage"
           }
         }
       }
@@ -139,9 +167,7 @@
         "headline": {
           "type": "Type.Display",
           "parameters": {
-            "text": "Thank You!",
-            "style": "bold",
-            "align": "center"
+            "text": "Thank You!"
           }
         }
       }

@@ -1,5 +1,5 @@
 {
-  "description": "Trend indicator with value and direction.\n\nMinimum size: S\n\nParameters:\n- value (int | float): Current value\n- change (int | float): Change amount\n- direction (str): Trend direction - \"up\", \"down\", \"flat\" (default: \"up\")\n- label (str): Label text for the trend\n- color (str): Color theme - \"primary\", \"accent\", \"success\", \"warning\", \"danger\" (default: \"primary\")",
+  "description": "Trend indicator with value and direction.\n\nMinimum size: S\n\nParameters:\n- value (int | float): Current value (required)\n- change (int | float): Change amount (required)\n- direction (str): Trend direction - \"up\", \"down\", \"flat\" (default: \"up\")\n- label (str): Label text for the trend (required)\n\nStyling (defined in Style config, not widget parameters):\n- font: Typography token for value and label\n- foreground: Color token for the trend",
   "properties": {
     "atom_id": {
       "anyOf": [

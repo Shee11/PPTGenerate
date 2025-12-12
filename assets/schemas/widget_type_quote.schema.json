@@ -1,5 +1,5 @@
 {
-  "description": "Blockquote widget for quotations.\n\nMinimum size: S\n\nParameters:\n- text (str): Quote text content\n- citation (str, optional): Attribution/source\n- align (str): Text alignment - \"left\", \"center\", \"right\" (default: \"left\")",
+  "description": "Blockquote widget for quotations.\n\nMinimum size: S\n\nParameters:\n- text (str): Quote text content (required)\n- citation (str, optional): Attribution/source\n\nStyling (defined in Style config, not widget parameters):\n- font: Typography token from theme\n- align: Text alignment\n- foreground: Text color token",
   "properties": {
     "atom_id": {
       "anyOf": [

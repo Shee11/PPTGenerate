@@ -1,5 +1,5 @@
 {
-  "description": "Large display typography for headlines and hero text.\n\nMinimum size: S (can scale up to any size)\n\nParameters:\n- text (str): Display text content\n- style (str): Text style - \"normal\", \"bold\", \"italic\", \"bold-italic\" (default: \"normal\")\n- align (str): Text alignment - \"left\", \"center\", \"right\", \"justify\" (default: \"left\")",
+  "description": "Large display typography for headlines and hero text.\n\nMinimum size: S (can scale up to any size)\n\nParameters:\n- text (str): Display text content (required)\n\nStyling (defined in Style config, not widget parameters):\n- font: Typography token from theme\n- align: Text alignment\n- foreground: Text color token\n- background: Background color token",
   "properties": {
     "atom_id": {
       "anyOf": [

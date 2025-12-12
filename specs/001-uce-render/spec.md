@@ -123,11 +123,58 @@ Chart widgets (Bar, Line, Pie, Radar, Sankey) receive structured data payloads f
 
 ### Key Entities
 
-- **Layout Strategy**: Defines how the screen is divided into slots. Contains: strategy type (Bento/Swiss/Cinematic), variant name, global parameters (gap, padding, background), and slot definitions (role → size mapping)
-- **Slot**: A named region within a layout with an assigned size class. Contains: role name (unique within layout), size class (S/M/L/XL), position coordinates (determined by layout strategy)
-- **Widget**: A rendering component that occupies a slot. Contains: widget type (category.name), minimum size requirement, parameter schema, atom reference (atom_id for data binding)
-- **Configuration**: The complete rendering specification. Contains: layout_strategy selection, widget assignments (role → widget mapping), widget parameters, atom_id references
+- **Theme**: Defines the visual design tokens (colors, typography, spacing). Contains: font families, color palette (foreground, background, accent, semantic colors), spacing scale. Themes are reusable across multiple styles and provide consistent brand identity.
+
+- **Style**: Combines a theme reference with widget-specific styling rules. Contains: theme reference (theme_name), widget styling mappings (widgets dict), global style parameters (border_radius, shadow_intensity). Styles define how widgets are visually rendered by applying theme tokens to widget types.
+
+- **WidgetStyle**: Optional styling configuration for individual widget types within a Style. Contains: font settings (font, font_size, font_weight, line_height), alignment (align, vertical_align), visual properties (foreground, background, border_radius). All fields are optional, allowing granular style customization per widget type.
+
+- **Layout Strategy**: Defines how the screen is divided into slots. Contains: strategy type (Bento/Swiss/Cinematic), variant name, global parameters (gap, padding, background), and slot definitions (role → size mapping). Layout strategies are independent of styling and focus on spatial arrangement.
+
+- **Slot**: A named region within a layout with an assigned size class. Contains: role name (unique within layout), size class (S/M/L/XL), position coordinates (determined by layout strategy). Slots define WHERE widgets are placed, not HOW they are styled.
+
+- **Widget**: A content-rendering component with type-specific parameters. Contains: widget type (category.name), minimum size requirement, content parameters (text, number, label, etc.), atom reference (atom_id for data binding). Widgets are purely content-focused and do NOT contain styling information.
+
+- **Configuration**: The complete rendering specification. Contains: layout_strategy selection, style selection, widget assignments (role → widget mapping with style_name), widget parameters, atom_id references
+
 - **Size Class**: Enumeration of valid slot sizes. Values: S (small), M (medium), L (large), XL (extra-large). Determines minimum dimensions for widget rendering
+
+### Style System Architecture
+
+The rendering system uses a **separation of concerns** approach where content, styling, and layout are independently managed:
+
+**Content Layer (Widgets)**:
+- Widgets define WHAT content to display (text, numbers, charts, images)
+- Widget parameters are content-only: `text`, `number`, `label`, `citation`, `show_values`
+- No styling information in widget definitions (no color, font, align, etc.)
+- Example: `{"widget_type": "Type.Display", "parameters": {"text": "Hello World"}}`
+
+**Styling Layer (Theme + Style)**:
+- **Theme** provides design tokens: colors, fonts, spacing multipliers
+- **Style** maps widget types to visual styling using theme tokens
+- Style contains `widgets` dict: `{"Type.Display": {"font": "primary", "align": "center"}}`
+- WidgetStyle fields reference theme tokens: `"foreground": "primary"` resolves to theme's foreground_primary_color
+- Multiple styles can share the same theme with different widget mappings
+
+**Layout Layer (Strategy + Slots)**:
+- Layout defines WHERE widgets are placed (spatial arrangement)
+- Slots provide size constraints and grid positioning
+- Layout is style-agnostic: the same layout works with any style
+
+**Resolution Process (LayoutEngine)**:
+1. Widget provides content parameters
+2. Style.widgets[widget_type] provides styling rules
+3. Theme provides token values (colors, fonts)
+4. LayoutEngine resolves theme tokens to CSS properties
+5. Templates receive `applied_style` dict with final CSS values
+6. Result: `<div style="font-family: Inter; color: #1a1a1a; text-align: center">Hello World</div>`
+
+**Benefits**:
+- **Reusability**: Same widget content works with any style/theme
+- **Consistency**: Theme ensures visual coherence across all widgets
+- **Flexibility**: Change entire visual appearance by swapping style, no widget changes needed
+- **Separation**: Content creators focus on data, designers focus on themes/styles
+- **Extensibility**: Add new widgets without modifying themes; add new themes without changing widgets
 
 ## Success Criteria *(mandatory)*
 

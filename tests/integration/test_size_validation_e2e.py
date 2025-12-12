@@ -12,7 +12,12 @@ class TestSizeValidationE2E:
     def test_valid_assignment_succeeds(self) -> None:
         """Test that valid widget-to-slot assignments succeed."""
         theme = Theme()
-        style = Style(theme_name="default")
+        style = Style(
+            theme_name="default",
+            widgets={
+                "Type.Display": {"font": "h1", "align": "left", "foreground": "text_color"}
+            }
+        )
         
         # Type.Display requires S, slot is S - should work
         widget_assignments = {

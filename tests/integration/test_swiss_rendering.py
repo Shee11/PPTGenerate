@@ -12,12 +12,17 @@ class TestSwissRendering:
     def test_swiss_poster_with_display_widget(self) -> None:
         """Test rendering Swiss.Poster with Type.Display widget."""
         theme = Theme()
-        style = Style(theme_name="default")
+        style = Style(
+            theme_name="default",
+            widgets={
+                "Type.Display": {"font": "h1", "align": "center", "foreground": "text_color"}
+            }
+        )
         
         widget_assignments = {
             "headline": {
                 "type": "Type.Display",
-                "parameters": {"text": "Big Bold Headline", "style": "bold", "align": "center"}
+                "parameters": {"text": "Big Bold Headline"}
             }
         }
         

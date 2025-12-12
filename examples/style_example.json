@@ -4,21 +4,25 @@
     "Type.Display": {
       "font": "h1",
       "align": "center",
-      "foreground": "text_color"
+      "foreground": "text_color",
+      "background": null
     },
     "Type.Heading": {
       "font": "h2",
       "align": "left",
-      "foreground": "text_color"
+      "foreground": "text_color",
+      "background": null
     },
     "Type.Body": {
       "font": "body",
       "align": "left",
-      "foreground": "text_color"
+      "foreground": "text_color",
+      "background": null
     },
     "Type.List": {
       "font": "body",
-      "foreground": "text_color"
+      "foreground": "text_color",
+      "background": null
     },
     "Type.Quote": {
       "font": "body",
@@ -30,12 +34,14 @@
     "Data.BigNum": {
       "font": "h1",
       "align": "center",
-      "foreground": "primary_color"
+      "foreground": "primary_color",
+      "background": null
     },
     "Data.Trend": {
       "font": "body",
       "align": "left",
-      "foreground": "text_color"
+      "foreground": "text_color",
+      "background": null
     },
     "Data.Progress": {
       "font": "body",

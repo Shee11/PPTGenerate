@@ -1,5 +1,5 @@
 {
-  "description": "Heading typography for section titles.\n\nMinimum size: S\n\nParameters:\n- text (str): Heading text content\n- level (int): Heading level 1-6 (default: 2)\n- align (str): Text alignment - \"left\", \"center\", \"right\", \"justify\" (default: \"left\")",
+  "description": "Heading typography for section titles.\n\nMinimum size: S\n\nParameters:\n- text (str): Heading text content (required)\n- level (int): Heading level 1-6 (default: 2)\n\nStyling (defined in Style config, not widget parameters):\n- font: Typography token from theme\n- align: Text alignment\n- foreground: Text color token",
   "properties": {
     "atom_id": {
       "anyOf": [

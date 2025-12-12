@@ -1,33 +1,121 @@
 {
-  "description": "Style configuration for layout geometry and spacing.\n\nReferences typography tokens from theme and adds geometric properties\nspecific to a particular layout instance. Style should NOT override\ntheme spacing (gap, padding) - those come from theme's margin/gutter.\n\nTypography tokens from the theme are always used.",
+  "$defs": {
+    "WidgetStyle": {
+      "description": "Styling configuration for a specific widget type.\n\nAll values reference theme tokens (e.g., 'body', 'primary_color', 'background_color').",
+      "properties": {
+        "font": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Typography token from theme (h1, h2, h3, body, caption)",
+          "title": "Font"
+        },
+        "align": {
+          "anyOf": [
+            {
+              "enum": [
+                "left",
+                "center",
+                "right",
+                "justify"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Horizontal text alignment",
+          "title": "Align"
+        },
+        "vertical_align": {
+          "anyOf": [
+            {
+              "enum": [
+                "top",
+                "center",
+                "bottom"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Vertical alignment within container",
+          "title": "Vertical Align"
+        },
+        "foreground": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Text color token from theme (primary_color, secondary_color, text_color, etc.)",
+          "title": "Foreground"
+        },
+        "background": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Background color token from theme (background_color, primary_background, etc.)",
+          "title": "Background"
+        },
+        "border_radius": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Border radius (e.g., '8px', '12px')",
+          "title": "Border Radius"
+        }
+      },
+      "title": "WidgetStyle",
+      "type": "object"
+    }
+  },
+  "description": "Style configuration that defines how each widget type uses theme tokens.\n\nEach widget type must have an explicit style definition. Any undefined widget\nwill cause a validation error during layout calculation.",
   "properties": {
     "theme_name": {
       "description": "Name of the theme to apply",
       "title": "Theme Name",
       "type": "string"
     },
-    "background": {
-      "anyOf": [
-        {
-          "type": "string"
-        },
-        {
-          "type": "null"
-        }
-      ],
-      "default": null,
-      "description": "Override background color",
-      "title": "Background"
-    },
-    "border_radius": {
-      "default": "8px",
-      "description": "Corner radius for widgets",
-      "title": "Border Radius",
-      "type": "string"
+    "widgets": {
+      "additionalProperties": {
+        "$ref": "#/$defs/WidgetStyle"
+      },
+      "description": "Styling rules for each widget type, referencing theme tokens",
+      "title": "Widgets",
+      "type": "object"
     }
   },
   "required": [
-    "theme_name"
+    "theme_name",
+    "widgets"
   ],
   "title": "Style",
   "type": "object"

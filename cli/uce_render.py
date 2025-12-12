@@ -184,16 +184,37 @@ def cli(
                 for widget in widgets:
                     click.echo(f"\nType: {widget['type']}")
                     click.echo(f"  Category: {widget['category']}")
+                    click.echo(f"  Minimum Size: {widget['allowed_sizes'][0]}")
                     click.echo(f"  Allowed Sizes: {', '.join(widget['allowed_sizes'])}")
+                    
                     if widget.get('description'):
-                        click.echo(f"  Description: {widget['description']}")
+                        # Multi-line description formatting
+                        desc_lines = widget['description'].strip().split('\n')
+                        click.echo(f"  Description:")
+                        for line in desc_lines:
+                            click.echo(f"    {line.strip()}")
                     
                     if widget.get('fields'):
-                        click.echo("  Fields:")
-                        for field_name, field_info in widget['fields'].items():
-                            click.echo(f"    - {field_name}: {field_info['type']}")
-                            if field_info.get('description'):
-                                click.echo(f"      {field_info['description']}")
+                        click.echo("  Schema Fields:")
+                        for field_name, field_info in sorted(widget['fields'].items()):
+                            field_type = field_info['type']
+                            field_desc = field_info.get('description', '')
+                            default_val = field_info.get('default', '')
+                            
+                            click.echo(f"    - {field_name}:")
+                            click.echo(f"        Type: {field_type}")
+                            if field_desc:
+                                click.echo(f"        Description: {field_desc}")
+                            if default_val:
+                                click.echo(f"        Default: {default_val}")
+                            
+                            # Expand parameters if available
+                            if field_name == 'parameters' and 'parameters' in field_info:
+                                params = field_info['parameters']
+                                if params:
+                                    click.echo(f"        Accepted Parameters:")
+                                    for param in params:
+                                        click.echo(f"          - {param['name']} ({param['type']}): {param['description']}")
                 
                 click.echo("\n" + "=" * 80)
                 click.echo(f"Total: {len(widgets)} widgets\n")

@@ -13,13 +13,20 @@ class TestBentoRendering:
         """Test rendering Bento.Standard with typography widgets."""
         # Setup theme and style
         theme = Theme()
-        style = Style(theme_name="default")
+        style = Style(
+            theme_name="default",
+            widgets={
+                "Type.Display": {"font": "h1", "align": "left", "foreground": "text_color"},
+                "Type.Heading": {"font": "h2", "align": "left", "foreground": "text_color"},
+                "Type.Body": {"font": "body", "align": "left", "foreground": "text_color"}
+            }
+        )
         
         # Configure widget assignments
         widget_assignments = {
             "cell_1": {
                 "type": "Type.Display",
-                "parameters": {"text": "Hello World", "style": "bold"}
+                "parameters": {"text": "Hello World"}
             },
             "cell_2": {
                 "type": "Type.Heading",
@@ -43,7 +50,6 @@ class TestBentoRendering:
         assert renderable.strategy_name == "Bento.Standard"
         assert len(renderable.widget_assignments) == 3
         assert len(renderable.theme_vars) > 0
-        assert len(renderable.style_props) > 0
         
         # Render to HTML
         renderer = HTMLRenderer()
@@ -59,12 +65,18 @@ class TestBentoRendering:
     def test_bento_standard_with_data_widgets(self) -> None:
         """Test rendering Bento.Standard with data widgets."""
         theme = Theme()
-        style = Style(theme_name="default")
+        style = Style(
+            theme_name="default",
+            widgets={
+                "Data.BigNum": {"font": "h1", "align": "center", "foreground": "primary_color"},
+                "Data.Trend": {"font": "h2", "align": "left", "foreground": "text_color"}
+            }
+        )
         
         widget_assignments = {
             "cell_1": {
                 "type": "Data.BigNum",
-                "parameters": {"value": 42, "label": "Total Users"}
+                "parameters": {"number": 42, "label": "Total Users"}
             },
             "cell_2": {
                 "type": "Data.Trend",
@@ -90,7 +102,10 @@ class TestBentoRendering:
     def test_bento_standard_all_six_cells(self) -> None:
         """Test rendering all 6 cells in Bento.Standard."""
         theme = Theme()
-        style = Style(theme_name="default")
+        style = Style(
+            theme_name="default",
+            widgets={"Type.Body": {"font": "body", "align": "left", "foreground": "text_color"}}
+        )
         
         widget_assignments = {
             f"cell_{i}": {

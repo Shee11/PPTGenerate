@@ -1,15 +1,13 @@
 {# Typography widgets rendering #}
 {% if widget_type == 'Type.Display' %}
-<div class="widget-type-display" style="text-align: {{ widget_data.align }};">
-    {% set font_weight = 'bold' if 'bold' in widget_data.style else 'normal' %}
-    {% set font_style = 'italic' if 'italic' in widget_data.style else 'normal' %}
-    <h1 class="display-text" style="font-weight: {{ font_weight }}; font-style: {{ font_style }};">
+<div class="widget-type-display" style="{{ render_style(applied_style) }}">
+    <h1 class="display-text">
         {{ widget_data.content }}
     </h1>
 </div>
 
 {% elif widget_type == 'Type.Heading' %}
-<div class="widget-type-heading" style="text-align: {{ widget_data.align }};">
+<div class="widget-type-heading" style="{{ render_style(applied_style) }}">
     {% set level = widget_data.level %}
     {% if level == 1 %}
         <h1>{{ widget_data.content }}</h1>
@@ -27,12 +25,12 @@
 </div>
 
 {% elif widget_type == 'Type.Body' %}
-<div class="widget-type-body" style="text-align: {{ widget_data.align }};">
+<div class="widget-type-body" style="{{ render_style(applied_style) }}">
     <p>{{ widget_data.content }}</p>
 </div>
 
 {% elif widget_type == 'Type.List' %}
-<div class="widget-type-list">
+<div class="widget-type-list" style="{{ render_style(applied_style) }}">
     {% if widget_data.list_type == 'ordered' %}
         <ol>
         {% for item in widget_data['items'] %}
@@ -49,7 +47,7 @@
 </div>
 
 {% elif widget_type == 'Type.Quote' %}
-<div class="widget-type-quote" style="text-align: {{ widget_data.align }};">
+<div class="widget-type-quote" style="{{ render_style(applied_style) }}">
     <blockquote>
         <p>{{ widget_data.content }}</p>
         {% if widget_data.citation %}

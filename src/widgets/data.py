@@ -4,8 +4,7 @@ from typing import Any, ClassVar
 from src.common.size_class import SizeClass
 from src.widgets.base import BaseWidget, WidgetRegistry
 
-# Valid parameter values
-VALID_COLORS = ["primary", "accent", "success", "warning", "danger"]
+# Valid parameter values for content
 VALID_FORMATS = ["number", "currency", "percentage"]
 VALID_DIRECTIONS = ["up", "down", "flat"]
 
@@ -17,11 +16,15 @@ class DataBigNumWidget(BaseWidget):
     Minimum size: S
     
     Parameters:
-    - value (int | float): Numerical value to display
-    - label (str): Label text for the metric
-    - color (str): Color theme - "primary", "accent", "success", "warning", "danger" (default: "primary")
+    - number (int | float): Numerical value to display (required)
+    - label (str): Label text for the metric (required)
     - format (str): Number format - "number", "currency", "percentage" (default: "number")
     - show_label (bool): Whether to show the label (default: True)
+    
+    Styling (defined in Style config, not widget parameters):
+    - font: Typography token for number and label
+    - foreground: Color token for the number
+    - background: Background color token
     """
 
     widget_type: ClassVar[str] = "Data.BigNum"
@@ -29,21 +32,35 @@ class DataBigNumWidget(BaseWidget):
 
     def validate_parameters(self) -> None:
         """Validate DataBigNum-specific parameters."""
-        if "color" in self.parameters:
-            if self.parameters["color"] not in VALID_COLORS:
-                from pydantic_core import ValidationError
-                raise ValidationError.from_exception_data(
-                    "ValueError",
-                    [
-                        {
-                            "type": "value_error",
-                            "loc": ("color",),
-                            "msg": f"Invalid color '{self.parameters['color']}'. Must be one of: {', '.join(VALID_COLORS)}",
-                            "input": self.parameters["color"],
-                            "ctx": {"error": ValueError(f"Invalid color '{self.parameters['color']}'")},
-                        }
-                    ],
-                )
+        if "number" not in self.parameters:
+            from pydantic_core import ValidationError
+            raise ValidationError.from_exception_data(
+                "ValueError",
+                [
+                    {
+                        "type": "value_error",
+                        "loc": ("number",),
+                        "msg": "number parameter is required",
+                        "input": self.parameters,
+                        "ctx": {"error": ValueError("number parameter is required")},
+                    }
+                ],
+            )
+        
+        if "label" not in self.parameters:
+            from pydantic_core import ValidationError
+            raise ValidationError.from_exception_data(
+                "ValueError",
+                [
+                    {
+                        "type": "value_error",
+                        "loc": ("label",),
+                        "msg": "label parameter is required",
+                        "input": self.parameters,
+                        "ctx": {"error": ValueError("label parameter is required")},
+                    }
+                ],
+            )
 
         if "format" in self.parameters:
             if self.parameters["format"] not in VALID_FORMATS:
@@ -67,10 +84,10 @@ class DataBigNumWidget(BaseWidget):
             "widget_type": self.widget_type,
             "atom_id": self.atom_id,
             "parameters": self.parameters,
-            "value": self.parameters.get("value", 0),
+            "number": self.parameters.get("number", 0),
             "label": self.parameters.get("label", "Metric"),
-            "color": self.parameters.get("color", "primary"),
             "format": self.parameters.get("format", "number"),
+            "show_label": self.parameters.get("show_label", True),
         }
 
 
@@ -81,11 +98,14 @@ class DataTrendWidget(BaseWidget):
     Minimum size: S
     
     Parameters:
-    - value (int | float): Current value
-    - change (int | float): Change amount
+    - value (int | float): Current value (required)
+    - change (int | float): Change amount (required)
     - direction (str): Trend direction - "up", "down", "flat" (default: "up")
-    - label (str): Label text for the trend
-    - color (str): Color theme - "primary", "accent", "success", "warning", "danger" (default: "primary")
+    - label (str): Label text for the trend (required)
+    
+    Styling (defined in Style config, not widget parameters):
+    - font: Typography token for value and label
+    - foreground: Color token for the trend
     """
 
     widget_type: ClassVar[str] = "Data.Trend"
@@ -93,6 +113,23 @@ class DataTrendWidget(BaseWidget):
 
     def validate_parameters(self) -> None:
         """Validate DataTrend-specific parameters."""
+        required = ["value", "change", "label"]
+        for param in required:
+            if param not in self.parameters:
+                from pydantic_core import ValidationError
+                raise ValidationError.from_exception_data(
+                    "ValueError",
+                    [
+                        {
+                            "type": "value_error",
+                            "loc": (param,),
+                            "msg": f"{param} parameter is required",
+                            "input": self.parameters,
+                            "ctx": {"error": ValueError(f"{param} parameter is required")},
+                        }
+                    ],
+                )
+        
         if "direction" in self.parameters:
             if self.parameters["direction"] not in VALID_DIRECTIONS:
                 from pydantic_core import ValidationError
@@ -105,22 +142,6 @@ class DataTrendWidget(BaseWidget):
                             "msg": f"Invalid direction '{self.parameters['direction']}'. Must be one of: {', '.join(VALID_DIRECTIONS)}",
                             "input": self.parameters["direction"],
                             "ctx": {"error": ValueError(f"Invalid direction '{self.parameters['direction']}'")},
-                        }
-                    ],
-                )
-
-        if "color" in self.parameters:
-            if self.parameters["color"] not in VALID_COLORS:
-                from pydantic_core import ValidationError
-                raise ValidationError.from_exception_data(
-                    "ValueError",
-                    [
-                        {
-                            "type": "value_error",
-                            "loc": ("color",),
-                            "msg": f"Invalid color '{self.parameters['color']}'. Must be one of: {', '.join(VALID_COLORS)}",
-                            "input": self.parameters["color"],
-                            "ctx": {"error": ValueError(f"Invalid color '{self.parameters['color']}'")},
                         }
                     ],
                 )
@@ -145,12 +166,14 @@ class DataProgressWidget(BaseWidget):
     Minimum size: S
     
     Parameters:
-    - value (int | float): Current progress value
-    - max (int | float): Maximum value (default: 100)
-    - label (str): Label text for the progress
-    - type (str): Progress type - "bar" or "circle" (default: "bar")
-    - color (str): Color theme - "primary", "accent", "success", "warning", "danger" (default: "primary")
+    - percentage (int | float): Progress percentage 0-100 (required)
+    - label (str): Label text for the progress (required)
     - show_percentage (bool): Whether to show percentage (default: True)
+    
+    Styling (defined in Style config, not widget parameters):
+    - font: Typography token for label
+    - foreground: Color token for progress bar
+    - background: Background color token
     """
 
     widget_type: ClassVar[str] = "Data.Progress"
@@ -158,21 +181,35 @@ class DataProgressWidget(BaseWidget):
 
     def validate_parameters(self) -> None:
         """Validate DataProgress-specific parameters."""
-        if "color" in self.parameters:
-            if self.parameters["color"] not in VALID_COLORS:
-                from pydantic_core import ValidationError
-                raise ValidationError.from_exception_data(
-                    "ValueError",
-                    [
-                        {
-                            "type": "value_error",
-                            "loc": ("color",),
-                            "msg": f"Invalid color '{self.parameters['color']}'. Must be one of: {', '.join(VALID_COLORS)}",
-                            "input": self.parameters["color"],
-                            "ctx": {"error": ValueError(f"Invalid color '{self.parameters['color']}'")},
-                        }
-                    ],
-                )
+        if "percentage" not in self.parameters:
+            from pydantic_core import ValidationError
+            raise ValidationError.from_exception_data(
+                "ValueError",
+                [
+                    {
+                        "type": "value_error",
+                        "loc": ("percentage",),
+                        "msg": "percentage parameter is required",
+                        "input": self.parameters,
+                        "ctx": {"error": ValueError("percentage parameter is required")},
+                    }
+                ],
+            )
+        
+        if "label" not in self.parameters:
+            from pydantic_core import ValidationError
+            raise ValidationError.from_exception_data(
+                "ValueError",
+                [
+                    {
+                        "type": "value_error",
+                        "loc": ("label",),
+                        "msg": "label parameter is required",
+                        "input": self.parameters,
+                        "ctx": {"error": ValueError("label parameter is required")},
+                    }
+                ],
+            )
 
     def render_data(self) -> dict[str, Any]:
         """Generate data for template rendering."""
@@ -180,10 +217,7 @@ class DataProgressWidget(BaseWidget):
             "widget_type": self.widget_type,
             "atom_id": self.atom_id,
             "parameters": self.parameters,
-            "value": self.parameters.get("value", 0),
-            "max": self.parameters.get("max", 100),
+            "percentage": self.parameters.get("percentage", 0),
             "label": self.parameters.get("label", "Progress"),
-            "type": self.parameters.get("type", "bar"),
-            "color": self.parameters.get("color", "primary"),
             "show_percentage": self.parameters.get("show_percentage", True),
         }

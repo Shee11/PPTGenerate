@@ -4,11 +4,6 @@ from typing import Any, ClassVar
 from src.common.size_class import SizeClass
 from src.widgets.base import BaseWidget, WidgetRegistry
 
-# Valid parameter values
-VALID_STYLES = ["normal", "bold", "italic", "bold-italic"]
-VALID_ALIGNS = ["left", "center", "right", "justify"]
-VALID_LIST_TYPES = ["ordered", "unordered"]
-
 
 @WidgetRegistry.register
 class TypeDisplayWidget(BaseWidget):
@@ -17,9 +12,13 @@ class TypeDisplayWidget(BaseWidget):
     Minimum size: S (can scale up to any size)
     
     Parameters:
-    - text (str): Display text content
-    - style (str): Text style - "normal", "bold", "italic", "bold-italic" (default: "normal")
-    - align (str): Text alignment - "left", "center", "right", "justify" (default: "left")
+    - text (str): Display text content (required)
+    
+    Styling (defined in Style config, not widget parameters):
+    - font: Typography token from theme
+    - align: Text alignment
+    - foreground: Text color token
+    - background: Background color token
     """
 
     widget_type: ClassVar[str] = "Type.Display"
@@ -27,37 +26,20 @@ class TypeDisplayWidget(BaseWidget):
 
     def validate_parameters(self) -> None:
         """Validate TypeDisplay-specific parameters."""
-        if "style" in self.parameters:
-            if self.parameters["style"] not in VALID_STYLES:
-                from pydantic_core import ValidationError
-                raise ValidationError.from_exception_data(
-                    "ValueError",
-                    [
-                        {
-                            "type": "value_error",
-                            "loc": ("style",),
-                            "msg": f"Invalid style '{self.parameters['style']}'. Must be one of: {', '.join(VALID_STYLES)}",
-                            "input": self.parameters["style"],
-                            "ctx": {"error": ValueError(f"Invalid style '{self.parameters['style']}'")},
-                        }
-                    ],
-                )
-
-        if "align" in self.parameters:
-            if self.parameters["align"] not in VALID_ALIGNS:
-                from pydantic_core import ValidationError
-                raise ValidationError.from_exception_data(
-                    "ValueError",
-                    [
-                        {
-                            "type": "value_error",
-                            "loc": ("align",),
-                            "msg": f"Invalid align '{self.parameters['align']}'. Must be one of: {', '.join(VALID_ALIGNS)}",
-                            "input": self.parameters["align"],
-                            "ctx": {"error": ValueError(f"Invalid align '{self.parameters['align']}'")},
-                        }
-                    ],
-                )
+        if "text" not in self.parameters:
+            from pydantic_core import ValidationError
+            raise ValidationError.from_exception_data(
+                "ValueError",
+                [
+                    {
+                        "type": "value_error",
+                        "loc": ("text",),
+                        "msg": "text parameter is required",
+                        "input": self.parameters,
+                        "ctx": {"error": ValueError("text parameter is required")},
+                    }
+                ],
+            )
 
     def render_data(self) -> dict[str, Any]:
         """Generate data for template rendering."""
@@ -66,8 +48,6 @@ class TypeDisplayWidget(BaseWidget):
             "atom_id": self.atom_id,
             "parameters": self.parameters,
             "content": self.parameters.get("text", "Display Text"),
-            "style": self.parameters.get("style", "normal"),
-            "align": self.parameters.get("align", "left"),
         }
 
 
@@ -78,9 +58,13 @@ class TypeHeadingWidget(BaseWidget):
     Minimum size: S
     
     Parameters:
-    - text (str): Heading text content
+    - text (str): Heading text content (required)
     - level (int): Heading level 1-6 (default: 2)
-    - align (str): Text alignment - "left", "center", "right", "justify" (default: "left")
+    
+    Styling (defined in Style config, not widget parameters):
+    - font: Typography token from theme
+    - align: Text alignment
+    - foreground: Text color token
     """
 
     widget_type: ClassVar[str] = "Type.Heading"
@@ -88,6 +72,21 @@ class TypeHeadingWidget(BaseWidget):
 
     def validate_parameters(self) -> None:
         """Validate TypeHeading-specific parameters."""
+        if "text" not in self.parameters:
+            from pydantic_core import ValidationError
+            raise ValidationError.from_exception_data(
+                "ValueError",
+                [
+                    {
+                        "type": "value_error",
+                        "loc": ("text",),
+                        "msg": "text parameter is required",
+                        "input": self.parameters,
+                        "ctx": {"error": ValueError("text parameter is required")},
+                    }
+                ],
+            )
+        
         if "level" in self.parameters:
             level = self.parameters["level"]
             if not isinstance(level, int) or level < 1 or level > 6:
@@ -105,22 +104,6 @@ class TypeHeadingWidget(BaseWidget):
                     ],
                 )
 
-        if "align" in self.parameters:
-            if self.parameters["align"] not in VALID_ALIGNS:
-                from pydantic_core import ValidationError
-                raise ValidationError.from_exception_data(
-                    "ValueError",
-                    [
-                        {
-                            "type": "value_error",
-                            "loc": ("align",),
-                            "msg": f"Invalid align '{self.parameters['align']}'. Must be one of: {', '.join(VALID_ALIGNS)}",
-                            "input": self.parameters["align"],
-                            "ctx": {"error": ValueError(f"Invalid align '{self.parameters['align']}'")},
-                        }
-                    ],
-                )
-
     def render_data(self) -> dict[str, Any]:
         """Generate data for template rendering."""
         return {
@@ -129,7 +112,6 @@ class TypeHeadingWidget(BaseWidget):
             "parameters": self.parameters,
             "content": self.parameters.get("text", "Heading"),
             "level": self.parameters.get("level", 2),
-            "align": self.parameters.get("align", "left"),
         }
 
 
@@ -140,8 +122,12 @@ class TypeBodyWidget(BaseWidget):
     Minimum size: S
     
     Parameters:
-    - text (str): Body text content
-    - align (str): Text alignment - "left", "center", "right", "justify" (default: "left")
+    - text (str): Body text content (required)
+    
+    Styling (defined in Style config, not widget parameters):
+    - font: Typography token from theme
+    - align: Text alignment
+    - foreground: Text color token
     """
 
     widget_type: ClassVar[str] = "Type.Body"
@@ -149,21 +135,20 @@ class TypeBodyWidget(BaseWidget):
 
     def validate_parameters(self) -> None:
         """Validate TypeBody-specific parameters."""
-        if "align" in self.parameters:
-            if self.parameters["align"] not in VALID_ALIGNS:
-                from pydantic_core import ValidationError
-                raise ValidationError.from_exception_data(
-                    "ValueError",
-                    [
-                        {
-                            "type": "value_error",
-                            "loc": ("align",),
-                            "msg": f"Invalid align '{self.parameters['align']}'. Must be one of: {', '.join(VALID_ALIGNS)}",
-                            "input": self.parameters["align"],
-                            "ctx": {"error": ValueError(f"Invalid align '{self.parameters['align']}'")},
-                        }
-                    ],
-                )
+        if "text" not in self.parameters:
+            from pydantic_core import ValidationError
+            raise ValidationError.from_exception_data(
+                "ValueError",
+                [
+                    {
+                        "type": "value_error",
+                        "loc": ("text",),
+                        "msg": "text parameter is required",
+                        "input": self.parameters,
+                        "ctx": {"error": ValueError("text parameter is required")},
+                    }
+                ],
+            )
 
     def render_data(self) -> dict[str, Any]:
         """Generate data for template rendering."""
@@ -172,7 +157,6 @@ class TypeBodyWidget(BaseWidget):
             "atom_id": self.atom_id,
             "parameters": self.parameters,
             "content": self.parameters.get("text", "Body text content."),
-            "align": self.parameters.get("align", "left"),
         }
 
 
@@ -183,8 +167,12 @@ class TypeListWidget(BaseWidget):
     Minimum size: S
     
     Parameters:
-    - items (list[str]): List items
+    - items (list[str]): List items (required)
     - list_type (str): List style - "ordered", "unordered" (default: "unordered")
+    
+    Styling (defined in Style config, not widget parameters):
+    - font: Typography token from theme
+    - foreground: Text color token
     """
 
     widget_type: ClassVar[str] = "Type.List"
@@ -192,8 +180,24 @@ class TypeListWidget(BaseWidget):
 
     def validate_parameters(self) -> None:
         """Validate TypeList-specific parameters."""
+        if "items" not in self.parameters:
+            from pydantic_core import ValidationError
+            raise ValidationError.from_exception_data(
+                "ValueError",
+                [
+                    {
+                        "type": "value_error",
+                        "loc": ("items",),
+                        "msg": "items parameter is required",
+                        "input": self.parameters,
+                        "ctx": {"error": ValueError("items parameter is required")},
+                    }
+                ],
+            )
+        
         if "list_type" in self.parameters:
-            if self.parameters["list_type"] not in VALID_LIST_TYPES:
+            valid_list_types = ["ordered", "unordered"]
+            if self.parameters["list_type"] not in valid_list_types:
                 from pydantic_core import ValidationError
                 raise ValidationError.from_exception_data(
                     "ValueError",
@@ -201,7 +205,7 @@ class TypeListWidget(BaseWidget):
                         {
                             "type": "value_error",
                             "loc": ("list_type",),
-                            "msg": f"Invalid list_type '{self.parameters['list_type']}'. Must be one of: {', '.join(VALID_LIST_TYPES)}",
+                            "msg": f"Invalid list_type '{self.parameters['list_type']}'. Must be one of: {', '.join(valid_list_types)}",
                             "input": self.parameters["list_type"],
                             "ctx": {"error": ValueError(f"Invalid list_type '{self.parameters['list_type']}'")},
                         }
@@ -233,9 +237,13 @@ class TypeQuoteWidget(BaseWidget):
     Minimum size: S
     
     Parameters:
-    - text (str): Quote text content
+    - text (str): Quote text content (required)
     - citation (str, optional): Attribution/source
-    - align (str): Text alignment - "left", "center", "right" (default: "left")
+    
+    Styling (defined in Style config, not widget parameters):
+    - font: Typography token from theme
+    - align: Text alignment
+    - foreground: Text color token
     """
 
     widget_type: ClassVar[str] = "Type.Quote"
@@ -243,23 +251,20 @@ class TypeQuoteWidget(BaseWidget):
 
     def validate_parameters(self) -> None:
         """Validate TypeQuote-specific parameters."""
-        if "align" in self.parameters:
-            # Quote only supports left, center, right (not justify)
-            valid_quote_aligns = ["left", "center", "right"]
-            if self.parameters["align"] not in valid_quote_aligns:
-                from pydantic_core import ValidationError
-                raise ValidationError.from_exception_data(
-                    "ValueError",
-                    [
-                        {
-                            "type": "value_error",
-                            "loc": ("align",),
-                            "msg": f"Invalid align '{self.parameters['align']}'. Must be one of: {', '.join(valid_quote_aligns)}",
-                            "input": self.parameters["align"],
-                            "ctx": {"error": ValueError(f"Invalid align '{self.parameters['align']}'")},
-                        }
-                    ],
-                )
+        if "text" not in self.parameters:
+            from pydantic_core import ValidationError
+            raise ValidationError.from_exception_data(
+                "ValueError",
+                [
+                    {
+                        "type": "value_error",
+                        "loc": ("text",),
+                        "msg": "text parameter is required",
+                        "input": self.parameters,
+                        "ctx": {"error": ValueError("text parameter is required")},
+                    }
+                ],
+            )
 
     def render_data(self) -> dict[str, Any]:
         """Generate data for template rendering."""
@@ -269,5 +274,4 @@ class TypeQuoteWidget(BaseWidget):
             "parameters": self.parameters,
             "content": self.parameters.get("text", "Quote text."),
             "citation": self.parameters.get("citation"),
-            "align": self.parameters.get("align", "left"),
         }

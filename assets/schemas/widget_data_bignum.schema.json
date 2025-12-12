@@ -1,5 +1,5 @@
 {
-  "description": "Large numerical display for key metrics.\n\nMinimum size: S\n\nParameters:\n- value (int | float): Numerical value to display\n- label (str): Label text for the metric\n- color (str): Color theme - \"primary\", \"accent\", \"success\", \"warning\", \"danger\" (default: \"primary\")\n- format (str): Number format - \"number\", \"currency\", \"percentage\" (default: \"number\")\n- show_label (bool): Whether to show the label (default: True)",
+  "description": "Large numerical display for key metrics.\n\nMinimum size: S\n\nParameters:\n- number (int | float): Numerical value to display (required)\n- label (str): Label text for the metric (required)\n- format (str): Number format - \"number\", \"currency\", \"percentage\" (default: \"number\")\n- show_label (bool): Whether to show the label (default: True)\n\nStyling (defined in Style config, not widget parameters):\n- font: Typography token for number and label\n- foreground: Color token for the number\n- background: Background color token",
   "properties": {
     "atom_id": {
       "anyOf": [

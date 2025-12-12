@@ -76,6 +76,48 @@ class TestStyleSchema:
         assert style.theme_name == "default"
         assert style.border_radius == "8px"
         assert style.background is None
+        assert style.widgets == {}
+    
+    def test_style_with_widget_definitions(self) -> None:
+        """Test Style with widget style definitions."""
+        style = Style(
+            theme_name="default",
+            widgets={
+                "Type.Display": {
+                    "font": "h1",
+                    "align": "center",
+                    "foreground": "primary_color"
+                },
+                "Data.BigNum": {
+                    "font": "h2",
+                    "foreground": "accent_color",
+                    "background": "surface_color"
+                }
+            }
+        )
+        
+        assert "Type.Display" in style.widgets
+        assert "Data.BigNum" in style.widgets
+        assert style.widgets["Type.Display"].font == "h1"
+        assert style.widgets["Type.Display"].align == "center"
+        assert style.widgets["Data.BigNum"].font == "h2"
+    
+    def test_style_widget_definition_optional_fields(self) -> None:
+        """Test that widget style fields are optional."""
+        style = Style(
+            theme_name="default",
+            widgets={
+                "Type.Display": {
+                    "font": "h1"
+                    # align, foreground, background, border_radius are optional
+                }
+            }
+        )
+        
+        widget_style = style.widgets["Type.Display"]
+        assert widget_style.font == "h1"
+        assert widget_style.align is None
+        assert widget_style.foreground is None
     
     def test_style_with_custom_spacing(self) -> None:
         """Test Style with border radius."""

@@ -1,5 +1,5 @@
 {
-  "description": "Body text for paragraphs and general content.\n\nMinimum size: S\n\nParameters:\n- text (str): Body text content\n- align (str): Text alignment - \"left\", \"center\", \"right\", \"justify\" (default: \"left\")",
+  "description": "Body text for paragraphs and general content.\n\nMinimum size: S\n\nParameters:\n- text (str): Body text content (required)\n\nStyling (defined in Style config, not widget parameters):\n- font: Typography token from theme\n- align: Text alignment\n- foreground: Text color token",
   "properties": {
     "atom_id": {
       "anyOf": [

@@ -52,29 +52,105 @@ Color and typography configuration for visual consistency.
 
 ---
 
-### 3. Style
+### 3. WidgetStyle
 
-Visual styling configuration combining theme with geometric properties.
+Optional styling configuration for individual widget types within a Style.
 
 **Attributes**:
-- `name`: str (unique identifier, e.g., "modern_rounded")
+- `font`: Literal["primary", "secondary"] | None (references Theme font)
+- `font_size`: str | None (CSS font-size, e.g., "16px", "1.5rem")
+- `font_weight`: int | None (100-900, e.g., 400, 700)
+- `line_height`: float | None (unitless multiplier, e.g., 1.5)
+- `align`: Literal["left", "center", "right", "justify"] | None (horizontal text alignment)
+- `vertical_align`: Literal["top", "middle", "bottom"] | None (vertical alignment)
+- `foreground`: Literal["primary", "secondary", "accent", "error", "success"] | None (references Theme color)
+- `background`: Literal["primary", "secondary"] | None (references Theme background color)
+- `border_radius`: str | None (CSS value, e.g., "4px", "0.5rem")
+
+**Validation Rules**:
+- All fields are optional (None allowed)
+- `font` must reference "primary" or "secondary" from Theme
+- `font_size` and `border_radius` must be valid CSS length values
+- `font_weight` must be in range 100-900
+- `line_height` must be positive (> 0)
+- Color references ("primary", "secondary", etc.) must exist in Theme
+
+**Relationships**:
+- Nested within `Style.widgets` dict (widget_type → WidgetStyle mapping)
+- References `Theme` colors and fonts via string tokens
+- Resolved to CSS by LayoutEngine
+
+**Resolution Example**:
+```python
+# Style definition
+style = Style(
+    theme_name="corp_modern",
+    widgets={
+        "Type.Display": WidgetStyle(
+            font="primary",
+            foreground="primary",
+            align="center"
+        )
+    }
+)
+
+# Theme definition
+theme = Theme(
+    primary_font="Inter",
+    foreground_primary_color="#1a1a1a"
+)
+
+# LayoutEngine resolves to CSS
+applied_style = {
+    "font-family": "Inter, sans-serif",
+    "color": "#1a1a1a",
+    "text-align": "center"
+}
+```
+
+---
+
+### 4. Style
+
+Visual styling configuration combining theme with widget-specific styling rules.
+
+**Attributes**:
+- `name`: str (unique identifier, e.g., "corp_modern_default")
 - `theme_name`: str (reference to Theme)
-- `border_radius`: str (CSS value, e.g., "8px", "0.5rem")
-- `shadow_intensity`: Literal["none", "subtle", "medium", "strong"]
-- `spacing_scale`: float (multiplier for gaps/padding, default 1.0)
-- `transition_duration`: str (CSS duration, e.g., "200ms")
+- `widgets`: dict[str, WidgetStyle] (widget_type → WidgetStyle mapping, e.g., {"Type.Display": WidgetStyle(...)})
 
 **Validation Rules**:
 - `name` must be unique within Styles collection
 - `theme_name` must reference an existing Theme
-- `border_radius` must be valid CSS length or percentage
-- `shadow_intensity` must be one of defined literals
-- `spacing_scale` must be positive (> 0)
+- `widgets` dict keys must be valid widget type strings (e.g., "Type.Display", "Chart.Bar")
+- All WidgetStyle instances must use valid theme token references
 
 **Relationships**:
 - References `Theme` via `theme_name`
-- Referenced by `WidgetAssignment.style_name`
-- One Style can be used by multiple WidgetAssignments
+- Contains multiple `WidgetStyle` instances in `widgets` dict
+- Referenced by widget assignments in configuration
+- One Style can be used by multiple widget instances
+
+**Style Resolution Process**:
+1. Widget requests styling for its type (e.g., "Type.Display")
+2. LayoutEngine looks up `style.widgets["Type.Display"]`
+3. WidgetStyle contains tokens like `font="primary"`, `foreground="primary"`
+4. LayoutEngine resolves tokens using `theme.primary_font`, `theme.foreground_primary_color`
+5. Returns CSS dict: `{"font-family": "Inter", "color": "#1a1a1a"}`
+6. Template applies CSS to widget HTML
+
+**Example**:
+```python
+style = Style(
+    name="corp_modern_default",
+    theme_name="corp_modern",
+    widgets={
+        "Type.Display": WidgetStyle(font="primary", font_size="48px", align="center"),
+        "Type.Body": WidgetStyle(font="secondary", font_size="16px", line_height=1.6),
+        "Chart.Bar": WidgetStyle(foreground="accent", background="secondary")
+    }
+)
+```
 
 ---
 
@@ -131,39 +207,82 @@ Defines the spatial division of screen into slots.
 
 ### 6. Widget (Abstract Base)
 
-Base class for all renderable components.
+Base class for all renderable content components. Widgets are **content-only** and do NOT contain styling information.
 
 **Attributes**:
 - `widget_type`: str (e.g., "Type.Display", "Chart.Bar")
 - `min_size`: SizeClass (minimum slot size required)
 - `atom_id`: str | None (reference to data source, optional)
-- `params`: dict[str, Any] (widget-specific parameters)
+- `parameters`: dict[str, Any] (widget-specific content parameters, NO styling)
+
+**Content-Only Parameters**:
+Widget parameters define WHAT to display, not HOW to style it:
+- **Typography widgets**: `text` (str), `citation` (str)
+- **Data widgets**: `number` (float), `label` (str), `trend` (str)
+- **Chart widgets**: `categories` (list), `series` (list), `show_values` (bool)
+- **Media widgets**: `src` (str), `alt` (str), `fit` (str)
+
+**Styling Exclusions** (handled by Style/Theme):
+- NO `color`, `foreground`, `background` parameters
+- NO `font`, `font_size`, `font_weight` parameters
+- NO `align`, `vertical_align`, `style` parameters
+- All visual styling comes from Style.widgets[widget_type]
 
 **Validation Rules**:
 - `widget_type` must be registered in WidgetRegistry
 - `min_size` must be a valid SizeClass
-- `params` keys must match widget's parameter schema
+- `parameters` keys must match widget's content parameter schema
+- `parameters` must NOT contain styling fields (enforced by widget class)
 
 **Relationships**:
 - Subclassed by concrete widget types (Typography, Data, Media, Charts)
-- Referenced by `WidgetAssignment.widget`
+- Styled by `Style.widgets[widget_type]` (external styling)
+- Theme tokens resolved by LayoutEngine
 
 **Concrete Subtypes**:
-- `TypographyWidget`: Display, Heading, Body, List, Quote
-- `DataWidget`: BigNum, Trend, Progress
-- `MediaWidget`: Frame, Code, Icon
-- `ChartWidget`: Bar, Line, Pie, Radar, Sankey
+- `TypeWidget`: Display, Heading, Body, List, Quote (5 types)
+- `DataWidget`: BigNum, Trend, Progress (3 types)
+- `MediaWidget`: Frame, Code, Icon (planned)
+- `ChartWidget`: Bar, Line, Pie, Radar, Sankey (planned)
+
+**Example - Content vs Styling Separation**:
+```python
+# Widget defines content only
+widget = TypeWidget(
+    widget_type="Type.Display",
+    parameters={"text": "Hello World"}  # NO color, font, align
+)
+
+# Style defines visual appearance
+style = Style(
+    theme_name="corp_modern",
+    widgets={
+        "Type.Display": WidgetStyle(
+            font="primary",           # From theme.primary_font
+            foreground="primary",     # From theme.foreground_primary_color
+            align="center",          # Layout alignment
+            font_size="48px"         # Typography sizing
+        )
+    }
+)
+
+# LayoutEngine combines them
+applied_style = engine._resolve_widget_style(widget, style, theme)
+# Result: {"font-family": "Inter", "color": "#1a1a1a", "text-align": "center", "font-size": "48px"}
+```
 
 ---
 
 ### 7. WidgetAssignment
 
-Binds a widget to a slot with a style.
+Binds a widget to a slot (deprecated in new configuration format, kept for reference).
 
-**Attributes**:
+**Note**: In the current implementation, widget assignments are defined directly in the configuration JSON under `slides[].widgets[]` with `role`, `widget_type`, and `parameters` fields. Style is specified at the slide level via `style_name`.
+
+**Conceptual Attributes** (for understanding):
 - `role`: str (references Slot.role)
 - `widget`: Widget (the widget instance)
-- `style_name`: str (references Style.name)
+- `style_name`: str (references Style.name, now at slide level)
 
 **Validation Rules**:
 - `role` must exist in the Layout's slots
@@ -202,30 +321,149 @@ Collection of Layout configurations, extends PatchableContextPydantic.
 
 ### 9. Styles (Collection)
 
-Collection of Style configurations, extends PatchableContextPydantic.
+Collection of Style and Theme configurations for the rendering system.
 
 **Attributes**:
 - `themes`: dict[str, Theme] (theme_name → Theme mapping)
 - `styles`: dict[str, Style] (style_name → Style mapping)
-- `default_style_name`: str (fallback style)
 
 **Validation Rules**:
 - All `Style.theme_name` references must exist in `themes` dict
-- `default_style_name` must exist in `styles` dict
 - Theme names and style names must be unique
+- At least one theme and one style must exist
 
 **Methods**:
 - `get_style(name: str) -> Style`: Returns a style by name
 - `get_theme(name: str) -> Theme`: Returns a theme by name
-- `patch(updates: dict)`: Apply partial updates
 
 **Relationships**:
 - Contains multiple `Theme` and `Style` instances
 - Passed to LayoutEngine for rendering
+- Styles reference Themes via `theme_name` field
+
+**Asset Loading**:
+- Themes loaded from `assets/themes/*.json`
+- Styles loaded from `assets/styles/*.json`
+- AssetManager provides `--list-themes` and `--list-styles` CLI commands
+- Each style file must reference an existing theme
+
+**Creating New Themes**:
+1. Create JSON file in `assets/themes/` directory
+2. Define all required color and typography tokens:
+   ```json
+   {
+     "primary_font": "Inter",
+     "secondary_font": "Georgia",
+     "foreground_primary_color": "#1a1a1a",
+     "foreground_secondary_color": "#666666",
+     "background_primary_color": "#ffffff",
+     "background_secondary_color": "#f5f5f5",
+     "accent_color": "#0066cc",
+     "error_color": "#dc3545",
+     "success_color": "#28a745"
+   }
+   ```
+3. Theme is automatically discovered by AssetManager
+4. Use `uce-render --list-themes` to verify
+
+**Creating New Styles**:
+1. Create JSON file in `assets/styles/` directory
+2. Reference existing theme and define widget styling rules:
+   ```json
+   {
+     "name": "my_custom_style",
+     "theme_name": "corp_modern",
+     "widgets": {
+       "Type.Display": {
+         "font": "primary",
+         "font_size": "48px",
+         "align": "center",
+         "foreground": "primary"
+       },
+       "Type.Body": {
+         "font": "secondary",
+         "font_size": "16px",
+         "line_height": 1.6,
+         "foreground": "secondary"
+       }
+     }
+   }
+   ```
+3. Style is automatically discovered by AssetManager
+4. Use `uce-render --list-styles` to verify
+5. Reference in configuration via `style_name: "my_custom_style"`
 
 ---
 
-### 10. RenderableLayout
+### 10. LayoutEngine
+
+Core processor that resolves styling and prepares widgets for rendering.
+
+**Purpose**: Bridge between content (widgets), styling (themes/styles), and layout (strategies/slots). Converts theme tokens into concrete CSS properties.
+
+**Key Responsibilities**:
+1. **Style Resolution**: Converts theme tokens to CSS values
+2. **Size Validation**: Ensures widgets fit in assigned slots
+3. **Widget Preparation**: Combines content + styling for templates
+
+**Critical Method - `_resolve_widget_style()`**:
+```python
+def _resolve_widget_style(
+    self,
+    widget: Widget,
+    style: Style,
+    theme: Theme
+) -> dict[str, str]:
+    """
+    Resolves theme tokens to CSS properties for a widget.
+    
+    Process:
+    1. Look up style.widgets[widget.widget_type]
+    2. Get WidgetStyle with tokens (font="primary", foreground="accent")
+    3. Resolve tokens using theme (primary_font="Inter", accent_color="#0066cc")
+    4. Return CSS dict: {"font-family": "Inter", "color": "#0066cc"}
+    """
+```
+
+**Token Resolution Examples**:
+- `font="primary"` → `theme.primary_font` → `"font-family": "Inter, sans-serif"`
+- `foreground="accent"` → `theme.accent_color` → `"color": "#0066cc"`
+- `background="secondary"` → `theme.background_secondary_color` → `"background-color": "#f5f5f5"`
+- `align="center"` → `"text-align": "center"` (direct CSS, no token)
+
+**Workflow**:
+```python
+# 1. Load assets
+themes, styles = asset_manager.load_all()
+layout_strategy = asset_manager.get_strategy("Bento.Standard")
+
+# 2. Configuration specifies content
+config = {
+    "style_name": "corp_modern_default",
+    "widgets": [
+        {"role": "main", "widget_type": "Type.Display", "parameters": {"text": "Hello"}}
+    ]
+}
+
+# 3. LayoutEngine resolves styling
+engine = LayoutEngine()
+theme = themes[styles[config["style_name"]].theme_name]
+style = styles[config["style_name"]]
+widget_style = style.widgets.get("Type.Display")
+applied_style = engine._resolve_widget_style(widget, style, theme)
+
+# 4. Template receives applied_style
+# Result: <div style="font-family: Inter; color: #1a1a1a; text-align: center">Hello</div>
+```
+
+**Relationships**:
+- Input: Widgets (content), Styles (styling rules), Themes (design tokens)
+- Output: Applied styles (CSS dicts) for templates
+- Used by: HTMLRenderer to inject styles into templates
+
+---
+
+### 11. RenderableLayout (Deprecated)
 
 Intermediate representation after layout calculation, ready for rendering.
 
@@ -254,50 +492,104 @@ Intermediate representation after layout calculation, ready for rendering.
 ## Entity Relationships Diagram
 
 ```
-Layouts (Collection)
-  └── contains many → Layout
-                        └── owns many → Slot
-                                          ↑
-                                          | references
-                                          |
-                        WidgetAssignment ─┘
-                          ├── references → Style ──→ references → Theme
-                          └── owns → Widget (abstract)
-                                      ├── TypographyWidget
-                                      ├── DataWidget
-                                      ├── MediaWidget
-                                      └── ChartWidget
+Asset Management (File-based Discovery)
+  ├── assets/themes/*.json ──→ Theme (design tokens)
+  ├── assets/styles/*.json ──→ Style (widget styling rules)
+  └── assets/strategies/*.json ─→ LayoutStrategy (slot definitions)
 
-Styles (Collection)
-  ├── contains many → Theme
-  └── contains many → Style
+Configuration (JSON Input)
+  ├── style_name (references Style)
+  ├── layout_strategy (references LayoutStrategy)
+  └── slides[]
+        ├── widgets[]
+        │     ├── role (references Slot in LayoutStrategy)
+        │     ├── widget_type (e.g., "Type.Display")
+        │     └── parameters (content only, NO styling)
+        └── style_name (optional override)
 
-LayoutEngine (processor)
-  ├── input: Layouts + Styles
-  └── output: RenderableLayout
-                ├── references → Layout
-                ├── contains → WidgetAssignment[]
-                └── contains → resolved_styles
+Resolution Flow (LayoutEngine)
+  ┌─────────────────────────────────────────────────────────┐
+  │  1. Widget provides: widget_type + content parameters   │
+  │  2. Style provides: widgets[widget_type] → WidgetStyle  │
+  │  3. WidgetStyle has: tokens (font="primary", fg="accent")│
+  │  4. Theme provides: token values (primary_font="Inter") │
+  │  5. Engine resolves: tokens → CSS ({"font-family": ...})│
+  │  6. Template receives: applied_style dict               │
+  └─────────────────────────────────────────────────────────┘
 
-HTMLRenderer (processor)
-  ├── input: RenderableLayout
-  └── output: HTML string
+Data Model Relationships
+  Theme (design tokens)
+    ↑
+    | referenced by theme_name
+    |
+  Style (widget styling rules)
+    ├── widgets: dict[widget_type, WidgetStyle]
+    │     └── WidgetStyle (token-based styling)
+    │           ├── font: "primary" | "secondary"
+    │           ├── foreground: "primary" | "secondary" | "accent"
+    │           ├── background: "primary" | "secondary"
+    │           ├── align, font_size, line_height, etc.
+    │           └── resolved by LayoutEngine → CSS dict
+    │
+  Widget (content only)
+    ├── widget_type: str (e.g., "Type.Display")
+    ├── parameters: dict (content only)
+    │     ├── Type widgets: text, citation
+    │     ├── Data widgets: number, label, trend
+    │     └── Chart widgets: categories, series, show_values
+    └── NO styling fields (color, font, align, etc.)
+
+  LayoutStrategy (spatial arrangement)
+    └── slots: dict[role, Slot]
+          ├── size_class: S | M | L | XL
+          └── grid_row, grid_column (CSS Grid)
+
+Rendering Pipeline
+  Configuration JSON
+    ↓
+  1. Load Theme (from assets/themes/)
+  2. Load Style (from assets/styles/, references Theme)
+  3. Load LayoutStrategy (from assets/strategies/)
+  4. Validate: Widget.min_size <= Slot.size_class
+    ↓
+  LayoutEngine._resolve_widget_style()
+    - Input: Widget (content), Style (rules), Theme (tokens)
+    - Process: style.widgets[widget_type] → resolve tokens → CSS
+    - Output: applied_style dict
+    ↓
+  Template Rendering (Jinja2)
+    - {{ render_style(applied_style) }} → inline CSS
+    - {{ widget.parameters.text }} → content
+    ↓
+  HTML Output
 ```
 
 ## Validation Rules Summary
 
 ### Cross-Entity Constraints
 
-1. **Size Constraint**: `Widget.min_size <= Slot.size_class` (enforced by WidgetAssignment)
-2. **Reference Integrity**: All style_name, theme_name, role references must exist
-3. **Uniqueness**: Slot roles unique within Layout, Style names unique within Styles
-4. **Active References**: active_layout_id and default_style_name must point to existing items
+1. **Size Constraint**: `Widget.min_size <= Slot.size_class` (enforced during configuration validation)
+2. **Reference Integrity**: 
+   - `Style.theme_name` must exist in available themes
+   - `config.style_name` must exist in available styles
+   - `widget.role` must exist in LayoutStrategy.slots
+   - `style.widgets` keys must be valid widget types
+3. **Token Validity**: All WidgetStyle token references (font="primary", foreground="accent") must exist in referenced Theme
+4. **Content Parameters**: Widget parameters must NOT include styling fields (color, font, align, etc.)
+
+### Separation of Concerns
+
+- **Widgets**: Content ONLY (text, numbers, data structures)
+- **Styles**: Visual rules ONLY (how widgets look)
+- **Themes**: Design tokens ONLY (color palette, typography)
+- **Layouts**: Spatial arrangement ONLY (where widgets go)
+- **LayoutEngine**: Resolution bridge (tokens → CSS)
 
 ### Immutability Patterns
 
-- **Layouts and Styles**: Use `patch()` method for updates (creates new instance)
-- **RenderableLayout**: Immutable once created
-- **Widget**: Immutable after instantiation (params frozen)
+- **Theme/Style/LayoutStrategy**: Loaded from JSON files, immutable at runtime
+- **Widget**: Parameters frozen after instantiation
+- **Applied Styles**: Computed once per widget, cached during rendering
 
 ## Example Data Flow
 

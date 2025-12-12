@@ -12,7 +12,12 @@ class TestCinematicRendering:
     def test_cinematic_split_50_50(self) -> None:
         """Test rendering Cinematic.Split_50_50 with two widgets."""
         theme = Theme()
-        style = Style(theme_name="default")
+        style = Style(
+            theme_name="default",
+            widgets={
+                "Type.Heading": {"font": "h1", "align": "left", "foreground": "text_color"}
+            }
+        )
         
         widget_assignments = {
             "left": {

@@ -71,6 +71,7 @@ class HTMLRenderer:
                 "type": assignment.widget.get_widget_type(),
                 "data": assignment.widget.render_data(),
                 "size": str(assignment.slot.size),
+                "applied_style": assignment.applied_style,  # Pass resolved styles
             }
 
         # Render template

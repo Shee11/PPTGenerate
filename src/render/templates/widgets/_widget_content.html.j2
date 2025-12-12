@@ -1,6 +1,12 @@
 {# Widget content dispatcher - routes to appropriate widget template #}
 {% set widget_type = widget.type %}
 {% set widget_data = widget.data %}
+{% set applied_style = widget.applied_style %}
+
+{# Helper macro to generate inline style from applied_style dict #}
+{% macro render_style(styles) -%}
+{% for prop, value in styles.items() %}{{ prop }}: {{ value }};{% endfor %}
+{%- endmacro %}
 
 {% if widget_type.startswith('Type.') %}
     {% include 'widgets/typography.html.j2' %}

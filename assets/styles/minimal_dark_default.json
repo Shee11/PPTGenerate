@@ -1,4 +1,47 @@
 {
   "theme_name": "minimal_dark_v1",
-  "border_radius": "8px"
+  "widgets": {
+    "Type.Display": {
+      "font": "h1",
+      "align": "left",
+      "foreground": "text_color"
+    },
+    "Type.Heading": {
+      "font": "h2",
+      "align": "left",
+      "foreground": "text_color"
+    },
+    "Type.Body": {
+      "font": "body",
+      "align": "left",
+      "foreground": "text_color"
+    },
+    "Type.List": {
+      "font": "body",
+      "foreground": "text_color"
+    },
+    "Type.Quote": {
+      "font": "body",
+      "align": "left",
+      "foreground": "accent_color",
+      "background": "secondary_background",
+      "border_radius": "4px"
+    },
+    "Data.BigNum": {
+      "font": "h1",
+      "align": "center",
+      "foreground": "accent_color"
+    },
+    "Data.Trend": {
+      "font": "body",
+      "align": "left",
+      "foreground": "text_color"
+    },
+    "Data.Progress": {
+      "font": "caption",
+      "align": "left",
+      "foreground": "primary_color",
+      "border_radius": "8px"
+    }
+  }
 }

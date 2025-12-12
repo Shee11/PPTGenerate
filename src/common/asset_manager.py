@@ -257,16 +257,28 @@ class AssetManager:
             # Build field information
             schema_fields = {}
             for field_name, field_info in properties.items():
-                field_type = field_info.get('type', 'object')
-                if 'anyOf' in field_info:
-                    field_type = field_info['anyOf'][0].get('type', 'object')
-                
-                schema_fields[field_name] = {
-                    "type": field_type,
-                    "description": field_info.get('description', ''),
-                }
-                if 'default' in field_info:
-                    schema_fields[field_name]["default"] = field_info['default']
+                # Handle parameters field specially - extract from docstring
+                if field_name == 'parameters':
+                    # Try to parse parameter info from docstring
+                    param_info = AssetManager._extract_parameters_from_docstring(
+                        widget_schema.get('description', '')
+                    )
+                    schema_fields[field_name] = {
+                        "type": field_info.get('type', 'object'),
+                        "description": field_info.get('description', ''),
+                        "parameters": param_info,
+                    }
+                else:
+                    field_type = field_info.get('type', 'object')
+                    if 'anyOf' in field_info:
+                        field_type = field_info['anyOf'][0].get('type', 'object')
+                    
+                    schema_fields[field_name] = {
+                        "type": field_type,
+                        "description": field_info.get('description', ''),
+                    }
+                    if 'default' in field_info:
+                        schema_fields[field_name]["default"] = field_info['default']
             
             widgets.append({
                 "type": widget_type,
@@ -277,6 +289,50 @@ class AssetManager:
             })
         
         return sorted(widgets, key=lambda x: x["type"])
+    
+    @staticmethod
+    def _extract_parameters_from_docstring(docstring: str) -> List[Dict[str, str]]:
+        """Extract parameter information from widget docstring.
+        
+        Args:
+            docstring: Widget class docstring
+            
+        Returns:
+            List of parameter dictionaries with name and description
+        """
+        params = []
+        lines = docstring.split('\n')
+        in_params_section = False
+        
+        for line in lines:
+            stripped = line.strip()
+            
+            # Check if we're entering the Parameters section
+            if stripped.startswith('Parameters:'):
+                in_params_section = True
+                continue
+            
+            # Check if we're leaving the Parameters section
+            if in_params_section and stripped.startswith('Styling'):
+                break
+            
+            # Parse parameter lines (format: "- name (type): description")
+            if in_params_section and stripped.startswith('- '):
+                # Extract parameter info
+                param_line = stripped[2:]  # Remove "- "
+                if ':' in param_line:
+                    name_type, description = param_line.split(':', 1)
+                    # Extract name and type
+                    if '(' in name_type and ')' in name_type:
+                        name = name_type.split('(')[0].strip()
+                        param_type = name_type.split('(')[1].split(')')[0].strip()
+                        params.append({
+                            "name": name,
+                            "type": param_type,
+                            "description": description.strip(),
+                        })
+        
+        return params
     
     @staticmethod
     def get_widget_schema(widget_type: str) -> Dict[str, Any]:

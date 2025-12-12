@@ -32,7 +32,12 @@ class TestCLIContract:
         # Create valid configuration file with multi-slide format
         config = {
             "theme": {},
-            "style": {"theme_name": "default"},
+            "style": {
+                "theme_name": "default",
+                "widgets": {
+                    "Type.Display": {"font": "h1", "align": "left", "foreground": "text_color"}
+                }
+            },
             "slides": [
                 {
                     "id": "slide-1",
@@ -64,7 +69,12 @@ class TestCLIContract:
         
         config = {
             "theme": {},
-            "style": {"theme_name": "default"},
+            "style": {
+                "theme_name": "default",
+                "widgets": {
+                    "Type.Display": {"font": "h1", "align": "left", "foreground": "text_color"}
+                }
+            },
             "slides": [
                 {
                     "id": "slide-1",
@@ -109,7 +119,12 @@ class TestCLIContract:
         
         config = {
             "theme": {},
-            "style": {"theme_name": "default"},
+            "style": {
+                "theme_name": "default",
+                "widgets": {
+                    "Type.Body": {"font": "body", "align": "left", "foreground": "text_color"}
+                }
+            },
             "slides": [
                 {
                     "id": "slide-1",
@@ -160,7 +175,12 @@ class TestCLIContract:
         # This tests the error handling path
         config = {
             "theme": {},
-            "style": {"theme_name": "default"},
+            "style": {
+                "theme_name": "default",
+                "widgets": {
+                    "Type.Display": {"font": "h1", "align": "left", "foreground": "text_color"}
+                }
+            },
             "slides": [
                 {
                     "id": "slide-1",

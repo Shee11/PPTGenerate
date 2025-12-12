@@ -1,5 +1,5 @@
 """RenderableLayout model - output of LayoutEngine."""
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -8,13 +8,17 @@ from src.widgets.base import BaseWidget
 
 
 class WidgetAssignment(BaseModel):
-    """Assignment of a widget to a slot."""
+    """Assignment of a widget to a slot with applied styling."""
 
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
     role: str = Field(..., description="Slot role name")
     widget: BaseWidget = Field(..., description="Widget instance")
     slot: Slot = Field(..., description="Slot definition")
+    applied_style: Dict[str, Any] = Field(
+        default_factory=dict,
+        description="Resolved CSS properties from Style config and Theme tokens"
+    )
 
 
 class RenderableLayout(BaseModel):
