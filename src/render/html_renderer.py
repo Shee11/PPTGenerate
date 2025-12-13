@@ -72,12 +72,30 @@ class HTMLRenderer:
                 "data": assignment.widget.render_data(),
                 "size": str(assignment.slot.size),
                 "applied_style": assignment.applied_style,  # Pass resolved styles
+                "bounds": assignment.bounds,  # Pass absolute position/size
+            }
+
+        # Prepare header/footer widget data
+        header_widget_data = None
+        if renderable.header_widget:
+            header_widget_data = {
+                "type": renderable.header_widget.get_widget_type(),
+                "data": renderable.header_widget.render_data(),
+            }
+
+        footer_widget_data = None
+        if renderable.footer_widget:
+            footer_widget_data = {
+                "type": renderable.footer_widget.get_widget_type(),
+                "data": renderable.footer_widget.render_data(),
             }
 
         # Render template
         html = template.render(
             strategy=renderable.strategy_name,
             widgets=widget_data,
+            header_widget=header_widget_data,
+            footer_widget=footer_widget_data,
             theme_vars=renderable.theme_vars,
             style_props=renderable.style_props,
             canvas_width=renderable.width,

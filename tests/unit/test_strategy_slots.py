@@ -16,6 +16,16 @@ from src.layout.strategies.cinematic import (
     CinematicFullBleedStrategy,
     CinematicSplit3070Strategy
 )
+from src.layout.strategies.edit import (
+    EditOverlapLeftStrategy,
+    EditMagazineCollageStrategy,
+    EditStaggeredStrategy
+)
+from src.layout.strategies.data import DataKPIRowStrategy
+from src.layout.strategies.focus import (
+    FocusSolarSystemStrategy,
+    FocusOffsetTitleStrategy
+)
 from src.common.size_class import SizeClass
 
 
@@ -259,3 +269,148 @@ class TestCinematicSplit3070Strategy:
         slots = CinematicSplit3070Strategy.get_slots()
         stage = [s for s in slots if s.role == "stage"][0]
         assert stage.size == SizeClass.XL
+
+
+class TestEditOverlapLeftStrategy:
+    """Test EditOverlapLeftStrategy slot definitions."""
+    
+    def test_strategy_name(self) -> None:
+        """Test that strategy has correct name."""
+        assert EditOverlapLeftStrategy.get_strategy_name() == "Edit.Overlap_Left"
+    
+    def test_has_two_slots(self) -> None:
+        """Test that EditOverlapLeft has 2 slots (background + card)."""
+        slots = EditOverlapLeftStrategy.get_slots()
+        assert len(slots) == 2
+    
+    def test_back_is_size_xl(self) -> None:
+        """Test that background is Size XL."""
+        slots = EditOverlapLeftStrategy.get_slots()
+        back = [s for s in slots if s.role == "back"][0]
+        assert back.size == SizeClass.XL
+    
+    def test_card_is_size_l(self) -> None:
+        """Test that card is Size L."""
+        slots = EditOverlapLeftStrategy.get_slots()
+        card = [s for s in slots if s.role == "card"][0]
+        assert card.size == SizeClass.L
+
+
+class TestEditMagazineCollageStrategy:
+    """Test EditMagazineCollageStrategy slot definitions."""
+    
+    def test_strategy_name(self) -> None:
+        """Test that strategy has correct name."""
+        assert EditMagazineCollageStrategy.get_strategy_name() == "Edit.Magazine_Collage"
+    
+    def test_has_seven_slots(self) -> None:
+        """Test that Magazine Collage has 7 slots (1 hero + 6 stickers)."""
+        slots = EditMagazineCollageStrategy.get_slots()
+        assert len(slots) == 7
+    
+    def test_hero_is_size_xl(self) -> None:
+        """Test that hero is Size XL."""
+        slots = EditMagazineCollageStrategy.get_slots()
+        hero = [s for s in slots if s.role == "hero"][0]
+        assert hero.size == SizeClass.XL
+    
+    def test_stickers_are_size_s(self) -> None:
+        """Test that all stickers are Size S."""
+        slots = EditMagazineCollageStrategy.get_slots()
+        stickers = [s for s in slots if s.role.startswith("sticker_")]
+        assert len(stickers) == 6
+        for sticker in stickers:
+            assert sticker.size == SizeClass.S
+
+
+class TestEditStaggeredStrategy:
+    """Test EditStaggeredStrategy slot definitions."""
+    
+    def test_strategy_name(self) -> None:
+        """Test that strategy has correct name."""
+        assert EditStaggeredStrategy.get_strategy_name() == "Edit.Staggered"
+    
+    def test_has_three_slots(self) -> None:
+        """Test that Staggered has 3 slots."""
+        slots = EditStaggeredStrategy.get_slots()
+        assert len(slots) == 3
+    
+    def test_all_items_are_size_m(self) -> None:
+        """Test that all items are Size M."""
+        slots = EditStaggeredStrategy.get_slots()
+        for slot in slots:
+            assert slot.size == SizeClass.M
+
+
+class TestDataKPIRowStrategy:
+    """Test DataKPIRowStrategy slot definitions."""
+    
+    def test_strategy_name(self) -> None:
+        """Test that strategy has correct name."""
+        assert DataKPIRowStrategy.get_strategy_name() == "Data.KPI_Row"
+    
+    def test_has_five_slots(self) -> None:
+        """Test that KPI Row has 5 slots (1 header + 4 KPIs)."""
+        slots = DataKPIRowStrategy.get_slots()
+        assert len(slots) == 5
+    
+    def test_header_is_size_m(self) -> None:
+        """Test that header is Size M."""
+        slots = DataKPIRowStrategy.get_slots()
+        header = [s for s in slots if s.role == "header"][0]
+        assert header.size == SizeClass.M
+    
+    def test_kpis_are_size_s(self) -> None:
+        """Test that all KPIs are Size S."""
+        slots = DataKPIRowStrategy.get_slots()
+        kpis = [s for s in slots if s.role.startswith("kpi_")]
+        assert len(kpis) == 4
+        for kpi in kpis:
+            assert kpi.size == SizeClass.S
+
+
+class TestFocusSolarSystemStrategy:
+    """Test FocusSolarSystemStrategy slot definitions."""
+    
+    def test_strategy_name(self) -> None:
+        """Test that strategy has correct name."""
+        assert FocusSolarSystemStrategy.get_strategy_name() == "Focus.Solar_System"
+    
+    def test_has_seven_slots(self) -> None:
+        """Test that Solar System has 7 slots (1 sun + 6 planets)."""
+        slots = FocusSolarSystemStrategy.get_slots()
+        assert len(slots) == 7
+    
+    def test_sun_is_size_xl(self) -> None:
+        """Test that sun is Size XL."""
+        slots = FocusSolarSystemStrategy.get_slots()
+        sun = [s for s in slots if s.role == "sun"][0]
+        assert sun.size == SizeClass.XL
+    
+    def test_planets_are_size_s(self) -> None:
+        """Test that all planets are Size S."""
+        slots = FocusSolarSystemStrategy.get_slots()
+        planets = [s for s in slots if s.role.startswith("planet_")]
+        assert len(planets) == 6
+        for planet in planets:
+            assert planet.size == SizeClass.S
+
+
+class TestFocusOffsetTitleStrategy:
+    """Test FocusOffsetTitleStrategy slot definitions."""
+    
+    def test_strategy_name(self) -> None:
+        """Test that strategy has correct name."""
+        assert FocusOffsetTitleStrategy.get_strategy_name() == "Focus.Offset_Title"
+    
+    def test_has_one_slot(self) -> None:
+        """Test that Offset Title has 1 slot."""
+        slots = FocusOffsetTitleStrategy.get_slots()
+        assert len(slots) == 1
+    
+    def test_main_is_size_m(self) -> None:
+        """Test that main is Size M."""
+        slots = FocusOffsetTitleStrategy.get_slots()
+        main = slots[0]
+        assert main.role == "main"
+        assert main.size == SizeClass.M

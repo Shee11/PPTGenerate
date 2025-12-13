@@ -3,12 +3,20 @@ from typing import Any, Dict, List, Optional
 
 from pydantic import BaseModel, ConfigDict, Field
 
+from src.common.bounds import Bounds
 from src.common.slot import Slot
 from src.widgets.base import BaseWidget
 
 
 class WidgetAssignment(BaseModel):
-    """Assignment of a widget to a slot with applied styling."""
+    """Assignment of a widget to a slot with applied styling and calculated bounds.
+    
+    This contains:
+    - Widget instance (content)
+    - Slot definition (size constraints)
+    - Applied style (resolved CSS properties)
+    - Bounds (absolute position and size on canvas)
+    """
 
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
@@ -19,6 +27,7 @@ class WidgetAssignment(BaseModel):
         default_factory=dict,
         description="Resolved CSS properties from Style config and Theme tokens"
     )
+    bounds: Bounds = Field(..., description="Absolute position and size on canvas (pixels)")
 
 
 class RenderableLayout(BaseModel):
@@ -52,6 +61,8 @@ class RenderableLayout(BaseModel):
     footer_position: str = Field(default="fixed_bottom_left", description="Footer positioning")
     header_decoration: str = Field(default="underline_accent", description="Header decoration style")
     footer_decoration: str = Field(default="none", description="Footer decoration style")
+    header_widget: Any | None = Field(default=None, description="Widget instance for header area")
+    footer_widget: Any | None = Field(default=None, description="Widget instance for footer area")
     
     # Multi-slide metadata (optional, set by calculate_slides)
     slide_number: Optional[int] = Field(default=None, description="Current slide number (1-indexed)")

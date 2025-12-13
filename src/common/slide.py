@@ -21,6 +21,14 @@ class Slide(PatchableContextBase):
         default_factory=dict,
         description="Widget assignments mapping slot roles to widget configs"
     )
+    header: Dict[str, Any] | None = Field(
+        default=None,
+        description="Optional header widget (rendered in reserved header area)"
+    )
+    footer: Dict[str, Any] | None = Field(
+        default=None,
+        description="Optional footer widget (rendered in reserved footer area)"
+    )
     style_override: Dict[str, Any] = Field(
         default_factory=dict,
         description="Optional style overrides for this slide"

@@ -19,6 +19,16 @@ from src.layout.strategies.cinematic import (
     CinematicSplit3070Strategy,
     CinematicSplit5050Strategy,
 )
+from src.layout.strategies.data import DataKPIRowStrategy
+from src.layout.strategies.edit import (
+    EditMagazineCollageStrategy,
+    EditOverlapLeftStrategy,
+    EditStaggeredStrategy,
+)
+from src.layout.strategies.focus import (
+    FocusOffsetTitleStrategy,
+    FocusSolarSystemStrategy,
+)
 from src.layout.strategies.swiss import (
     SwissAsymmetryStrategy,
     SwissPosterStrategy,
@@ -50,6 +60,12 @@ class LayoutEngine:
         "Cinematic.Split_50_50": CinematicSplit5050Strategy,
         "Cinematic.FullBleed": CinematicFullBleedStrategy,
         "Cinematic.Split_30_70": CinematicSplit3070Strategy,
+        "Edit.Overlap_Left": EditOverlapLeftStrategy,
+        "Edit.Magazine_Collage": EditMagazineCollageStrategy,
+        "Edit.Staggered": EditStaggeredStrategy,
+        "Data.KPI_Row": DataKPIRowStrategy,
+        "Focus.Solar_System": FocusSolarSystemStrategy,
+        "Focus.Offset_Title": FocusOffsetTitleStrategy,
     }
 
     @classmethod
@@ -130,7 +146,13 @@ class LayoutEngine:
         width: int = 1920,
         height: int = 1080,
     ) -> RenderableLayout:
-        """Calculate layout and validate widget assignments.
+        """Calculate layout with two-phase auto-layout: measurement → position calculation.
+
+        This is the core auto-layout orchestrator that:
+        1. Phase 1 (Measurement): Measures each widget's content size
+        2. Creates LayoutContext with canvas dimensions and spacing
+        3. Phase 2 (Layout): Calls strategy.calculate_layout() to get absolute bounds
+        4. Creates WidgetAssignments with calculated bounds
 
         Args:
             strategy_name: Name of layout strategy (e.g., "Bento.Standard")
@@ -142,12 +164,15 @@ class LayoutEngine:
             height: Layout height in pixels (default: 1080)
 
         Returns:
-            RenderableLayout ready for HTML rendering
+            RenderableLayout with absolute widget positions ready for rendering
 
         Raises:
             MissingReferenceError: If strategy not found
             SizeConstraintError: If widget doesn't fit in slot
         """
+        from src.common.spacing_utils import parse_spacing
+        from src.layout.layout_protocol import LayoutContext, WidgetLayoutInput
+        
         # Get strategy
         if strategy_name not in cls._strategies:
             raise MissingReferenceError(
@@ -162,8 +187,10 @@ class LayoutEngine:
         # Create slot lookup
         slot_map: Dict[str, Slot] = {slot.role: slot for slot in slots}
 
-        # Create widget assignments with validation
-        assignments: List[WidgetAssignment] = []
+        # ===== PHASE 1: WIDGET MEASUREMENT =====
+        # Measure each widget's content size and prepare for layout
+        widget_layout_inputs: List[WidgetLayoutInput] = []
+        widget_instances: Dict[str, Any] = {}  # Store for later assignment creation
 
         for role, widget_config in widget_assignments.items():
             # Validate slot exists
@@ -216,11 +243,72 @@ class LayoutEngine:
             # Resolve widget style from Style config and Theme tokens
             resolved_style = cls._resolve_widget_style(widget_style, theme)
 
+            # MEASURE: Calculate widget content size
+            # This is where auto-layout measurement happens
+            measured_size = widget.measure(
+                style=resolved_style,
+                max_width=float(width),
+                max_height=float(height)
+            )
+
+            # Create layout input for Phase 2
+            widget_layout_inputs.append(WidgetLayoutInput(
+                role=role,
+                measured_size=measured_size,
+                slot=slot,
+                style=resolved_style
+            ))
+
+            # Store for later
+            widget_instances[role] = {
+                "widget": widget,
+                "slot": slot,
+                "resolved_style": resolved_style
+            }
+
+        # ===== CREATE LAYOUT CONTEXT =====
+        # Parse spacing values from theme to pixels
+        margin_x_px = parse_spacing(theme.margin_x, reference=width)
+        margin_y_px = parse_spacing(theme.margin_y, reference=height)
+        gutter_px = parse_spacing(theme.gutter, reference=width)
+        
+        # Parse header/footer heights (support both px and %)
+        header_height_px = parse_spacing(theme.header_footer.header_height, reference=height)
+        footer_height_px = parse_spacing(theme.header_footer.footer_height, reference=height)
+
+        context = LayoutContext(
+            canvas_width=float(width),
+            canvas_height=float(height),
+            margin_x=margin_x_px,
+            margin_y=margin_y_px,
+            gutter=gutter_px,
+            header_height=header_height_px,
+            footer_height=footer_height_px
+        )
+
+        # ===== PHASE 2: LAYOUT CALCULATION =====
+        # Call strategy's calculate_layout() to get absolute bounds
+        bounds_map = strategy.calculate_layout(
+            widgets=widget_layout_inputs,
+            context=context
+        )
+
+        # ===== CREATE WIDGET ASSIGNMENTS WITH BOUNDS =====
+        assignments: List[WidgetAssignment] = []
+
+        for role, instance_data in widget_instances.items():
+            # Get calculated bounds from Phase 2
+            if role not in bounds_map:
+                raise ValueError(f"Strategy {strategy_name} did not calculate bounds for role '{role}'")
+            
+            bounds = bounds_map[role]
+
             assignments.append(WidgetAssignment(
                 role=role,
-                widget=widget,
-                slot=slot,
-                applied_style=resolved_style  # Pass resolved style to assignment
+                widget=instance_data["widget"],
+                slot=instance_data["slot"],
+                applied_style=instance_data["resolved_style"],
+                bounds=bounds  # Absolute position from auto-layout
             ))
 
         # Create renderable layout with theme-derived properties
@@ -290,6 +378,28 @@ class LayoutEngine:
                 width=width,
                 height=height,
             )
+
+            # Process header widget if provided
+            if slide.header:
+                header_widget_type = slide.header.get("type")
+                if header_widget_type:
+                    header_widget_class = WidgetRegistry.get(header_widget_type)
+                    if header_widget_class:
+                        layout.header_widget = header_widget_class(
+                            atom_id=slide.header.get("atom_id"),
+                            parameters=slide.header.get("parameters", {})
+                        )
+
+            # Process footer widget if provided
+            if slide.footer:
+                footer_widget_type = slide.footer.get("type")
+                if footer_widget_type:
+                    footer_widget_class = WidgetRegistry.get(footer_widget_type)
+                    if footer_widget_class:
+                        layout.footer_widget = footer_widget_class(
+                            atom_id=slide.footer.get("atom_id"),
+                            parameters=slide.footer.get("parameters", {})
+                        )
 
             # Apply sequence pattern background if configured
             if theme.sequence_pattern:

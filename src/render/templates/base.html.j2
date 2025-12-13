@@ -151,9 +151,35 @@
     </style>
 </head>
 <body>
-    <div class="layout-container">
-        {% block layout_content %}
-        {% endblock %}
+    <div class="layout-container" style="{% if background_override %}background: {{ background_override }};{% endif %}">
+        {% if header_widget %}
+        <div class="layout-header">
+            {% if header_widget.type == 'Type.Heading' %}
+                <h{{ header_widget.data.level }}>{{ header_widget.data.content }}</h{{ header_widget.data.level }}>
+            {% elif header_widget.type == 'Type.Body' %}
+                <p>{{ header_widget.data.content }}</p>
+            {% elif header_widget.type == 'Type.Display' %}
+                <h1>{{ header_widget.data.content }}</h1>
+            {% endif %}
+        </div>
+        {% endif %}
+        
+        <div class="layout-content">
+            {% block layout_content %}
+            {% endblock %}
+        </div>
+        
+        {% if footer_widget %}
+        <div class="layout-footer">
+            {% if footer_widget.type == 'Type.Heading' %}
+                <h{{ footer_widget.data.level }}>{{ footer_widget.data.content }}</h{{ footer_widget.data.level }}>
+            {% elif footer_widget.type == 'Type.Body' %}
+                <p>{{ footer_widget.data.content }}</p>
+            {% elif footer_widget.type == 'Type.Display' %}
+                <h1>{{ footer_widget.data.content }}</h1>
+            {% endif %}
+        </div>
+        {% endif %}
     </div>
 </body>
 </html>

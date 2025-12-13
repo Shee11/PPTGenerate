@@ -5,6 +5,7 @@ from typing import Any, ClassVar, Dict, Optional, Type
 from pydantic import BaseModel, Field
 
 from src.common.size_class import SizeClass
+from src.common.measurement import MeasuredSize, WidgetMeasurement
 
 
 class BaseWidget(BaseModel, ABC):
@@ -14,6 +15,7 @@ class BaseWidget(BaseModel, ABC):
     - Define a minimum size requirement
     - Specify their widget type (category.name)
     - Implement render method (returns data for template)
+    - Implement measure method (calculates content size)
     """
 
     # Class-level attributes (must be overridden by subclasses)
@@ -30,6 +32,30 @@ class BaseWidget(BaseModel, ABC):
         
         Returns:
             Dictionary containing all data needed by the widget's template
+        """
+        pass
+
+    @abstractmethod
+    def measure(self, style: Dict[str, Any], max_width: float = float('inf'), max_height: float = float('inf')) -> MeasuredSize:
+        """Calculate widget content size based on parameters and styling.
+        
+        This is the core auto-layout measurement that determines how much
+        space the widget needs based on its content.
+        
+        Args:
+            style: Applied style dictionary (font-size, padding, etc.)
+            max_width: Maximum available width (for wrapping)
+            max_height: Maximum available height
+            
+        Returns:
+            MeasuredSize with calculated dimensions
+            
+        Note:
+            Implementations should:
+            1. Extract content from parameters (text, number, etc.)
+            2. Extract styling (font-size, padding, etc.)
+            3. Calculate required dimensions
+            4. Return MeasuredSize with width/height
         """
         pass
 

@@ -1,0 +1,331 @@
+{
+  "slides": [
+    {
+      "strategy": "Bento.Standard",
+      "widgets": {
+        "cell_1": {"type": "Type.Display", "parameters": {"text": "Bento Standard"}},
+        "cell_2": {"type": "Type.Heading", "parameters": {"text": "Grid Layout", "level": 2}},
+        "cell_3": {"type": "Type.Body", "parameters": {"text": "3x2 grid with equal cells"}},
+        "cell_4": {"type": "Data.BigNum", "parameters": {"number": 6, "label": "Cells"}},
+        "cell_5": {"type": "Data.Progress", "parameters": {"percentage": 85, "label": "Coverage"}},
+        "cell_6": {"type": "Data.Trend", "parameters": {"value": 142, "change": 12.5, "direction": "up", "label": "Growth"}}
+      }
+    },
+    {
+      "strategy": "Bento.Standard",
+      "widgets": {
+        "cell_1": {"type": "Type.Quote", "parameters": {"text": "Design is not just what it looks like, design is how it works.", "citation": "Steve Jobs"}},
+        "cell_2": {"type": "Data.BigNum", "parameters": {"number": 89, "label": "Success", "format": "percentage"}},
+        "cell_3": {"type": "Type.List", "parameters": {"items": ["Responsive layouts", "Theme support", "16 strategies"], "list_type": "unordered"}},
+        "cell_4": {"type": "Data.Trend", "parameters": {"value": 2847, "change": -3.2, "direction": "down", "label": "Errors"}},
+        "cell_5": {"type": "Data.Progress", "parameters": {"percentage": 67, "label": "Tests"}},
+        "cell_6": {"type": "Type.Body", "parameters": {"text": "Analytics dashboard with real-time metrics and trend indicators"}}
+      }
+    },
+    {
+      "strategy": "Bento.HeroLeft",
+      "widgets": {
+        "hero": {"type": "Type.Quote", "parameters": {"text": "The hero section draws the eye immediately. Use it for your most important message or striking visual element.", "citation": "Design Principles"}},
+        "side_1": {"type": "Data.Progress", "parameters": {"percentage": 95, "label": "Quality"}},
+        "side_2": {"type": "Data.BigNum", "parameters": {"number": 42, "label": "Features"}},
+        "side_3": {"type": "Data.Trend", "parameters": {"value": 1250, "change": 8.3, "direction": "up", "label": "Users"}},
+        "side_4": {"type": "Type.List", "parameters": {"items": ["Fast", "Reliable", "Scalable"], "list_type": "unordered"}}
+      }
+    },
+    {
+      "strategy": "Bento.HeroLeft",
+      "widgets": {
+        "hero": {"type": "Type.Display", "parameters": {"text": "Product Launch 2025"}},
+        "side_1": {"type": "Data.BigNum", "parameters": {"number": 25000, "label": "Revenue", "format": "currency"}},
+        "side_2": {"type": "Data.Progress", "parameters": {"percentage": 78, "label": "Market Share"}},
+        "side_3": {"type": "Data.Trend", "parameters": {"value": 450, "change": 15.7, "direction": "up", "label": "Signups"}},
+        "side_4": {"type": "Type.Body", "parameters": {"text": "Exceeding all targets"}}
+      }
+    },
+    {
+      "strategy": "Bento.HeroTop",
+      "widgets": {
+        "hero": {"type": "Type.List", "parameters": {"items": ["Universal Content Engine", "16 layout strategies across 6 families", "8 widget types for maximum flexibility", "Theme-driven styling system"], "list_type": "ordered"}},
+        "footer_1": {"type": "Data.Progress", "parameters": {"percentage": 71, "label": "Coverage"}},
+        "footer_2": {"type": "Data.Trend", "parameters": {"value": 264, "change": 22, "direction": "up", "label": "Tests"}},
+        "footer_3": {"type": "Data.BigNum", "parameters": {"number": 16, "label": "Strategies"}}
+      }
+    },
+    {
+      "strategy": "Bento.HeroTop",
+      "widgets": {
+        "hero": {"type": "Type.Quote", "parameters": {"text": "Simplicity is the ultimate sophistication.", "citation": "Leonardo da Vinci"}},
+        "footer_1": {"type": "Type.Body", "parameters": {"text": "Clean design"}},
+        "footer_2": {"type": "Type.Body", "parameters": {"text": "Clear hierarchy"}},
+        "footer_3": {"type": "Type.Body", "parameters": {"text": "Great UX"}}
+      }
+    },
+    {
+      "strategy": "Bento.Quarter",
+      "widgets": {
+        "quadrant_1": {"type": "Data.Trend", "parameters": {"value": 15230, "change": 12.4, "direction": "up", "label": "Revenue"}},
+        "quadrant_2": {"type": "Data.Progress", "parameters": {"percentage": 88, "label": "On Track"}},
+        "quadrant_3": {"type": "Type.List", "parameters": {"items": ["Q1: Planning", "Q2: Execute", "Q3: Scale", "Q4: Review"], "list_type": "ordered"}},
+        "quadrant_4": {"type": "Data.BigNum", "parameters": {"number": 4, "label": "Quarters"}}
+      }
+    },
+    {
+      "strategy": "Bento.Quarter",
+      "widgets": {
+        "quadrant_1": {"type": "Type.Quote", "parameters": {"text": "The four quadrants represent equal focus areas", "citation": "Layout Guide"}},
+        "quadrant_2": {"type": "Type.Heading", "parameters": {"text": "Balance", "level": 1}},
+        "quadrant_3": {"type": "Type.Body", "parameters": {"text": "Each section gets equal visual weight and importance"}},
+        "quadrant_4": {"type": "Data.BigNum", "parameters": {"number": 100, "label": "Balanced", "format": "percentage"}}
+      }
+    },
+    {
+      "strategy": "Swiss.Poster",
+      "widgets": {
+        "headline": {"type": "Type.Display", "parameters": {"text": "THINK DIFFERENT"}}
+      }
+    },
+    {
+      "strategy": "Swiss.Poster",
+      "widgets": {
+        "headline": {"type": "Type.Quote", "parameters": {"text": "Less is more", "citation": "Mies van der Rohe"}}
+      }
+    },
+    {
+      "strategy": "Swiss.Asymmetry",
+      "widgets": {
+        "content": {"type": "Type.List", "parameters": {"items": ["Asymmetric placement creates visual tension", "Off-center composition draws attention", "Swiss design principles at work", "Perfect for editorial layouts"], "list_type": "unordered"}}
+      }
+    },
+    {
+      "strategy": "Swiss.Asymmetry",
+      "widgets": {
+        "content": {"type": "Type.Quote", "parameters": {"text": "Design is thinking made visual. The asymmetric placement challenges conventions and creates dynamic compositions.", "citation": "Saul Bass"}}
+      }
+    },
+    {
+      "strategy": "Swiss.SplitTypo",
+      "widgets": {
+        "headline": {"type": "Type.Display", "parameters": {"text": "35/65 SPLIT"}},
+        "body": {"type": "Type.List", "parameters": {"items": ["Headline occupies 35% of vertical space", "Body content gets 65% for detailed information", "Creates clear visual hierarchy", "Classic Swiss typography principle", "Perfect for presentations and reports"], "list_type": "ordered"}}
+      }
+    },
+    {
+      "strategy": "Swiss.SplitTypo",
+      "widgets": {
+        "headline": {"type": "Type.Heading", "parameters": {"text": "Typography Matters", "level": 1}},
+        "body": {"type": "Type.Quote", "parameters": {"text": "Typography is what language looks like. The proportional split between headline and body creates natural reading rhythm and visual balance.", "citation": "Ellen Lupton"}}
+      }
+    },
+    {
+      "strategy": "Cinematic.Split_50_50",
+      "widgets": {
+        "left": {"type": "Type.List", "parameters": {"items": ["Before: Manual layouts", "Repetitive work", "Inconsistent designs", "Limited flexibility"], "list_type": "unordered"}},
+        "right": {"type": "Type.List", "parameters": {"items": ["After: Auto layouts", "Automated placement", "Consistent results", "Maximum flexibility"], "list_type": "unordered"}}
+      }
+    },
+    {
+      "strategy": "Cinematic.Split_50_50",
+      "widgets": {
+        "left": {"type": "Data.Trend", "parameters": {"value": 15750, "change": 23.5, "direction": "up", "label": "Performance"}},
+        "right": {"type": "Type.Quote", "parameters": {"text": "The 50/50 split creates perfect balance for comparisons and contrasting content", "citation": "Design System"}}
+      }
+    },
+    {
+      "strategy": "Cinematic.FullBleed",
+      "widgets": {
+        "stage": {"type": "Type.Quote", "parameters": {"text": "Make it simple, but significant.", "citation": "Don Draper"}}
+      }
+    },
+    {
+      "strategy": "Cinematic.FullBleed",
+      "widgets": {
+        "stage": {"type": "Type.List", "parameters": {"items": ["Single element fills entire canvas", "Maximum visual impact", "Perfect for hero content", "Ideal for dramatic statements", "Great for image backgrounds", "Minimalist presentation style"], "list_type": "ordered"}}
+      }
+    },
+    {
+      "strategy": "Cinematic.Split_30_70",
+      "widgets": {
+        "sidebar": {"type": "Type.List", "parameters": {"items": ["Navigation", "Metadata", "Quick links", "Context info"], "list_type": "unordered"}},
+        "stage": {"type": "Type.Quote", "parameters": {"text": "The 30/70 split creates asymmetric balance. The sidebar provides context while the main stage delivers primary content with emphasis.", "citation": "Layout Patterns"}}
+      }
+    },
+    {
+      "strategy": "Cinematic.Split_30_70",
+      "widgets": {
+        "sidebar": {"type": "Data.Progress", "parameters": {"percentage": 30, "label": "Sidebar"}},
+        "stage": {"type": "Data.BigNum", "parameters": {"number": 70, "label": "Main Stage", "format": "percentage"}}
+      }
+    },
+    {
+      "strategy": "Edit.Overlap_Left",
+      "widgets": {
+        "back": {"type": "Type.Quote", "parameters": {"text": "Layering creates depth and visual interest in flat design", "citation": "Material Design"}},
+        "card": {"type": "Data.BigNum", "parameters": {"number": 2.5, "label": "Dimensions"}}
+      }
+    },
+    {
+      "strategy": "Edit.Overlap_Left",
+      "widgets": {
+        "back": {"type": "Type.List", "parameters": {"items": ["Background fills entire canvas", "Card overlays at 20% from left", "Creates 2.5D layered effect", "Perfect for product showcases"], "list_type": "unordered"}},
+        "card": {"type": "Type.Display", "parameters": {"text": "FEATURED"}}
+      }
+    },
+    {
+      "strategy": "Edit.Magazine_Collage",
+      "widgets": {
+        "hero": {"type": "Type.Quote", "parameters": {"text": "Magazine layouts embrace chaos and create visual excitement through scattered elements", "citation": "Editorial Design"}},
+        "sticker_1": {"type": "Data.BigNum", "parameters": {"number": 1, "label": "New"}},
+        "sticker_2": {"type": "Type.Heading", "parameters": {"text": "Hot", "level": 3}},
+        "sticker_3": {"type": "Data.Progress", "parameters": {"percentage": 95, "label": "Popular"}},
+        "sticker_4": {"type": "Type.Body", "parameters": {"text": "Featured"}},
+        "sticker_5": {"type": "Data.Trend", "parameters": {"value": 450, "change": 28, "direction": "up", "label": "Trend"}},
+        "sticker_6": {"type": "Type.Heading", "parameters": {"text": "Sale", "level": 3}}
+      }
+    },
+    {
+      "strategy": "Edit.Magazine_Collage",
+      "widgets": {
+        "hero": {"type": "Type.Display", "parameters": {"text": "COLLAGE"}},
+        "sticker_1": {"type": "Type.Body", "parameters": {"text": "Playful"}},
+        "sticker_2": {"type": "Type.Body", "parameters": {"text": "Dynamic"}},
+        "sticker_3": {"type": "Type.Body", "parameters": {"text": "Creative"}},
+        "sticker_4": {"type": "Type.Body", "parameters": {"text": "Modern"}},
+        "sticker_5": {"type": "Type.Body", "parameters": {"text": "Editorial"}},
+        "sticker_6": {"type": "Type.Body", "parameters": {"text": "Artful"}}
+      }
+    },
+    {
+      "strategy": "Edit.Staggered",
+      "widgets": {
+        "item_1": {"type": "Type.Heading", "parameters": {"text": "Step 1: Research", "level": 2}},
+        "item_2": {"type": "Type.Heading", "parameters": {"text": "Step 2: Design", "level": 2}},
+        "item_3": {"type": "Type.Heading", "parameters": {"text": "Step 3: Implement", "level": 2}}
+      }
+    },
+    {
+      "strategy": "Edit.Staggered",
+      "widgets": {
+        "item_1": {"type": "Type.List", "parameters": {"items": ["Gather requirements", "Analyze patterns", "Create wireframes"], "list_type": "ordered"}},
+        "item_2": {"type": "Data.Progress", "parameters": {"percentage": 60, "label": "Progress"}},
+        "item_3": {"type": "Data.Trend", "parameters": {"value": 85, "change": 15, "direction": "up", "label": "Velocity"}}
+      }
+    },
+    {
+      "strategy": "Data.KPI_Row",
+      "widgets": {
+        "header": {"type": "Type.Display", "parameters": {"text": "Q4 2025 Performance"}},
+        "kpi_1": {"type": "Data.BigNum", "parameters": {"number": 156000, "label": "Active Users"}},
+        "kpi_2": {"type": "Data.Progress", "parameters": {"percentage": 99.2, "label": "Uptime"}},
+        "kpi_3": {"type": "Data.Trend", "parameters": {"value": 45000, "change": 18.5, "direction": "up", "label": "Revenue"}},
+        "kpi_4": {"type": "Data.BigNum", "parameters": {"number": 4.8, "label": "Rating"}}
+      }
+    },
+    {
+      "strategy": "Data.KPI_Row",
+      "widgets": {
+        "header": {"type": "Type.Quote", "parameters": {"text": "Data drives decisions. Key performance indicators at a glance.", "citation": "Analytics Team"}},
+        "kpi_1": {"type": "Data.Trend", "parameters": {"value": 1200000, "change": 12.3, "direction": "up", "label": "Pageviews"}},
+        "kpi_2": {"type": "Data.BigNum", "parameters": {"number": 68, "label": "Conversion", "format": "percentage"}},
+        "kpi_3": {"type": "Data.Progress", "parameters": {"percentage": 92, "label": "Quality Score"}},
+        "kpi_4": {"type": "Data.Trend", "parameters": {"value": 3.5, "change": -0.8, "direction": "down", "label": "Load Time"}}
+      }
+    },
+    {
+      "strategy": "Focus.Solar_System",
+      "widgets": {
+        "sun": {"type": "Type.Display", "parameters": {"text": "Core Concept"}},
+        "planet_1": {"type": "Type.Body", "parameters": {"text": "Feature A"}},
+        "planet_2": {"type": "Type.Body", "parameters": {"text": "Feature B"}},
+        "planet_3": {"type": "Type.Body", "parameters": {"text": "Feature C"}},
+        "planet_4": {"type": "Type.Body", "parameters": {"text": "Feature D"}},
+        "planet_5": {"type": "Type.Body", "parameters": {"text": "Feature E"}},
+        "planet_6": {"type": "Type.Body", "parameters": {"text": "Feature F"}}
+      }
+    },
+    {
+      "strategy": "Focus.Solar_System",
+      "widgets": {
+        "sun": {"type": "Type.Quote", "parameters": {"text": "Everything revolves around the central idea", "citation": "Systems Thinking"}},
+        "planet_1": {"type": "Data.Progress", "parameters": {"percentage": 85, "label": "Module 1"}},
+        "planet_2": {"type": "Data.Progress", "parameters": {"percentage": 72, "label": "Module 2"}},
+        "planet_3": {"type": "Data.Progress", "parameters": {"percentage": 91, "label": "Module 3"}},
+        "planet_4": {"type": "Data.Progress", "parameters": {"percentage": 68, "label": "Module 4"}},
+        "planet_5": {"type": "Data.Progress", "parameters": {"percentage": 95, "label": "Module 5"}},
+        "planet_6": {"type": "Data.Progress", "parameters": {"percentage": 78, "label": "Module 6"}}
+      }
+    },
+    {
+      "strategy": "Focus.Offset_Title",
+      "widgets": {
+        "main": {"type": "Type.Display", "parameters": {"text": "MINIMAL"}}
+      }
+    },
+    {
+      "strategy": "Focus.Offset_Title",
+      "widgets": {
+        "main": {"type": "Type.Quote", "parameters": {"text": "Perfection is achieved not when there is nothing more to add, but when there is nothing left to take away.", "citation": "Antoine de Saint-Exupéry"}}
+      }
+    }
+  ],
+  "theme": {
+    "primary_color": "#2563eb",
+    "secondary_color": "#64748b",
+    "accent_color": "#0ea5e9",
+    "text_color": "#1e293b",
+    "background_color": "#ffffff"
+  },
+  "style": {
+    "theme_name": "default",
+    "canvas": {
+      "width": 1200,
+      "height": 800
+    },
+    "spacing": {
+      "margin_x": 40,
+      "margin_y": 40,
+      "gutter": 20
+    },
+    "widgets": {
+      "Type.Display": {
+        "font": "h1",
+        "align": "center",
+        "foreground": "text_color"
+      },
+      "Type.Heading": {
+        "font": "h2",
+        "align": "left",
+        "foreground": "text_color"
+      },
+      "Type.Body": {
+        "font": "body",
+        "align": "left",
+        "foreground": "text_color"
+      },
+      "Type.List": {
+        "font": "body",
+        "align": "left",
+        "foreground": "text_color"
+      },
+      "Type.Quote": {
+        "font": "h2",
+        "align": "center",
+        "foreground": "text_color"
+      },
+      "Data.BigNum": {
+        "font": "h1",
+        "align": "center",
+        "foreground": "primary_color"
+      },
+      "Data.Progress": {
+        "font": "body",
+        "align": "center",
+        "foreground": "accent_color"
+      },
+      "Data.Trend": {
+        "font": "h2",
+        "align": "center",
+        "foreground": "primary_color"
+      }
+    }
+  }
+}

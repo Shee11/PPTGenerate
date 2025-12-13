@@ -50,9 +50,12 @@ description: "Task list for UCE Rendering System implementation"
 
 - [X] T010 [P] Contract test for SizeClass enum in tests/contract/test_size_class_schema.py
 - [X] T011 [P] Unit test for SizeClass ordering in tests/unit/test_size_validation.py
-- [ ] T012 [P] Unit test for PatchableContextPydantic.patch() in tests/unit/test_patchable_context.py
+- [X] T012 [P] Unit test for PatchableContextPydantic.patch() in tests/unit/test_patchable_context.py
 - [X] T013 [P] Contract test for Theme JSON schema in tests/contract/test_style_schema.py
 - [X] T014 [P] Contract test for Style JSON schema in tests/contract/test_style_schema.py
+- [X] T014a [P] Unit test for Bounds model in tests/unit/test_bounds.py
+- [X] T014b [P] Unit test for WidgetMeasurement utilities in tests/unit/test_measurement.py
+- [X] T014c [P] Unit test for LayoutContext calculation in tests/unit/test_layout_context.py
 
 ### Implementation for Foundation
 
@@ -61,11 +64,16 @@ description: "Task list for UCE Rendering System implementation"
 - [X] T017 [P] Implement Theme model in src/layout/theme.py
 - [X] T018 [P] Implement Style model in src/layout/style.py (depends on T017)
 - [X] T019 [P] Implement Slot model in src/common/slot.py (depends on T015)
+- [X] T019a [P] Implement Bounds model in src/common/bounds.py
+- [X] T019b [P] Implement MeasuredSize and WidgetMeasurement in src/common/measurement.py
+- [X] T019c [P] Implement LayoutContext and LayoutStrategy protocol in src/layout/layout_protocol.py
 - [ ] T020 Implement Layouts collection in src/common/patchable_context_pydantic.py (depends on T016)
 - [ ] T021 Implement Styles collection in src/common/patchable_context_pydantic.py (depends on T016)
-- [X] T022 [P] Create BaseWidget abstract class in src/render/widgets/base.py (depends on T015)
-- [X] T023 [P] Implement WidgetRegistry pattern in src/render/widgets/base.py (depends on T022)
+- [X] T022 [P] Create BaseWidget abstract class in src/widgets/base.py (depends on T015)
+- [X] T022a [P] Add measure() abstract method to BaseWidget in src/widgets/base.py (depends on T019b)
+- [X] T023 [P] Implement WidgetRegistry pattern in src/widgets/base.py (depends on T022)
 - [X] T024 Create LayoutStrategy protocol in src/layout/strategies/base.py (depends on T019)
+- [X] T024a Update LayoutStrategy protocol with calculate_layout() in src/layout/layout_protocol.py (depends on T019c)
 
 **Checkpoint**: Foundation ready - user story implementation can now begin in parallel
 
@@ -73,9 +81,11 @@ description: "Task list for UCE Rendering System implementation"
 
 ## Phase 3: User Story 1 - Basic Layout Rendering (Priority: P1) 🎯 MVP
 
-**Goal**: Render simple layouts (Bento.Standard, Swiss.Poster, Cinematic.Split_50_50) with basic widgets
+**Goal**: Render simple layouts (Bento.Standard, Swiss.Poster, Cinematic.Split_50_50) with basic widgets using proper auto-layout
 
-**Independent Test**: Provide JSON configuration → verify HTML output with correct slot positions
+**Independent Test**: Provide JSON configuration → verify HTML output with absolute widget positions calculated by LayoutEngine
+
+**⚠️ CRITICAL AUTO-LAYOUT**: Layout strategies must calculate absolute (x, y, width, height) positions. Widgets must measure content size. LayoutEngine coordinates the two-phase process: measure → layout.
 
 ### Tests for User Story 1
 
@@ -84,33 +94,62 @@ description: "Task list for UCE Rendering System implementation"
 - [X] T025 [P] [US1] Contract test for Bento.Standard layout schema in tests/contract/test_layout_schema.py
 - [X] T026 [P] [US1] Contract test for Swiss.Poster layout schema in tests/contract/test_layout_schema.py
 - [X] T027 [P] [US1] Contract test for Cinematic.Split_50_50 layout schema in tests/contract/test_layout_schema.py
+- [X] T027a [P] [US1] Unit test for BentoStandardStrategy.calculate_layout() in tests/unit/test_bento_layout_algorithm.py
+- [X] T027b [P] [US1] Unit test for SwissPosterStrategy.calculate_layout() in tests/unit/test_swiss_layout_algorithm.py
+- [X] T027c [P] [US1] Unit test for CinematicSplit5050Strategy.calculate_layout() in tests/unit/test_cinematic_layout_algorithm.py
 - [X] T028 [P] [US1] Integration test for Bento.Standard rendering in tests/integration/test_bento_rendering.py
 - [X] T029 [P] [US1] Integration test for Swiss.Poster rendering in tests/integration/test_swiss_rendering.py
 - [X] T030 [P] [US1] Integration test for Cinematic.Split_50_50 rendering in tests/integration/test_cinematic_rendering.py
 - [X] T031 [P] [US1] Unit test for BentoStandardStrategy slot definitions in tests/unit/test_strategy_slots.py
 - [X] T032 [P] [US1] Unit test for SwissPosterStrategy slot definitions in tests/unit/test_strategy_slots.py
 - [X] T033 [P] [US1] Unit test for CinematicSplit5050Strategy slot definitions in tests/unit/test_strategy_slots.py
+- [ ] T033a [P] [US1] Integration test verifying bounds in RenderableLayout in tests/integration/test_layout_bounds.py
+- [X] T033b [P] [US1] Unit test for spacing parsing utilities (px, %, rem) in tests/unit/test_spacing_utils.py
 
 ### Implementation for User Story 1
 
-- [X] T034 [P] [US1] Implement BentoStandardStrategy in src/layout/strategies/bento.py
-- [X] T035 [P] [US1] Implement SwissPosterStrategy in src/layout/strategies/swiss.py
-- [X] T036 [P] [US1] Implement CinematicSplit5050Strategy in src/layout/strategies/cinematic.py
-- [X] T037 [US1] Implement LayoutEngine.calculate() core logic in src/layout/layout_engine.py (depends on T034, T035, T036)
-- [X] T038 [P] [US1] Implement TypeDisplayWidget in src/render/widgets/typography.py
-- [X] T039 [P] [US1] Implement TypeBodyWidget in src/render/widgets/typography.py
-- [X] T040 [P] [US1] Implement DataBigNumWidget in src/render/widgets/data.py
-- [X] T041 [US1] Create Jinja2 base template in src/render/templates/base.html.j2
-- [X] T042 [P] [US1] Create Bento layout template in src/render/templates/layouts/bento.html.j2
-- [X] T043 [P] [US1] Create Swiss layout template in src/render/templates/layouts/swiss.html.j2
-- [X] T044 [P] [US1] Create Cinematic layout template in src/render/templates/layouts/cinematic.html.j2
+**Auto-Layout Core** (NEW - Critical):
+- [X] T034a [P] [US1] Implement spacing parser (px/% → pixels) in src/common/spacing_utils.py
+- [X] T034b [P] [US1] Update RenderableLayout.WidgetAssignment to include bounds in src/common/renderable_layout.py
+
+**Widget Measurement** (NEW - Critical):
+- [X] T038a [P] [US1] Implement measure() in TypeDisplayWidget in src/widgets/typography.py
+- [X] T039a [P] [US1] Implement measure() in TypeBodyWidget in src/widgets/typography.py
+- [X] T040a [P] [US1] Implement measure() in DataBigNumWidget in src/widgets/data.py
+
+**Layout Strategies with Auto-Layout** (UPDATED - Critical):
+- [X] T034 [P] [US1] Implement BentoStandardStrategy with calculate_layout() in src/layout/strategies/bento.py
+- [X] T035 [P] [US1] Implement SwissPosterStrategy with calculate_layout() in src/layout/strategies/swiss.py
+- [X] T036 [P] [US1] Implement CinematicSplit5050Strategy with calculate_layout() in src/layout/strategies/cinematic.py
+
+**LayoutEngine Refactor** (UPDATED - Critical):
+- [X] T037 [US1] Rewrite LayoutEngine.calculate() with two-phase auto-layout in src/layout/layout_engine.py:
+  - Phase 1: Call widget.measure() for each widget → MeasuredSize
+  - Create LayoutContext with canvas dimensions, margins, spacing
+  - Phase 2: Call strategy.calculate_layout() → Bounds map
+  - Create WidgetAssignments with calculated bounds
+  - Return RenderableLayout with absolute positions
+  - (depends on T034, T035, T036, T034a, T034b, T038a, T039a, T040a)
+
+**Widget Implementation** (Existing):
+- [X] T038 [P] [US1] Implement TypeDisplayWidget in src/widgets/typography.py
+- [X] T039 [P] [US1] Implement TypeBodyWidget in src/widgets/typography.py
+- [X] T040 [P] [US1] Implement DataBigNumWidget in src/widgets/data.py
+
+**Templates - Absolute Positioning** (UPDATED - Critical):
+- [ ] T041 [US1] Update Jinja2 base template with absolute positioning in src/render/templates/base.html.j2
+- [ ] T042 [P] [US1] Update Bento layout template to use bounds in src/render/templates/layouts/bento.html.j2
+- [ ] T043 [P] [US1] Update Swiss layout template to use bounds in src/render/templates/layouts/swiss.html.j2
+- [ ] T044 [P] [US1] Update Cinematic layout template to use bounds in src/render/templates/layouts/cinematic.html.j2
 - [X] T045 [P] [US1] Create typography widget template in src/render/templates/widgets/typography.html.j2
 - [X] T046 [P] [US1] Create data widget template in src/render/templates/widgets/data.html.j2
-- [X] T047 [US1] Implement HTMLRenderer.render() in src/render/html_renderer.py (depends on T041-T046)
-- [X] T048 [US1] Implement RenderableLayout model in src/common/renderable_layout.py
-- [X] T049 [US1] Wire LayoutEngine and HTMLRenderer in integration tests (depends on T037, T047)
 
-**Checkpoint**: At this point, User Story 1 should be fully functional and testable independently
+**Rendering** (UPDATED):
+- [ ] T047 [US1] Update HTMLRenderer.render() to pass bounds to templates in src/render/html_renderer.py (depends on T041-T046)
+- [X] T048 [US1] Implement RenderableLayout model in src/common/renderable_layout.py
+- [ ] T049 [US1] Wire LayoutEngine auto-layout with HTMLRenderer in integration tests (depends on T037, T047)
+
+**Checkpoint**: At this point, User Story 1 should be fully functional with proper auto-layout - LayoutEngine calculates absolute positions, not CSS Grid
 
 ---
 
@@ -170,36 +209,116 @@ description: "Task list for UCE Rendering System implementation"
 
 ## Phase 6: User Story 4 - Multi-Variant Layout Support (Priority: P2)
 
-**Goal**: Support all layout variants (10+ total across Bento, Swiss, Cinematic)
+**Goal**: Support all layout variants (10+ total across Bento, Swiss, Cinematic) with proper auto-layout algorithms
 
-**Independent Test**: Render each variant → verify slot roles, sizes, positions match specification
+**Independent Test**: Render each variant → verify absolute bounds match specification
+
+**⚠️ CRITICAL**: Each strategy variant must implement calculate_layout() with its specific algorithm (fixed grid, proportional split, content-driven, full-bleed)
 
 ### Tests for User Story 4
 
-- [X] T072 [P] [US4] Unit test for BentoHeroLeftStrategy in tests/unit/test_strategy_slots.py
-- [X] T073 [P] [US4] Unit test for BentoHeroTopStrategy in tests/unit/test_strategy_slots.py
-- [X] T074 [P] [US4] Unit test for BentoQuarterStrategy in tests/unit/test_strategy_slots.py
-- [X] T075 [P] [US4] Unit test for SwissAsymmetryStrategy in tests/unit/test_strategy_slots.py
-- [X] T076 [P] [US4] Unit test for SwissSplitTypoStrategy in tests/unit/test_strategy_slots.py
-- [X] T077 [P] [US4] Unit test for CinematicFullBleedStrategy in tests/unit/test_strategy_slots.py
-- [X] T078 [P] [US4] Unit test for CinematicSplit3070Strategy in tests/unit/test_strategy_slots.py
+- [X] T072a [P] [US4] Unit test for BentoHeroLeftStrategy.calculate_layout() in tests/unit/test_bento_layout_algorithm.py
+- [X] T073a [P] [US4] Unit test for BentoHeroTopStrategy.calculate_layout() in tests/unit/test_bento_layout_algorithm.py
+- [X] T074a [P] [US4] Unit test for BentoQuarterStrategy.calculate_layout() in tests/unit/test_bento_layout_algorithm.py
+- [X] T072 [P] [US4] Unit test for BentoHeroLeftStrategy slot definitions in tests/unit/test_strategy_slots.py
+- [X] T073 [P] [US4] Unit test for BentoHeroTopStrategy slot definitions in tests/unit/test_strategy_slots.py
+- [X] T074 [P] [US4] Unit test for BentoQuarterStrategy slot definitions in tests/unit/test_strategy_slots.py
+- [X] T075 [P] [US4] Unit test for SwissAsymmetryStrategy slot definitions in tests/unit/test_strategy_slots.py
+- [X] T076 [P] [US4] Unit test for SwissSplitTypoStrategy slot definitions in tests/unit/test_strategy_slots.py
+- [X] T077 [P] [US4] Unit test for CinematicFullBleedStrategy slot definitions in tests/unit/test_strategy_slots.py
+- [X] T078 [P] [US4] Unit test for CinematicSplit3070Strategy slot definitions in tests/unit/test_strategy_slots.py
 - [X] T079 [P] [US4] Integration test for all Bento variants in tests/integration/test_bento_rendering.py
 - [X] T080 [P] [US4] Integration test for all Swiss variants in tests/integration/test_swiss_rendering.py
 - [X] T081 [P] [US4] Integration test for all Cinematic variants in tests/integration/test_cinematic_rendering.py
 
 ### Implementation for User Story 4
 
-- [X] T082 [P] [US4] Implement BentoHeroLeftStrategy in src/layout/strategies/bento.py
-- [X] T083 [P] [US4] Implement BentoHeroTopStrategy in src/layout/strategies/bento.py
-- [X] T084 [P] [US4] Implement BentoQuarterStrategy in src/layout/strategies/bento.py
-- [X] T085 [P] [US4] Implement SwissAsymmetryStrategy in src/layout/strategies/swiss.py
-- [X] T086 [P] [US4] Implement SwissSplitTypoStrategy in src/layout/strategies/swiss.py
-- [X] T087 [P] [US4] Implement CinematicFullBleedStrategy in src/layout/strategies/cinematic.py
-- [X] T088 [P] [US4] Implement CinematicSplit3070Strategy in src/layout/strategies/cinematic.py
+**Layout Algorithms** (UPDATED - each needs calculate_layout()):
+- [X] T082 [P] [US4] Implement BentoHeroLeftStrategy with 2/3-1/3 split algorithm in src/layout/strategies/bento.py
+- [X] T083 [P] [US4] Implement BentoHeroTopStrategy with top hero + footer grid in src/layout/strategies/bento.py
+- [X] T084 [P] [US4] Implement BentoQuarterStrategy with 2x2 equal grid in src/layout/strategies/bento.py
+- [X] T085 [P] [US4] Implement SwissAsymmetryStrategy with asymmetric positioning in src/layout/strategies/swiss.py
+- [X] T086 [P] [US4] Implement SwissSplitTypoStrategy with split layout in src/layout/strategies/swiss.py
+- [X] T087 [P] [US4] Implement CinematicFullBleedStrategy with single full-canvas widget in src/layout/strategies/cinematic.py
+- [X] T088 [P] [US4] Implement CinematicSplit3070Strategy with 30/70 proportional split in src/layout/strategies/cinematic.py
 - [X] T089 [US4] Register all strategies in LayoutEngine strategy registry (depends on T082-T088)
-- [X] T090 [US4] Update layout templates to handle all variants (depends on T082-T088)
+- [ ] T090 [US4] Update layout templates to render absolute positioned widgets (depends on T082-T088)
 
-**Checkpoint**: All 10+ layout variants available; content creators have full flexibility
+**Checkpoint**: All 10+ layout variants with proper auto-layout algorithms; each calculates absolute widget bounds
+
+---
+
+## Phase 6: User Story 6 - Extended Layout Families (Priority: P2)
+
+**Goal**: Support additional layout families (Edit, Data.KPI, Focus, Strategy) with specialized positioning algorithms
+
+**Independent Test**: Render each extended layout → verify absolute bounds match specification
+
+**Layout Families**:
+- **Edit Family**: Overlap and collage effects (Edit.Overlap_Left, Edit.Magazine_Collage, Edit.Staggered)
+- **Data.KPI Family**: Metric displays (Data.KPI_Row)
+- **Focus Family**: Radial and minimal layouts (Focus.Solar_System, Focus.Offset_Title)
+- **Strategy Family**: Strategic planning layouts (to be defined)
+
+### Tests for User Story 6
+
+- [X] T151 [P] [US6] Unit test for EditOverlapLeftStrategy slot definitions in tests/unit/test_strategy_slots.py
+- [X] T152 [P] [US6] Unit test for EditMagazineCollageStrategy slot definitions in tests/unit/test_strategy_slots.py
+- [X] T153 [P] [US6] Unit test for EditStaggeredStrategy slot definitions in tests/unit/test_strategy_slots.py
+- [X] T154 [P] [US6] Unit test for DataKPIRowStrategy slot definitions in tests/unit/test_strategy_slots.py
+- [X] T155 [P] [US6] Unit test for FocusSolarSystemStrategy slot definitions in tests/unit/test_strategy_slots.py
+- [X] T156 [P] [US6] Unit test for FocusOffsetTitleStrategy slot definitions in tests/unit/test_strategy_slots.py
+- [X] T157 [P] [US6] Unit test for EditOverlapLeftStrategy.calculate_layout() in tests/unit/test_edit_layout_algorithm.py
+- [X] T158 [P] [US6] Unit test for EditMagazineCollageStrategy.calculate_layout() in tests/unit/test_edit_layout_algorithm.py
+- [X] T159 [P] [US6] Unit test for EditStaggeredStrategy.calculate_layout() in tests/unit/test_edit_layout_algorithm.py
+- [X] T160 [P] [US6] Unit test for DataKPIRowStrategy.calculate_layout() in tests/unit/test_data_layout_algorithm.py
+- [X] T161 [P] [US6] Unit test for FocusSolarSystemStrategy.calculate_layout() in tests/unit/test_focus_layout_algorithm.py
+- [X] T162 [P] [US6] Unit test for FocusOffsetTitleStrategy.calculate_layout() in tests/unit/test_focus_layout_algorithm.py
+- [ ] T163 [P] [US6] Integration test for Edit family layouts in tests/integration/test_edit_rendering.py
+- [ ] T164 [P] [US6] Integration test for Focus family layouts in tests/integration/test_focus_rendering.py
+
+### Implementation for User Story 6
+
+**Edit Family Strategies** (Overlap & Collage Effects):
+- [X] T165 [P] [US6] Implement EditOverlapLeftStrategy in src/layout/strategies/edit.py:
+  - Slots: back (XL, full background), card (L, overlapping left side)
+  - Algorithm: Background fills content area, card positioned at 20% from left with 60% width, creating 2.5D depth
+  - Use case: Layered card designs, product showcases with context
+
+- [X] T166 [P] [US6] Implement EditMagazineCollageStrategy in src/layout/strategies/edit.py:
+  - Slots: hero (XL, anchor center), sticker_1 to sticker_N (S, random positions)
+  - Algorithm: Hero centered, stickers randomly scattered around with rotation and offset
+  - Use case: Mood boards, creative collages, playful compositions
+
+- [X] T167 [P] [US6] Implement EditStaggeredStrategy in src/layout/strategies/edit.py:
+  - Slots: item_1 (M, left), item_2 (M, right offset down), item_3 (M, left offset down)
+  - Algorithm: Z-pattern staggered positioning, each item offset vertically from previous
+  - Use case: Multi-step processes, alternating image-text flows
+
+**Data.KPI Family Strategies** (Metric Displays):
+- [X] T168 [P] [US6] Implement DataKPIRowStrategy in src/layout/strategies/data.py:
+  - Slots: header (M, top span), kpi_1 to kpi_4 (S, bottom row)
+  - Algorithm: Header 30% height top, KPIs evenly distributed in bottom 70%
+  - Use case: Dashboard headers, quarterly reports, metric overviews
+
+**Focus Family Strategies** (Radial & Minimal):
+- [X] T169 [P] [US6] Implement FocusSolarSystemStrategy in src/layout/strategies/focus.py:
+  - Slots: sun (XL, center), planet_1 to planet_N (S, orbital positions)
+  - Algorithm: Sun centered, planets positioned in circular orbit with equal angular spacing
+  - Use case: Ecosystem diagrams, mind maps, concept relationships
+
+- [X] T170 [P] [US6] Implement FocusOffsetTitleStrategy in src/layout/strategies/focus.py:
+  - Slots: main (XL, bottom-left corner)
+  - Algorithm: Title positioned in bottom-left 10% area, 90% whitespace
+  - Use case: Minimalist chapter dividers, section breaks
+
+**Templates & Registration**:
+- [ ] T171 [P] [US6] Create Edit layout template in src/render/templates/layouts/edit.html.j2
+- [ ] T172 [P] [US6] Create Focus layout template in src/render/templates/layouts/focus.html.j2
+- [ ] T173 [P] [US6] Create Data.KPI layout template in src/render/templates/layouts/data.html.j2
+- [X] T174 [US6] Register Edit/Focus/Data.KPI strategies in LayoutEngine (depends on T165-T170)
+
+**Checkpoint**: Extended layout families enable creative, data-driven, and strategic compositions
 
 ---
 
@@ -262,7 +381,9 @@ description: "Task list for UCE Rendering System implementation"
 
 ## Phase 9: Remaining Widgets
 
-**Purpose**: Complete widget library (Typography, Data, Media)
+**Purpose**: Complete widget library (Typography, Data, Media) with measure() implementation for all
+
+**⚠️ CRITICAL**: All widgets must implement measure() method for auto-layout to work
 
 ### Tests for Remaining Widgets
 
@@ -272,21 +393,39 @@ description: "Task list for UCE Rendering System implementation"
 - [ ] T121 [P] Unit test for MediaFrameWidget in tests/unit/test_widgets/test_media_widgets.py
 - [ ] T122 [P] Unit test for MediaCodeWidget in tests/unit/test_widgets/test_media_widgets.py
 - [ ] T123 [P] Unit test for MediaIconWidget in tests/unit/test_widgets/test_media_widgets.py
+- [ ] T123a [P] Unit test for TypeHeadingWidget.measure() in tests/unit/test_widget_measurement.py
+- [ ] T123b [P] Unit test for TypeListWidget.measure() in tests/unit/test_widget_measurement.py
+- [ ] T123c [P] Unit test for TypeQuoteWidget.measure() in tests/unit/test_widget_measurement.py
+- [ ] T123d [P] Unit test for DataTrendWidget.measure() in tests/unit/test_widget_measurement.py
+- [ ] T123e [P] Unit test for DataProgressWidget.measure() in tests/unit/test_widget_measurement.py
 
 ### Implementation for Remaining Widgets
 
-- [X] T124 [P] Implement TypeHeadingWidget in src/render/widgets/typography.py
-- [X] T125 [P] Implement TypeListWidget in src/render/widgets/typography.py
-- [X] T126 [P] Implement TypeQuoteWidget in src/render/widgets/typography.py
-- [X] T127 [P] Implement DataTrendWidget in src/render/widgets/data.py
-- [X] T128 [P] Implement DataProgressWidget in src/render/widgets/data.py
-- [ ] T129 [P] Implement MediaFrameWidget in src/render/widgets/media.py
-- [ ] T130 [P] Implement MediaCodeWidget in src/render/widgets/media.py
-- [ ] T131 [P] Implement MediaIconWidget in src/render/widgets/media.py
-- [ ] T132 [P] Create media widget template in src/render/templates/widgets/media.html.j2
-- [ ] T133 Register all remaining widgets in WidgetRegistry (depends on T124-T131)
+**Widget Classes** (Existing):
+- [X] T124 [P] Implement TypeHeadingWidget in src/widgets/typography.py
+- [X] T125 [P] Implement TypeListWidget in src/widgets/typography.py
+- [X] T126 [P] Implement TypeQuoteWidget in src/widgets/typography.py
+- [X] T127 [P] Implement DataTrendWidget in src/widgets/data.py
+- [X] T128 [P] Implement DataProgressWidget in src/widgets/data.py
+- [X] T129 [P] Implement MediaFrameWidget in src/widgets/media.py
+- [X] T130 [P] Implement MediaCodeWidget in src/widgets/media.py
+- [X] T131 [P] Implement MediaIconWidget in src/widgets/media.py
 
-**Checkpoint**: Complete widget library with all 4 categories (Typography, Data, Media, Charts)
+**Widget Measurement** (NEW - Critical for auto-layout):
+- [X] T124a [P] Implement measure() in TypeHeadingWidget in src/widgets/typography.py
+- [X] T125a [P] Implement measure() in TypeListWidget in src/widgets/typography.py
+- [X] T126a [P] Implement measure() in TypeQuoteWidget in src/widgets/typography.py
+- [X] T127a [P] Implement measure() in DataTrendWidget in src/widgets/data.py
+- [X] T128a [P] Implement measure() in DataProgressWidget in src/widgets/data.py
+- [X] T129a [P] Implement measure() in MediaFrameWidget (fixed size) in src/widgets/media.py
+- [X] T130a [P] Implement measure() in MediaCodeWidget (text-based) in src/widgets/media.py
+- [X] T131a [P] Implement measure() in MediaIconWidget (fixed size) in src/widgets/media.py
+
+**Templates**:
+- [X] T132 [P] Create media widget template in src/render/templates/widgets/media.html.j2
+- [X] T133 Register all remaining widgets in WidgetRegistry (depends on T124-T131)
+
+**Checkpoint**: Complete widget library with all 4 categories (Typography, Data, Media, Charts) - all widgets can measure their content size
 
 ---
 
@@ -332,10 +471,11 @@ Foundation (Phase 2) ← BLOCKING for all user stories
   ├─→ US2 (P1 Validation) ← Can start after Foundation, enhances US1
   ├─→ US3 (P2 Parameters) ← Requires US1 complete
   ├─→ US4 (P2 Variants) ← Requires US1 complete
+  ├─→ US6 (P2 Extended Layouts) ← Requires US1 complete (NEW)
   └─→ US5 (P3 Charts) ← Requires US1 complete
   
 CLI (Phase 8) ← Requires US1 + US2 complete
-Remaining Widgets (Phase 9) ← Can happen in parallel with US3-US5
+Remaining Widgets (Phase 9) ← Can happen in parallel with US3-US6
 Polish (Phase 10) ← Requires all user stories complete
 ```
 
@@ -343,9 +483,9 @@ Polish (Phase 10) ← Requires all user stories complete
 
 **Parallel Opportunities**:
 - After Foundation: US1, US2 can start simultaneously
-- After US1: US3, US4, US5 can proceed in parallel
+- After US1: US3, US4, US5, US6 can proceed in parallel
 - Throughout: Test tasks can run in parallel with implementation tasks (TDD cycle)
-- Phase 9 (Remaining Widgets) can overlap with US3-US5
+- Phase 9 (Remaining Widgets) can overlap with US3-US6
 
 ---
 
@@ -371,10 +511,13 @@ Both tracks can proceed independently as they work on different files.
 **Parallel Track B** (US4):
 - T072-T090 (variants)
 
-**Parallel Track C** (US5):
+**Parallel Track C** (US6):
+- T151-T174 (extended layouts)
+
+**Parallel Track D** (US5):
 - T091-T104 (charts)
 
-All three tracks work on different widget categories and can proceed simultaneously.
+All four tracks work on different widget categories and layout families, can proceed simultaneously.
 
 ---
 
@@ -392,19 +535,102 @@ All three tracks work on different widget categories and can proceed simultaneou
 
 1. **Milestone 1**: MVP (Phases 1-4) - Basic rendering with validation
 2. **Milestone 2**: Add CLI (Phase 8) - Command-line usability
-3. **Milestone 3**: Add Parameters & Variants (US3, US4) - Customization & flexibility
-4. **Milestone 4**: Add Charts (US5) - Data visualization
-5. **Milestone 5**: Complete Widget Library (Phase 9) - Full feature set
-6. **Milestone 6**: Polish (Phase 10) - Production ready
+3. **Milestone 3**: Add Parameters & Variants (US3, US4, US6) - Customization & flexibility
+4. **Milestone 4**: Add Extended Layouts (US6) - Creative & specialized compositions
+5. **Milestone 5**: Add Charts (US5) - Data visualization
+6. **Milestone 6**: Complete Widget Library (Phase 9) - Full feature set
+7. **Milestone 7**: Polish (Phase 10) - Production ready
+
+---
+
+## Auto-Layout Architecture Summary
+
+**⚠️ CRITICAL DESIGN PRINCIPLE**: The LayoutEngine performs explicit auto-layout calculation and is **renderer-agnostic**. It does NOT defer positioning to CSS Grid or any rendering technology.
+
+### Two-Phase Auto-Layout Process
+
+**Phase 1: Measurement**
+- Each widget implements `measure(style, max_width, max_height) → MeasuredSize`
+- Widgets calculate required space based on content (text length, font size, padding)
+- Example: TypeDisplayWidget measures text with font metrics
+- Example: DataBigNumWidget measures number + label dimensions
+- Example: MediaFrameWidget returns fixed image dimensions
+
+**Phase 2: Layout Calculation**
+- Each layout strategy implements `calculate_layout(widgets, context) → Dict[role, Bounds]`
+- Strategies calculate absolute (x, y, width, height) positions
+- Algorithm types:
+  - **Fixed Grid** (Bento.Standard): Equal cell divisions
+  - **Proportional Split** (Bento.HeroLeft, Cinematic): Percentage-based
+  - **Content-Driven** (Swiss.Asymmetry): Based on measured widget sizes
+  - **Full Bleed** (Swiss.Poster): Single widget fills canvas
+
+**LayoutEngine Orchestration**
+```python
+def calculate():
+    # 1. Measure all widgets
+    for widget in widgets:
+        style = resolve_style(widget.type)
+        measured_size = widget.measure(style, max_width, max_height)
+    
+    # 2. Create layout context
+    context = LayoutContext(
+        canvas_width, canvas_height,
+        margin_x, margin_y, gutter,
+        header_height, footer_height
+    )
+    
+    # 3. Call strategy's layout algorithm
+    bounds_map = strategy.calculate_layout(widgets, context)
+    
+    # 4. Create assignments with absolute bounds
+    assignments = [
+        WidgetAssignment(
+            role=role,
+            widget=widget,
+            slot=slot,
+            bounds=bounds  # Absolute position
+        )
+    ]
+```
+
+**Rendering**
+- Templates receive `bounds` with absolute positions
+- Use `position: absolute` with `left`, `top`, `width`, `height`
+- NO CSS Grid, NO flexbox for positioning (only for widget internals)
+
+### Key Files
+
+**Foundation**:
+- `src/common/bounds.py` - Bounds(x, y, width, height) model
+- `src/common/measurement.py` - MeasuredSize, WidgetMeasurement utilities
+- `src/layout/layout_protocol.py` - LayoutContext, LayoutStrategy protocol
+- `src/common/spacing_utils.py` - Parse "40px", "15%" to pixels
+
+**Widgets** (must implement `measure()`):
+- `src/widgets/typography.py` - 5 text widgets
+- `src/widgets/data.py` - 3 data widgets
+- `src/widgets/media.py` - 3 media widgets (future)
+- `src/widgets/charts.py` - 5 chart widgets (future)
+
+**Layout Strategies** (must implement `calculate_layout()`):
+- `src/layout/strategies/bento.py` - 4 variants
+- `src/layout/strategies/swiss.py` - 3 variants
+- `src/layout/strategies/cinematic.py` - 3 variants
+
+**Orchestration**:
+- `src/layout/layout_engine.py` - Two-phase auto-layout orchestrator
+- `src/render/html_renderer.py` - Applies bounds to templates
+- `src/render/templates/` - Use absolute positioning
 
 ---
 
 ## Task Summary
 
-- **Total Tasks**: 150
-- **Test Tasks**: 54 (36%)
-- **Implementation Tasks**: 96 (64%)
-- **Parallelizable**: 102 tasks marked [P]
+- **Total Tasks**: ~200 (added ~25 auto-layout tasks + ~24 extended layout tasks)
+- **Test Tasks**: ~79 (added measurement/layout algorithm tests + extended layout tests)
+- **Implementation Tasks**: ~121
+- **Parallelizable**: ~115 tasks marked [P]
 - **User Story Breakdown**:
   - Setup: 9 tasks
   - Foundation: 15 tasks (10 blocking)
@@ -412,10 +638,17 @@ All three tracks work on different widget categories and can proceed simultaneou
   - US2 (P1): 10 tasks
   - US3 (P2): 12 tasks
   - US4 (P2): 19 tasks
+  - US6 (P2): 24 tasks (NEW - Extended Layouts)
   - US5 (P3): 14 tasks
   - CLI: 13 tasks
   - Remaining Widgets: 16 tasks
   - Polish: 17 tasks
+
+**Extended Layout Families (US6)**:
+- Edit Family: 3 strategies (Overlap_Left, Magazine_Collage, Staggered)
+- Data.KPI Family: 1 strategy (KPI_Row)
+- Focus Family: 2 strategies (Solar_System, Offset_Title)
+- Total: 6 new layout strategies with specialized positioning algorithms
 
 ---
 

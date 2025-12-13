@@ -1,5 +1,43 @@
-{# Media widgets rendering (placeholder for US8) #}
-<div class="widget-media">
-    <p>Media widget: {{ widget_type }}</p>
-    <p>Atom ID: {{ widget_data.atom_id }}</p>
+{# Media widgets - Frame, Code, Icon #}
+{%- if widget_data.widget_type == "Media.Frame" -%}
+<div class="widget-media-frame" data-fit="{{ widget_data.fit }}">
+    <img 
+        src="{{ widget_data.src }}" 
+        alt="{{ widget_data.alt }}"
+        style="
+            width: 100%;
+            height: 100%;
+            object-fit: {{ widget_data.fit }};
+            {%- if widget_data.aspect_ratio %}
+            aspect-ratio: {{ widget_data.aspect_ratio }};
+            {%- endif %}
+        "
+    />
 </div>
+
+{%- elif widget_data.widget_type == "Media.Code" -%}
+<div class="widget-media-code">
+    <pre><code 
+        {%- if widget_data.language %} class="language-{{ widget_data.language }}"{% endif -%}
+        {%- if widget_data.show_line_numbers %} data-line-numbers="true"{% endif -%}
+        {%- if widget_data.highlight_lines %} data-line="{{ widget_data.highlight_lines }}"{% endif -%}
+    >{{ widget_data.code }}</code></pre>
+</div>
+
+{%- elif widget_data.widget_type == "Media.Icon" -%}
+<div class="widget-media-icon" data-size="{{ widget_data.size }}">
+    <div class="icon-symbol" data-icon="{{ widget_data.icon }}">
+        {# Icon implementation would use icon font or SVG #}
+        <span class="icon-placeholder">{{ widget_data.icon }}</span>
+    </div>
+    {%- if widget_data.label %}
+    <div class="icon-label">{{ widget_data.label }}</div>
+    {%- endif %}
+</div>
+
+{%- else -%}
+<div class="widget-media-unknown">
+    <p>Unknown media widget: {{ widget_data.widget_type }}</p>
+</div>
+{%- endif -%}
+

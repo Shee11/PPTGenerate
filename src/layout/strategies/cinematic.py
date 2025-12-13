@@ -1,8 +1,10 @@
-"""Cinematic layout strategies."""
-from typing import List
+"""Cinematic layout strategies with auto-layout algorithms."""
+from typing import List, Dict
 
+from src.common.bounds import Bounds
 from src.common.size_class import SizeClass
 from src.common.slot import Slot
+from src.layout.layout_protocol import LayoutContext, WidgetLayoutInput
 
 
 class CinematicSplit5050Strategy:
@@ -24,6 +26,38 @@ class CinematicSplit5050Strategy:
             Slot(role="left", size=SizeClass.L),
             Slot(role="right", size=SizeClass.L),
         ]
+    
+    @staticmethod
+    def calculate_layout(
+        widgets: List[WidgetLayoutInput],
+        context: LayoutContext,
+    ) -> Dict[str, Bounds]:
+        """Calculate 50/50 split layout.
+        
+        Two equal panels side by side.
+        """
+        bounds_map: Dict[str, Bounds] = {}
+        
+        # Split width equally with gutter
+        panel_width = (context.content_width - context.gutter) / 2
+        
+        for widget in widgets:
+            if widget.role == "left":
+                bounds_map["left"] = Bounds(
+                    x=context.content_x,
+                    y=context.content_y,
+                    width=panel_width,
+                    height=context.content_height
+                )
+            elif widget.role == "right":
+                bounds_map["right"] = Bounds(
+                    x=context.content_x + panel_width + context.gutter,
+                    y=context.content_y,
+                    width=panel_width,
+                    height=context.content_height
+                )
+        
+        return bounds_map
 
 
 class CinematicFullBleedStrategy:
@@ -44,6 +78,29 @@ class CinematicFullBleedStrategy:
         return [
             Slot(role="stage", size=SizeClass.XL),
         ]
+    
+    @staticmethod
+    def calculate_layout(
+        widgets: List[WidgetLayoutInput],
+        context: LayoutContext,
+    ) -> Dict[str, Bounds]:
+        """Calculate full-bleed layout.
+        
+        Single widget fills entire content area.
+        """
+        bounds_map: Dict[str, Bounds] = {}
+        
+        for widget in widgets:
+            if widget.role == "stage":
+                # Full content area
+                bounds_map["stage"] = Bounds(
+                    x=context.content_x,
+                    y=context.content_y,
+                    width=context.content_width,
+                    height=context.content_height
+                )
+        
+        return bounds_map
 
 
 class CinematicSplit3070Strategy:
@@ -65,3 +122,36 @@ class CinematicSplit3070Strategy:
             Slot(role="sidebar", size=SizeClass.M),
             Slot(role="stage", size=SizeClass.XL),
         ]
+    
+    @staticmethod
+    def calculate_layout(
+        widgets: List[WidgetLayoutInput],
+        context: LayoutContext,
+    ) -> Dict[str, Bounds]:
+        """Calculate 30/70 split layout.
+        
+        Sidebar (30%) on left, stage (70%) on right.
+        """
+        bounds_map: Dict[str, Bounds] = {}
+        
+        # Split width 30/70 with gutter
+        sidebar_width = (context.content_width * 0.3) - (context.gutter / 2)
+        stage_width = (context.content_width * 0.7) - (context.gutter / 2)
+        
+        for widget in widgets:
+            if widget.role == "sidebar":
+                bounds_map["sidebar"] = Bounds(
+                    x=context.content_x,
+                    y=context.content_y,
+                    width=sidebar_width,
+                    height=context.content_height
+                )
+            elif widget.role == "stage":
+                bounds_map["stage"] = Bounds(
+                    x=context.content_x + sidebar_width + context.gutter,
+                    y=context.content_y,
+                    width=stage_width,
+                    height=context.content_height
+                )
+        
+        return bounds_map
