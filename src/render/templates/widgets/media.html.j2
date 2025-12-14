@@ -1,6 +1,6 @@
 {# Media widgets - Frame, Code, Icon #}
 {%- if widget_data.widget_type == "Media.Frame" -%}
-<div class="widget-media-frame" data-fit="{{ widget_data.fit }}">
+<div class="widget-media-frame {{ preset_classes(preset) }}" data-fit="{{ widget_data.fit }}">
     <img 
         src="{{ widget_data.src }}" 
         alt="{{ widget_data.alt }}"
@@ -16,7 +16,7 @@
 </div>
 
 {%- elif widget_data.widget_type == "Media.Code" -%}
-<div class="widget-media-code">
+<div class="widget-media-code {{ preset_classes(preset) }}">
     <pre><code 
         {%- if widget_data.language %} class="language-{{ widget_data.language }}"{% endif -%}
         {%- if widget_data.show_line_numbers %} data-line-numbers="true"{% endif -%}
@@ -25,7 +25,7 @@
 </div>
 
 {%- elif widget_data.widget_type == "Media.Icon" -%}
-<div class="widget-media-icon" data-size="{{ widget_data.size }}">
+<div class="widget-media-icon {{ preset_classes(preset) }}" data-size="{{ widget_data.size }}">
     <div class="icon-symbol" data-icon="{{ widget_data.icon }}">
         {# Icon implementation would use icon font or SVG #}
         <span class="icon-placeholder">{{ widget_data.icon }}</span>

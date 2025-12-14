@@ -591,6 +591,145 @@ Rendering Pipeline
 - **Widget**: Parameters frozen after instantiation
 - **Applied Styles**: Computed once per widget, cached during rendering
 
+## Widget Style Presets (Added 2025-12-14)
+
+### WidgetPreset Entity
+
+**Description**: Optional visual styling configuration for a widget
+
+**Fields**:
+- `surface` (str, optional): Background/container style variant
+  - Valid values: `Flat`, `Elevated`, `Outline`, `Glass`, `Sunken`, `NeoBrutal`
+- `shape` (str, optional): Border radius variant
+  - Valid values: `Sharp`, `Rounded`, `Curve`, `Pill`, `Squircle`, `Organic`
+- `fill` (str, optional): Interior color/pattern variant
+  - Valid values: `Solid_Brand`, `Subtle`, `Gradient_Linear`, `Gradient_Mesh`, `Pattern_Dot`, `Noise`
+- `effect` (str, optional): Visual effect variant
+  - Valid values: `Duotone`, `Glitch`, `Glow`, `Tape`
+
+**Validation Rules**:
+- All fields optional (use widget defaults if not specified)
+- No validation at model level (templates handle unknown variants gracefully)
+- String values for JSON compatibility
+- Embedded as `Dict[str, str]` in widget configuration
+
+**Relationships**:
+- Embedded in widget configuration (Slide.widgets[role])
+- Passed through to RenderableLayout.slots
+- Consumed by HTMLRenderer templates
+
+**State Transitions**: None (immutable configuration)
+
+### Preset Variant Definitions
+
+**Surface Variants**:
+
+| ID | Visual Definition | CSS Properties |
+|----|------------------|----------------|
+| `Flat` | Minimal, no shadow, no border | `background: var(--bg); box-shadow: none; border: none;` |
+| `Elevated` | White + drop shadow | `background: white; box-shadow: 0 4px 12px rgba(0,0,0,0.1);` |
+| `Outline` | Transparent + border | `background: transparent; border: 2px solid var(--border);` |
+| `Glass` | Frosted glass | `backdrop-filter: blur(10px); background: rgba(255,255,255,0.1);` |
+| `Sunken` | Recessed | `background: #f5f5f5; box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);` |
+| `NeoBrutal` | Bold border + shadow | `border: 3px solid black; box-shadow: 6px 6px 0 black;` |
+
+**Shape Variants**:
+
+| ID | Visual Definition | CSS Properties |
+|----|------------------|----------------|
+| `Sharp` | 0px radius | `border-radius: 0;` |
+| `Rounded` | 8-16px radius | `border-radius: 12px;` |
+| `Curve` | 24-32px radius | `border-radius: 28px;` |
+| `Pill` | Full radius | `border-radius: 9999px;` |
+| `Squircle` | Super-ellipse | Custom SVG clip-path |
+| `Organic` | Irregular shape | Custom SVG clip-path |
+
+**Fill Variants**:
+
+| ID | Visual Definition | CSS Properties |
+|----|------------------|----------------|
+| `Solid_Brand` | Brand primary | `background: var(--color-primary); color: white;` |
+| `Subtle` | Brand tint | `background: rgba(var(--color-primary-rgb), 0.05);` |
+| `Gradient_Linear` | Diagonal gradient | `background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));` |
+| `Gradient_Mesh` | Mesh gradient | Complex CSS gradient with multiple colors |
+| `Pattern_Dot` | Dot pattern | `background-image: radial-gradient(circle, #ddd 1px, transparent 1px);` |
+| `Noise` | Grain texture | `background-image: url(data:image/svg+xml;base64,...);` |
+
+**Effect Variants**:
+
+| ID | Visual Definition | CSS Properties |
+|----|------------------|----------------|
+| `Duotone` | Color filter | `filter: grayscale(1) sepia(1) hue-rotate(var(--hue));` |
+| `Glitch` | RGB separation | Pseudo-elements with `transform: translate()` and `mix-blend-mode` |
+| `Glow` | Outer glow | `box-shadow: 0 0 20px var(--color-primary);` |
+| `Tape` | Tape overlay | Pseudo-element with tape image/gradient on top |
+
+### Widget Configuration Update
+
+**Added Field to Widget Config**:
+```python
+{
+  "type": "Type.Heading",
+  "parameters": {"text": "Network Performance Metrics", "level": 2},
+  "preset": {  # NEW FIELD
+    "surface": "Elevated",
+    "shape": "Rounded",
+    "fill": "Gradient_Linear",
+    "effect": "Glow"
+  }
+}
+```
+
+### SlotAssignment Update
+
+**Added Field**:
+```python
+preset: Dict[str, str] | None = Field(
+    default=None,
+    description="Widget visual presets passed from slide configuration"
+)
+```
+
+### Template Context Update
+
+**Added Variable** (passed to Jinja2):
+```python
+{
+    "preset": {
+        "surface": "Elevated",  # or None
+        "shape": "Rounded",     # or None
+        "fill": "Subtle",       # or None
+        "effect": None          # or specific effect
+    }
+}
+```
+
+**Template Usage**:
+```html
+<div class="widget 
+            preset-surface-{{ preset.surface|lower|default('flat') }}
+            preset-shape-{{ preset.shape|lower|default('rounded') }}
+            preset-fill-{{ preset.fill|lower|default('solid_brand') }}
+            preset-effect-{{ preset.effect|lower|default('none') }}">
+  <!-- widget content -->
+</div>
+```
+
+### Default Presets by Widget Type
+
+| Widget | Surface | Shape | Fill | Effect |
+|--------|---------|-------|------|--------|
+| Type.Display | Flat | Sharp | - | - |
+| Type.Heading | Flat | Rounded | - | - |
+| Type.Body | Flat | Rounded | - | - |
+| Type.Quote | Elevated | Curve | Subtle | - |
+| Data.BigNum | Flat | Pill | Solid_Brand | - |
+| Data.Trend | Outline | Rounded | - | - |
+| Data.Progress | Sunken | Pill | Gradient_Linear | - |
+| Media.Frame | Flat | Rounded | - | - |
+
+**Note**: `-` means no default (transparent/none)
+
 ## Example Data Flow
 
 ```python

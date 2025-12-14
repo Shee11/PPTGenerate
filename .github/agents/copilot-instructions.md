@@ -3,6 +3,8 @@
 Auto-generated from all feature plans. Last updated: 2025-12-11
 
 ## Active Technologies
+- Python 3.11 + Pydantic 2.x (for data models), Jinja2 (for templates) (001-uce-render)
+- N/A (stateless rendering) (001-uce-render)
 
 - Python 3.11+ + Pydantic 2.x, Jinja2 3.x, Click 8.x (001-uce-render)
 
@@ -30,6 +32,7 @@ pytest; ruff check src; mypy src
 Python 3.11+: Follow PEP 8, use type hints, prefer Pydantic for validation
 
 ## Recent Changes
+- 001-uce-render: Added Python 3.11 + Pydantic 2.x (for data models), Jinja2 (for templates)
 
 - 001-uce-render: Added Python 3.11+ with Pydantic 2.x (validation), Jinja2 3.x (templating), Click 8.x (CLI)
 

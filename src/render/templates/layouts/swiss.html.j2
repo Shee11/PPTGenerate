@@ -54,7 +54,7 @@
     {% if strategy == "Swiss.Poster" %}
             {% set widget = widgets.get('headline') %}
             {% if widget %}
-            <div class="widget" data-role="headline">
+            <div class="widget {% if widget.preset %}{% include 'widgets/_preset_classes.html.j2' %}{% endif %}" data-role="headline">
                 {% include 'widgets/_widget_content.html.j2' %}
             </div>
             {% else %}
@@ -65,7 +65,7 @@
         {% elif strategy == "Swiss.Asymmetry" %}
             {% set widget = widgets.get('content') %}
             {% if widget %}
-            <div class="widget" data-role="content">
+            <div class="widget {% if widget.preset %}{% include 'widgets/_preset_classes.html.j2' %}{% endif %}" data-role="content">
                 {% include 'widgets/_widget_content.html.j2' %}
             </div>
             {% else %}
@@ -76,7 +76,7 @@
         {% elif strategy == "Swiss.SplitTypo" %}
             {% set headline_widget = widgets.get('headline') %}
             {% if headline_widget %}
-            <div class="widget" data-role="headline">
+            <div class="widget {% if headline_widget.preset %}{% set widget = headline_widget %}{% include 'widgets/_preset_classes.html.j2' %}{% endif %}" data-role="headline">
                 {% set widget = headline_widget %}
                 {% include 'widgets/_widget_content.html.j2' %}
             </div>
@@ -88,7 +88,7 @@
             
             {% set body_widget = widgets.get('body') %}
             {% if body_widget %}
-            <div class="widget" data-role="body">
+            <div class="widget {% if body_widget.preset %}{% set widget = body_widget %}{% include 'widgets/_preset_classes.html.j2' %}{% endif %}" data-role="body">
                 {% set widget = body_widget %}
                 {% include 'widgets/_widget_content.html.j2' %}
             </div>

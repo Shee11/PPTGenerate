@@ -92,6 +92,7 @@ class HTMLRenderer:
                 "applied_style": assignment.applied_style,  # Pass resolved styles
                 "bounds": assignment.bounds,  # Keep absolute bounds for reference
                 "relative_bounds": relative_bounds,  # Add relative bounds for positioning
+                "preset": assignment.preset,  # Pass preset for template styling
             }
 
         # Prepare header/footer widget data

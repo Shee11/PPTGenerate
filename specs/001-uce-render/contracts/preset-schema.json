@@ -1,0 +1,72 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Widget Style Preset Schema",
+  "description": "JSON schema for widget style preset configuration",
+  "type": "object",
+  "properties": {
+    "surface": {
+      "type": "string",
+      "enum": [
+        "Flat",
+        "Elevated",
+        "Outline",
+        "Glass",
+        "Sunken",
+        "NeoBrutal"
+      ],
+      "description": "Background/container style variant"
+    },
+    "shape": {
+      "type": "string",
+      "enum": [
+        "Sharp",
+        "Rounded",
+        "Curve",
+        "Pill",
+        "Squircle",
+        "Organic"
+      ],
+      "description": "Border radius variant"
+    },
+    "fill": {
+      "type": "string",
+      "enum": [
+        "Solid_Brand",
+        "Subtle",
+        "Gradient_Linear",
+        "Gradient_Mesh",
+        "Pattern_Dot",
+        "Noise"
+      ],
+      "description": "Interior color/pattern variant"
+    },
+    "effect": {
+      "type": "string",
+      "enum": [
+        "Duotone",
+        "Glitch",
+        "Glow",
+        "Tape"
+      ],
+      "description": "Visual effect variant"
+    }
+  },
+  "additionalProperties": false,
+  "examples": [
+    {
+      "surface": "Elevated",
+      "shape": "Rounded"
+    },
+    {
+      "surface": "Glass",
+      "shape": "Curve",
+      "fill": "Gradient_Linear",
+      "effect": "Glow"
+    },
+    {
+      "surface": "NeoBrutal",
+      "shape": "Sharp",
+      "fill": "Solid_Brand"
+    }
+  ]
+}

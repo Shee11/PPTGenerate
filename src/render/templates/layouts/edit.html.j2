@@ -15,13 +15,13 @@
 {% block layout_content %}
 <div class="edit-layout">
     {% for slot_name, widget_info in widgets.items() %}
-    <div class="edit-widget widget" 
+    {% set widget = widget_info %}
+    <div class="edit-widget widget {% if widget and widget.preset %}{% include 'widgets/_preset_classes.html.j2' %}{% endif %}" 
          data-role="{{ slot_name }}"
          style="left: {{ widget_info.relative_bounds.x }}px; 
                 top: {{ widget_info.relative_bounds.y }}px; 
                 width: {{ widget_info.relative_bounds.width }}px; 
                 height: {{ widget_info.relative_bounds.height }}px;">
-        {% set widget = widget_info %}
         {% include 'widgets/_widget_content.html.j2' %}
     </div>
     {% endfor %}

@@ -300,6 +300,101 @@ Layouts + Styles → LayoutEngine → RenderableLayout → HTMLRenderer → HTML
 - File paths sanitized (no directory traversal)
 - External URLs validated if Media.Frame supports remote images
 
+## Widget Style Presets (Added 2025-12-14)
+
+### Research Question
+How should widgets support inline visual customization without affecting layout calculations?
+
+### Decision: Pass-through Preset System
+
+**Architecture**: Optional `preset` field in widget configuration with 4 categories:
+
+1. **Surface** (6 variants): Background/container style
+   - `Flat`: Minimal, no shadow, no border
+   - `Elevated`: White + drop shadow (floating feel)
+   - `Outline`: Transparent + 1-2px border
+   - `Glass`: Frosted glass (backdrop blur + semi-transparent)
+   - `Sunken`: Light gray + inner shadow
+   - `NeoBrutal`: Black thick border + hard shadow
+
+2. **Shape** (6 variants): Border radius
+   - `Sharp`: 0px (corners)
+   - `Rounded`: 8-16px (standard UI)
+   - `Curve`: 24-32px (friendly)
+   - `Pill`: Full radius (capsule)
+   - `Squircle`: Super-ellipse (iOS icon)
+   - `Organic`: Irregular SVG mask
+
+3. **Fill** (6 variants): Interior color/pattern
+   - `Solid_Brand`: Brand primary fill, white text
+   - `Subtle`: Brand tint (5% opacity)
+   - `Gradient_Linear`: Diagonal gradient
+   - `Gradient_Mesh`: Aurora mesh effect
+   - `Pattern_Dot`: Dot pattern
+   - `Noise`: Grain texture
+
+4. **Effect** (4 variants): Visual effects
+   - `Duotone`: Brand color + black filter
+   - `Glitch`: RGB separation
+   - `Glow`: Outer glow (neon)
+   - `Tape`: Tape sticker overlay
+
+**JSON Example**:
+```json
+{
+  "type": "Type.Heading",
+  "parameters": {"text": "Title", "level": 2},
+  "preset": {
+    "surface": "Elevated",
+    "shape": "Rounded",
+    "fill": "Gradient_Linear",
+    "effect": "Glow"
+  }
+}
+```
+
+**Rationale**:
+- **Separation of concerns**: Presets affect styling only, not layout
+- **Pass-through pattern**: Models store values, templates apply effects
+- **Optional field**: Maintains backward compatibility
+- **CSS-based**: Performant, themeable, no JavaScript required
+
+**Implementation Flow**:
+```
+Slide.widgets[role].preset
+  ↓
+LayoutEngine (pass through)
+  ↓
+RenderableLayout.slots
+  ↓
+HTMLRenderer (pass to template)
+  ↓
+Template (apply CSS classes)
+  ↓
+<div class="preset-surface-elevated preset-shape-rounded ...">
+```
+
+**Template Pattern**:
+```html
+<div class="widget 
+            preset-surface-{{ preset.surface|lower|default('flat') }}
+            preset-shape-{{ preset.shape|lower|default('rounded') }}
+            preset-fill-{{ preset.fill|lower|default('solid_brand') }}
+            preset-effect-{{ preset.effect|lower|default('none') }}">
+  <!-- widget content -->
+</div>
+```
+
+**Alternatives Rejected**:
+- Widget-level validation: Too complex, presets may be widget-specific
+- Preset enums: Less flexible than pass-through strings
+- Inline styles: Less performant than CSS classes
+
+**Testing Strategy**:
+- Unit tests: Verify preset pass-through in data pipeline
+- Integration tests: Verify CSS classes in rendered HTML
+- Visual tests: Manual verification of preset combinations
+
 ## Open Questions for Implementation Phase
 
 None - all critical decisions resolved. Ready to proceed to Phase 1 design.

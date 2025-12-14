@@ -1,0 +1,5 @@
+{# Generate preset CSS classes from widget.preset dict #}
+{%- if widget.preset.surface %}preset-surface-{{ widget.preset.surface }} {% endif -%}
+{%- if widget.preset.shape %}preset-shape-{{ widget.preset.shape }} {% endif -%}
+{%- if widget.preset.fill %}preset-fill-{{ widget.preset.fill }} {% endif -%}
+{%- if widget.preset.effect %}preset-effect-{{ widget.preset.effect }}{% endif -%}

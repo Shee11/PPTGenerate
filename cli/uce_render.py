@@ -1,5 +1,6 @@
 """CLI for UCE Render - uce-render command."""
 import json
+import shutil
 import sys
 from pathlib import Path
 from typing import Optional
@@ -72,6 +73,11 @@ from src.render.html_renderer import HTMLRenderer
     is_flag=True,
     help='List all available layout strategies'
 )
+@click.option(
+    '--list-presets',
+    is_flag=True,
+    help='List all available widget preset variants'
+)
 def cli(
     config_file: Optional[Path],
     output: Optional[Path],
@@ -84,6 +90,7 @@ def cli(
     list_styles: bool,
     list_widgets: bool,
     list_strategies: bool,
+    list_presets: bool,
 ) -> None:
     """Render layouts using the Universal Content Engine.
     
@@ -108,6 +115,7 @@ def cli(
         uce-render --list-styles
         uce-render --list-widgets
         uce-render --list-strategies
+        uce-render --list-presets
         uce-render --list-themes --format json
     """
     try:
@@ -218,6 +226,105 @@ def cli(
                 
                 click.echo("\n" + "=" * 80)
                 click.echo(f"Total: {len(widgets)} widgets\n")
+            sys.exit(0)
+        
+        if list_presets:
+            presets = {
+                "categories": [
+                    {
+                        "name": "Surface",
+                        "description": "Visual depth and layering effects",
+                        "variants": [
+                            {"name": "Flat", "description": "No elevation, flat appearance"},
+                            {"name": "Elevated", "description": "Subtle shadow, raised appearance"},
+                            {"name": "Outline", "description": "Transparent with border"},
+                            {"name": "Glass", "description": "Frosted glass effect with blur"},
+                            {"name": "Sunken", "description": "Inset appearance, pressed look"},
+                            {"name": "NeoBrutal", "description": "Bold border with offset shadow"}
+                        ]
+                    },
+                    {
+                        "name": "Shape",
+                        "description": "Border radius and corner styles",
+                        "variants": [
+                            {"name": "Sharp", "description": "No border radius, 90° corners"},
+                            {"name": "Rounded", "description": "8px border radius"},
+                            {"name": "Curve", "description": "16px border radius"},
+                            {"name": "Pill", "description": "Fully rounded ends"},
+                            {"name": "Squircle", "description": "Smooth squircle shape"},
+                            {"name": "Organic", "description": "Irregular organic shape"}
+                        ]
+                    },
+                    {
+                        "name": "Fill",
+                        "description": "Background patterns and fills",
+                        "variants": [
+                            {"name": "Solid_Brand", "description": "Solid brand color background"},
+                            {"name": "Subtle", "description": "Light neutral background"},
+                            {"name": "Gradient_Linear", "description": "Linear gradient (primary to secondary)"},
+                            {"name": "Gradient_Mesh", "description": "Radial mesh gradient"},
+                            {"name": "Pattern_Dot", "description": "Dotted pattern background"},
+                            {"name": "Noise", "description": "Subtle noise texture overlay"}
+                        ]
+                    },
+                    {
+                        "name": "Effect",
+                        "description": "Visual treatments and filters",
+                        "variants": [
+                            {"name": "Duotone", "description": "Two-tone color filter"},
+                            {"name": "Glitch", "description": "Digital glitch animation effect"},
+                            {"name": "Glow", "description": "Colored glow/halo effect"},
+                            {"name": "Tape", "description": "Washi tape decoration on top"}
+                        ]
+                    }
+                ],
+                "usage": {
+                    "example": {
+                        "type": "Type.Display",
+                        "parameters": {"text": "Hello World"},
+                        "preset": {
+                            "surface": "Elevated",
+                            "shape": "Rounded",
+                            "fill": "Gradient_Linear",
+                            "effect": "Glow"
+                        }
+                    },
+                    "notes": [
+                        "All preset fields are optional",
+                        "Presets are applied via CSS classes",
+                        "Multiple categories can be combined",
+                        "Presets work with all widget types"
+                    ]
+                },
+                "total_variants": 22
+            }
+            
+            if format == 'json':
+                click.echo(json.dumps(presets, indent=2))
+            else:
+                click.echo("\nAvailable Widget Presets:")
+                click.echo("=" * 80)
+                
+                for category in presets['categories']:
+                    click.echo(f"\n{category['name']} Presets ({len(category['variants'])} variants)")
+                    click.echo(f"  {category['description']}")
+                    click.echo("  " + "-" * 76)
+                    for variant in category['variants']:
+                        click.echo(f"    • {variant['name']:<20} - {variant['description']}")
+                
+                click.echo("\n" + "=" * 80)
+                click.echo(f"Total: {presets['total_variants']} preset variants across 4 categories\n")
+                
+                click.echo("\nUsage Example:")
+                click.echo("=" * 80)
+                example = presets['usage']['example']
+                click.echo(json.dumps(example, indent=2))
+                
+                click.echo("\n" + "=" * 80)
+                click.echo("\nNotes:")
+                for note in presets['usage']['notes']:
+                    click.echo(f"  • {note}")
+                click.echo("\n" + "=" * 80 + "\n")
             sys.exit(0)
         
         if list_strategies:
@@ -340,7 +447,27 @@ def cli(
             if output:
                 if verbose:
                     click.echo(f"Writing multi-slide HTML to {output}", err=True)
+                
+                # Create output directory if it doesn't exist
+                output.parent.mkdir(parents=True, exist_ok=True)
+                
                 output.write_text(html_output, encoding='utf-8')
+                
+                # Copy static CSS files to output directory
+                output_dir = output.parent
+                static_dir = output_dir / 'static'
+                static_dir.mkdir(exist_ok=True)
+                
+                # Copy presets.css from src/render/static/ to output/static/
+                source_css = Path(__file__).parent.parent / 'src' / 'render' / 'static' / 'presets.css'
+                dest_css = static_dir / 'presets.css'
+                
+                if source_css.exists():
+                    shutil.copy2(source_css, dest_css)
+                    if verbose:
+                        click.echo(f"Copied {source_css} -> {dest_css}", err=True)
+                else:
+                    click.echo(f"Warning: presets.css not found at {source_css}", err=True)
             else:
                 click.echo(html_output)
 

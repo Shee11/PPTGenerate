@@ -263,7 +263,8 @@ class LayoutEngine:
             widget_instances[role] = {
                 "widget": widget,
                 "slot": slot,
-                "resolved_style": resolved_style
+                "resolved_style": resolved_style,
+                "preset": widget_config.get("preset")  # Extract preset for pass-through
             }
 
         # ===== CREATE LAYOUT CONTEXT =====
@@ -308,7 +309,8 @@ class LayoutEngine:
                 widget=instance_data["widget"],
                 slot=instance_data["slot"],
                 applied_style=instance_data["resolved_style"],
-                bounds=bounds  # Absolute position from auto-layout
+                bounds=bounds,  # Absolute position from auto-layout
+                preset=instance_data["preset"]  # Pass through preset for template rendering
             ))
 
         # Create renderable layout with theme-derived properties

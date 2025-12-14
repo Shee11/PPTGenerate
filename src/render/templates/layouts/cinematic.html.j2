@@ -80,7 +80,7 @@
             </div>
         {% elif strategy == "Cinematic.FullBleed" %}
             {% set stage_widget = widgets.get('stage') %}
-            <div class="widget" data-role="stage">
+            <div class="widget {% if stage_widget and stage_widget.preset %}{% set widget = stage_widget %}{% include 'widgets/_preset_classes.html.j2' %}{% endif %}" data-role="stage">
                 {% set widget = stage_widget %}
                 {% if widget %}
                     {% include 'widgets/_widget_content.html.j2' %}

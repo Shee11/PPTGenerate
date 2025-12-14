@@ -1,0 +1,57 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Widget Configuration with Presets",
+  "description": "JSON schema for widget configuration including optional preset field",
+  "type": "object",
+  "properties": {
+    "type": {
+      "type": "string",
+      "description": "Widget type identifier (e.g., 'Type.Heading', 'Data.BigNum')",
+      "pattern": "^[A-Z][a-zA-Z]+\\.[A-Z][a-zA-Z_]+$"
+    },
+    "parameters": {
+      "type": "object",
+      "description": "Widget-specific parameters (content, configuration)",
+      "additionalProperties": true
+    },
+    "preset": {
+      "$ref": "preset-schema.json",
+      "description": "Optional visual styling presets"
+    }
+  },
+  "required": ["type"],
+  "additionalProperties": false,
+  "examples": [
+    {
+      "type": "Type.Heading",
+      "parameters": {
+        "text": "Network Performance Metrics",
+        "level": 2
+      }
+    },
+    {
+      "type": "Type.Heading",
+      "parameters": {
+        "text": "Network Performance Metrics",
+        "level": 2
+      },
+      "preset": {
+        "surface": "Elevated",
+        "shape": "Rounded"
+      }
+    },
+    {
+      "type": "Data.BigNum",
+      "parameters": {
+        "number": 847,
+        "label": "Active Nodes"
+      },
+      "preset": {
+        "surface": "Glass",
+        "shape": "Pill",
+        "fill": "Gradient_Linear",
+        "effect": "Glow"
+      }
+    }
+  ]
+}

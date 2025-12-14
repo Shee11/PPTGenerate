@@ -2,10 +2,21 @@
 {% set widget_type = widget.type %}
 {% set widget_data = widget.data %}
 {% set applied_style = widget.applied_style %}
+{% set preset = widget.preset %}
 
 {# Helper macro to generate inline style from applied_style dict #}
 {% macro render_style(styles) -%}
 {% for prop, value in styles.items() %}{{ prop }}: {{ value }};{% endfor %}
+{%- endmacro %}
+
+{# Helper macro to generate preset CSS classes #}
+{% macro preset_classes(preset_dict) -%}
+{% if preset_dict %}
+{% if preset_dict.surface %}preset-surface-{{ preset_dict.surface }} {% endif %}
+{% if preset_dict.shape %}preset-shape-{{ preset_dict.shape }} {% endif %}
+{% if preset_dict.fill %}preset-fill-{{ preset_dict.fill }} {% endif %}
+{% if preset_dict.effect %}preset-effect-{{ preset_dict.effect }}{% endif %}
+{% endif %}
 {%- endmacro %}
 
 {% if widget_type.startswith('Type.') %}

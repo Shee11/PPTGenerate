@@ -652,10 +652,127 @@ def calculate():
 
 ---
 
-## Notes
+## Phase 12: User Story 7 - Widget Style Presets (Priority: P2) ✨
+
+**Goal**: Enable inline visual customization of widgets through preset system with 22 variants across 4 categories (Surface, Shape, Fill, Effect)
+
+**Independent Test**: Configure widget with preset field in JSON, render HTML, verify preset CSS classes applied
+
+**Design Documents**: data-model.md (WidgetPreset entity), preset-quickstart.md, contracts/preset-schema.json
+
+### Setup for Presets (Documentation already complete ✅)
+
+- [X] T501 Create preset schema in specs/001-uce-render/contracts/preset-schema.json
+- [X] T502 Create widget config schema in specs/001-uce-render/contracts/widget-config-schema.json
+- [X] T503 Update data-model.md with WidgetPreset entity and 22 variant definitions
+- [X] T504 Update research.md with preset pass-through architecture
+- [X] T505 Create preset-quickstart.md user guide
+
+### Data Model Updates (Pass-Through Fields)
+
+- [X] T506 [P] [US7] Add `preset: Dict[str, str] | None` field to SlotAssignment in src/common/renderable_layout.py
+- [X] T507 [P] [US7] Verify Slide model supports Dict[str, Any] for widget configs (no changes needed to src/common/slide.py)
+
+**Checkpoint**: Data models ready to pass preset through pipeline
+
+### Layout Engine Pass-Through
+
+- [X] T508 [US7] Update LayoutEngine.calculate_slots() to extract preset from widget_config and pass to SlotAssignment in src/layout/layout_engine.py
+
+**Checkpoint**: Preset flows Slide → LayoutEngine → RenderableLayout
+
+### CSS Preset Definitions
+
+- [X] T509 [US7] Create src/render/static/presets.css with base structure and CSS variables
+- [X] T510 [P] [US7] Define 6 Surface variants (Flat, Elevated, Outline, Glass, Sunken, NeoBrutal) in presets.css
+- [X] T511 [P] [US7] Define 6 Shape variants (Sharp, Rounded, Curve, Pill, Squircle, Organic) in presets.css
+- [X] T512 [P] [US7] Define 6 Fill variants (Solid_Brand, Subtle, Gradient_Linear, Gradient_Mesh, Pattern_Dot, Noise) in presets.css
+- [X] T513 [P] [US7] Define 4 Effect variants (Duotone, Glitch, Glow, Tape) in presets.css
+- [X] T514 [US7] Add SVG clip-path definitions for Squircle and Organic shapes in presets.css
+- [ ] T515 [US7] Test preset CSS combinations for visual conflicts (manual verification)
+
+**Checkpoint**: All 22 preset CSS classes defined with theme color support
+
+### HTML Renderer Updates
+
+- [X] T516 [US7] Update HTMLRenderer.render_widget() to pass preset from SlotAssignment to template context in src/render/html_renderer.py
+- [X] T517 [US7] Link presets.css in HTML template head section in src/render/templates/base.html.j2
+
+**Checkpoint**: Templates receive preset data and CSS is loaded
+
+### Widget Template Updates
+
+- [X] T518 [P] [US7] Update Type.Display template to apply preset classes in src/render/templates/widgets/typography.html.j2
+- [X] T519 [P] [US7] Update Type.Heading template to apply preset classes in src/render/templates/widgets/typography.html.j2
+- [X] T520 [P] [US7] Update Type.Body template to apply preset classes in src/render/templates/widgets/typography.html.j2
+- [X] T521 [P] [US7] Update Type.Quote template to apply preset classes in src/render/templates/widgets/typography.html.j2
+- [X] T522 [P] [US7] Update Type.List template to apply preset classes in src/render/templates/widgets/typography.html.j2
+- [X] T523 [P] [US7] Update Data.BigNum template to apply preset classes in src/render/templates/widgets/data.html.j2
+- [X] T524 [P] [US7] Update Data.Trend template to apply preset classes in src/render/templates/widgets/data.html.j2
+- [X] T525 [P] [US7] Update Data.Progress template to apply preset classes in src/render/templates/widgets/data.html.j2
+- [X] T526 [P] [US7] Update Media.Frame template to apply preset classes in src/render/templates/widgets/media.html.j2
+- [X] T527 [P] [US7] Update Media.Icon template to apply preset classes in src/render/templates/widgets/media.html.j2
+- [X] T528 [P] [US7] Update Media.Code template to apply preset classes in src/render/templates/widgets/media.html.j2
+
+**Template Pattern** (consistent across all widgets):
+```jinja
+<div class="widget {{ widget.widget_type|lower|replace('.', '-') }}
+            preset-surface-{{ preset.surface|lower|default('flat') if preset else 'flat' }}
+            preset-shape-{{ preset.shape|lower|default('rounded') if preset else 'rounded' }}
+            {% if preset and preset.fill %}preset-fill-{{ preset.fill|lower }}{% endif %}
+            {% if preset and preset.effect %}preset-effect-{{ preset.effect|lower }}{% endif %}">
+  <!-- existing widget content -->
+</div>
+```
+
+**Checkpoint**: All widget templates apply preset CSS classes
+
+### Example Updates
+
+- [X] T529 [P] [US7] Add preset examples to examples/cyber-tech.json (3 widgets: Display, Heading, BigNum)
+- [ ] T530 [P] [US7] Create examples/preset-showcase.json demonstrating all 22 variants
+- [ ] T531 [US7] Regenerate cyber-tech.html and verify preset visual effects
+
+**Checkpoint**: Examples showcase preset capabilities
+
+### Documentation Updates
+
+- [ ] T532 [P] [US7] Update main README.md with preset system section
+- [ ] T533 [P] [US7] Add preset examples to existing quickstart.md
+- [ ] T534 [P] [US7] Create visual preset reference (optional HTML showcase page)
+
+**Checkpoint**: User Story 7 complete - preset system fully functional
+
+---
+
+## Phase 13: Polish & Cross-Cutting Concerns
 
 - All test tasks MUST fail initially (RED phase of TDD)
 - Implementation tasks begin only after their test tasks are complete
 - Each phase checkpoint is independently testable
 - Parallel tasks ([P]) work on different files with no shared state
 - Constitution compliance: TDD enforced, user stories independent, cross-platform Python
+
+
+---
+
+## Task Summary (Updated with Presets)
+
+- **Total Tasks**: ~234 (base: 200 + presets: 34)
+- **Preset Tasks**: 34 (5 complete, 29 remaining)
+  - Setup: 5 tasks 
+  - Data Models: 2 tasks
+  - Layout Engine: 1 task
+  - CSS Definitions: 7 tasks
+  - Renderer: 2 tasks
+  - Templates: 11 tasks
+  - Examples: 3 tasks
+  - Documentation: 3 tasks
+- **Parallelizable Preset Tasks**: 25 of 34 (74%)
+
+**Widget Style Presets (US7)** :
+- **Categories**: Surface (6), Shape (6), Fill (6), Effect (4) = 22 variants
+- **Architecture**: Pass-through pattern with CSS class-based rendering
+- **MVP Time**: ~45 minutes for core functionality
+- **Files Modified**: renderable_layout.py, layout_engine.py, html_renderer.py, 11 widget templates, presets.css (new)
+

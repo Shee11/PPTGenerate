@@ -28,6 +28,10 @@ class WidgetAssignment(BaseModel):
         description="Resolved CSS properties from Style config and Theme tokens"
     )
     bounds: Bounds = Field(..., description="Absolute position and size on canvas (pixels)")
+    preset: Dict[str, str] | None = Field(
+        default=None,
+        description="Widget visual presets (surface, shape, fill, effect)"
+    )
 
 
 class RenderableLayout(BaseModel):
