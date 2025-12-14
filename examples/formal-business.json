@@ -1,0 +1,160 @@
+{
+  "slides": [
+    {
+      "strategy": "Bento.Standard",
+      "widgets": {
+        "cell_1": {"type": "Type.Display", "parameters": {"text": "Q4 2025 BUSINESS REVIEW"}},
+        "cell_2": {"type": "Type.Heading", "parameters": {"text": "Executive Summary", "level": 2}},
+        "cell_3": {"type": "Type.Body", "parameters": {"text": "Our comprehensive analysis reveals exceptional performance across all key metrics, demonstrating sustained growth momentum and operational excellence throughout the fiscal quarter."}},
+        "cell_4": {"type": "Data.BigNum", "parameters": {"number": 24500000, "label": "Revenue", "format": "currency"}},
+        "cell_5": {"type": "Data.Progress", "parameters": {"percentage": 94, "label": "Target Achievement"}},
+        "cell_6": {"type": "Data.Trend", "parameters": {"value": 18.7, "change": 4.2, "direction": "up", "label": "Growth Rate %"}}
+      },
+      "header": {"type": "Type.Body", "parameters": {"text": "Acme Corporation | Confidential"}},
+      "footer": {"type": "Type.Body", "parameters": {"text": "Fiscal Year 2025 | Page 1"}}
+    },
+    {
+      "strategy": "Swiss.Poster",
+      "widgets": {
+        "headline": {"type": "Type.Display", "parameters": {"text": "EXCELLENCE IN EXECUTION"}}
+      },
+      "header": {"type": "Type.Body", "parameters": {"text": "Acme Corporation | Confidential"}},
+      "footer": {"type": "Type.Body", "parameters": {"text": "Fiscal Year 2025 | Page 2"}}
+    },
+    {
+      "strategy": "Bento.HeroLeft",
+      "widgets": {
+        "hero": {"type": "Type.Quote", "parameters": {"text": "We delivered outstanding results by focusing on operational efficiency, customer satisfaction, and strategic innovation. Our disciplined approach to execution has positioned us for continued success.", "citation": "Jane Anderson, CEO"}},
+        "side_1": {"type": "Data.BigNum", "parameters": {"number": 156000, "label": "Active Customers"}},
+        "side_2": {"type": "Data.Progress", "parameters": {"percentage": 88, "label": "Retention Rate"}},
+        "side_3": {"type": "Data.Trend", "parameters": {"value": 4.8, "change": 0.3, "direction": "up", "label": "NPS Score"}},
+        "side_4": {"type": "Data.BigNum", "parameters": {"number": 97, "label": "Client Satisfaction", "format": "percentage"}}
+      },
+      "header": {"type": "Type.Body", "parameters": {"text": "Acme Corporation | Confidential"}},
+      "footer": {"type": "Type.Body", "parameters": {"text": "Fiscal Year 2025 | Page 3"}}
+    },
+    {
+      "strategy": "Data.KPI_Row",
+      "widgets": {
+        "header": {"type": "Type.Heading", "parameters": {"text": "Financial Performance Metrics", "level": 2}},
+        "kpi_1": {"type": "Data.BigNum", "parameters": {"number": 24.5, "label": "Revenue (M)", "format": "number"}},
+        "kpi_2": {"type": "Data.BigNum", "parameters": {"number": 32, "label": "Margin %", "format": "percentage"}},
+        "kpi_3": {"type": "Data.Trend", "parameters": {"value": 8900000, "change": 12.4, "direction": "up", "label": "EBITDA"}},
+        "kpi_4": {"type": "Data.Progress", "parameters": {"percentage": 103, "label": "Budget vs Actual"}}
+      },
+      "header": {"type": "Type.Body", "parameters": {"text": "Acme Corporation | Confidential"}},
+      "footer": {"type": "Type.Body", "parameters": {"text": "Fiscal Year 2025 | Page 4"}}
+    },
+    {
+      "strategy": "Cinematic.Split_50_50",
+      "widgets": {
+        "left": {"type": "Type.Heading", "parameters": {"text": "Strategic Initiatives", "level": 1}},
+        "right": {"type": "Type.List", "parameters": {"items": ["Digital Transformation: Migrate 80% of operations to cloud infrastructure", "Market Expansion: Enter three new geographic regions", "Product Innovation: Launch next-generation platform Q1 2026", "Operational Excellence: Reduce costs by 15% through automation", "Talent Development: Comprehensive leadership training program"], "list_type": "ordered"}}
+      },
+      "header": {"type": "Type.Body", "parameters": {"text": "Acme Corporation | Confidential"}},
+      "footer": {"type": "Type.Body", "parameters": {"text": "Fiscal Year 2025 | Page 5"}}
+    },
+    {
+      "strategy": "Bento.HeroTop",
+      "widgets": {
+        "hero": {"type": "Type.Heading", "parameters": {"text": "Departmental Performance Overview", "level": 2}},
+        "footer_1": {"type": "Data.Trend", "parameters": {"value": 8200000, "change": 15.3, "direction": "up", "label": "Sales"}},
+        "footer_2": {"type": "Data.Trend", "parameters": {"value": 2100000, "change": 8.7, "direction": "up", "label": "Marketing"}},
+        "footer_3": {"type": "Data.Trend", "parameters": {"value": 1850000, "change": -2.1, "direction": "down", "label": "Operations"}}
+      },
+      "header": {"type": "Type.Body", "parameters": {"text": "Acme Corporation | Confidential"}},
+      "footer": {"type": "Type.Body", "parameters": {"text": "Fiscal Year 2025 | Page 6"}}
+    },
+    {
+      "strategy": "Bento.Quarter",
+      "widgets": {
+        "quadrant_1": {"type": "Type.Heading", "parameters": {"text": "Strengths", "level": 3}},
+        "quadrant_2": {"type": "Type.Heading", "parameters": {"text": "Opportunities", "level": 3}},
+        "quadrant_3": {"type": "Type.List", "parameters": {"items": ["Strong brand recognition", "Loyal customer base", "Efficient operations"], "list_type": "unordered"}},
+        "quadrant_4": {"type": "Type.List", "parameters": {"items": ["Emerging markets", "AI integration", "Strategic partnerships"], "list_type": "unordered"}}
+      },
+      "header": {"type": "Type.Body", "parameters": {"text": "Acme Corporation | Confidential"}},
+      "footer": {"type": "Type.Body", "parameters": {"text": "Fiscal Year 2025 | Page 7"}}
+    },
+    {
+      "strategy": "Swiss.SplitTypo",
+      "widgets": {
+        "headline": {"type": "Type.Display", "parameters": {"text": "LOOKING AHEAD"}},
+        "body": {"type": "Type.Body", "parameters": {"text": "As we move into 2026, our focus remains on sustainable growth, operational excellence, and delivering exceptional value to our stakeholders. We are well-positioned to capitalize on market opportunities while maintaining our commitment to quality and innovation."}}
+      },
+      "header": {"type": "Type.Body", "parameters": {"text": "Acme Corporation | Confidential"}},
+      "footer": {"type": "Type.Body", "parameters": {"text": "Fiscal Year 2025 | Page 8"}}
+    }
+  ],
+  "theme": {
+    "sequence_pattern": "uniform",
+    "background_color": "#f8f9fa",
+    "primary_color": "#1e3a8a",
+    "secondary_color": "#475569",
+    "accent_color": "#d97706",
+    "text_color": "#1e293b",
+    "margin_x": "60px",
+    "margin_y": "50px",
+    "gutter": "28px",
+    "header_footer": {
+      "header_height": "10%",
+      "footer_height": "8%",
+      "header_position": "fixed_top_left",
+      "footer_position": "fixed_bottom_left",
+      "header_decoration": "border_bottom",
+      "footer_decoration": "border_top"
+    },
+    "typography": {
+      "h1": {"size": 52, "weight": "bold", "line_height": 1.1},
+      "h2": {"size": 38, "weight": "semibold", "line_height": 1.2},
+      "h3": {"size": 26, "weight": "semibold", "line_height": 1.3},
+      "body": {"size": 18, "weight": "regular", "line_height": 1.6},
+      "caption": {"size": 14, "weight": "regular", "line_height": 1.4}
+    }
+  },
+  "style": {
+    "theme_name": "formal-business",
+    "widgets": {
+      "Type.Display": {
+        "font": "h1",
+        "align": "center",
+        "foreground": "primary_color"
+      },
+      "Type.Heading": {
+        "font": "h2",
+        "align": "left",
+        "foreground": "primary_color"
+      },
+      "Type.Body": {
+        "font": "body",
+        "align": "left",
+        "foreground": "text_color"
+      },
+      "Type.List": {
+        "font": "body",
+        "align": "left",
+        "foreground": "text_color"
+      },
+      "Type.Quote": {
+        "font": "h3",
+        "align": "left",
+        "foreground": "secondary_color"
+      },
+      "Data.BigNum": {
+        "font": "h1",
+        "align": "center",
+        "foreground": "primary_color"
+      },
+      "Data.Progress": {
+        "font": "caption",
+        "align": "center",
+        "foreground": "accent_color"
+      },
+      "Data.Trend": {
+        "font": "h2",
+        "align": "center",
+        "foreground": "primary_color"
+      }
+    }
+  }
+}

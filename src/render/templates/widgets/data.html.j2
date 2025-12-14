@@ -1,6 +1,6 @@
 {# Data and metrics widgets rendering #}
 {% if widget_type == 'Data.BigNum' %}
-<div class="widget-data-bignum" style="{{ render_style(applied_style) }}">
+<div class="widget-data-bignum" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; {{ render_style(applied_style) }}">
     <div class="bignum-value" style="font-size: 3rem; font-weight: bold;">
         {% if widget_data.format == 'currency' %}
             ${{ widget_data.number }}
@@ -18,7 +18,7 @@
 </div>
 
 {% elif widget_type == 'Data.Trend' %}
-<div class="widget-data-trend" style="{{ render_style(applied_style) }}">
+<div class="widget-data-trend" style="width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; {{ render_style(applied_style) }}">
     {% set direction_color = {
         'up': '#10b981',
         'down': '#ef4444',
@@ -36,7 +36,7 @@
 </div>
 
 {% elif widget_type == 'Data.Progress' %}
-<div class="widget-data-progress" style="{{ render_style(applied_style) }}">
+<div class="widget-data-progress" style="width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; {{ render_style(applied_style) }}">
     <div class="progress-label" style="margin-bottom: 0.5rem;">{{ widget_data.label }}</div>
     <div class="progress-bar" style="width: 100%; height: 20px; background: rgba(0,0,0,0.1); border-radius: 10px; overflow: hidden;">
         <div class="progress-fill" style="width: {{ widget_data.percentage }}%; height: 100%; background: currentColor;"></div>

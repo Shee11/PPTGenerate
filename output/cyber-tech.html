@@ -1,0 +1,2640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Slide Presentation</title>
+    <style>
+        :root {
+            --color-primary: #00ff9f;
+            --color-secondary: #00d4ff;
+            --color-accent: #ff00ff;
+            --color-background: #0a0e27;
+            --color-text: #e0e7ff;
+            --font-family: sans-serif;
+            --font-heading: sans-serif;
+            --font-size-base: 16px;
+            --line-height: 1.5;
+            --margin-x: 70px;
+            --margin-y: 60px;
+            --gutter: 32px;
+            --header-height: 8%;
+            --footer-height: 6%;
+            --font-h1-size: 56px;
+            --font-h1-weight: bold;
+            --font-h1-line-height: 1.0;
+            --font-h2-size: 40px;
+            --font-h2-weight: bold;
+            --font-h2-line-height: 1.1;
+            --font-h3-size: 28px;
+            --font-h3-weight: semibold;
+            --font-h3-line-height: 1.2;
+            --font-body-size: 18px;
+            --font-body-weight: regular;
+            --font-body-line-height: 1.5;
+            --font-caption-size: 12px;
+            --font-caption-weight: medium;
+            --font-caption-line-height: 1.3;
+            --background-primary: #0a0e27;
+            --background-secondary: #050816;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-family, 'Inter, system-ui, sans-serif');
+            background: #1a1a1a;
+            overflow: hidden;
+        }
+
+        .slide-deck {
+            position: relative;
+            width: 1920px;
+            height: 1080px;
+            margin: 20px auto;
+            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        .slide.active {
+            opacity: 1;
+            visibility: visible;
+            z-index: 1;
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 15px 30px;
+            border-radius: 50px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+
+        .nav-button {
+            background: var(--color-primary, #2563eb);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .nav-button:hover:not(:disabled) {
+            background: var(--color-accent, #f59e0b);
+            transform: translateY(-2px);
+        }
+
+        .nav-button:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .slide-counter {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1e293b;
+            min-width: 80px;
+            text-align: center;
+        }
+
+        .slide-dots {
+            display: flex;
+            gap: 8px;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #cbd5e1;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .dot.active {
+            background: var(--color-primary, #2563eb);
+            transform: scale(1.3);
+        }
+
+        .dot:hover {
+            background: var(--color-accent, #f59e0b);
+        }
+
+        /* Keyboard hints */
+        .keyboard-hints {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 12px;
+            color: #64748b;
+            z-index: 1000;
+        }
+
+        .keyboard-hints kbd {
+            background: #f1f5f9;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-deck">
+        <div class="slide active" data-slide-index="0" id="slide-1">
+            <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UCE Render - Bento.Standard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --color-primary: #00ff9f;
+            --color-secondary: #00d4ff;
+            --color-accent: #ff00ff;
+            --color-background: #0a0e27;
+            --color-text: #e0e7ff;
+            --font-family: sans-serif;
+            --font-heading: sans-serif;
+            --font-size-base: 16px;
+            --line-height: 1.5;
+            --margin-x: 70px;
+            --margin-y: 60px;
+            --gutter: 32px;
+            --header-height: 8%;
+            --footer-height: 6%;
+            --font-h1-size: 56px;
+            --font-h1-weight: bold;
+            --font-h1-line-height: 1.0;
+            --font-h2-size: 40px;
+            --font-h2-weight: bold;
+            --font-h2-line-height: 1.1;
+            --font-h3-size: 28px;
+            --font-h3-weight: semibold;
+            --font-h3-line-height: 1.2;
+            --font-body-size: 18px;
+            --font-body-weight: regular;
+            --font-body-line-height: 1.5;
+            --font-caption-size: 12px;
+            --font-caption-weight: medium;
+            --font-caption-line-height: 1.3;
+            --background-primary: #0a0e27;
+            --background-secondary: #050816;
+        }
+        
+        body {
+            font-family: var(--font-family);
+            font-size: var(--font-size-base);
+            line-height: var(--line-height);
+            color: var(--color-text);
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .layout-container {
+            width: 1920px;
+            height: 1080px;
+            background-color: var(--color-background);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            padding: 60px 70px;
+        }
+        
+        /* Header/Footer reserved areas */
+        .layout-header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 8%;
+            padding: 0 70px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+        }
+        
+        .layout-footer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 6%;
+            padding: 0 70px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+        }
+        
+        /* Content area (widgets auto-layout here, avoiding header/footer) */
+        .layout-content {
+            position: absolute;
+            top: 8%;
+            bottom: 6%;
+            left: 0;
+            right: 0;
+            padding: 0 70px;
+        }
+        
+        .widget {
+            border-radius: var(--border-radius, 8px);
+            background: white;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        /* Typography tokens from theme */
+        h1 {
+            font-size: var(--font-h1-size);
+            font-weight: var(--font-h1-weight);
+            line-height: var(--font-h1-line-height);
+            font-family: var(--font-heading);
+        }
+        
+        h2 {
+            font-size: var(--font-h2-size);
+            font-weight: var(--font-h2-weight);
+            line-height: var(--font-h2-line-height);
+            font-family: var(--font-heading);
+        }
+        
+        h3 {
+            font-size: var(--font-h3-size);
+            font-weight: var(--font-h3-weight);
+            line-height: var(--font-h3-line-height);
+            font-family: var(--font-heading);
+        }
+        
+        p, .widget-type-body {
+            font-size: var(--font-body-size);
+            font-weight: var(--font-body-weight);
+            line-height: var(--font-body-line-height);
+        }
+        
+        .caption, small {
+            font-size: var(--font-caption-size);
+            font-weight: var(--font-caption-weight);
+            line-height: var(--font-caption-line-height);
+        }
+        
+.bento-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 32px;
+    width: 100%;
+    height: 100%;
+}
+
+.bento-cell {
+    min-height: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+    </style>
+</head>
+<body>
+    <div class="layout-container" style="background: #0a0e27;">
+        <div class="layout-header">
+                <p>CLASSIFIED | NEXUS PROTOCOL</p>
+        </div>
+        
+        <div class="layout-content">
+<div class="layout-content">
+    <div class="bento-grid">
+            <div class="bento-cell widget" data-role="cell_1">
+
+
+<div class="widget-type-display" style="font-size: 56px;font-weight: 700;line-height: 1.0;text-align: center;color: #00ff9f;">
+    <h1 class="display-text">
+        NEURAL NETWORK ALPHA
+    </h1>
+</div>
+
+            </div>
+            <div class="bento-cell widget" data-role="cell_2">
+
+
+<div class="widget-type-heading" style="font-size: 40px;font-weight: 700;line-height: 1.1;text-align: left;color: #00d4ff;">
+        <h2>System Diagnostics</h2>
+</div>
+
+            </div>
+            <div class="bento-cell widget" data-role="cell_3">
+
+
+<div class="widget-type-body" style="font-size: 18px;font-weight: 400;line-height: 1.5;text-align: left;color: #e0e7ff;">
+    <p>Real-time analysis of distributed computing nodes across quantum processing clusters. All systems operational within nominal parameters.</p>
+</div>
+
+            </div>
+            <div class="bento-cell widget" data-role="cell_4">
+
+
+<div class="widget-data-bignum" style="font-size: 56px;font-weight: 700;line-height: 1.0;text-align: center;color: #00ff9f;">
+    <div class="bignum-value" style="font-size: 3rem; font-weight: bold;">
+            99.97%
+    </div>
+    <div class="bignum-label" style="margin-top: 0.5rem; opacity: 0.7;">
+        Uptime %
+    </div>
+</div>
+
+            </div>
+            <div class="bento-cell widget" data-role="cell_5">
+
+
+<div class="widget-data-progress" style="font-size: 12px;font-weight: 500;line-height: 1.3;text-align: center;color: #ff00ff;">
+    <div class="progress-label" style="margin-bottom: 0.5rem;">Processing Load</div>
+    <div class="progress-bar" style="width: 100%; height: 20px; background: rgba(0,0,0,0.1); border-radius: 10px; overflow: hidden;">
+        <div class="progress-fill" style="width: 87%; height: 100%; background: currentColor;"></div>
+    </div>
+    <div class="progress-percentage" style="margin-top: 0.25rem; font-size: 0.875rem; opacity: 0.7;">
+        87%
+    </div>
+</div>
+
+            </div>
+            <div class="bento-cell widget" data-role="cell_6">
+
+
+<div class="widget-data-trend" style="font-size: 40px;font-weight: 700;line-height: 1.1;text-align: center;color: #00d4ff;">
+    <div class="trend-value" style="font-size: 2rem; font-weight: bold;">
+        42800
+    </div>
+    <div class="trend-change" style="color: #10b981;">
+↑ 23.5
+    </div>
+    <div class="trend-label" style="margin-top: 0.5rem; opacity: 0.7;">
+        Transactions/sec
+    </div>
+</div>
+
+            </div>
+    </div>
+</div>
+        </div>
+        
+        <div class="layout-footer">
+                <p>NODE-001 | UPLINK ACTIVE</p>
+        </div>
+    </div>
+</body>
+</html>
+        </div>
+        <div class="slide" data-slide-index="1" id="slide-2">
+            <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UCE Render - Swiss.Poster</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --color-primary: #00ff9f;
+            --color-secondary: #00d4ff;
+            --color-accent: #ff00ff;
+            --color-background: #0a0e27;
+            --color-text: #e0e7ff;
+            --font-family: sans-serif;
+            --font-heading: sans-serif;
+            --font-size-base: 16px;
+            --line-height: 1.5;
+            --margin-x: 70px;
+            --margin-y: 60px;
+            --gutter: 32px;
+            --header-height: 8%;
+            --footer-height: 6%;
+            --font-h1-size: 56px;
+            --font-h1-weight: bold;
+            --font-h1-line-height: 1.0;
+            --font-h2-size: 40px;
+            --font-h2-weight: bold;
+            --font-h2-line-height: 1.1;
+            --font-h3-size: 28px;
+            --font-h3-weight: semibold;
+            --font-h3-line-height: 1.2;
+            --font-body-size: 18px;
+            --font-body-weight: regular;
+            --font-body-line-height: 1.5;
+            --font-caption-size: 12px;
+            --font-caption-weight: medium;
+            --font-caption-line-height: 1.3;
+            --background-primary: #0a0e27;
+            --background-secondary: #050816;
+        }
+        
+        body {
+            font-family: var(--font-family);
+            font-size: var(--font-size-base);
+            line-height: var(--line-height);
+            color: var(--color-text);
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .layout-container {
+            width: 1920px;
+            height: 1080px;
+            background-color: var(--color-background);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            padding: 60px 70px;
+        }
+        
+        /* Header/Footer reserved areas */
+        .layout-header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 8%;
+            padding: 0 70px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+        }
+        
+        .layout-footer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 6%;
+            padding: 0 70px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+        }
+        
+        /* Content area (widgets auto-layout here, avoiding header/footer) */
+        .layout-content {
+            position: absolute;
+            top: 8%;
+            bottom: 6%;
+            left: 0;
+            right: 0;
+            padding: 0 70px;
+        }
+        
+        .widget {
+            border-radius: var(--border-radius, 8px);
+            background: white;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        /* Typography tokens from theme */
+        h1 {
+            font-size: var(--font-h1-size);
+            font-weight: var(--font-h1-weight);
+            line-height: var(--font-h1-line-height);
+            font-family: var(--font-heading);
+        }
+        
+        h2 {
+            font-size: var(--font-h2-size);
+            font-weight: var(--font-h2-weight);
+            line-height: var(--font-h2-line-height);
+            font-family: var(--font-heading);
+        }
+        
+        h3 {
+            font-size: var(--font-h3-size);
+            font-weight: var(--font-h3-weight);
+            line-height: var(--font-h3-line-height);
+            font-family: var(--font-heading);
+        }
+        
+        p, .widget-type-body {
+            font-size: var(--font-body-size);
+            font-weight: var(--font-body-weight);
+            line-height: var(--font-body-line-height);
+        }
+        
+        .caption, small {
+            font-size: var(--font-caption-size);
+            font-weight: var(--font-caption-weight);
+            line-height: var(--font-caption-line-height);
+        }
+        
+.swiss-layout {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+.swiss-layout .widget {
+    width: 100%;
+    height: 100%;
+}
+    </style>
+</head>
+<body>
+    <div class="layout-container" style="background: #050816;">
+        <div class="layout-header">
+                <p>CLASSIFIED | NEXUS PROTOCOL</p>
+        </div>
+        
+        <div class="layout-content">
+<div class="layout-content">
+    <div class="swiss-layout">
+            <div class="widget" data-role="headline">
+
+
+<div class="widget-type-display" style="font-size: 56px;font-weight: 700;line-height: 1.0;text-align: center;color: #00ff9f;">
+    <h1 class="display-text">
+        QUANTUM SUPREMACY
+    </h1>
+</div>
+
+            </div>
+    </div>
+</div>
+        </div>
+        
+        <div class="layout-footer">
+                <p>NODE-002 | UPLINK ACTIVE</p>
+        </div>
+    </div>
+</body>
+</html>
+        </div>
+        <div class="slide" data-slide-index="2" id="slide-3">
+            <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UCE Render - Focus.Solar_System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --color-primary: #00ff9f;
+            --color-secondary: #00d4ff;
+            --color-accent: #ff00ff;
+            --color-background: #0a0e27;
+            --color-text: #e0e7ff;
+            --font-family: sans-serif;
+            --font-heading: sans-serif;
+            --font-size-base: 16px;
+            --line-height: 1.5;
+            --margin-x: 70px;
+            --margin-y: 60px;
+            --gutter: 32px;
+            --header-height: 8%;
+            --footer-height: 6%;
+            --font-h1-size: 56px;
+            --font-h1-weight: bold;
+            --font-h1-line-height: 1.0;
+            --font-h2-size: 40px;
+            --font-h2-weight: bold;
+            --font-h2-line-height: 1.1;
+            --font-h3-size: 28px;
+            --font-h3-weight: semibold;
+            --font-h3-line-height: 1.2;
+            --font-body-size: 18px;
+            --font-body-weight: regular;
+            --font-body-line-height: 1.5;
+            --font-caption-size: 12px;
+            --font-caption-weight: medium;
+            --font-caption-line-height: 1.3;
+            --background-primary: #0a0e27;
+            --background-secondary: #050816;
+        }
+        
+        body {
+            font-family: var(--font-family);
+            font-size: var(--font-size-base);
+            line-height: var(--line-height);
+            color: var(--color-text);
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .layout-container {
+            width: 1920px;
+            height: 1080px;
+            background-color: var(--color-background);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            padding: 60px 70px;
+        }
+        
+        /* Header/Footer reserved areas */
+        .layout-header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 8%;
+            padding: 0 70px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+        }
+        
+        .layout-footer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 6%;
+            padding: 0 70px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+        }
+        
+        /* Content area (widgets auto-layout here, avoiding header/footer) */
+        .layout-content {
+            position: absolute;
+            top: 8%;
+            bottom: 6%;
+            left: 0;
+            right: 0;
+            padding: 0 70px;
+        }
+        
+        .widget {
+            border-radius: var(--border-radius, 8px);
+            background: white;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        /* Typography tokens from theme */
+        h1 {
+            font-size: var(--font-h1-size);
+            font-weight: var(--font-h1-weight);
+            line-height: var(--font-h1-line-height);
+            font-family: var(--font-heading);
+        }
+        
+        h2 {
+            font-size: var(--font-h2-size);
+            font-weight: var(--font-h2-weight);
+            line-height: var(--font-h2-line-height);
+            font-family: var(--font-heading);
+        }
+        
+        h3 {
+            font-size: var(--font-h3-size);
+            font-weight: var(--font-h3-weight);
+            line-height: var(--font-h3-line-height);
+            font-family: var(--font-heading);
+        }
+        
+        p, .widget-type-body {
+            font-size: var(--font-body-size);
+            font-weight: var(--font-body-weight);
+            line-height: var(--font-body-line-height);
+        }
+        
+        .caption, small {
+            font-size: var(--font-caption-size);
+            font-weight: var(--font-caption-weight);
+            line-height: var(--font-caption-line-height);
+        }
+        
+.focus-layout {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.focus-widget {
+    position: absolute;
+}
+    </style>
+</head>
+<body>
+    <div class="layout-container" style="background: #0a0e27;">
+        <div class="layout-header">
+                <p>CLASSIFIED | NEXUS PROTOCOL</p>
+        </div>
+        
+        <div class="layout-content">
+<div class="layout-content">
+    <div class="focus-layout">
+        <div class="focus-widget widget" 
+             data-role="sun"
+             style="left: 798.24px; 
+                    top: 389.04px; 
+                    width: 323.52000000000004px; 
+                    height: 323.52000000000004px;">
+
+
+<div class="widget-type-display" style="font-size: 56px;font-weight: 700;line-height: 1.0;text-align: center;color: #00ff9f;">
+    <h1 class="display-text">
+        AI CORE
+    </h1>
+</div>
+
+        </div>
+        <div class="focus-widget widget" 
+             data-role="planet_1"
+             style="left: 1234.992px; 
+                    top: 502.27200000000005px; 
+                    width: 97.05600000000001px; 
+                    height: 97.05600000000001px;">
+
+
+<div class="widget-type-body" style="font-size: 18px;font-weight: 400;line-height: 1.5;text-align: left;color: #e0e7ff;">
+    <p>Vision Processing</p>
+</div>
+
+        </div>
+        <div class="focus-widget widget" 
+             data-role="planet_2"
+             style="left: 1073.232px; 
+                    top: 782.4485386323416px; 
+                    width: 97.05600000000001px; 
+                    height: 97.05600000000001px;">
+
+
+<div class="widget-type-body" style="font-size: 18px;font-weight: 400;line-height: 1.5;text-align: left;color: #e0e7ff;">
+    <p>NLP Engine</p>
+</div>
+
+        </div>
+        <div class="focus-widget widget" 
+             data-role="planet_3"
+             style="left: 749.712px; 
+                    top: 782.4485386323418px; 
+                    width: 97.05600000000001px; 
+                    height: 97.05600000000001px;">
+
+
+<div class="widget-type-body" style="font-size: 18px;font-weight: 400;line-height: 1.5;text-align: left;color: #e0e7ff;">
+    <p>Predictive Analytics</p>
+</div>
+
+        </div>
+        <div class="focus-widget widget" 
+             data-role="planet_4"
+             style="left: 587.952px; 
+                    top: 502.27200000000005px; 
+                    width: 97.05600000000001px; 
+                    height: 97.05600000000001px;">
+
+
+<div class="widget-type-body" style="font-size: 18px;font-weight: 400;line-height: 1.5;text-align: left;color: #e0e7ff;">
+    <p>Anomaly Detection</p>
+</div>
+
+        </div>
+        <div class="focus-widget widget" 
+             data-role="planet_5"
+             style="left: 749.7119999999998px; 
+                    top: 222.09546136765846px; 
+                    width: 97.05600000000001px; 
+                    height: 97.05600000000001px;">
+
+
+<div class="widget-type-body" style="font-size: 18px;font-weight: 400;line-height: 1.5;text-align: left;color: #e0e7ff;">
+    <p>Neural Training</p>
+</div>
+
+        </div>
+        <div class="focus-widget widget" 
+             data-role="planet_6"
+             style="left: 1073.232px; 
+                    top: 222.09546136765846px; 
+                    width: 97.05600000000001px; 
+                    height: 97.05600000000001px;">
+
+
+<div class="widget-type-body" style="font-size: 18px;font-weight: 400;line-height: 1.5;text-align: left;color: #e0e7ff;">
+    <p>Decision Matrix</p>
+</div>
+
+        </div>
+    </div>
+</div>
+        </div>
+        
+        <div class="layout-footer">
+                <p>NODE-003 | UPLINK ACTIVE</p>
+        </div>
+    </div>
+</body>
+</html>
+        </div>
+        <div class="slide" data-slide-index="3" id="slide-4">
+            <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UCE Render - Data.KPI_Row</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --color-primary: #00ff9f;
+            --color-secondary: #00d4ff;
+            --color-accent: #ff00ff;
+            --color-background: #0a0e27;
+            --color-text: #e0e7ff;
+            --font-family: sans-serif;
+            --font-heading: sans-serif;
+            --font-size-base: 16px;
+            --line-height: 1.5;
+            --margin-x: 70px;
+            --margin-y: 60px;
+            --gutter: 32px;
+            --header-height: 8%;
+            --footer-height: 6%;
+            --font-h1-size: 56px;
+            --font-h1-weight: bold;
+            --font-h1-line-height: 1.0;
+            --font-h2-size: 40px;
+            --font-h2-weight: bold;
+            --font-h2-line-height: 1.1;
+            --font-h3-size: 28px;
+            --font-h3-weight: semibold;
+            --font-h3-line-height: 1.2;
+            --font-body-size: 18px;
+            --font-body-weight: regular;
+            --font-body-line-height: 1.5;
+            --font-caption-size: 12px;
+            --font-caption-weight: medium;
+            --font-caption-line-height: 1.3;
+            --background-primary: #0a0e27;
+            --background-secondary: #050816;
+        }
+        
+        body {
+            font-family: var(--font-family);
+            font-size: var(--font-size-base);
+            line-height: var(--line-height);
+            color: var(--color-text);
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .layout-container {
+            width: 1920px;
+            height: 1080px;
+            background-color: var(--color-background);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            padding: 60px 70px;
+        }
+        
+        /* Header/Footer reserved areas */
+        .layout-header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 8%;
+            padding: 0 70px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+        }
+        
+        .layout-footer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 6%;
+            padding: 0 70px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+        }
+        
+        /* Content area (widgets auto-layout here, avoiding header/footer) */
+        .layout-content {
+            position: absolute;
+            top: 8%;
+            bottom: 6%;
+            left: 0;
+            right: 0;
+            padding: 0 70px;
+        }
+        
+        .widget {
+            border-radius: var(--border-radius, 8px);
+            background: white;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        /* Typography tokens from theme */
+        h1 {
+            font-size: var(--font-h1-size);
+            font-weight: var(--font-h1-weight);
+            line-height: var(--font-h1-line-height);
+            font-family: var(--font-heading);
+        }
+        
+        h2 {
+            font-size: var(--font-h2-size);
+            font-weight: var(--font-h2-weight);
+            line-height: var(--font-h2-line-height);
+            font-family: var(--font-heading);
+        }
+        
+        h3 {
+            font-size: var(--font-h3-size);
+            font-weight: var(--font-h3-weight);
+            line-height: var(--font-h3-line-height);
+            font-family: var(--font-heading);
+        }
+        
+        p, .widget-type-body {
+            font-size: var(--font-body-size);
+            font-weight: var(--font-body-weight);
+            line-height: var(--font-body-line-height);
+        }
+        
+        .caption, small {
+            font-size: var(--font-caption-size);
+            font-weight: var(--font-caption-weight);
+            line-height: var(--font-caption-line-height);
+        }
+        
+.data-layout {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.data-widget {
+    position: absolute;
+}
+    </style>
+</head>
+<body>
+    <div class="layout-container" style="background: #050816;">
+        <div class="layout-header">
+                <p>CLASSIFIED | NEXUS PROTOCOL</p>
+        </div>
+        
+        <div class="layout-content">
+<div class="layout-content">
+    <div class="data-layout">
+        <div class="data-widget widget" 
+             data-role="header"
+             style="left: 70.0px; 
+                    top: 146.4px; 
+                    width: 1780.0px; 
+                    height: 226.64000000000001px;">
+
+
+<div class="widget-type-heading" style="font-size: 40px;font-weight: 700;line-height: 1.1;text-align: left;color: #00d4ff;">
+        <h2>Network Performance Metrics</h2>
+</div>
+
+        </div>
+        <div class="data-widget widget" 
+             data-role="kpi_1"
+             style="left: 70.0px; 
+                    top: 405.04px; 
+                    width: 421.0px; 
+                    height: 550.16px;">
+
+
+<div class="widget-data-bignum" style="font-size: 56px;font-weight: 700;line-height: 1.0;text-align: center;color: #00ff9f;">
+    <div class="bignum-value" style="font-size: 3rem; font-weight: bold;">
+            847
+    </div>
+    <div class="bignum-label" style="margin-top: 0.5rem; opacity: 0.7;">
+        Active Nodes
+    </div>
+</div>
+
+        </div>
+        <div class="data-widget widget" 
+             data-role="kpi_2"
+             style="left: 523.0px; 
+                    top: 405.04px; 
+                    width: 421.0px; 
+                    height: 550.16px;">
+
+
+<div class="widget-data-progress" style="font-size: 12px;font-weight: 500;line-height: 1.3;text-align: center;color: #ff00ff;">
+    <div class="progress-label" style="margin-bottom: 0.5rem;">Bandwidth Utilization</div>
+    <div class="progress-bar" style="width: 100%; height: 20px; background: rgba(0,0,0,0.1); border-radius: 10px; overflow: hidden;">
+        <div class="progress-fill" style="width: 96%; height: 100%; background: currentColor;"></div>
+    </div>
+    <div class="progress-percentage" style="margin-top: 0.25rem; font-size: 0.875rem; opacity: 0.7;">
+        96%
+    </div>
+</div>
+
+        </div>
+        <div class="data-widget widget" 
+             data-role="kpi_3"
+             style="left: 976.0px; 
+                    top: 405.04px; 
+                    width: 421.0px; 
+                    height: 550.16px;">
+
+
+<div class="widget-data-trend" style="font-size: 40px;font-weight: 700;line-height: 1.1;text-align: center;color: #00d4ff;">
+    <div class="trend-value" style="font-size: 2rem; font-weight: bold;">
+        2.3
+    </div>
+    <div class="trend-change" style="color: #ef4444;">
+↓ -0.8
+    </div>
+    <div class="trend-label" style="margin-top: 0.5rem; opacity: 0.7;">
+        Latency (ms)
+    </div>
+</div>
+
+        </div>
+        <div class="data-widget widget" 
+             data-role="kpi_4"
+             style="left: 1429.0px; 
+                    top: 405.04px; 
+                    width: 421.0px; 
+                    height: 550.16px;">
+
+
+<div class="widget-data-bignum" style="font-size: 56px;font-weight: 700;line-height: 1.0;text-align: center;color: #00ff9f;">
+    <div class="bignum-value" style="font-size: 3rem; font-weight: bold;">
+            15700000
+    </div>
+    <div class="bignum-label" style="margin-top: 0.5rem; opacity: 0.7;">
+        Data Processed (GB)
+    </div>
+</div>
+
+        </div>
+    </div>
+</div>
+        </div>
+        
+        <div class="layout-footer">
+                <p>NODE-004 | UPLINK ACTIVE</p>
+        </div>
+    </div>
+</body>
+</html>
+        </div>
+        <div class="slide" data-slide-index="4" id="slide-5">
+            <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UCE Render - Bento.Standard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --color-primary: #00ff9f;
+            --color-secondary: #00d4ff;
+            --color-accent: #ff00ff;
+            --color-background: #0a0e27;
+            --color-text: #e0e7ff;
+            --font-family: sans-serif;
+            --font-heading: sans-serif;
+            --font-size-base: 16px;
+            --line-height: 1.5;
+            --margin-x: 70px;
+            --margin-y: 60px;
+            --gutter: 32px;
+            --header-height: 8%;
+            --footer-height: 6%;
+            --font-h1-size: 56px;
+            --font-h1-weight: bold;
+            --font-h1-line-height: 1.0;
+            --font-h2-size: 40px;
+            --font-h2-weight: bold;
+            --font-h2-line-height: 1.1;
+            --font-h3-size: 28px;
+            --font-h3-weight: semibold;
+            --font-h3-line-height: 1.2;
+            --font-body-size: 18px;
+            --font-body-weight: regular;
+            --font-body-line-height: 1.5;
+            --font-caption-size: 12px;
+            --font-caption-weight: medium;
+            --font-caption-line-height: 1.3;
+            --background-primary: #0a0e27;
+            --background-secondary: #050816;
+        }
+        
+        body {
+            font-family: var(--font-family);
+            font-size: var(--font-size-base);
+            line-height: var(--line-height);
+            color: var(--color-text);
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .layout-container {
+            width: 1920px;
+            height: 1080px;
+            background-color: var(--color-background);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            padding: 60px 70px;
+        }
+        
+        /* Header/Footer reserved areas */
+        .layout-header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 8%;
+            padding: 0 70px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+        }
+        
+        .layout-footer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 6%;
+            padding: 0 70px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+        }
+        
+        /* Content area (widgets auto-layout here, avoiding header/footer) */
+        .layout-content {
+            position: absolute;
+            top: 8%;
+            bottom: 6%;
+            left: 0;
+            right: 0;
+            padding: 0 70px;
+        }
+        
+        .widget {
+            border-radius: var(--border-radius, 8px);
+            background: white;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        /* Typography tokens from theme */
+        h1 {
+            font-size: var(--font-h1-size);
+            font-weight: var(--font-h1-weight);
+            line-height: var(--font-h1-line-height);
+            font-family: var(--font-heading);
+        }
+        
+        h2 {
+            font-size: var(--font-h2-size);
+            font-weight: var(--font-h2-weight);
+            line-height: var(--font-h2-line-height);
+            font-family: var(--font-heading);
+        }
+        
+        h3 {
+            font-size: var(--font-h3-size);
+            font-weight: var(--font-h3-weight);
+            line-height: var(--font-h3-line-height);
+            font-family: var(--font-heading);
+        }
+        
+        p, .widget-type-body {
+            font-size: var(--font-body-size);
+            font-weight: var(--font-body-weight);
+            line-height: var(--font-body-line-height);
+        }
+        
+        .caption, small {
+            font-size: var(--font-caption-size);
+            font-weight: var(--font-caption-weight);
+            line-height: var(--font-caption-line-height);
+        }
+        
+.bento-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 32px;
+    width: 100%;
+    height: 100%;
+}
+
+.bento-cell {
+    min-height: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+    </style>
+</head>
+<body>
+    <div class="layout-container" style="background: #0a0e27;">
+        <div class="layout-header">
+                <p>CLASSIFIED | NEXUS PROTOCOL</p>
+        </div>
+        
+        <div class="layout-content">
+<div class="layout-content">
+    <div class="bento-grid">
+            <div class="bento-cell widget" data-role="cell_1">
+
+
+<div class="widget-type-display" style="font-size: 56px;font-weight: 700;line-height: 1.0;text-align: center;color: #00ff9f;">
+    <h1 class="display-text">
+        QUANTUM LEAP
+    </h1>
+</div>
+
+            </div>
+            <div class="bento-cell widget" data-role="cell_2">
+
+
+<div class="widget-type-heading" style="font-size: 40px;font-weight: 700;line-height: 1.1;text-align: left;color: #00d4ff;">
+        <h2>Computing Performance</h2>
+</div>
+
+            </div>
+            <div class="bento-cell widget" data-role="cell_3">
+
+
+<div class="widget-type-body" style="font-size: 18px;font-weight: 400;line-height: 1.5;text-align: left;color: #e0e7ff;">
+    <p>The convergence of quantum computing and AI represents humanity's greatest technological leap in computational power and intelligence.</p>
+</div>
+
+            </div>
+            <div class="bento-cell widget" data-role="cell_4">
+
+
+<div class="widget-data-bignum" style="font-size: 56px;font-weight: 700;line-height: 1.0;text-align: center;color: #00ff9f;">
+    <div class="bignum-value" style="font-size: 3rem; font-weight: bold;">
+            384
+    </div>
+    <div class="bignum-label" style="margin-top: 0.5rem; opacity: 0.7;">
+        Quantum Qubits
+    </div>
+</div>
+
+            </div>
+            <div class="bento-cell widget" data-role="cell_5">
+
+
+<div class="widget-data-progress" style="font-size: 12px;font-weight: 500;line-height: 1.3;text-align: center;color: #ff00ff;">
+    <div class="progress-label" style="margin-bottom: 0.5rem;">Error Correction</div>
+    <div class="progress-bar" style="width: 100%; height: 20px; background: rgba(0,0,0,0.1); border-radius: 10px; overflow: hidden;">
+        <div class="progress-fill" style="width: 92%; height: 100%; background: currentColor;"></div>
+    </div>
+    <div class="progress-percentage" style="margin-top: 0.25rem; font-size: 0.875rem; opacity: 0.7;">
+        92%
+    </div>
+</div>
+
+            </div>
+            <div class="bento-cell widget" data-role="cell_6">
+
+
+<div class="widget-data-trend" style="font-size: 40px;font-weight: 700;line-height: 1.1;text-align: center;color: #00d4ff;">
+    <div class="trend-value" style="font-size: 2rem; font-weight: bold;">
+        10500
+    </div>
+    <div class="trend-change" style="color: #10b981;">
+↑ 47.3
+    </div>
+    <div class="trend-label" style="margin-top: 0.5rem; opacity: 0.7;">
+        FLOPS (Petascale)
+    </div>
+</div>
+
+            </div>
+    </div>
+</div>
+        </div>
+        
+        <div class="layout-footer">
+                <p>NODE-005 | UPLINK ACTIVE</p>
+        </div>
+    </div>
+</body>
+</html>
+        </div>
+        <div class="slide" data-slide-index="5" id="slide-6">
+            <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UCE Render - Cinematic.Split_30_70</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --color-primary: #00ff9f;
+            --color-secondary: #00d4ff;
+            --color-accent: #ff00ff;
+            --color-background: #0a0e27;
+            --color-text: #e0e7ff;
+            --font-family: sans-serif;
+            --font-heading: sans-serif;
+            --font-size-base: 16px;
+            --line-height: 1.5;
+            --margin-x: 70px;
+            --margin-y: 60px;
+            --gutter: 32px;
+            --header-height: 8%;
+            --footer-height: 6%;
+            --font-h1-size: 56px;
+            --font-h1-weight: bold;
+            --font-h1-line-height: 1.0;
+            --font-h2-size: 40px;
+            --font-h2-weight: bold;
+            --font-h2-line-height: 1.1;
+            --font-h3-size: 28px;
+            --font-h3-weight: semibold;
+            --font-h3-line-height: 1.2;
+            --font-body-size: 18px;
+            --font-body-weight: regular;
+            --font-body-line-height: 1.5;
+            --font-caption-size: 12px;
+            --font-caption-weight: medium;
+            --font-caption-line-height: 1.3;
+            --background-primary: #0a0e27;
+            --background-secondary: #050816;
+        }
+        
+        body {
+            font-family: var(--font-family);
+            font-size: var(--font-size-base);
+            line-height: var(--line-height);
+            color: var(--color-text);
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .layout-container {
+            width: 1920px;
+            height: 1080px;
+            background-color: var(--color-background);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            padding: 60px 70px;
+        }
+        
+        /* Header/Footer reserved areas */
+        .layout-header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 8%;
+            padding: 0 70px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+        }
+        
+        .layout-footer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 6%;
+            padding: 0 70px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+        }
+        
+        /* Content area (widgets auto-layout here, avoiding header/footer) */
+        .layout-content {
+            position: absolute;
+            top: 8%;
+            bottom: 6%;
+            left: 0;
+            right: 0;
+            padding: 0 70px;
+        }
+        
+        .widget {
+            border-radius: var(--border-radius, 8px);
+            background: white;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        /* Typography tokens from theme */
+        h1 {
+            font-size: var(--font-h1-size);
+            font-weight: var(--font-h1-weight);
+            line-height: var(--font-h1-line-height);
+            font-family: var(--font-heading);
+        }
+        
+        h2 {
+            font-size: var(--font-h2-size);
+            font-weight: var(--font-h2-weight);
+            line-height: var(--font-h2-line-height);
+            font-family: var(--font-heading);
+        }
+        
+        h3 {
+            font-size: var(--font-h3-size);
+            font-weight: var(--font-h3-weight);
+            line-height: var(--font-h3-line-height);
+            font-family: var(--font-heading);
+        }
+        
+        p, .widget-type-body {
+            font-size: var(--font-body-size);
+            font-weight: var(--font-body-weight);
+            line-height: var(--font-body-line-height);
+        }
+        
+        .caption, small {
+            font-size: var(--font-caption-size);
+            font-weight: var(--font-caption-weight);
+            line-height: var(--font-caption-line-height);
+        }
+        
+.cinematic-layout {
+    display: grid;
+    grid-template-columns: 3fr 7fr;
+    gap: 32px;
+    height: 100%;
+}
+
+.cinematic-panel {
+    min-height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+    </style>
+</head>
+<body>
+    <div class="layout-container" style="background: #050816;">
+        <div class="layout-header">
+                <p>CLASSIFIED | NEXUS PROTOCOL</p>
+        </div>
+        
+        <div class="layout-content">
+<div class="layout-content">
+    <div class="cinematic-layout">
+            <div class="cinematic-panel widget" data-role="sidebar">
+
+
+<div class="widget-type-list" style="font-size: 18px;font-weight: 400;line-height: 1.5;text-align: left;color: #e0e7ff;">
+        <ul>
+            <li>Blockchain Integration</li>
+            <li>Edge Computing</li>
+            <li>5G Infrastructure</li>
+            <li>Cybersecurity Mesh</li>
+            <li>Digital Twin Framework</li>
+        </ul>
+</div>
+
+            </div>
+            
+            <div class="cinematic-panel widget" data-role="stage">
+
+
+<div class="widget-type-heading" style="font-size: 40px;font-weight: 700;line-height: 1.1;text-align: left;color: #00d4ff;">
+        <h1>Next-Generation Technology Stack</h1>
+</div>
+
+            </div>
+    </div>
+</div>
+        </div>
+        
+        <div class="layout-footer">
+                <p>NODE-006 | UPLINK ACTIVE</p>
+        </div>
+    </div>
+</body>
+</html>
+        </div>
+        <div class="slide" data-slide-index="6" id="slide-7">
+            <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UCE Render - Edit.Magazine_Collage</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --color-primary: #00ff9f;
+            --color-secondary: #00d4ff;
+            --color-accent: #ff00ff;
+            --color-background: #0a0e27;
+            --color-text: #e0e7ff;
+            --font-family: sans-serif;
+            --font-heading: sans-serif;
+            --font-size-base: 16px;
+            --line-height: 1.5;
+            --margin-x: 70px;
+            --margin-y: 60px;
+            --gutter: 32px;
+            --header-height: 8%;
+            --footer-height: 6%;
+            --font-h1-size: 56px;
+            --font-h1-weight: bold;
+            --font-h1-line-height: 1.0;
+            --font-h2-size: 40px;
+            --font-h2-weight: bold;
+            --font-h2-line-height: 1.1;
+            --font-h3-size: 28px;
+            --font-h3-weight: semibold;
+            --font-h3-line-height: 1.2;
+            --font-body-size: 18px;
+            --font-body-weight: regular;
+            --font-body-line-height: 1.5;
+            --font-caption-size: 12px;
+            --font-caption-weight: medium;
+            --font-caption-line-height: 1.3;
+            --background-primary: #0a0e27;
+            --background-secondary: #050816;
+        }
+        
+        body {
+            font-family: var(--font-family);
+            font-size: var(--font-size-base);
+            line-height: var(--line-height);
+            color: var(--color-text);
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .layout-container {
+            width: 1920px;
+            height: 1080px;
+            background-color: var(--color-background);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            padding: 60px 70px;
+        }
+        
+        /* Header/Footer reserved areas */
+        .layout-header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 8%;
+            padding: 0 70px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+        }
+        
+        .layout-footer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 6%;
+            padding: 0 70px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+        }
+        
+        /* Content area (widgets auto-layout here, avoiding header/footer) */
+        .layout-content {
+            position: absolute;
+            top: 8%;
+            bottom: 6%;
+            left: 0;
+            right: 0;
+            padding: 0 70px;
+        }
+        
+        .widget {
+            border-radius: var(--border-radius, 8px);
+            background: white;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        /* Typography tokens from theme */
+        h1 {
+            font-size: var(--font-h1-size);
+            font-weight: var(--font-h1-weight);
+            line-height: var(--font-h1-line-height);
+            font-family: var(--font-heading);
+        }
+        
+        h2 {
+            font-size: var(--font-h2-size);
+            font-weight: var(--font-h2-weight);
+            line-height: var(--font-h2-line-height);
+            font-family: var(--font-heading);
+        }
+        
+        h3 {
+            font-size: var(--font-h3-size);
+            font-weight: var(--font-h3-weight);
+            line-height: var(--font-h3-line-height);
+            font-family: var(--font-heading);
+        }
+        
+        p, .widget-type-body {
+            font-size: var(--font-body-size);
+            font-weight: var(--font-body-weight);
+            line-height: var(--font-body-line-height);
+        }
+        
+        .caption, small {
+            font-size: var(--font-caption-size);
+            font-weight: var(--font-caption-weight);
+            line-height: var(--font-caption-line-height);
+        }
+        
+.edit-layout {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.edit-widget {
+    position: absolute;
+}
+    </style>
+</head>
+<body>
+    <div class="layout-container" style="background: #0a0e27;">
+        <div class="layout-header">
+                <p>CLASSIFIED | NEXUS PROTOCOL</p>
+        </div>
+        
+        <div class="layout-content">
+<div class="layout-content">
+    <div class="edit-layout">
+        <div class="edit-widget widget" 
+             data-role="hero"
+             style="left: 426.0px; 
+                    top: 308.16px; 
+                    width: 1068.0px; 
+                    height: 485.28000000000003px;">
+
+
+<div class="widget-type-display" style="font-size: 56px;font-weight: 700;line-height: 1.0;text-align: center;color: #00ff9f;">
+    <h1 class="display-text">
+        DEEP LEARNING
+    </h1>
+</div>
+
+        </div>
+        <div class="edit-widget widget" 
+             data-role="sticker_1"
+             style="left: 159.0px; 
+                    top: 227.28000000000003px; 
+                    width: 80.88000000000001px; 
+                    height: 80.88000000000001px;">
+
+
+<div class="widget-data-bignum" style="font-size: 56px;font-weight: 700;line-height: 1.0;text-align: center;color: #00ff9f;">
+    <div class="bignum-value" style="font-size: 3rem; font-weight: bold;">
+            256
+    </div>
+    <div class="bignum-label" style="margin-top: 0.5rem; opacity: 0.7;">
+        GPUs
+    </div>
+</div>
+
+        </div>
+        <div class="edit-widget widget" 
+             data-role="sticker_2"
+             style="left: 1405.0px; 
+                    top: 186.84px; 
+                    width: 80.88000000000001px; 
+                    height: 80.88000000000001px;">
+
+
+<div class="widget-type-body" style="font-size: 18px;font-weight: 400;line-height: 1.5;text-align: left;color: #e0e7ff;">
+    <p>TensorFlow</p>
+</div>
+
+        </div>
+        <div class="edit-widget widget" 
+             data-role="sticker_3"
+             style="left: 248.0px; 
+                    top: 591.2400000000001px; 
+                    width: 80.88000000000001px; 
+                    height: 80.88000000000001px;">
+
+
+<div class="widget-type-body" style="font-size: 18px;font-weight: 400;line-height: 1.5;text-align: left;color: #e0e7ff;">
+    <p>PyTorch</p>
+</div>
+
+        </div>
+        <div class="edit-widget widget" 
+             data-role="sticker_4"
+             style="left: 1494.0px; 
+                    top: 550.8000000000001px; 
+                    width: 80.88000000000001px; 
+                    height: 80.88000000000001px;">
+
+
+<div class="widget-data-progress" style="font-size: 12px;font-weight: 500;line-height: 1.3;text-align: center;color: #ff00ff;">
+    <div class="progress-label" style="margin-bottom: 0.5rem;">Training</div>
+    <div class="progress-bar" style="width: 100%; height: 20px; background: rgba(0,0,0,0.1); border-radius: 10px; overflow: hidden;">
+        <div class="progress-fill" style="width: 78%; height: 100%; background: currentColor;"></div>
+    </div>
+    <div class="progress-percentage" style="margin-top: 0.25rem; font-size: 0.875rem; opacity: 0.7;">
+        78%
+    </div>
+</div>
+
+        </div>
+        <div class="edit-widget widget" 
+             data-role="sticker_5"
+             style="left: 604.0px; 
+                    top: 833.88px; 
+                    width: 80.88000000000001px; 
+                    height: 80.88000000000001px;">
+
+
+<div class="widget-data-bignum" style="font-size: 56px;font-weight: 700;line-height: 1.0;text-align: center;color: #00ff9f;">
+    <div class="bignum-value" style="font-size: 3rem; font-weight: bold;">
+            42
+    </div>
+    <div class="bignum-label" style="margin-top: 0.5rem; opacity: 0.7;">
+        Epochs
+    </div>
+</div>
+
+        </div>
+        <div class="edit-widget widget" 
+             data-role="sticker_6"
+             style="left: 1316.0px; 
+                    top: 874.32px; 
+                    width: 80.88000000000001px; 
+                    height: 80.88000000000001px;">
+
+
+<div class="widget-data-trend" style="font-size: 40px;font-weight: 700;line-height: 1.1;text-align: center;color: #00d4ff;">
+    <div class="trend-value" style="font-size: 2rem; font-weight: bold;">
+        0.94
+    </div>
+    <div class="trend-change" style="color: #10b981;">
+↑ 0.08
+    </div>
+    <div class="trend-label" style="margin-top: 0.5rem; opacity: 0.7;">
+        Accuracy
+    </div>
+</div>
+
+        </div>
+    </div>
+</div>
+        </div>
+        
+        <div class="layout-footer">
+                <p>NODE-007 | UPLINK ACTIVE</p>
+        </div>
+    </div>
+</body>
+</html>
+        </div>
+        <div class="slide" data-slide-index="7" id="slide-8">
+            <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UCE Render - Bento.HeroTop</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --color-primary: #00ff9f;
+            --color-secondary: #00d4ff;
+            --color-accent: #ff00ff;
+            --color-background: #0a0e27;
+            --color-text: #e0e7ff;
+            --font-family: sans-serif;
+            --font-heading: sans-serif;
+            --font-size-base: 16px;
+            --line-height: 1.5;
+            --margin-x: 70px;
+            --margin-y: 60px;
+            --gutter: 32px;
+            --header-height: 8%;
+            --footer-height: 6%;
+            --font-h1-size: 56px;
+            --font-h1-weight: bold;
+            --font-h1-line-height: 1.0;
+            --font-h2-size: 40px;
+            --font-h2-weight: bold;
+            --font-h2-line-height: 1.1;
+            --font-h3-size: 28px;
+            --font-h3-weight: semibold;
+            --font-h3-line-height: 1.2;
+            --font-body-size: 18px;
+            --font-body-weight: regular;
+            --font-body-line-height: 1.5;
+            --font-caption-size: 12px;
+            --font-caption-weight: medium;
+            --font-caption-line-height: 1.3;
+            --background-primary: #0a0e27;
+            --background-secondary: #050816;
+        }
+        
+        body {
+            font-family: var(--font-family);
+            font-size: var(--font-size-base);
+            line-height: var(--line-height);
+            color: var(--color-text);
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .layout-container {
+            width: 1920px;
+            height: 1080px;
+            background-color: var(--color-background);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            padding: 60px 70px;
+        }
+        
+        /* Header/Footer reserved areas */
+        .layout-header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 8%;
+            padding: 0 70px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+        }
+        
+        .layout-footer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 6%;
+            padding: 0 70px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+        }
+        
+        /* Content area (widgets auto-layout here, avoiding header/footer) */
+        .layout-content {
+            position: absolute;
+            top: 8%;
+            bottom: 6%;
+            left: 0;
+            right: 0;
+            padding: 0 70px;
+        }
+        
+        .widget {
+            border-radius: var(--border-radius, 8px);
+            background: white;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        /* Typography tokens from theme */
+        h1 {
+            font-size: var(--font-h1-size);
+            font-weight: var(--font-h1-weight);
+            line-height: var(--font-h1-line-height);
+            font-family: var(--font-heading);
+        }
+        
+        h2 {
+            font-size: var(--font-h2-size);
+            font-weight: var(--font-h2-weight);
+            line-height: var(--font-h2-line-height);
+            font-family: var(--font-heading);
+        }
+        
+        h3 {
+            font-size: var(--font-h3-size);
+            font-weight: var(--font-h3-weight);
+            line-height: var(--font-h3-line-height);
+            font-family: var(--font-heading);
+        }
+        
+        p, .widget-type-body {
+            font-size: var(--font-body-size);
+            font-weight: var(--font-body-weight);
+            line-height: var(--font-body-line-height);
+        }
+        
+        .caption, small {
+            font-size: var(--font-caption-size);
+            font-weight: var(--font-caption-weight);
+            line-height: var(--font-caption-line-height);
+        }
+        
+.bento-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: 2fr 1fr;
+    gap: 32px;
+    width: 100%;
+    height: 100%;
+}
+.bento-cell[data-role="hero"] {
+    grid-column: 1 / 4;
+    grid-row: 1;
+}
+
+.bento-cell {
+    min-height: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+    </style>
+</head>
+<body>
+    <div class="layout-container" style="background: #050816;">
+        <div class="layout-header">
+                <p>CLASSIFIED | NEXUS PROTOCOL</p>
+        </div>
+        
+        <div class="layout-content">
+<div class="layout-content">
+    <div class="bento-grid">
+            <div class="bento-cell widget" data-role="hero">
+
+
+<div class="widget-type-display" style="font-size: 56px;font-weight: 700;line-height: 1.0;text-align: center;color: #00ff9f;">
+    <h1 class="display-text">
+        SYSTEM STATUS: OPTIMAL
+    </h1>
+</div>
+
+            </div>
+            <div class="bento-cell widget" data-role="footer_1">
+
+
+<div class="widget-data-trend" style="font-size: 40px;font-weight: 700;line-height: 1.1;text-align: center;color: #00d4ff;">
+    <div class="trend-value" style="font-size: 2rem; font-weight: bold;">
+        156000
+    </div>
+    <div class="trend-change" style="color: #10b981;">
+↑ 18.9
+    </div>
+    <div class="trend-label" style="margin-top: 0.5rem; opacity: 0.7;">
+        API Calls
+    </div>
+</div>
+
+            </div>
+            <div class="bento-cell widget" data-role="footer_2">
+
+
+<div class="widget-data-progress" style="font-size: 12px;font-weight: 500;line-height: 1.3;text-align: center;color: #ff00ff;">
+    <div class="progress-label" style="margin-bottom: 0.5rem;">Security Score</div>
+    <div class="progress-bar" style="width: 100%; height: 20px; background: rgba(0,0,0,0.1); border-radius: 10px; overflow: hidden;">
+        <div class="progress-fill" style="width: 94%; height: 100%; background: currentColor;"></div>
+    </div>
+    <div class="progress-percentage" style="margin-top: 0.25rem; font-size: 0.875rem; opacity: 0.7;">
+        94%
+    </div>
+</div>
+
+            </div>
+            <div class="bento-cell widget" data-role="footer_3">
+
+
+<div class="widget-data-bignum" style="font-size: 56px;font-weight: 700;line-height: 1.0;text-align: center;color: #00ff9f;">
+    <div class="bignum-value" style="font-size: 3rem; font-weight: bold;">
+            99.99%
+    </div>
+    <div class="bignum-label" style="margin-top: 0.5rem; opacity: 0.7;">
+        Availability %
+    </div>
+</div>
+
+            </div>
+    </div>
+</div>
+        </div>
+        
+        <div class="layout-footer">
+                <p>NODE-008 | UPLINK ACTIVE</p>
+        </div>
+    </div>
+</body>
+</html>
+        </div>
+        <div class="slide" data-slide-index="8" id="slide-9">
+            <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UCE Render - Edit.Overlap_Left</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --color-primary: #00ff9f;
+            --color-secondary: #00d4ff;
+            --color-accent: #ff00ff;
+            --color-background: #0a0e27;
+            --color-text: #e0e7ff;
+            --font-family: sans-serif;
+            --font-heading: sans-serif;
+            --font-size-base: 16px;
+            --line-height: 1.5;
+            --margin-x: 70px;
+            --margin-y: 60px;
+            --gutter: 32px;
+            --header-height: 8%;
+            --footer-height: 6%;
+            --font-h1-size: 56px;
+            --font-h1-weight: bold;
+            --font-h1-line-height: 1.0;
+            --font-h2-size: 40px;
+            --font-h2-weight: bold;
+            --font-h2-line-height: 1.1;
+            --font-h3-size: 28px;
+            --font-h3-weight: semibold;
+            --font-h3-line-height: 1.2;
+            --font-body-size: 18px;
+            --font-body-weight: regular;
+            --font-body-line-height: 1.5;
+            --font-caption-size: 12px;
+            --font-caption-weight: medium;
+            --font-caption-line-height: 1.3;
+            --background-primary: #0a0e27;
+            --background-secondary: #050816;
+        }
+        
+        body {
+            font-family: var(--font-family);
+            font-size: var(--font-size-base);
+            line-height: var(--line-height);
+            color: var(--color-text);
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .layout-container {
+            width: 1920px;
+            height: 1080px;
+            background-color: var(--color-background);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            padding: 60px 70px;
+        }
+        
+        /* Header/Footer reserved areas */
+        .layout-header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 8%;
+            padding: 0 70px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+        }
+        
+        .layout-footer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 6%;
+            padding: 0 70px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+        }
+        
+        /* Content area (widgets auto-layout here, avoiding header/footer) */
+        .layout-content {
+            position: absolute;
+            top: 8%;
+            bottom: 6%;
+            left: 0;
+            right: 0;
+            padding: 0 70px;
+        }
+        
+        .widget {
+            border-radius: var(--border-radius, 8px);
+            background: white;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        /* Typography tokens from theme */
+        h1 {
+            font-size: var(--font-h1-size);
+            font-weight: var(--font-h1-weight);
+            line-height: var(--font-h1-line-height);
+            font-family: var(--font-heading);
+        }
+        
+        h2 {
+            font-size: var(--font-h2-size);
+            font-weight: var(--font-h2-weight);
+            line-height: var(--font-h2-line-height);
+            font-family: var(--font-heading);
+        }
+        
+        h3 {
+            font-size: var(--font-h3-size);
+            font-weight: var(--font-h3-weight);
+            line-height: var(--font-h3-line-height);
+            font-family: var(--font-heading);
+        }
+        
+        p, .widget-type-body {
+            font-size: var(--font-body-size);
+            font-weight: var(--font-body-weight);
+            line-height: var(--font-body-line-height);
+        }
+        
+        .caption, small {
+            font-size: var(--font-caption-size);
+            font-weight: var(--font-caption-weight);
+            line-height: var(--font-caption-line-height);
+        }
+        
+.edit-layout {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.edit-widget {
+    position: absolute;
+}
+    </style>
+</head>
+<body>
+    <div class="layout-container" style="background: #0a0e27;">
+        <div class="layout-header">
+                <p>CLASSIFIED | NEXUS PROTOCOL</p>
+        </div>
+        
+        <div class="layout-content">
+<div class="layout-content">
+    <div class="edit-layout">
+        <div class="edit-widget widget" 
+             data-role="back"
+             style="left: 70.0px; 
+                    top: 146.4px; 
+                    width: 1780.0px; 
+                    height: 808.8000000000001px;">
+
+
+<div class="widget-type-display" style="font-size: 56px;font-weight: 700;line-height: 1.0;text-align: center;color: #00ff9f;">
+    <h1 class="display-text">
+        CYBER
+    </h1>
+</div>
+
+        </div>
+        <div class="edit-widget widget" 
+             data-role="card"
+             style="left: 426.0px; 
+                    top: 146.4px; 
+                    width: 1068.0px; 
+                    height: 808.8000000000001px;">
+
+
+<div class="widget-type-quote" style="font-size: 28px;font-weight: 600;line-height: 1.2;text-align: left;color: #00d4ff;">
+    <blockquote>
+        <p>In the digital realm, we don't just build systems—we architect realities. Every line of code is a brushstroke on the canvas of tomorrow.</p>
+        <cite>Anonymous Hacker Collective</cite>
+    </blockquote>
+</div>
+
+        </div>
+    </div>
+</div>
+        </div>
+        
+        <div class="layout-footer">
+                <p>NODE-009 | UPLINK ACTIVE</p>
+        </div>
+    </div>
+</body>
+</html>
+        </div>
+        <div class="slide" data-slide-index="9" id="slide-10">
+            <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UCE Render - Swiss.Asymmetry</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --color-primary: #00ff9f;
+            --color-secondary: #00d4ff;
+            --color-accent: #ff00ff;
+            --color-background: #0a0e27;
+            --color-text: #e0e7ff;
+            --font-family: sans-serif;
+            --font-heading: sans-serif;
+            --font-size-base: 16px;
+            --line-height: 1.5;
+            --margin-x: 70px;
+            --margin-y: 60px;
+            --gutter: 32px;
+            --header-height: 8%;
+            --footer-height: 6%;
+            --font-h1-size: 56px;
+            --font-h1-weight: bold;
+            --font-h1-line-height: 1.0;
+            --font-h2-size: 40px;
+            --font-h2-weight: bold;
+            --font-h2-line-height: 1.1;
+            --font-h3-size: 28px;
+            --font-h3-weight: semibold;
+            --font-h3-line-height: 1.2;
+            --font-body-size: 18px;
+            --font-body-weight: regular;
+            --font-body-line-height: 1.5;
+            --font-caption-size: 12px;
+            --font-caption-weight: medium;
+            --font-caption-line-height: 1.3;
+            --background-primary: #0a0e27;
+            --background-secondary: #050816;
+        }
+        
+        body {
+            font-family: var(--font-family);
+            font-size: var(--font-size-base);
+            line-height: var(--line-height);
+            color: var(--color-text);
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .layout-container {
+            width: 1920px;
+            height: 1080px;
+            background-color: var(--color-background);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            padding: 60px 70px;
+        }
+        
+        /* Header/Footer reserved areas */
+        .layout-header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 8%;
+            padding: 0 70px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+        }
+        
+        .layout-footer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 6%;
+            padding: 0 70px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+        }
+        
+        /* Content area (widgets auto-layout here, avoiding header/footer) */
+        .layout-content {
+            position: absolute;
+            top: 8%;
+            bottom: 6%;
+            left: 0;
+            right: 0;
+            padding: 0 70px;
+        }
+        
+        .widget {
+            border-radius: var(--border-radius, 8px);
+            background: white;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        /* Typography tokens from theme */
+        h1 {
+            font-size: var(--font-h1-size);
+            font-weight: var(--font-h1-weight);
+            line-height: var(--font-h1-line-height);
+            font-family: var(--font-heading);
+        }
+        
+        h2 {
+            font-size: var(--font-h2-size);
+            font-weight: var(--font-h2-weight);
+            line-height: var(--font-h2-line-height);
+            font-family: var(--font-heading);
+        }
+        
+        h3 {
+            font-size: var(--font-h3-size);
+            font-weight: var(--font-h3-weight);
+            line-height: var(--font-h3-line-height);
+            font-family: var(--font-heading);
+        }
+        
+        p, .widget-type-body {
+            font-size: var(--font-body-size);
+            font-weight: var(--font-body-weight);
+            line-height: var(--font-body-line-height);
+        }
+        
+        .caption, small {
+            font-size: var(--font-caption-size);
+            font-weight: var(--font-caption-weight);
+            line-height: var(--font-caption-line-height);
+        }
+        
+.swiss-layout {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    height: 100%;
+}
+.swiss-layout .widget {
+    width: 60%;
+    margin-left: 10%;
+}
+    </style>
+</head>
+<body>
+    <div class="layout-container" style="background: #050816;">
+        <div class="layout-header">
+                <p>CLASSIFIED | NEXUS PROTOCOL</p>
+        </div>
+        
+        <div class="layout-content">
+<div class="layout-content">
+    <div class="swiss-layout">
+            <div class="widget" data-role="content">
+
+
+<div class="widget-type-quote" style="font-size: 28px;font-weight: 600;line-height: 1.2;text-align: left;color: #00d4ff;">
+    <blockquote>
+        <p>The future belongs to those who can harness the chaos of data and transform it into actionable intelligence.</p>
+        <cite>Digital Manifesto 2025</cite>
+    </blockquote>
+</div>
+
+            </div>
+    </div>
+</div>
+        </div>
+        
+        <div class="layout-footer">
+                <p>NODE-010 | UPLINK ACTIVE</p>
+        </div>
+    </div>
+</body>
+</html>
+        </div>
+    </div>
+
+    <div class="navigation">
+        <button class="nav-button" id="prev-button">← Previous</button>
+        <div class="slide-counter">
+            <span id="current-slide">1</span> / <span id="total-slides">10</span>
+        </div>
+        <div class="slide-dots">
+            <div class="dot active" data-slide="0"></div>
+            <div class="dot" data-slide="1"></div>
+            <div class="dot" data-slide="2"></div>
+            <div class="dot" data-slide="3"></div>
+            <div class="dot" data-slide="4"></div>
+            <div class="dot" data-slide="5"></div>
+            <div class="dot" data-slide="6"></div>
+            <div class="dot" data-slide="7"></div>
+            <div class="dot" data-slide="8"></div>
+            <div class="dot" data-slide="9"></div>
+        </div>
+        <button class="nav-button" id="next-button">Next →</button>
+    </div>
+
+    <div class="keyboard-hints">
+        <kbd>←</kbd> <kbd>→</kbd> Navigate | <kbd>Home</kbd> <kbd>End</kbd> First/Last
+    </div>
+
+    <script>
+        const slides = document.querySelectorAll('.slide');
+        const dots = document.querySelectorAll('.dot');
+        const prevButton = document.getElementById('prev-button');
+        const nextButton = document.getElementById('next-button');
+        const currentSlideSpan = document.getElementById('current-slide');
+        let currentIndex = 0;
+
+        function showSlide(index) {
+            // Clamp index
+            index = Math.max(0, Math.min(index, slides.length - 1));
+            
+            // Update slides
+            slides.forEach((slide, i) => {
+                slide.classList.toggle('active', i === index);
+            });
+            
+            // Update dots
+            dots.forEach((dot, i) => {
+                dot.classList.toggle('active', i === index);
+            });
+            
+            // Update counter
+            currentSlideSpan.textContent = index + 1;
+            
+            // Update buttons
+            prevButton.disabled = index === 0;
+            nextButton.disabled = index === slides.length - 1;
+            
+            currentIndex = index;
+        }
+
+        // Navigation buttons
+        prevButton.addEventListener('click', () => showSlide(currentIndex - 1));
+        nextButton.addEventListener('click', () => showSlide(currentIndex + 1));
+
+        // Dot navigation
+        dots.forEach((dot, index) => {
+            dot.addEventListener('click', () => showSlide(index));
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            switch(e.key) {
+                case 'ArrowLeft':
+                case 'ArrowUp':
+                    e.preventDefault();
+                    showSlide(currentIndex - 1);
+                    break;
+                case 'ArrowRight':
+                case 'ArrowDown':
+                case ' ':
+                    e.preventDefault();
+                    showSlide(currentIndex + 1);
+                    break;
+                case 'Home':
+                    e.preventDefault();
+                    showSlide(0);
+                    break;
+                case 'End':
+                    e.preventDefault();
+                    showSlide(slides.length - 1);
+                    break;
+            }
+        });
+
+        // Initialize
+        showSlide(0);
+    </script>
+</body>
+</html>

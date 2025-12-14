@@ -1,5 +1,18 @@
 {% extends "base.html.j2" %}
 
+{# 
+Focus Layout Template
+Supports: Focus.Solar_System, Focus.Offset_Title
+
+Parameters for Solar_System:
+- connector: Type of connector between planets (optional)
+  * 'none' (default): No connectors
+  * 'line': Solid lines connecting planets in a ring
+  * 'dashed': Dashed lines
+  * 'arrow': Solid lines with arrow markers
+  * 'dashed_arrow': Dashed lines with arrow markers (recommended)
+#}
+
 {% block layout_styles %}
 .focus-layout {
     position: relative;
@@ -13,19 +26,81 @@
 {% endblock %}
 
 {% block layout_content %}
-<div class="layout-content">
-    <div class="focus-layout">
-        {% for slot_name, widget_info in widgets.items() %}
-        <div class="focus-widget widget" 
-             data-role="{{ slot_name }}"
-             style="left: {{ widget_info.bounds.x }}px; 
-                    top: {{ widget_info.bounds.y }}px; 
-                    width: {{ widget_info.bounds.width }}px; 
-                    height: {{ widget_info.bounds.height }}px;">
-            {% set widget = widget_info %}
-            {% include 'widgets/_widget_content.html.j2' %}
-        </div>
+<div class="focus-layout">
+    {% set sun_widget = widgets.get('sun') %}
+    {% set connector = parameters.get('connector', 'none') %}
+    {% if sun_widget and connector != 'none' %}
+    {# This is Solar_System layout with connectors enabled #}
+    <svg style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1;">
+        {% if connector == 'arrow' or connector == 'dashed_arrow' %}
+        <defs>
+            <marker id="arrowhead" markerWidth="6" markerHeight="6" refX="5" refY="2" orient="auto">
+                <polygon points="0 0, 6 2, 0 4" fill="var(--color-primary, rgba(0, 255, 159, 0.6))" />
+            </marker>
+        </defs>
+        {% endif %}
+        
+        {# Collect all planet positions #}
+        {% set planet_positions = [] %}
+        {% for i in range(1, 7) %}
+        {% set planet_widget = widgets.get('planet_' ~ i) %}
+        {% if planet_widget %}
+        {% set _ = planet_positions.append({
+            'x': planet_widget.relative_bounds.x + planet_widget.relative_bounds.width / 2,
+            'y': planet_widget.relative_bounds.y + planet_widget.relative_bounds.height / 2
+        }) %}
+        {% endif %}
         {% endfor %}
+        
+        {# Draw connections based on connector type #}
+        {% for i in range(planet_positions|length) %}
+        {% set next_i = (i + 1) % planet_positions|length %}
+        {% set p1 = planet_positions[i] %}
+        {% set p2 = planet_positions[next_i] %}
+        {# Calculate direction vector and shorten line to show arrow in the gap #}
+        {% set dx = p2.x - p1.x %}
+        {% set dy = p2.y - p1.y %}
+        {% set distance = (dx * dx + dy * dy) ** 0.5 %}
+        {# Short arrow in the middle of the gap - much shorter line #}
+        {% set gap_start = distance * 0.4 %}
+        {% set gap_end = distance * 0.6 %}
+        {% set x1 = p1.x + (dx / distance * gap_start) %}
+        {% set y1 = p1.y + (dy / distance * gap_start) %}
+        {% set x2 = p1.x + (dx / distance * gap_end) %}
+        {% set y2 = p1.y + (dy / distance * gap_end) %}
+        {% if connector == 'line' %}
+        <line x1="{{ x1 }}" y1="{{ y1 }}" 
+              x2="{{ x2 }}" y2="{{ y2 }}"
+              stroke="var(--color-primary, rgba(0, 255, 159, 0.4))" 
+              stroke-width="2" />
+        {% elif connector == 'dashed' or connector == 'dashed_arrow' %}
+        <line x1="{{ x1 }}" y1="{{ y1 }}" 
+              x2="{{ x2 }}" y2="{{ y2 }}"
+              stroke="var(--color-primary, rgba(0, 255, 159, 0.4))" 
+              stroke-width="2" 
+              stroke-dasharray="8,4"
+              {% if connector == 'dashed_arrow' %}marker-end="url(#arrowhead)"{% endif %} />
+        {% elif connector == 'arrow' %}
+        <line x1="{{ x1 }}" y1="{{ y1 }}" 
+              x2="{{ x2 }}" y2="{{ y2 }}"
+              stroke="var(--color-primary, rgba(0, 255, 159, 0.4))" 
+              stroke-width="2" 
+              marker-end="url(#arrowhead)" />
+        {% endif %}
+        {% endfor %}
+    </svg>
+    {% endif %}
+    
+    {% for slot_name, widget_info in widgets.items() %}
+    <div class="focus-widget widget" 
+         data-role="{{ slot_name }}"
+         style="left: {{ widget_info.relative_bounds.x }}px; 
+                top: {{ widget_info.relative_bounds.y }}px; 
+                width: {{ widget_info.relative_bounds.width }}px; 
+                height: {{ widget_info.relative_bounds.height }}px; z-index: 10; position: absolute;">
+        {% set widget = widget_info %}
+        {% include 'widgets/_widget_content.html.j2' %}
     </div>
+    {% endfor %}
 </div>
 {% endblock %}

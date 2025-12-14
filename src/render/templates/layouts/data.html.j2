@@ -13,19 +13,17 @@
 {% endblock %}
 
 {% block layout_content %}
-<div class="layout-content">
-    <div class="data-layout">
-        {% for slot_name, widget_info in widgets.items() %}
-        <div class="data-widget widget" 
-             data-role="{{ slot_name }}"
-             style="left: {{ widget_info.bounds.x }}px; 
-                    top: {{ widget_info.bounds.y }}px; 
-                    width: {{ widget_info.bounds.width }}px; 
-                    height: {{ widget_info.bounds.height }}px;">
-            {% set widget = widget_info %}
-            {% include 'widgets/_widget_content.html.j2' %}
-        </div>
-        {% endfor %}
+<div class="data-layout">
+    {% for slot_name, widget_info in widgets.items() %}
+    <div class="data-widget widget" 
+         data-role="{{ slot_name }}"
+         style="left: {{ widget_info.relative_bounds.x }}px; 
+                top: {{ widget_info.relative_bounds.y }}px; 
+                width: {{ widget_info.relative_bounds.width }}px; 
+                height: {{ widget_info.relative_bounds.height }}px;">
+        {% set widget = widget_info %}
+        {% include 'widgets/_widget_content.html.j2' %}
     </div>
+    {% endfor %}
 </div>
 {% endblock %}

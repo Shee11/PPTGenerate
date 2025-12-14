@@ -1,13 +1,13 @@
 {# Typography widgets rendering #}
 {% if widget_type == 'Type.Display' %}
-<div class="widget-type-display" style="{{ render_style(applied_style) }}">
+<div class="widget-type-display" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; {{ render_style(applied_style) }}">
     <h1 class="display-text">
         {{ widget_data.content }}
     </h1>
 </div>
 
 {% elif widget_type == 'Type.Heading' %}
-<div class="widget-type-heading" style="{{ render_style(applied_style) }}">
+<div class="widget-type-heading" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; {{ render_style(applied_style) }}">
     {% set level = widget_data.level %}
     {% if level == 1 %}
         <h1>{{ widget_data.content }}</h1>
@@ -25,7 +25,7 @@
 </div>
 
 {% elif widget_type == 'Type.Body' %}
-<div class="widget-type-body" style="{{ render_style(applied_style) }}">
+<div class="widget-type-body" style="width: 100%; height: 100%; display: flex; align-items: center; {{ render_style(applied_style) }}">
     <p>{{ widget_data.content }}</p>
 </div>
 
@@ -47,11 +47,11 @@
 </div>
 
 {% elif widget_type == 'Type.Quote' %}
-<div class="widget-type-quote" style="{{ render_style(applied_style) }}">
-    <blockquote>
-        <p>{{ widget_data.content }}</p>
+<div class="widget-type-quote" style="width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; {{ render_style(applied_style) }} border-left: 4px solid var(--color-primary, #2563eb); padding-left: 1.5rem; border-radius: 8px;">
+    <blockquote style="margin: 0;">
+        <p style="margin-bottom: 0.5rem;">{{ widget_data.content }}</p>
         {% if widget_data.citation %}
-        <cite>{{ widget_data.citation }}</cite>
+        <cite style="opacity: 0.7; font-style: italic;">{{ widget_data.citation }}</cite>
         {% endif %}
     </blockquote>
 </div>

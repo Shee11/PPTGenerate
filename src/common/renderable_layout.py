@@ -69,6 +69,7 @@ class RenderableLayout(BaseModel):
     total_slides: Optional[int] = Field(default=None, description="Total number of slides")
     slide_id: Optional[str] = Field(default=None, description="Slide identifier")
     background_override: Optional[str] = Field(default=None, description="Background color from sequence pattern")
+    parameters: Dict[str, Any] = Field(default_factory=dict, description="Strategy-specific parameters")
 
     def get_assignment(self, role: str) -> WidgetAssignment | None:
         """Get widget assignment by slot role.

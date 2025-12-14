@@ -1,41 +1,46 @@
 {% extends "base.html.j2" %}
 
 {% block layout_styles %}
+{% if slide_index %}
+{% set scope = '#slide-' ~ slide_index ~ ' ' %}
+{% else %}
+{% set scope = '' %}
+{% endif %}
 {% if strategy == "Swiss.Poster" %}
-.swiss-layout {
+{{ scope }}.swiss-layout {
     display: flex;
     align-items: center;
     justify-content: center;
     height: 100%;
 }
-.swiss-layout .widget {
+{{ scope }}.swiss-layout .widget {
     width: 100%;
     height: 100%;
 }
 {% elif strategy == "Swiss.Asymmetry" %}
-.swiss-layout {
+{{ scope }}.swiss-layout {
     display: flex;
     align-items: center;
     justify-content: flex-start;
     height: 100%;
 }
-.swiss-layout .widget {
+{{ scope }}.swiss-layout .widget {
     width: 60%;
     margin-left: 10%;
 }
 {% elif strategy == "Swiss.SplitTypo" %}
-.swiss-layout {
+{{ scope }}.swiss-layout {
     display: flex;
     flex-direction: column;
     height: 100%;
 }
-.swiss-layout .widget[data-role="headline"] {
+{{ scope }}.swiss-layout .widget[data-role="headline"] {
     flex: 0 0 35%;
     display: flex;
     align-items: center;
     justify-content: center;
 }
-.swiss-layout .widget[data-role="body"] {
+{{ scope }}.swiss-layout .widget[data-role="body"] {
     flex: 0 0 65%;
     display: flex;
     align-items: center;
@@ -45,9 +50,8 @@
 {% endblock %}
 
 {% block layout_content %}
-<div class="layout-content">
-    <div class="swiss-layout">
-        {% if strategy == "Swiss.Poster" %}
+<div class="swiss-layout">
+    {% if strategy == "Swiss.Poster" %}
             {% set widget = widgets.get('headline') %}
             {% if widget %}
             <div class="widget" data-role="headline">
@@ -93,7 +97,6 @@
                 <div class="empty-slot">Empty body slot</div>
             </div>
             {% endif %}
-        {% endif %}
-    </div>
+    {% endif %}
 </div>
 {% endblock %}

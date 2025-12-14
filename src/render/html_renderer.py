@@ -1,10 +1,12 @@
 """HTML renderer for converting RenderableLayout to HTML."""
+import re
 from pathlib import Path
 from typing import List, Optional, Union
 
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 from src.common.renderable_layout import RenderableLayout
+from src.common.spacing_utils import parse_spacing
 
 
 class HTMLRenderer:
@@ -49,11 +51,12 @@ class HTMLRenderer:
         else:
             return self.render_single_slide(renderable)
 
-    def render_single_slide(self, renderable: RenderableLayout) -> str:
+    def render_single_slide(self, renderable: RenderableLayout, slide_index: int = None) -> str:
         """Render a single RenderableLayout to HTML.
         
         Args:
             renderable: Layout with all widget assignments and styling
+            slide_index: Optional 1-based slide index for CSS scoping in multi-slide presentations
             
         Returns:
             Complete HTML string
@@ -66,13 +69,29 @@ class HTMLRenderer:
 
         # Prepare widget data for template
         widget_data = {}
+        
+        # Parse margin values (they are strings like "70px" or "5%")
+        margin_x_value = parse_spacing(renderable.margin_x, reference=renderable.width)
+        margin_y_value = parse_spacing(renderable.margin_y, reference=renderable.height)
+        header_height_value = parse_spacing(renderable.header_height, reference=renderable.height)
+        
         for assignment in renderable.widget_assignments:
+            # Convert absolute bounds to relative bounds (relative to layout container)
+            # Layout container is positioned at (margin_x, margin_y + header_height)
+            relative_bounds = {
+                "x": assignment.bounds.x - margin_x_value,
+                "y": assignment.bounds.y - margin_y_value - header_height_value,
+                "width": assignment.bounds.width,
+                "height": assignment.bounds.height,
+            }
+            
             widget_data[assignment.role] = {
                 "type": assignment.widget.get_widget_type(),
                 "data": assignment.widget.render_data(),
                 "size": str(assignment.slot.size),
                 "applied_style": assignment.applied_style,  # Pass resolved styles
-                "bounds": assignment.bounds,  # Pass absolute position/size
+                "bounds": assignment.bounds,  # Keep absolute bounds for reference
+                "relative_bounds": relative_bounds,  # Add relative bounds for positioning
             }
 
         # Prepare header/footer widget data
@@ -100,6 +119,7 @@ class HTMLRenderer:
             style_props=renderable.style_props,
             canvas_width=renderable.width,
             canvas_height=renderable.height,
+            slide_index=slide_index,
             # Pass theme-derived layout properties
             margin_x=renderable.margin_x,
             margin_y=renderable.margin_y,
@@ -116,9 +136,62 @@ class HTMLRenderer:
             total_slides=renderable.total_slides,
             slide_id=renderable.slide_id,
             background_override=renderable.background_override,
+            # Strategy parameters
+            parameters=getattr(renderable, 'parameters', {}),
         )
 
         return html
+
+    def _extract_slide_parts(self, html: str) -> dict:
+        """Extract CSS and body content from a single slide HTML.
+        
+        Args:
+            html: Complete HTML document from render_single_slide
+            
+        Returns:
+            Dict with 'layout_styles' (layout-specific CSS) and 'body_content' (layout-container div)
+        """
+        # Extract layout-specific styles (between {% block layout_styles %} markers)
+        # These are the styles that come after typography definitions
+        layout_styles_match = re.search(
+            r'/\*.*?Typography tokens from theme.*?\*/.*?</style>',
+            html,
+            re.DOTALL
+        )
+        
+        layout_styles = ''
+        if layout_styles_match:
+            # Extract everything after the caption style and before </style>
+            after_caption = html[layout_styles_match.end() - 8:]  # -8 to go back before </style>
+            # Find the actual layout styles (starts after "caption, small" block)
+            caption_end = html.rfind('.caption, small', 0, layout_styles_match.end())
+            if caption_end != -1:
+                # Find the closing brace of caption block
+                closing_brace = html.find('}', caption_end)
+                if closing_brace != -1:
+                    # Extract from after caption block to </style>
+                    style_start = closing_brace + 1
+                    style_end = html.find('</style>', style_start)
+                    if style_end != -1:
+                        layout_styles = html[style_start:style_end].strip()
+        
+        # Extract body content (the .layout-container div)
+        body_match = re.search(
+            r'<div class="layout-container"[^>]*>.*?</div>\s*</body>',
+            html,
+            re.DOTALL
+        )
+        
+        body_content = ''
+        if body_match:
+            body_content = body_match.group(0)
+            # Remove the closing </body> tag
+            body_content = body_content.replace('</body>', '').strip()
+        
+        return {
+            'layout_styles': layout_styles,
+            'body_content': body_content,
+        }
 
     def render_multi_slide(self, renderables: List[RenderableLayout]) -> str:
         """Render multiple slides with navigation.
@@ -132,23 +205,36 @@ class HTMLRenderer:
         if not renderables:
             raise ValueError("Cannot render empty slide list")
 
-        # Render each slide
-        slides_html = []
+        # Render each slide and extract CSS + body content
+        slides_data = []
+        all_slide_styles = []  # Collect all layout-specific CSS
+        
         for i, renderable in enumerate(renderables):
-            slide_html = self.render_single_slide(renderable)
-            slides_html.append({
+            # Render complete HTML for this slide
+            slide_html = self.render_single_slide(renderable, slide_index=i+1)
+            
+            # Extract CSS and body content
+            parts = self._extract_slide_parts(slide_html)
+            
+            slides_data.append({
                 'index': i,
-                'html': slide_html,
+                'body_content': parts['body_content'],
                 'id': renderable.slide_id or f"slide-{i+1}",
                 'strategy': renderable.strategy_name,
+                'background': renderable.background_override,
             })
+            
+            # Collect layout-specific CSS
+            if parts['layout_styles']:
+                all_slide_styles.append(parts['layout_styles'])
 
         # Load multi-slide template
         template = self.env.get_template("multi_slide.html.j2")
 
         # Render with navigation
         html = template.render(
-            slides=slides_html,
+            slides=slides_data,
+            all_slide_styles='\n'.join(all_slide_styles),
             total_slides=len(renderables),
             canvas_width=renderables[0].width,
             canvas_height=renderables[0].height,

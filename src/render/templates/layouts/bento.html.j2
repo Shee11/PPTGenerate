@@ -69,9 +69,8 @@
 {% endblock %}
 
 {% block layout_content %}
-<div class="layout-content">
-    <div class="bento-grid">
-        {% if strategy == "Bento.Standard" %}
+<div class="bento-grid">
+    {% if strategy == "Bento.Standard" %}
             {% for i in range(1, 7) %}
             <div class="bento-cell widget" data-role="cell_{{ i }}">
                 {% set widget = widgets.get('cell_' ~ i) %}
@@ -145,7 +144,6 @@
                 {% endif %}
             </div>
             {% endfor %}
-        {% endif %}
-    </div>
+    {% endif %}
 </div>
 {% endblock %}

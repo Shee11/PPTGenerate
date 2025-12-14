@@ -1,4 +1,6 @@
 """Edit layout strategies with overlap and collage effects."""
+import math
+import random
 from typing import List, Dict
 
 from src.common.bounds import Bounds
@@ -111,6 +113,9 @@ class EditMagazineCollageStrategy:
         [sticker]    [sticker]
              [sticker] [sticker]
         
+        Hero and stickers are sized based on their measured content size,
+        creating a tight composition with minimal wasted space.
+        
         Args:
             widgets: List of widgets to layout
             context: Layout context
@@ -120,44 +125,117 @@ class EditMagazineCollageStrategy:
         """
         bounds_map: Dict[str, Bounds] = {}
         
-        # Hero centered, 60% of width and height
-        hero_width = context.content_width * 0.6
-        hero_height = context.content_height * 0.6
-        hero_x = context.content_x + (context.content_width * 0.2)
-        hero_y = context.content_y + (context.content_height * 0.2)
+        # Find hero widget to get its measured size
+        hero_widget = next((w for w in widgets if w.role == "hero"), None)
         
-        # Sticker size (10% of content area)
-        sticker_size = min(context.content_width, context.content_height) * 0.1
+        # Calculate hero size based on measured content
+        if hero_widget and hero_widget.measured_size:
+            # Use measured size with padding (15% for hero - tighter spacing)
+            hero_width = hero_widget.measured_size.width * 1.15
+            hero_height = hero_widget.measured_size.height * 1.15
+            
+            # Constrain only to maximum bounds (don't enforce minimum)
+            max_hero_width = context.content_width * 0.8
+            max_hero_height = context.content_height * 0.8
+            
+            hero_width = min(hero_width, max_hero_width)
+            hero_height = min(hero_height, max_hero_height)
+        else:
+            # Fallback to 60% if no measured size
+            hero_width = context.content_width * 0.6
+            hero_height = context.content_height * 0.6
         
-        # Predefined sticker positions (scattered around hero)
-        sticker_positions = [
-            (0.05, 0.1),   # top-left
-            (0.75, 0.05),  # top-right
-            (0.1, 0.55),   # middle-left
-            (0.8, 0.5),    # middle-right
-            (0.3, 0.85),   # bottom-left
-            (0.7, 0.9),    # bottom-right
-        ]
+        # Center the hero
+        hero_x = context.content_x + (context.content_width - hero_width) / 2
+        hero_y = context.content_y + (context.content_height - hero_height) / 2
         
+        # Hero bounds for collision detection
+        hero_bounds = Bounds(x=hero_x, y=hero_y, width=hero_width, height=hero_height)
+        
+        # Minimum size fallback (12% of content area)
+        min_sticker_size = min(context.content_width, context.content_height) * 0.12
+        
+        # Maximum size limit (20% of content area to avoid too large stickers)
+        max_sticker_size = min(context.content_width, context.content_height) * 0.20
+        
+        # Helper function to check bounds collision
+        def bounds_collide(b1: Bounds, b2: Bounds, margin: float = 10) -> bool:
+            """Check if two bounds overlap with optional margin."""
+            return not (b1.x + b1.width + margin < b2.x or
+                       b2.x + b2.width + margin < b1.x or
+                       b1.y + b1.height + margin < b2.y or
+                       b2.y + b2.height + margin < b1.y)
+        
+        # Collect all sticker widgets with their sizes
+        stickers = []
         for widget in widgets:
-            if widget.role == "hero":
-                bounds_map["hero"] = Bounds(
-                    x=hero_x,
-                    y=hero_y,
-                    width=hero_width,
-                    height=hero_height
-                )
-            elif widget.role.startswith("sticker_"):
-                # Extract sticker number (1-6)
-                sticker_num = int(widget.role.split("_")[1]) - 1
-                if sticker_num < len(sticker_positions):
-                    pos_x, pos_y = sticker_positions[sticker_num]
-                    bounds_map[widget.role] = Bounds(
-                        x=context.content_x + (context.content_width * pos_x),
-                        y=context.content_y + (context.content_height * pos_y),
-                        width=sticker_size,
-                        height=sticker_size
-                    )
+            if widget.role.startswith("sticker_"):
+                # Calculate sticker size
+                if widget.measured_size:
+                    sticker_width = widget.measured_size.width * 1.1
+                    sticker_height = widget.measured_size.height * 1.1
+                    sticker_width = max(min_sticker_size, min(sticker_width, max_sticker_size))
+                    sticker_height = max(min_sticker_size, min(sticker_height, max_sticker_size))
+                    sticker_size = max(sticker_width, sticker_height)
+                else:
+                    sticker_size = min_sticker_size
+                
+                stickers.append({
+                    'role': widget.role,
+                    'size': sticker_size
+                })
+        
+        # Generate random initial positions around hero and push away until no collision
+        hero_center_x = hero_x + hero_width / 2
+        hero_center_y = hero_y + hero_height / 2
+        
+        for sticker in stickers:
+            # Random angle and initial distance from hero center
+            angle = random.uniform(0, 2 * math.pi)
+            initial_distance = min(hero_width, hero_height) * 0.3
+            
+            # Start position near hero
+            pos_x = hero_center_x + math.cos(angle) * initial_distance - sticker['size'] / 2
+            pos_y = hero_center_y + math.sin(angle) * initial_distance - sticker['size'] / 2
+            
+            # Push away from hero and other stickers until no collision
+            max_iterations = 50
+            push_step = 15  # pixels to push per iteration
+            
+            for _ in range(max_iterations):
+                current_bounds = Bounds(x=pos_x, y=pos_y, width=sticker['size'], height=sticker['size'])
+                
+                # Check collision with hero
+                collision = bounds_collide(current_bounds, hero_bounds, margin=15)
+                
+                # Check collision with already placed stickers
+                if not collision:
+                    for placed_role, placed_bounds in bounds_map.items():
+                        if placed_role != 'hero':
+                            if bounds_collide(current_bounds, placed_bounds, margin=10):
+                                collision = True
+                                break
+                
+                # No collision - we're done
+                if not collision:
+                    # Make sure within canvas bounds
+                    pos_x = max(context.content_x, min(pos_x, context.content_x + context.content_width - sticker['size']))
+                    pos_y = max(context.content_y, min(pos_y, context.content_y + context.content_height - sticker['size']))
+                    break
+                
+                # Push away from hero along the angle
+                pos_x += math.cos(angle) * push_step
+                pos_y += math.sin(angle) * push_step
+            
+            bounds_map[sticker['role']] = Bounds(
+                x=pos_x,
+                y=pos_y,
+                width=sticker['size'],
+                height=sticker['size']
+            )
+        
+        # Add hero to bounds_map
+        bounds_map["hero"] = hero_bounds
         
         return bounds_map
 

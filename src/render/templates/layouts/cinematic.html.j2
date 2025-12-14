@@ -37,9 +37,8 @@
 {% endblock %}
 
 {% block layout_content %}
-<div class="layout-content">
-    <div class="cinematic-layout">
-        {% if strategy == "Cinematic.Split_50_50" %}
+<div class="cinematic-layout">
+    {% if strategy == "Cinematic.Split_50_50" %}
             {% set left_widget = widgets.get('left') %}
             <div class="cinematic-panel widget" data-role="left">
                 {% set widget = left_widget %}
@@ -89,7 +88,6 @@
                     <div class="empty-slot">Empty stage</div>
                 {% endif %}
             </div>
-        {% endif %}
-    </div>
+    {% endif %}
 </div>
 {% endblock %}

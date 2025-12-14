@@ -136,13 +136,99 @@
             font-family: monospace;
             font-weight: bold;
         }
+
+        /* Base layout styles */
+        .layout-container {
+            width: {{ canvas_width }}px;
+            height: {{ canvas_height }}px;
+            background-color: var(--color-background);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            padding: 60px 70px;
+        }
+        
+        .layout-header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--header-height);
+            padding: 0 var(--margin-x);
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+        }
+        
+        .layout-footer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: var(--footer-height);
+            padding: 0 var(--margin-x);
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+        }
+        
+        .layout-content {
+            position: absolute;
+            top: var(--header-height);
+            bottom: var(--footer-height);
+            left: 0;
+            right: 0;
+            padding: var(--margin-y) var(--margin-x);
+        }
+        
+        .widget {
+            border-radius: var(--border-radius, 8px);
+            background: white;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            font-size: var(--font-h1-size);
+            font-weight: var(--font-h1-weight);
+            line-height: var(--font-h1-line-height);
+            font-family: var(--font-heading);
+        }
+        
+        h2 {
+            font-size: var(--font-h2-size);
+            font-weight: var(--font-h2-weight);
+            line-height: var(--font-h2-line-height);
+            font-family: var(--font-heading);
+        }
+        
+        h3 {
+            font-size: var(--font-h3-size);
+            font-weight: var(--font-h3-weight);
+            line-height: var(--font-h3-line-height);
+            font-family: var(--font-heading);
+        }
+        
+        p, .widget-type-body {
+            font-size: var(--font-body-size);
+            font-weight: var(--font-body-weight);
+            line-height: var(--font-body-line-height);
+        }
+        
+        .caption, small {
+            font-size: var(--font-caption-size);
+            font-weight: var(--font-caption-weight);
+            line-height: var(--font-caption-line-height);
+        }
+
+        /* Layout-specific styles for all slides */
+        {{ all_slide_styles | safe }}
     </style>
-</head>
 <body>
     <div class="slide-deck">
         {% for slide in slides %}
         <div class="slide{% if loop.first %} active{% endif %}" data-slide-index="{{ slide.index }}" id="{{ slide.id }}">
-            {{ slide.html | safe }}
+            {{ slide.body_content | safe }}
         </div>
         {% endfor %}
     </div>

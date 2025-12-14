@@ -409,6 +409,9 @@ class LayoutEngine:
             layout.slide_number = slide_index + 1
             layout.total_slides = len(active_slides)
             layout.slide_id = slide.id
+            
+            # Pass strategy-specific parameters
+            layout.parameters = slide.parameters
 
             renderable_layouts.append(layout)
 

@@ -33,6 +33,10 @@ class Slide(PatchableContextBase):
         default_factory=dict,
         description="Optional style overrides for this slide"
     )
+    parameters: Dict[str, Any] = Field(
+        default_factory=dict,
+        description="Strategy-specific parameters (e.g., connector for Solar_System)"
+    )
     
     def format_abstract(self) -> str:
         """Format slide as abstract."""

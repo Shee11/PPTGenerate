@@ -1,0 +1,2122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Slide Presentation</title>
+    <style>
+        :root {
+            --color-primary: #1e3a8a;
+            --color-secondary: #475569;
+            --color-accent: #d97706;
+            --color-background: #f8f9fa;
+            --color-text: #1e293b;
+            --font-family: sans-serif;
+            --font-heading: sans-serif;
+            --font-size-base: 16px;
+            --line-height: 1.5;
+            --margin-x: 60px;
+            --margin-y: 50px;
+            --gutter: 28px;
+            --header-height: 10%;
+            --footer-height: 8%;
+            --font-h1-size: 52px;
+            --font-h1-weight: bold;
+            --font-h1-line-height: 1.1;
+            --font-h2-size: 38px;
+            --font-h2-weight: semibold;
+            --font-h2-line-height: 1.2;
+            --font-h3-size: 26px;
+            --font-h3-weight: semibold;
+            --font-h3-line-height: 1.3;
+            --font-body-size: 18px;
+            --font-body-weight: regular;
+            --font-body-line-height: 1.6;
+            --font-caption-size: 14px;
+            --font-caption-weight: regular;
+            --font-caption-line-height: 1.4;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-family, 'Inter, system-ui, sans-serif');
+            background: #1a1a1a;
+            overflow: hidden;
+        }
+
+        .slide-deck {
+            position: relative;
+            width: 1920px;
+            height: 1080px;
+            margin: 20px auto;
+            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        .slide.active {
+            opacity: 1;
+            visibility: visible;
+            z-index: 1;
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 15px 30px;
+            border-radius: 50px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+
+        .nav-button {
+            background: var(--color-primary, #2563eb);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .nav-button:hover:not(:disabled) {
+            background: var(--color-accent, #f59e0b);
+            transform: translateY(-2px);
+        }
+
+        .nav-button:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .slide-counter {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1e293b;
+            min-width: 80px;
+            text-align: center;
+        }
+
+        .slide-dots {
+            display: flex;
+            gap: 8px;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #cbd5e1;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .dot.active {
+            background: var(--color-primary, #2563eb);
+            transform: scale(1.3);
+        }
+
+        .dot:hover {
+            background: var(--color-accent, #f59e0b);
+        }
+
+        /* Keyboard hints */
+        .keyboard-hints {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 12px;
+            color: #64748b;
+            z-index: 1000;
+        }
+
+        .keyboard-hints kbd {
+            background: #f1f5f9;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-deck">
+        <div class="slide active" data-slide-index="0" id="slide-1">
+            <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UCE Render - Bento.Standard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --color-primary: #1e3a8a;
+            --color-secondary: #475569;
+            --color-accent: #d97706;
+            --color-background: #f8f9fa;
+            --color-text: #1e293b;
+            --font-family: sans-serif;
+            --font-heading: sans-serif;
+            --font-size-base: 16px;
+            --line-height: 1.5;
+            --margin-x: 60px;
+            --margin-y: 50px;
+            --gutter: 28px;
+            --header-height: 10%;
+            --footer-height: 8%;
+            --font-h1-size: 52px;
+            --font-h1-weight: bold;
+            --font-h1-line-height: 1.1;
+            --font-h2-size: 38px;
+            --font-h2-weight: semibold;
+            --font-h2-line-height: 1.2;
+            --font-h3-size: 26px;
+            --font-h3-weight: semibold;
+            --font-h3-line-height: 1.3;
+            --font-body-size: 18px;
+            --font-body-weight: regular;
+            --font-body-line-height: 1.6;
+            --font-caption-size: 14px;
+            --font-caption-weight: regular;
+            --font-caption-line-height: 1.4;
+        }
+        
+        body {
+            font-family: var(--font-family);
+            font-size: var(--font-size-base);
+            line-height: var(--line-height);
+            color: var(--color-text);
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .layout-container {
+            width: 1920px;
+            height: 1080px;
+            background-color: var(--color-background);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            padding: 50px 60px;
+        }
+        
+        /* Header/Footer reserved areas */
+        .layout-header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 10%;
+            padding: 0 60px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            border-bottom: 1px solid var(--color-secondary);
+        }
+        
+        .layout-footer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 8%;
+            padding: 0 60px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            border-top: 1px solid var(--color-secondary);
+        }
+        
+        /* Content area (widgets auto-layout here, avoiding header/footer) */
+        .layout-content {
+            position: absolute;
+            top: 10%;
+            bottom: 8%;
+            left: 0;
+            right: 0;
+            padding: 0 60px;
+        }
+        
+        .widget {
+            border-radius: var(--border-radius, 8px);
+            background: white;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        /* Typography tokens from theme */
+        h1 {
+            font-size: var(--font-h1-size);
+            font-weight: var(--font-h1-weight);
+            line-height: var(--font-h1-line-height);
+            font-family: var(--font-heading);
+        }
+        
+        h2 {
+            font-size: var(--font-h2-size);
+            font-weight: var(--font-h2-weight);
+            line-height: var(--font-h2-line-height);
+            font-family: var(--font-heading);
+        }
+        
+        h3 {
+            font-size: var(--font-h3-size);
+            font-weight: var(--font-h3-weight);
+            line-height: var(--font-h3-line-height);
+            font-family: var(--font-heading);
+        }
+        
+        p, .widget-type-body {
+            font-size: var(--font-body-size);
+            font-weight: var(--font-body-weight);
+            line-height: var(--font-body-line-height);
+        }
+        
+        .caption, small {
+            font-size: var(--font-caption-size);
+            font-weight: var(--font-caption-weight);
+            line-height: var(--font-caption-line-height);
+        }
+        
+.bento-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 28px;
+    width: 100%;
+    height: 100%;
+}
+
+.bento-cell {
+    min-height: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+    </style>
+</head>
+<body>
+    <div class="layout-container" style="background: #f8f9fa;">
+        <div class="layout-header">
+                <p>Acme Corporation | Confidential</p>
+        </div>
+        
+        <div class="layout-content">
+<div class="layout-content">
+    <div class="bento-grid">
+            <div class="bento-cell widget" data-role="cell_1">
+
+
+<div class="widget-type-display" style="font-size: 52px;font-weight: 700;line-height: 1.1;text-align: center;color: #1e3a8a;">
+    <h1 class="display-text">
+        Q4 2025 BUSINESS REVIEW
+    </h1>
+</div>
+
+            </div>
+            <div class="bento-cell widget" data-role="cell_2">
+
+
+<div class="widget-type-heading" style="font-size: 38px;font-weight: 600;line-height: 1.2;text-align: left;color: #1e3a8a;">
+        <h2>Executive Summary</h2>
+</div>
+
+            </div>
+            <div class="bento-cell widget" data-role="cell_3">
+
+
+<div class="widget-type-body" style="font-size: 18px;font-weight: 400;line-height: 1.6;text-align: left;color: #1e293b;">
+    <p>Our comprehensive analysis reveals exceptional performance across all key metrics, demonstrating sustained growth momentum and operational excellence throughout the fiscal quarter.</p>
+</div>
+
+            </div>
+            <div class="bento-cell widget" data-role="cell_4">
+
+
+<div class="widget-data-bignum" style="font-size: 52px;font-weight: 700;line-height: 1.1;text-align: center;color: #1e3a8a;">
+    <div class="bignum-value" style="font-size: 3rem; font-weight: bold;">
+            $24500000
+    </div>
+    <div class="bignum-label" style="margin-top: 0.5rem; opacity: 0.7;">
+        Revenue
+    </div>
+</div>
+
+            </div>
+            <div class="bento-cell widget" data-role="cell_5">
+
+
+<div class="widget-data-progress" style="font-size: 14px;font-weight: 400;line-height: 1.4;text-align: center;color: #d97706;">
+    <div class="progress-label" style="margin-bottom: 0.5rem;">Target Achievement</div>
+    <div class="progress-bar" style="width: 100%; height: 20px; background: rgba(0,0,0,0.1); border-radius: 10px; overflow: hidden;">
+        <div class="progress-fill" style="width: 94%; height: 100%; background: currentColor;"></div>
+    </div>
+    <div class="progress-percentage" style="margin-top: 0.25rem; font-size: 0.875rem; opacity: 0.7;">
+        94%
+    </div>
+</div>
+
+            </div>
+            <div class="bento-cell widget" data-role="cell_6">
+
+
+<div class="widget-data-trend" style="font-size: 38px;font-weight: 600;line-height: 1.2;text-align: center;color: #1e3a8a;">
+    <div class="trend-value" style="font-size: 2rem; font-weight: bold;">
+        18.7
+    </div>
+    <div class="trend-change" style="color: #10b981;">
+↑ 4.2
+    </div>
+    <div class="trend-label" style="margin-top: 0.5rem; opacity: 0.7;">
+        Growth Rate %
+    </div>
+</div>
+
+            </div>
+    </div>
+</div>
+        </div>
+        
+        <div class="layout-footer">
+                <p>Fiscal Year 2025 | Page 1</p>
+        </div>
+    </div>
+</body>
+</html>
+        </div>
+        <div class="slide" data-slide-index="1" id="slide-2">
+            <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UCE Render - Swiss.Poster</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --color-primary: #1e3a8a;
+            --color-secondary: #475569;
+            --color-accent: #d97706;
+            --color-background: #f8f9fa;
+            --color-text: #1e293b;
+            --font-family: sans-serif;
+            --font-heading: sans-serif;
+            --font-size-base: 16px;
+            --line-height: 1.5;
+            --margin-x: 60px;
+            --margin-y: 50px;
+            --gutter: 28px;
+            --header-height: 10%;
+            --footer-height: 8%;
+            --font-h1-size: 52px;
+            --font-h1-weight: bold;
+            --font-h1-line-height: 1.1;
+            --font-h2-size: 38px;
+            --font-h2-weight: semibold;
+            --font-h2-line-height: 1.2;
+            --font-h3-size: 26px;
+            --font-h3-weight: semibold;
+            --font-h3-line-height: 1.3;
+            --font-body-size: 18px;
+            --font-body-weight: regular;
+            --font-body-line-height: 1.6;
+            --font-caption-size: 14px;
+            --font-caption-weight: regular;
+            --font-caption-line-height: 1.4;
+        }
+        
+        body {
+            font-family: var(--font-family);
+            font-size: var(--font-size-base);
+            line-height: var(--line-height);
+            color: var(--color-text);
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .layout-container {
+            width: 1920px;
+            height: 1080px;
+            background-color: var(--color-background);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            padding: 50px 60px;
+        }
+        
+        /* Header/Footer reserved areas */
+        .layout-header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 10%;
+            padding: 0 60px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            border-bottom: 1px solid var(--color-secondary);
+        }
+        
+        .layout-footer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 8%;
+            padding: 0 60px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            border-top: 1px solid var(--color-secondary);
+        }
+        
+        /* Content area (widgets auto-layout here, avoiding header/footer) */
+        .layout-content {
+            position: absolute;
+            top: 10%;
+            bottom: 8%;
+            left: 0;
+            right: 0;
+            padding: 0 60px;
+        }
+        
+        .widget {
+            border-radius: var(--border-radius, 8px);
+            background: white;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        /* Typography tokens from theme */
+        h1 {
+            font-size: var(--font-h1-size);
+            font-weight: var(--font-h1-weight);
+            line-height: var(--font-h1-line-height);
+            font-family: var(--font-heading);
+        }
+        
+        h2 {
+            font-size: var(--font-h2-size);
+            font-weight: var(--font-h2-weight);
+            line-height: var(--font-h2-line-height);
+            font-family: var(--font-heading);
+        }
+        
+        h3 {
+            font-size: var(--font-h3-size);
+            font-weight: var(--font-h3-weight);
+            line-height: var(--font-h3-line-height);
+            font-family: var(--font-heading);
+        }
+        
+        p, .widget-type-body {
+            font-size: var(--font-body-size);
+            font-weight: var(--font-body-weight);
+            line-height: var(--font-body-line-height);
+        }
+        
+        .caption, small {
+            font-size: var(--font-caption-size);
+            font-weight: var(--font-caption-weight);
+            line-height: var(--font-caption-line-height);
+        }
+        
+.swiss-layout {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+.swiss-layout .widget {
+    width: 100%;
+    height: 100%;
+}
+    </style>
+</head>
+<body>
+    <div class="layout-container" style="background: #f8f9fa;">
+        <div class="layout-header">
+                <p>Acme Corporation | Confidential</p>
+        </div>
+        
+        <div class="layout-content">
+<div class="layout-content">
+    <div class="swiss-layout">
+            <div class="widget" data-role="headline">
+
+
+<div class="widget-type-display" style="font-size: 52px;font-weight: 700;line-height: 1.1;text-align: center;color: #1e3a8a;">
+    <h1 class="display-text">
+        EXCELLENCE IN EXECUTION
+    </h1>
+</div>
+
+            </div>
+    </div>
+</div>
+        </div>
+        
+        <div class="layout-footer">
+                <p>Fiscal Year 2025 | Page 2</p>
+        </div>
+    </div>
+</body>
+</html>
+        </div>
+        <div class="slide" data-slide-index="2" id="slide-3">
+            <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UCE Render - Bento.HeroLeft</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --color-primary: #1e3a8a;
+            --color-secondary: #475569;
+            --color-accent: #d97706;
+            --color-background: #f8f9fa;
+            --color-text: #1e293b;
+            --font-family: sans-serif;
+            --font-heading: sans-serif;
+            --font-size-base: 16px;
+            --line-height: 1.5;
+            --margin-x: 60px;
+            --margin-y: 50px;
+            --gutter: 28px;
+            --header-height: 10%;
+            --footer-height: 8%;
+            --font-h1-size: 52px;
+            --font-h1-weight: bold;
+            --font-h1-line-height: 1.1;
+            --font-h2-size: 38px;
+            --font-h2-weight: semibold;
+            --font-h2-line-height: 1.2;
+            --font-h3-size: 26px;
+            --font-h3-weight: semibold;
+            --font-h3-line-height: 1.3;
+            --font-body-size: 18px;
+            --font-body-weight: regular;
+            --font-body-line-height: 1.6;
+            --font-caption-size: 14px;
+            --font-caption-weight: regular;
+            --font-caption-line-height: 1.4;
+        }
+        
+        body {
+            font-family: var(--font-family);
+            font-size: var(--font-size-base);
+            line-height: var(--line-height);
+            color: var(--color-text);
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .layout-container {
+            width: 1920px;
+            height: 1080px;
+            background-color: var(--color-background);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            padding: 50px 60px;
+        }
+        
+        /* Header/Footer reserved areas */
+        .layout-header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 10%;
+            padding: 0 60px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            border-bottom: 1px solid var(--color-secondary);
+        }
+        
+        .layout-footer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 8%;
+            padding: 0 60px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            border-top: 1px solid var(--color-secondary);
+        }
+        
+        /* Content area (widgets auto-layout here, avoiding header/footer) */
+        .layout-content {
+            position: absolute;
+            top: 10%;
+            bottom: 8%;
+            left: 0;
+            right: 0;
+            padding: 0 60px;
+        }
+        
+        .widget {
+            border-radius: var(--border-radius, 8px);
+            background: white;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        /* Typography tokens from theme */
+        h1 {
+            font-size: var(--font-h1-size);
+            font-weight: var(--font-h1-weight);
+            line-height: var(--font-h1-line-height);
+            font-family: var(--font-heading);
+        }
+        
+        h2 {
+            font-size: var(--font-h2-size);
+            font-weight: var(--font-h2-weight);
+            line-height: var(--font-h2-line-height);
+            font-family: var(--font-heading);
+        }
+        
+        h3 {
+            font-size: var(--font-h3-size);
+            font-weight: var(--font-h3-weight);
+            line-height: var(--font-h3-line-height);
+            font-family: var(--font-heading);
+        }
+        
+        p, .widget-type-body {
+            font-size: var(--font-body-size);
+            font-weight: var(--font-body-weight);
+            line-height: var(--font-body-line-height);
+        }
+        
+        .caption, small {
+            font-size: var(--font-caption-size);
+            font-weight: var(--font-caption-weight);
+            line-height: var(--font-caption-line-height);
+        }
+        
+.bento-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    grid-template-rows: repeat(2, 1fr);
+    gap: 28px;
+    width: 100%;
+    height: 100%;
+}
+.bento-cell[data-role="hero"] {
+    grid-column: 1;
+    grid-row: 1 / 3;
+}
+.bento-cell[data-role="side_1"] { grid-column: 2; grid-row: 1; }
+.bento-cell[data-role="side_2"] { grid-column: 2; grid-row: 1; }
+.bento-cell[data-role="side_3"] { grid-column: 2; grid-row: 2; }
+.bento-cell[data-role="side_4"] { grid-column: 2; grid-row: 2; }
+.bento-grid .bento-cell[data-role^="side_"] {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+}
+.bento-grid .bento-cell[data-role="side_1"],
+.bento-grid .bento-cell[data-role="side_3"] {
+    grid-template-areas: "s1 s2";
+}
+
+.bento-cell {
+    min-height: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+    </style>
+</head>
+<body>
+    <div class="layout-container" style="background: #f8f9fa;">
+        <div class="layout-header">
+                <p>Acme Corporation | Confidential</p>
+        </div>
+        
+        <div class="layout-content">
+<div class="layout-content">
+    <div class="bento-grid">
+            <div class="bento-cell widget" data-role="hero">
+
+
+<div class="widget-type-quote" style="font-size: 26px;font-weight: 600;line-height: 1.3;text-align: left;color: #475569;">
+    <blockquote>
+        <p>We delivered outstanding results by focusing on operational efficiency, customer satisfaction, and strategic innovation. Our disciplined approach to execution has positioned us for continued success.</p>
+        <cite>Jane Anderson, CEO</cite>
+    </blockquote>
+</div>
+
+            </div>
+            <div class="bento-cell" data-role="side_1">
+                <div class="widget" data-role="side_1">
+
+
+<div class="widget-data-bignum" style="font-size: 52px;font-weight: 700;line-height: 1.1;text-align: center;color: #1e3a8a;">
+    <div class="bignum-value" style="font-size: 3rem; font-weight: bold;">
+            156000
+    </div>
+    <div class="bignum-label" style="margin-top: 0.5rem; opacity: 0.7;">
+        Active Customers
+    </div>
+</div>
+
+                </div>
+                <div class="widget" data-role="side_2">
+
+
+<div class="widget-data-progress" style="font-size: 14px;font-weight: 400;line-height: 1.4;text-align: center;color: #d97706;">
+    <div class="progress-label" style="margin-bottom: 0.5rem;">Retention Rate</div>
+    <div class="progress-bar" style="width: 100%; height: 20px; background: rgba(0,0,0,0.1); border-radius: 10px; overflow: hidden;">
+        <div class="progress-fill" style="width: 88%; height: 100%; background: currentColor;"></div>
+    </div>
+    <div class="progress-percentage" style="margin-top: 0.25rem; font-size: 0.875rem; opacity: 0.7;">
+        88%
+    </div>
+</div>
+
+                </div>
+            </div>
+            <div class="bento-cell" data-role="side_3">
+                <div class="widget" data-role="side_3">
+
+
+<div class="widget-data-trend" style="font-size: 38px;font-weight: 600;line-height: 1.2;text-align: center;color: #1e3a8a;">
+    <div class="trend-value" style="font-size: 2rem; font-weight: bold;">
+        4.8
+    </div>
+    <div class="trend-change" style="color: #10b981;">
+↑ 0.3
+    </div>
+    <div class="trend-label" style="margin-top: 0.5rem; opacity: 0.7;">
+        NPS Score
+    </div>
+</div>
+
+                </div>
+                <div class="widget" data-role="side_4">
+
+
+<div class="widget-data-bignum" style="font-size: 52px;font-weight: 700;line-height: 1.1;text-align: center;color: #1e3a8a;">
+    <div class="bignum-value" style="font-size: 3rem; font-weight: bold;">
+            97%
+    </div>
+    <div class="bignum-label" style="margin-top: 0.5rem; opacity: 0.7;">
+        Client Satisfaction
+    </div>
+</div>
+
+                </div>
+            </div>
+    </div>
+</div>
+        </div>
+        
+        <div class="layout-footer">
+                <p>Fiscal Year 2025 | Page 3</p>
+        </div>
+    </div>
+</body>
+</html>
+        </div>
+        <div class="slide" data-slide-index="3" id="slide-4">
+            <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UCE Render - Data.KPI_Row</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --color-primary: #1e3a8a;
+            --color-secondary: #475569;
+            --color-accent: #d97706;
+            --color-background: #f8f9fa;
+            --color-text: #1e293b;
+            --font-family: sans-serif;
+            --font-heading: sans-serif;
+            --font-size-base: 16px;
+            --line-height: 1.5;
+            --margin-x: 60px;
+            --margin-y: 50px;
+            --gutter: 28px;
+            --header-height: 10%;
+            --footer-height: 8%;
+            --font-h1-size: 52px;
+            --font-h1-weight: bold;
+            --font-h1-line-height: 1.1;
+            --font-h2-size: 38px;
+            --font-h2-weight: semibold;
+            --font-h2-line-height: 1.2;
+            --font-h3-size: 26px;
+            --font-h3-weight: semibold;
+            --font-h3-line-height: 1.3;
+            --font-body-size: 18px;
+            --font-body-weight: regular;
+            --font-body-line-height: 1.6;
+            --font-caption-size: 14px;
+            --font-caption-weight: regular;
+            --font-caption-line-height: 1.4;
+        }
+        
+        body {
+            font-family: var(--font-family);
+            font-size: var(--font-size-base);
+            line-height: var(--line-height);
+            color: var(--color-text);
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .layout-container {
+            width: 1920px;
+            height: 1080px;
+            background-color: var(--color-background);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            padding: 50px 60px;
+        }
+        
+        /* Header/Footer reserved areas */
+        .layout-header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 10%;
+            padding: 0 60px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            border-bottom: 1px solid var(--color-secondary);
+        }
+        
+        .layout-footer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 8%;
+            padding: 0 60px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            border-top: 1px solid var(--color-secondary);
+        }
+        
+        /* Content area (widgets auto-layout here, avoiding header/footer) */
+        .layout-content {
+            position: absolute;
+            top: 10%;
+            bottom: 8%;
+            left: 0;
+            right: 0;
+            padding: 0 60px;
+        }
+        
+        .widget {
+            border-radius: var(--border-radius, 8px);
+            background: white;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        /* Typography tokens from theme */
+        h1 {
+            font-size: var(--font-h1-size);
+            font-weight: var(--font-h1-weight);
+            line-height: var(--font-h1-line-height);
+            font-family: var(--font-heading);
+        }
+        
+        h2 {
+            font-size: var(--font-h2-size);
+            font-weight: var(--font-h2-weight);
+            line-height: var(--font-h2-line-height);
+            font-family: var(--font-heading);
+        }
+        
+        h3 {
+            font-size: var(--font-h3-size);
+            font-weight: var(--font-h3-weight);
+            line-height: var(--font-h3-line-height);
+            font-family: var(--font-heading);
+        }
+        
+        p, .widget-type-body {
+            font-size: var(--font-body-size);
+            font-weight: var(--font-body-weight);
+            line-height: var(--font-body-line-height);
+        }
+        
+        .caption, small {
+            font-size: var(--font-caption-size);
+            font-weight: var(--font-caption-weight);
+            line-height: var(--font-caption-line-height);
+        }
+        
+.data-layout {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.data-widget {
+    position: absolute;
+}
+    </style>
+</head>
+<body>
+    <div class="layout-container" style="background: #f8f9fa;">
+        <div class="layout-header">
+                <p>Acme Corporation | Confidential</p>
+        </div>
+        
+        <div class="layout-content">
+<div class="layout-content">
+    <div class="data-layout">
+        <div class="data-widget widget" 
+             data-role="header"
+             style="left: 60.0px; 
+                    top: 158.0px; 
+                    width: 1800.0px; 
+                    height: 221.68px;">
+
+
+<div class="widget-type-heading" style="font-size: 38px;font-weight: 600;line-height: 1.2;text-align: left;color: #1e3a8a;">
+        <h2>Financial Performance Metrics</h2>
+</div>
+
+        </div>
+        <div class="data-widget widget" 
+             data-role="kpi_1"
+             style="left: 60.0px; 
+                    top: 407.68px; 
+                    width: 429.0px; 
+                    height: 535.92px;">
+
+
+<div class="widget-data-bignum" style="font-size: 52px;font-weight: 700;line-height: 1.1;text-align: center;color: #1e3a8a;">
+    <div class="bignum-value" style="font-size: 3rem; font-weight: bold;">
+            24.5
+    </div>
+    <div class="bignum-label" style="margin-top: 0.5rem; opacity: 0.7;">
+        Revenue (M)
+    </div>
+</div>
+
+        </div>
+        <div class="data-widget widget" 
+             data-role="kpi_2"
+             style="left: 517.0px; 
+                    top: 407.68px; 
+                    width: 429.0px; 
+                    height: 535.92px;">
+
+
+<div class="widget-data-bignum" style="font-size: 52px;font-weight: 700;line-height: 1.1;text-align: center;color: #1e3a8a;">
+    <div class="bignum-value" style="font-size: 3rem; font-weight: bold;">
+            32%
+    </div>
+    <div class="bignum-label" style="margin-top: 0.5rem; opacity: 0.7;">
+        Margin %
+    </div>
+</div>
+
+        </div>
+        <div class="data-widget widget" 
+             data-role="kpi_3"
+             style="left: 974.0px; 
+                    top: 407.68px; 
+                    width: 429.0px; 
+                    height: 535.92px;">
+
+
+<div class="widget-data-trend" style="font-size: 38px;font-weight: 600;line-height: 1.2;text-align: center;color: #1e3a8a;">
+    <div class="trend-value" style="font-size: 2rem; font-weight: bold;">
+        8900000
+    </div>
+    <div class="trend-change" style="color: #10b981;">
+↑ 12.4
+    </div>
+    <div class="trend-label" style="margin-top: 0.5rem; opacity: 0.7;">
+        EBITDA
+    </div>
+</div>
+
+        </div>
+        <div class="data-widget widget" 
+             data-role="kpi_4"
+             style="left: 1431.0px; 
+                    top: 407.68px; 
+                    width: 429.0px; 
+                    height: 535.92px;">
+
+
+<div class="widget-data-progress" style="font-size: 14px;font-weight: 400;line-height: 1.4;text-align: center;color: #d97706;">
+    <div class="progress-label" style="margin-bottom: 0.5rem;">Budget vs Actual</div>
+    <div class="progress-bar" style="width: 100%; height: 20px; background: rgba(0,0,0,0.1); border-radius: 10px; overflow: hidden;">
+        <div class="progress-fill" style="width: 103%; height: 100%; background: currentColor;"></div>
+    </div>
+    <div class="progress-percentage" style="margin-top: 0.25rem; font-size: 0.875rem; opacity: 0.7;">
+        103%
+    </div>
+</div>
+
+        </div>
+    </div>
+</div>
+        </div>
+        
+        <div class="layout-footer">
+                <p>Fiscal Year 2025 | Page 4</p>
+        </div>
+    </div>
+</body>
+</html>
+        </div>
+        <div class="slide" data-slide-index="4" id="slide-5">
+            <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UCE Render - Cinematic.Split_50_50</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --color-primary: #1e3a8a;
+            --color-secondary: #475569;
+            --color-accent: #d97706;
+            --color-background: #f8f9fa;
+            --color-text: #1e293b;
+            --font-family: sans-serif;
+            --font-heading: sans-serif;
+            --font-size-base: 16px;
+            --line-height: 1.5;
+            --margin-x: 60px;
+            --margin-y: 50px;
+            --gutter: 28px;
+            --header-height: 10%;
+            --footer-height: 8%;
+            --font-h1-size: 52px;
+            --font-h1-weight: bold;
+            --font-h1-line-height: 1.1;
+            --font-h2-size: 38px;
+            --font-h2-weight: semibold;
+            --font-h2-line-height: 1.2;
+            --font-h3-size: 26px;
+            --font-h3-weight: semibold;
+            --font-h3-line-height: 1.3;
+            --font-body-size: 18px;
+            --font-body-weight: regular;
+            --font-body-line-height: 1.6;
+            --font-caption-size: 14px;
+            --font-caption-weight: regular;
+            --font-caption-line-height: 1.4;
+        }
+        
+        body {
+            font-family: var(--font-family);
+            font-size: var(--font-size-base);
+            line-height: var(--line-height);
+            color: var(--color-text);
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .layout-container {
+            width: 1920px;
+            height: 1080px;
+            background-color: var(--color-background);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            padding: 50px 60px;
+        }
+        
+        /* Header/Footer reserved areas */
+        .layout-header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 10%;
+            padding: 0 60px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            border-bottom: 1px solid var(--color-secondary);
+        }
+        
+        .layout-footer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 8%;
+            padding: 0 60px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            border-top: 1px solid var(--color-secondary);
+        }
+        
+        /* Content area (widgets auto-layout here, avoiding header/footer) */
+        .layout-content {
+            position: absolute;
+            top: 10%;
+            bottom: 8%;
+            left: 0;
+            right: 0;
+            padding: 0 60px;
+        }
+        
+        .widget {
+            border-radius: var(--border-radius, 8px);
+            background: white;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        /* Typography tokens from theme */
+        h1 {
+            font-size: var(--font-h1-size);
+            font-weight: var(--font-h1-weight);
+            line-height: var(--font-h1-line-height);
+            font-family: var(--font-heading);
+        }
+        
+        h2 {
+            font-size: var(--font-h2-size);
+            font-weight: var(--font-h2-weight);
+            line-height: var(--font-h2-line-height);
+            font-family: var(--font-heading);
+        }
+        
+        h3 {
+            font-size: var(--font-h3-size);
+            font-weight: var(--font-h3-weight);
+            line-height: var(--font-h3-line-height);
+            font-family: var(--font-heading);
+        }
+        
+        p, .widget-type-body {
+            font-size: var(--font-body-size);
+            font-weight: var(--font-body-weight);
+            line-height: var(--font-body-line-height);
+        }
+        
+        .caption, small {
+            font-size: var(--font-caption-size);
+            font-weight: var(--font-caption-weight);
+            line-height: var(--font-caption-line-height);
+        }
+        
+.cinematic-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+    height: 100%;
+}
+
+.cinematic-panel {
+    min-height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+    </style>
+</head>
+<body>
+    <div class="layout-container" style="background: #f8f9fa;">
+        <div class="layout-header">
+                <p>Acme Corporation | Confidential</p>
+        </div>
+        
+        <div class="layout-content">
+<div class="layout-content">
+    <div class="cinematic-layout">
+            <div class="cinematic-panel widget" data-role="left">
+
+
+<div class="widget-type-heading" style="font-size: 38px;font-weight: 600;line-height: 1.2;text-align: left;color: #1e3a8a;">
+        <h1>Strategic Initiatives</h1>
+</div>
+
+            </div>
+            
+            <div class="cinematic-panel widget" data-role="right">
+
+
+<div class="widget-type-list" style="font-size: 18px;font-weight: 400;line-height: 1.6;text-align: left;color: #1e293b;">
+        <ol>
+            <li>Digital Transformation: Migrate 80% of operations to cloud infrastructure</li>
+            <li>Market Expansion: Enter three new geographic regions</li>
+            <li>Product Innovation: Launch next-generation platform Q1 2026</li>
+            <li>Operational Excellence: Reduce costs by 15% through automation</li>
+            <li>Talent Development: Comprehensive leadership training program</li>
+        </ol>
+</div>
+
+            </div>
+    </div>
+</div>
+        </div>
+        
+        <div class="layout-footer">
+                <p>Fiscal Year 2025 | Page 5</p>
+        </div>
+    </div>
+</body>
+</html>
+        </div>
+        <div class="slide" data-slide-index="5" id="slide-6">
+            <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UCE Render - Bento.HeroTop</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --color-primary: #1e3a8a;
+            --color-secondary: #475569;
+            --color-accent: #d97706;
+            --color-background: #f8f9fa;
+            --color-text: #1e293b;
+            --font-family: sans-serif;
+            --font-heading: sans-serif;
+            --font-size-base: 16px;
+            --line-height: 1.5;
+            --margin-x: 60px;
+            --margin-y: 50px;
+            --gutter: 28px;
+            --header-height: 10%;
+            --footer-height: 8%;
+            --font-h1-size: 52px;
+            --font-h1-weight: bold;
+            --font-h1-line-height: 1.1;
+            --font-h2-size: 38px;
+            --font-h2-weight: semibold;
+            --font-h2-line-height: 1.2;
+            --font-h3-size: 26px;
+            --font-h3-weight: semibold;
+            --font-h3-line-height: 1.3;
+            --font-body-size: 18px;
+            --font-body-weight: regular;
+            --font-body-line-height: 1.6;
+            --font-caption-size: 14px;
+            --font-caption-weight: regular;
+            --font-caption-line-height: 1.4;
+        }
+        
+        body {
+            font-family: var(--font-family);
+            font-size: var(--font-size-base);
+            line-height: var(--line-height);
+            color: var(--color-text);
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .layout-container {
+            width: 1920px;
+            height: 1080px;
+            background-color: var(--color-background);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            padding: 50px 60px;
+        }
+        
+        /* Header/Footer reserved areas */
+        .layout-header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 10%;
+            padding: 0 60px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            border-bottom: 1px solid var(--color-secondary);
+        }
+        
+        .layout-footer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 8%;
+            padding: 0 60px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            border-top: 1px solid var(--color-secondary);
+        }
+        
+        /* Content area (widgets auto-layout here, avoiding header/footer) */
+        .layout-content {
+            position: absolute;
+            top: 10%;
+            bottom: 8%;
+            left: 0;
+            right: 0;
+            padding: 0 60px;
+        }
+        
+        .widget {
+            border-radius: var(--border-radius, 8px);
+            background: white;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        /* Typography tokens from theme */
+        h1 {
+            font-size: var(--font-h1-size);
+            font-weight: var(--font-h1-weight);
+            line-height: var(--font-h1-line-height);
+            font-family: var(--font-heading);
+        }
+        
+        h2 {
+            font-size: var(--font-h2-size);
+            font-weight: var(--font-h2-weight);
+            line-height: var(--font-h2-line-height);
+            font-family: var(--font-heading);
+        }
+        
+        h3 {
+            font-size: var(--font-h3-size);
+            font-weight: var(--font-h3-weight);
+            line-height: var(--font-h3-line-height);
+            font-family: var(--font-heading);
+        }
+        
+        p, .widget-type-body {
+            font-size: var(--font-body-size);
+            font-weight: var(--font-body-weight);
+            line-height: var(--font-body-line-height);
+        }
+        
+        .caption, small {
+            font-size: var(--font-caption-size);
+            font-weight: var(--font-caption-weight);
+            line-height: var(--font-caption-line-height);
+        }
+        
+.bento-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: 2fr 1fr;
+    gap: 28px;
+    width: 100%;
+    height: 100%;
+}
+.bento-cell[data-role="hero"] {
+    grid-column: 1 / 4;
+    grid-row: 1;
+}
+
+.bento-cell {
+    min-height: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+    </style>
+</head>
+<body>
+    <div class="layout-container" style="background: #f8f9fa;">
+        <div class="layout-header">
+                <p>Acme Corporation | Confidential</p>
+        </div>
+        
+        <div class="layout-content">
+<div class="layout-content">
+    <div class="bento-grid">
+            <div class="bento-cell widget" data-role="hero">
+
+
+<div class="widget-type-heading" style="font-size: 38px;font-weight: 600;line-height: 1.2;text-align: left;color: #1e3a8a;">
+        <h2>Departmental Performance Overview</h2>
+</div>
+
+            </div>
+            <div class="bento-cell widget" data-role="footer_1">
+
+
+<div class="widget-data-trend" style="font-size: 38px;font-weight: 600;line-height: 1.2;text-align: center;color: #1e3a8a;">
+    <div class="trend-value" style="font-size: 2rem; font-weight: bold;">
+        8200000
+    </div>
+    <div class="trend-change" style="color: #10b981;">
+↑ 15.3
+    </div>
+    <div class="trend-label" style="margin-top: 0.5rem; opacity: 0.7;">
+        Sales
+    </div>
+</div>
+
+            </div>
+            <div class="bento-cell widget" data-role="footer_2">
+
+
+<div class="widget-data-trend" style="font-size: 38px;font-weight: 600;line-height: 1.2;text-align: center;color: #1e3a8a;">
+    <div class="trend-value" style="font-size: 2rem; font-weight: bold;">
+        2100000
+    </div>
+    <div class="trend-change" style="color: #10b981;">
+↑ 8.7
+    </div>
+    <div class="trend-label" style="margin-top: 0.5rem; opacity: 0.7;">
+        Marketing
+    </div>
+</div>
+
+            </div>
+            <div class="bento-cell widget" data-role="footer_3">
+
+
+<div class="widget-data-trend" style="font-size: 38px;font-weight: 600;line-height: 1.2;text-align: center;color: #1e3a8a;">
+    <div class="trend-value" style="font-size: 2rem; font-weight: bold;">
+        1850000
+    </div>
+    <div class="trend-change" style="color: #ef4444;">
+↓ -2.1
+    </div>
+    <div class="trend-label" style="margin-top: 0.5rem; opacity: 0.7;">
+        Operations
+    </div>
+</div>
+
+            </div>
+    </div>
+</div>
+        </div>
+        
+        <div class="layout-footer">
+                <p>Fiscal Year 2025 | Page 6</p>
+        </div>
+    </div>
+</body>
+</html>
+        </div>
+        <div class="slide" data-slide-index="6" id="slide-7">
+            <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UCE Render - Bento.Quarter</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --color-primary: #1e3a8a;
+            --color-secondary: #475569;
+            --color-accent: #d97706;
+            --color-background: #f8f9fa;
+            --color-text: #1e293b;
+            --font-family: sans-serif;
+            --font-heading: sans-serif;
+            --font-size-base: 16px;
+            --line-height: 1.5;
+            --margin-x: 60px;
+            --margin-y: 50px;
+            --gutter: 28px;
+            --header-height: 10%;
+            --footer-height: 8%;
+            --font-h1-size: 52px;
+            --font-h1-weight: bold;
+            --font-h1-line-height: 1.1;
+            --font-h2-size: 38px;
+            --font-h2-weight: semibold;
+            --font-h2-line-height: 1.2;
+            --font-h3-size: 26px;
+            --font-h3-weight: semibold;
+            --font-h3-line-height: 1.3;
+            --font-body-size: 18px;
+            --font-body-weight: regular;
+            --font-body-line-height: 1.6;
+            --font-caption-size: 14px;
+            --font-caption-weight: regular;
+            --font-caption-line-height: 1.4;
+        }
+        
+        body {
+            font-family: var(--font-family);
+            font-size: var(--font-size-base);
+            line-height: var(--line-height);
+            color: var(--color-text);
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .layout-container {
+            width: 1920px;
+            height: 1080px;
+            background-color: var(--color-background);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            padding: 50px 60px;
+        }
+        
+        /* Header/Footer reserved areas */
+        .layout-header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 10%;
+            padding: 0 60px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            border-bottom: 1px solid var(--color-secondary);
+        }
+        
+        .layout-footer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 8%;
+            padding: 0 60px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            border-top: 1px solid var(--color-secondary);
+        }
+        
+        /* Content area (widgets auto-layout here, avoiding header/footer) */
+        .layout-content {
+            position: absolute;
+            top: 10%;
+            bottom: 8%;
+            left: 0;
+            right: 0;
+            padding: 0 60px;
+        }
+        
+        .widget {
+            border-radius: var(--border-radius, 8px);
+            background: white;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        /* Typography tokens from theme */
+        h1 {
+            font-size: var(--font-h1-size);
+            font-weight: var(--font-h1-weight);
+            line-height: var(--font-h1-line-height);
+            font-family: var(--font-heading);
+        }
+        
+        h2 {
+            font-size: var(--font-h2-size);
+            font-weight: var(--font-h2-weight);
+            line-height: var(--font-h2-line-height);
+            font-family: var(--font-heading);
+        }
+        
+        h3 {
+            font-size: var(--font-h3-size);
+            font-weight: var(--font-h3-weight);
+            line-height: var(--font-h3-line-height);
+            font-family: var(--font-heading);
+        }
+        
+        p, .widget-type-body {
+            font-size: var(--font-body-size);
+            font-weight: var(--font-body-weight);
+            line-height: var(--font-body-line-height);
+        }
+        
+        .caption, small {
+            font-size: var(--font-caption-size);
+            font-weight: var(--font-caption-weight);
+            line-height: var(--font-caption-line-height);
+        }
+        
+.bento-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 28px;
+    width: 100%;
+    height: 100%;
+}
+
+.bento-cell {
+    min-height: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+    </style>
+</head>
+<body>
+    <div class="layout-container" style="background: #f8f9fa;">
+        <div class="layout-header">
+                <p>Acme Corporation | Confidential</p>
+        </div>
+        
+        <div class="layout-content">
+<div class="layout-content">
+    <div class="bento-grid">
+            <div class="bento-cell widget" data-role="quadrant_1">
+
+
+<div class="widget-type-heading" style="font-size: 38px;font-weight: 600;line-height: 1.2;text-align: left;color: #1e3a8a;">
+        <h3>Strengths</h3>
+</div>
+
+            </div>
+            <div class="bento-cell widget" data-role="quadrant_2">
+
+
+<div class="widget-type-heading" style="font-size: 38px;font-weight: 600;line-height: 1.2;text-align: left;color: #1e3a8a;">
+        <h3>Opportunities</h3>
+</div>
+
+            </div>
+            <div class="bento-cell widget" data-role="quadrant_3">
+
+
+<div class="widget-type-list" style="font-size: 18px;font-weight: 400;line-height: 1.6;text-align: left;color: #1e293b;">
+        <ul>
+            <li>Strong brand recognition</li>
+            <li>Loyal customer base</li>
+            <li>Efficient operations</li>
+        </ul>
+</div>
+
+            </div>
+            <div class="bento-cell widget" data-role="quadrant_4">
+
+
+<div class="widget-type-list" style="font-size: 18px;font-weight: 400;line-height: 1.6;text-align: left;color: #1e293b;">
+        <ul>
+            <li>Emerging markets</li>
+            <li>AI integration</li>
+            <li>Strategic partnerships</li>
+        </ul>
+</div>
+
+            </div>
+    </div>
+</div>
+        </div>
+        
+        <div class="layout-footer">
+                <p>Fiscal Year 2025 | Page 7</p>
+        </div>
+    </div>
+</body>
+</html>
+        </div>
+        <div class="slide" data-slide-index="7" id="slide-8">
+            <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UCE Render - Swiss.SplitTypo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --color-primary: #1e3a8a;
+            --color-secondary: #475569;
+            --color-accent: #d97706;
+            --color-background: #f8f9fa;
+            --color-text: #1e293b;
+            --font-family: sans-serif;
+            --font-heading: sans-serif;
+            --font-size-base: 16px;
+            --line-height: 1.5;
+            --margin-x: 60px;
+            --margin-y: 50px;
+            --gutter: 28px;
+            --header-height: 10%;
+            --footer-height: 8%;
+            --font-h1-size: 52px;
+            --font-h1-weight: bold;
+            --font-h1-line-height: 1.1;
+            --font-h2-size: 38px;
+            --font-h2-weight: semibold;
+            --font-h2-line-height: 1.2;
+            --font-h3-size: 26px;
+            --font-h3-weight: semibold;
+            --font-h3-line-height: 1.3;
+            --font-body-size: 18px;
+            --font-body-weight: regular;
+            --font-body-line-height: 1.6;
+            --font-caption-size: 14px;
+            --font-caption-weight: regular;
+            --font-caption-line-height: 1.4;
+        }
+        
+        body {
+            font-family: var(--font-family);
+            font-size: var(--font-size-base);
+            line-height: var(--line-height);
+            color: var(--color-text);
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .layout-container {
+            width: 1920px;
+            height: 1080px;
+            background-color: var(--color-background);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            padding: 50px 60px;
+        }
+        
+        /* Header/Footer reserved areas */
+        .layout-header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 10%;
+            padding: 0 60px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            border-bottom: 1px solid var(--color-secondary);
+        }
+        
+        .layout-footer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 8%;
+            padding: 0 60px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            border-top: 1px solid var(--color-secondary);
+        }
+        
+        /* Content area (widgets auto-layout here, avoiding header/footer) */
+        .layout-content {
+            position: absolute;
+            top: 10%;
+            bottom: 8%;
+            left: 0;
+            right: 0;
+            padding: 0 60px;
+        }
+        
+        .widget {
+            border-radius: var(--border-radius, 8px);
+            background: white;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        /* Typography tokens from theme */
+        h1 {
+            font-size: var(--font-h1-size);
+            font-weight: var(--font-h1-weight);
+            line-height: var(--font-h1-line-height);
+            font-family: var(--font-heading);
+        }
+        
+        h2 {
+            font-size: var(--font-h2-size);
+            font-weight: var(--font-h2-weight);
+            line-height: var(--font-h2-line-height);
+            font-family: var(--font-heading);
+        }
+        
+        h3 {
+            font-size: var(--font-h3-size);
+            font-weight: var(--font-h3-weight);
+            line-height: var(--font-h3-line-height);
+            font-family: var(--font-heading);
+        }
+        
+        p, .widget-type-body {
+            font-size: var(--font-body-size);
+            font-weight: var(--font-body-weight);
+            line-height: var(--font-body-line-height);
+        }
+        
+        .caption, small {
+            font-size: var(--font-caption-size);
+            font-weight: var(--font-caption-weight);
+            line-height: var(--font-caption-line-height);
+        }
+        
+.swiss-layout {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+.swiss-layout .widget[data-role="headline"] {
+    flex: 0 0 35%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.swiss-layout .widget[data-role="body"] {
+    flex: 0 0 65%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+    </style>
+</head>
+<body>
+    <div class="layout-container" style="background: #f8f9fa;">
+        <div class="layout-header">
+                <p>Acme Corporation | Confidential</p>
+        </div>
+        
+        <div class="layout-content">
+<div class="layout-content">
+    <div class="swiss-layout">
+            <div class="widget" data-role="headline">
+
+
+<div class="widget-type-display" style="font-size: 52px;font-weight: 700;line-height: 1.1;text-align: center;color: #1e3a8a;">
+    <h1 class="display-text">
+        LOOKING AHEAD
+    </h1>
+</div>
+
+            </div>
+            
+            <div class="widget" data-role="body">
+
+
+<div class="widget-type-body" style="font-size: 18px;font-weight: 400;line-height: 1.6;text-align: left;color: #1e293b;">
+    <p>As we move into 2026, our focus remains on sustainable growth, operational excellence, and delivering exceptional value to our stakeholders. We are well-positioned to capitalize on market opportunities while maintaining our commitment to quality and innovation.</p>
+</div>
+
+            </div>
+    </div>
+</div>
+        </div>
+        
+        <div class="layout-footer">
+                <p>Fiscal Year 2025 | Page 8</p>
+        </div>
+    </div>
+</body>
+</html>
+        </div>
+    </div>
+
+    <div class="navigation">
+        <button class="nav-button" id="prev-button">← Previous</button>
+        <div class="slide-counter">
+            <span id="current-slide">1</span> / <span id="total-slides">8</span>
+        </div>
+        <div class="slide-dots">
+            <div class="dot active" data-slide="0"></div>
+            <div class="dot" data-slide="1"></div>
+            <div class="dot" data-slide="2"></div>
+            <div class="dot" data-slide="3"></div>
+            <div class="dot" data-slide="4"></div>
+            <div class="dot" data-slide="5"></div>
+            <div class="dot" data-slide="6"></div>
+            <div class="dot" data-slide="7"></div>
+        </div>
+        <button class="nav-button" id="next-button">Next →</button>
+    </div>
+
+    <div class="keyboard-hints">
+        <kbd>←</kbd> <kbd>→</kbd> Navigate | <kbd>Home</kbd> <kbd>End</kbd> First/Last
+    </div>
+
+    <script>
+        const slides = document.querySelectorAll('.slide');
+        const dots = document.querySelectorAll('.dot');
+        const prevButton = document.getElementById('prev-button');
+        const nextButton = document.getElementById('next-button');
+        const currentSlideSpan = document.getElementById('current-slide');
+        let currentIndex = 0;
+
+        function showSlide(index) {
+            // Clamp index
+            index = Math.max(0, Math.min(index, slides.length - 1));
+            
+            // Update slides
+            slides.forEach((slide, i) => {
+                slide.classList.toggle('active', i === index);
+            });
+            
+            // Update dots
+            dots.forEach((dot, i) => {
+                dot.classList.toggle('active', i === index);
+            });
+            
+            // Update counter
+            currentSlideSpan.textContent = index + 1;
+            
+            // Update buttons
+            prevButton.disabled = index === 0;
+            nextButton.disabled = index === slides.length - 1;
+            
+            currentIndex = index;
+        }
+
+        // Navigation buttons
+        prevButton.addEventListener('click', () => showSlide(currentIndex - 1));
+        nextButton.addEventListener('click', () => showSlide(currentIndex + 1));
+
+        // Dot navigation
+        dots.forEach((dot, index) => {
+            dot.addEventListener('click', () => showSlide(index));
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            switch(e.key) {
+                case 'ArrowLeft':
+                case 'ArrowUp':
+                    e.preventDefault();
+                    showSlide(currentIndex - 1);
+                    break;
+                case 'ArrowRight':
+                case 'ArrowDown':
+                case ' ':
+                    e.preventDefault();
+                    showSlide(currentIndex + 1);
+                    break;
+                case 'Home':
+                    e.preventDefault();
+                    showSlide(0);
+                    break;
+                case 'End':
+                    e.preventDefault();
+                    showSlide(slides.length - 1);
+                    break;
+            }
+        });
+
+        // Initialize
+        showSlide(0);
+    </script>
+</body>
+</html>
