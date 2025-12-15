@@ -67,6 +67,10 @@ class RenderableLayout(BaseModel):
     footer_decoration: str = Field(default="none", description="Footer decoration style")
     header_widget: Any | None = Field(default=None, description="Widget instance for header area")
     footer_widget: Any | None = Field(default=None, description="Widget instance for footer area")
+    header_preset: Dict[str, str] | None = Field(default=None, description="Preset configuration for header widget")
+    footer_preset: Dict[str, str] | None = Field(default=None, description="Preset configuration for footer widget")
+    header_style: Dict[str, Any] | None = Field(default=None, description="Resolved style for header widget")
+    footer_style: Dict[str, Any] | None = Field(default=None, description="Resolved style for footer widget")
     
     # Multi-slide metadata (optional, set by calculate_slides)
     slide_number: Optional[int] = Field(default=None, description="Current slide number (1-indexed)")

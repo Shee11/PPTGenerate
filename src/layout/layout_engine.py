@@ -68,6 +68,24 @@ class LayoutEngine:
         "Focus.Offset_Title": FocusOffsetTitleStrategy,
     }
 
+    # Default presets for each widget type
+    # These are applied when no explicit preset is specified
+    # Default is minimal styling (Flat surface = no visual treatment)
+    _default_presets: Dict[str, Dict[str, str]] = {
+        "Type.Display": {"surface": "Flat"},
+        "Type.Heading": {"surface": "Flat"},
+        "Type.Body": {"surface": "Flat"},
+        "Type.List": {"surface": "Flat"},
+        "Type.Quote": {"surface": "Flat"},
+        "Data.BigNum": {"surface": "Flat"},
+        "Data.Progress": {"surface": "Flat"},
+        "Data.Trend": {"surface": "Flat"},
+        "Data.Chart": {"surface": "Flat"},
+        "Media.Image": {"surface": "Flat"},
+        "Media.Video": {"surface": "Flat"},
+        "Media.Icon": {"surface": "Flat"},
+    }
+
     @classmethod
     def register_strategy(cls, strategy_class: Type[Any]) -> None:
         """Register a new layout strategy.
@@ -82,17 +100,29 @@ class LayoutEngine:
     def _resolve_widget_style(cls, widget_style, theme: Theme, preset: Optional[Dict[str, str]] = None) -> Dict[str, Any]:
         """Resolve widget style by converting theme tokens to actual values.
         
+        Only includes properties that are NOT controlled by presets to avoid conflicts.
+        Preset-controlled properties (background, border, border-radius, box-shadow, color, filter)
+        are handled entirely by preset CSS classes.
+        
         Args:
             widget_style: WidgetStyle from Style config with theme token references
             theme: Theme containing actual values
-            preset: Optional preset configuration (e.g., {"fill": "Solid_Brand"})
+            preset: Optional preset configuration (e.g., {"fill": "Solid_Brand", "shape": "Rounded"})
             
         Returns:
-            Dictionary with resolved CSS properties
+            Dictionary with resolved CSS properties (excluding preset-controlled ones)
         """
         resolved = {}
+        preset = preset or {}
+        
+        # Check which preset categories are active
+        has_surface = "surface" in preset
+        has_shape = "shape" in preset
+        has_fill = "fill" in preset
+        has_effect = "effect" in preset
         
         # Resolve font (typography token) to CSS properties
+        # SAFE: Typography is not controlled by presets
         if widget_style.font:
             typo_token = getattr(theme.typography, widget_style.font, None)
             if typo_token:
@@ -112,31 +142,32 @@ class LayoutEngine:
                     resolved["line-height"] = str(typo_token.line_height)
         
         # Resolve text alignment
+        # SAFE: Text alignment is not controlled by presets
         if widget_style.align:
             resolved["text-align"] = widget_style.align
         
         # Resolve vertical alignment
+        # SAFE: Vertical alignment is not controlled by presets
         if widget_style.vertical_align:
             resolved["vertical-align"] = widget_style.vertical_align
         
         # Resolve foreground color (theme color token)
-        # Skip if widget has Solid_Brand fill preset - let preset CSS control color
-        if widget_style.foreground:
-            # Check if preset has Solid_Brand fill that will override color
-            has_solid_brand = preset and preset.get("fill") == "Solid_Brand"
-            if not has_solid_brand:
-                color_value = getattr(theme, widget_style.foreground, None)
-                if color_value:
-                    resolved["color"] = color_value
+        # SKIP if fill preset is active - fill presets control color
+        if widget_style.foreground and not has_fill:
+            color_value = getattr(theme, widget_style.foreground, None)
+            if color_value:
+                resolved["color"] = color_value
         
         # Resolve background color (theme color token)
-        if widget_style.background:
+        # SKIP if surface OR fill preset is active - they control background
+        if widget_style.background and not (has_surface or has_fill):
             bg_value = getattr(theme, widget_style.background, None)
             if bg_value:
                 resolved["background-color"] = bg_value
         
         # Apply border radius if specified
-        if widget_style.border_radius:
+        # SKIP if shape preset is active - shape presets control border-radius
+        if widget_style.border_radius and not has_shape:
             resolved["border-radius"] = widget_style.border_radius
         
         return resolved
@@ -246,7 +277,11 @@ class LayoutEngine:
                 )
 
             # Resolve widget style from Style config and Theme tokens
+            # Apply default preset if none specified
             preset = widget_config.get("preset")
+            if not preset:
+                preset = cls._default_presets.get(widget_type, {"surface": "Flat"})
+            
             resolved_style = cls._resolve_widget_style(widget_style, theme, preset)
 
             # MEASURE: Calculate widget content size
@@ -393,10 +428,22 @@ class LayoutEngine:
                 if header_widget_type:
                     header_widget_class = WidgetRegistry.get(header_widget_type)
                     if header_widget_class:
+                        # Apply default preset if none specified
+                        header_preset = slide.header.get("preset")
+                        if not header_preset:
+                            header_preset = cls._default_presets.get(header_widget_type, {"surface": "Flat"})
+                        
+                        # Resolve style with preset awareness
+                        header_widget_style = slide_style.get_widget_style(header_widget_type)
+                        header_resolved_style = cls._resolve_widget_style(header_widget_style, theme, header_preset) if header_widget_style else {}
+                        
                         layout.header_widget = header_widget_class(
                             atom_id=slide.header.get("atom_id"),
                             parameters=slide.header.get("parameters", {})
                         )
+                        # Store preset and style for rendering
+                        layout.header_preset = header_preset
+                        layout.header_style = header_resolved_style
 
             # Process footer widget if provided
             if slide.footer:
@@ -404,10 +451,22 @@ class LayoutEngine:
                 if footer_widget_type:
                     footer_widget_class = WidgetRegistry.get(footer_widget_type)
                     if footer_widget_class:
+                        # Apply default preset if none specified
+                        footer_preset = slide.footer.get("preset")
+                        if not footer_preset:
+                            footer_preset = cls._default_presets.get(footer_widget_type, {"surface": "Flat"})
+                        
+                        # Resolve style with preset awareness
+                        footer_widget_style = slide_style.get_widget_style(footer_widget_type)
+                        footer_resolved_style = cls._resolve_widget_style(footer_widget_style, theme, footer_preset) if footer_widget_style else {}
+                        
                         layout.footer_widget = footer_widget_class(
                             atom_id=slide.footer.get("atom_id"),
                             parameters=slide.footer.get("parameters", {})
                         )
+                        # Store preset and style for rendering
+                        layout.footer_preset = footer_preset
+                        layout.footer_style = footer_resolved_style
 
             # Apply sequence pattern background if configured
             if theme.sequence_pattern:

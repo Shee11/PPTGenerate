@@ -101,6 +101,8 @@ class HTMLRenderer:
             header_widget_data = {
                 "type": renderable.header_widget.get_widget_type(),
                 "data": renderable.header_widget.render_data(),
+                "preset": renderable.header_preset or {},
+                "style": renderable.header_style or {},
             }
 
         footer_widget_data = None
@@ -108,6 +110,8 @@ class HTMLRenderer:
             footer_widget_data = {
                 "type": renderable.footer_widget.get_widget_type(),
                 "data": renderable.footer_widget.render_data(),
+                "preset": renderable.footer_preset or {},
+                "style": renderable.footer_style or {},
             }
 
         # Render template

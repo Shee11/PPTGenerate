@@ -15,9 +15,9 @@
 /* Control visual depth, elevation, and layering effects */
 
 .preset-surface-Flat {
-    background: transparent;
-    border: none;
-    box-shadow: none;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
 }
 
 .preset-surface-Elevated {
@@ -94,6 +94,11 @@
 .preset-fill-Subtle {
     background: rgba(255, 255, 255, 0.03) !important;
     border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: var(--color-text, #e0e7ff) !important;
+}
+
+.preset-fill-Subtle * {
+    color: inherit !important;
 }
 
 .preset-fill-Gradient_Linear {
@@ -102,7 +107,11 @@
         var(--color-primary, #00ff9f) 0%,
         var(--color-secondary, #00d4ff) 100%
     ) !important;
-    color: var(--color-text-on-primary, #000000) !important;
+    color: #ffffff !important;
+}
+
+.preset-fill-Gradient_Linear * {
+    color: inherit !important;
 }
 
 .preset-fill-Gradient_Mesh {
@@ -112,17 +121,32 @@
         radial-gradient(at 50% 50%, var(--color-accent, #ff00ff) 0%, transparent 50%),
         rgba(10, 14, 39, 0.8) !important;
     background-blend-mode: screen, screen, screen, normal;
+    color: var(--color-text, #e0e7ff) !important;
+}
+
+.preset-fill-Gradient_Mesh * {
+    color: inherit !important;
 }
 
 .preset-fill-Pattern_Dot {
     background-image: radial-gradient(circle, rgba(255, 255, 255, 0.1) 1px, transparent 1px) !important;
     background-size: 20px 20px !important;
     background-color: rgba(255, 255, 255, 0.02) !important;
+    color: var(--color-text, #e0e7ff) !important;
+}
+
+.preset-fill-Pattern_Dot * {
+    color: inherit !important;
 }
 
 .preset-fill-Noise {
     background: rgba(255, 255, 255, 0.03) !important;
     position: relative;
+    color: var(--color-text, #e0e7ff) !important;
+}
+
+.preset-fill-Noise * {
+    color: inherit !important;
 }
 
 .preset-fill-Noise::before {

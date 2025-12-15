@@ -154,13 +154,13 @@
 <body>
     <div class="layout-container" style="{% if background_override %}background: {{ background_override }};{% endif %}">
         {% if header_widget %}
-        <div class="layout-header">
+        <div class="layout-header widget{% for key, value in header_widget.preset.items() %} preset-{{ key }}-{{ value }}{% endfor %}">
             {% if header_widget.type == 'Type.Heading' %}
-                <h{{ header_widget.data.level }}>{{ header_widget.data.content }}</h{{ header_widget.data.level }}>
+                <h{{ header_widget.data.level }} style="{% for prop, value in header_widget.style.items() %}{{ prop }}: {{ value }};{% endfor %}">{{ header_widget.data.content }}</h{{ header_widget.data.level }}>
             {% elif header_widget.type == 'Type.Body' %}
-                <p>{{ header_widget.data.content }}</p>
+                <p style="{% for prop, value in header_widget.style.items() %}{{ prop }}: {{ value }};{% endfor %}">{{ header_widget.data.content }}</p>
             {% elif header_widget.type == 'Type.Display' %}
-                <h1>{{ header_widget.data.content }}</h1>
+                <h1 style="{% for prop, value in header_widget.style.items() %}{{ prop }}: {{ value }};{% endfor %}">{{ header_widget.data.content }}</h1>
             {% endif %}
         </div>
         {% endif %}
@@ -171,13 +171,13 @@
         </div>
         
         {% if footer_widget %}
-        <div class="layout-footer">
+        <div class="layout-footer widget{% for key, value in footer_widget.preset.items() %} preset-{{ key }}-{{ value }}{% endfor %}">
             {% if footer_widget.type == 'Type.Heading' %}
-                <h{{ footer_widget.data.level }}>{{ footer_widget.data.content }}</h{{ footer_widget.data.level }}>
+                <h{{ footer_widget.data.level }} style="{% for prop, value in footer_widget.style.items() %}{{ prop }}: {{ value }};{% endfor %}">{{ footer_widget.data.content }}</h{{ footer_widget.data.level }}>
             {% elif footer_widget.type == 'Type.Body' %}
-                <p>{{ footer_widget.data.content }}</p>
+                <p style="{% for prop, value in footer_widget.style.items() %}{{ prop }}: {{ value }};{% endfor %}">{{ footer_widget.data.content }}</p>
             {% elif footer_widget.type == 'Type.Display' %}
-                <h1>{{ footer_widget.data.content }}</h1>
+                <h1 style="{% for prop, value in footer_widget.style.items() %}{{ prop }}: {{ value }};{% endfor %}">{{ footer_widget.data.content }}</h1>
             {% endif %}
         </div>
         {% endif %}
