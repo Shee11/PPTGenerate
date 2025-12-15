@@ -1,5 +1,5 @@
 """Layout engine for calculating widget positions and validating layouts."""
-from typing import Any, Dict, List, Type
+from typing import Any, Dict, List, Optional, Type
 
 # Import widgets to ensure they are registered
 import src.widgets  # noqa: F401
@@ -79,12 +79,13 @@ class LayoutEngine:
         cls._strategies[name] = strategy_class
 
     @classmethod
-    def _resolve_widget_style(cls, widget_style, theme: Theme) -> Dict[str, Any]:
+    def _resolve_widget_style(cls, widget_style, theme: Theme, preset: Optional[Dict[str, str]] = None) -> Dict[str, Any]:
         """Resolve widget style by converting theme tokens to actual values.
         
         Args:
             widget_style: WidgetStyle from Style config with theme token references
             theme: Theme containing actual values
+            preset: Optional preset configuration (e.g., {"fill": "Solid_Brand"})
             
         Returns:
             Dictionary with resolved CSS properties
@@ -119,10 +120,14 @@ class LayoutEngine:
             resolved["vertical-align"] = widget_style.vertical_align
         
         # Resolve foreground color (theme color token)
+        # Skip if widget has Solid_Brand fill preset - let preset CSS control color
         if widget_style.foreground:
-            color_value = getattr(theme, widget_style.foreground, None)
-            if color_value:
-                resolved["color"] = color_value
+            # Check if preset has Solid_Brand fill that will override color
+            has_solid_brand = preset and preset.get("fill") == "Solid_Brand"
+            if not has_solid_brand:
+                color_value = getattr(theme, widget_style.foreground, None)
+                if color_value:
+                    resolved["color"] = color_value
         
         # Resolve background color (theme color token)
         if widget_style.background:
@@ -241,7 +246,8 @@ class LayoutEngine:
                 )
 
             # Resolve widget style from Style config and Theme tokens
-            resolved_style = cls._resolve_widget_style(widget_style, theme)
+            preset = widget_config.get("preset")
+            resolved_style = cls._resolve_widget_style(widget_style, theme, preset)
 
             # MEASURE: Calculate widget content size
             # This is where auto-layout measurement happens
@@ -264,7 +270,7 @@ class LayoutEngine:
                 "widget": widget,
                 "slot": slot,
                 "resolved_style": resolved_style,
-                "preset": widget_config.get("preset")  # Extract preset for pass-through
+                "preset": preset  # Pass through preset for template rendering
             }
 
         # ===== CREATE LAYOUT CONTEXT =====

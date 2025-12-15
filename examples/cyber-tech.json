@@ -326,7 +326,7 @@
       "Data.BigNum": {
         "font": "h1",
         "align": "center",
-        "foreground": "primary_color"
+        "foreground": "text_color"
       },
       "Data.Progress": {
         "font": "caption",

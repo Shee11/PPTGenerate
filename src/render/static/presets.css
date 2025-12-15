@@ -84,7 +84,11 @@
 
 .preset-fill-Solid_Brand {
     background: var(--color-primary, #00ff9f) !important;
-    color: var(--color-text-on-primary, #000000) !important;
+    color: #ffffff !important;
+}
+
+.preset-fill-Solid_Brand * {
+    color: inherit !important;
 }
 
 .preset-fill-Subtle {
