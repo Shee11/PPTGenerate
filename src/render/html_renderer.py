@@ -1,12 +1,13 @@
 """HTML renderer for converting RenderableLayout to HTML."""
 import re
 from pathlib import Path
-from typing import List, Optional, Union
+from typing import List, Optional, Union, Dict, Any
 
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 from src.common.renderable_layout import RenderableLayout
 from src.common.spacing_utils import parse_spacing
+from src.render.preset_defaults import PRESET_DEFAULTS, generate_preset_css_variables, generate_preset_css
 
 
 class HTMLRenderer:
@@ -15,12 +16,13 @@ class HTMLRenderer:
     Supports both single-slide and multi-slide rendering with navigation.
     """
 
-    def __init__(self, template_dir: Optional[Path] = None):
+    def __init__(self, template_dir: Optional[Path] = None, presets: Optional[Dict[str, Any]] = None):
         """Initialize HTML renderer.
         
         Args:
             template_dir: Directory containing Jinja2 templates.
                          Defaults to src/render/templates/
+            presets: Custom preset configuration. Merged with PRESET_DEFAULTS.
         """
         if template_dir is None:
             # Default to templates directory relative to this file
@@ -28,14 +30,55 @@ class HTMLRenderer:
             template_dir = current_file.parent / "templates"
 
         self.template_dir = template_dir
+        
+        # Merge custom presets with defaults (custom overrides defaults)
+        self.presets = self._merge_presets(PRESET_DEFAULTS, presets or {})
 
         # Initialize Jinja2 environment
         self.env = Environment(
-            loader=FileSystemLoader(str(template_dir)),
+            loader=FileSystemLoader(template_dir),
             autoescape=select_autoescape(['html', 'xml']),
             trim_blocks=True,
             lstrip_blocks=True,
         )
+        
+        # Generate preset CSS content in-memory (no file dependency)
+        self.presets_css_content = generate_preset_css()
+
+    @staticmethod
+    def _merge_presets(defaults: Dict[str, Any], custom: Dict[str, Any]) -> Dict[str, Any]:
+        """Deep merge custom preset configuration with defaults.
+        
+        Args:
+            defaults: Default preset configuration (from PRESET_DEFAULTS)
+            custom: Custom preset overrides from layout config
+            
+        Returns:
+            Merged preset configuration (custom values override defaults)
+        """
+        import copy
+        merged = copy.deepcopy(defaults)
+        
+        for category, variants in custom.items():
+            if category not in merged:
+                merged[category] = {}
+            
+            if isinstance(variants, dict):
+                for variant, tokens in variants.items():
+                    if variant not in merged[category]:
+                        merged[category][variant] = {}
+                    
+                    if isinstance(tokens, dict):
+                        # Merge tokens for this variant
+                        merged[category][variant].update(tokens)
+                    else:
+                        # Replace entire variant
+                        merged[category][variant] = tokens
+            else:
+                # Replace entire category
+                merged[category] = variants
+        
+        return merged
 
     def render(self, renderable: Union[RenderableLayout, List[RenderableLayout]]) -> str:
         """Render layout(s) to HTML.
@@ -121,6 +164,8 @@ class HTMLRenderer:
             header_widget=header_widget_data,
             footer_widget=footer_widget_data,
             theme_vars=renderable.theme_vars,
+            preset_vars=generate_preset_css_variables(self.presets),  # Generate preset CSS variables
+            presets_css=self.presets_css_content,  # Embed presets.css content
             style_props=renderable.style_props,
             canvas_width=renderable.width,
             canvas_height=renderable.height,
@@ -244,6 +289,8 @@ class HTMLRenderer:
             canvas_width=renderables[0].width,
             canvas_height=renderables[0].height,
             theme_vars=renderables[0].theme_vars,  # Use first slide's theme
+            preset_vars=generate_preset_css_variables(self.presets),  # Generate preset CSS variables
+            presets_css=self.presets_css_content,  # Embed presets.css content
         )
 
         return html

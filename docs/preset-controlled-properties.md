@@ -2,6 +2,33 @@
 
 This document lists all CSS properties that are controlled by widget presets. These properties should **NOT** be set via inline styles to avoid conflicts.
 
+## Architecture
+
+Presets are **fully in-memory** with no file dependencies:
+
+1. **Preset defaults** → Defined in `src/render/preset_defaults.py` (Python dictionaries with all 22 variants)
+2. **Custom presets** → Optional overrides in layout JSON config under `presets` key
+3. **Preset merging** → `HTMLRenderer._merge_presets()` deep-merges custom with defaults (custom wins)
+4. **CSS generation** → `generate_preset_css()` produces all CSS class rules with CSS variable references
+5. **CSS variables** → `generate_preset_css_variables(merged_presets)` converts tokens to CSS vars
+6. **HTML embedding** → Both CSS class rules and CSS variables embedded inline in output HTML
+
+**Complete flow**:
+```
+PRESET_DEFAULTS (22 variants) 
+    + 
+config.presets (custom overrides)
+    ↓
+_merge_presets() → merged_presets
+    ↓
+generate_preset_css() → CSS class rules (.preset-surface-Elevated { ... })
+generate_preset_css_variables(merged_presets) → CSS variables (--preset-elevated-bg: ...)
+    ↓
+Embedded in <style> tag → Self-contained HTML
+```
+
+**No static files**: The `static/presets.css` file is no longer used.
+
 ## Surface Presets (6 variants)
 
 Controls visual depth and layering:

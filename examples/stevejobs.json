@@ -1,0 +1,367 @@
+{
+  "slides": [
+    {
+      "strategy": "Bento.Standard",
+      "widgets": {
+        "cell_1": {
+          "type": "Type.Display", 
+          "parameters": {"text": "Neural Network Alpha"},
+          "preset": {"surface": "Flat", "shape": "Rounded"}
+        },
+        "cell_2": {
+          "type": "Type.Heading", 
+          "parameters": {"text": "System Diagnostics", "level": 2},
+          "preset": {"surface": "Subtle", "shape": "Rounded"}
+        },
+        "cell_3": {
+          "type": "Type.Body", 
+          "parameters": {"text": "Real-time analysis of distributed computing nodes across quantum processing clusters. All systems operational within nominal parameters."},
+          "preset": {"surface": "Flat", "shape": "Rounded"}
+        },
+        "cell_4": {
+          "type": "Data.BigNum", 
+          "parameters": {"number": 99.97, "label": "Uptime %", "format": "percentage"},
+          "preset": {"surface": "Subtle", "shape": "Rounded"}
+        },
+        "cell_5": {
+          "type": "Data.Progress", 
+          "parameters": {"percentage": 87, "label": "Processing Load"},
+          "preset": {"surface": "Flat", "shape": "Rounded"}
+        },
+        "cell_6": {
+          "type": "Data.Trend", 
+          "parameters": {"value": 42800, "change": 23.5, "direction": "up", "label": "Transactions/sec"},
+          "preset": {"surface": "Subtle", "shape": "Rounded"}
+        }
+      },
+      "header": {"type": "Type.Body", "parameters": {"text": "One more thing..."}},
+      "footer": {"type": "Type.Body", "parameters": {"text": "Innovation · Simplicity · Excellence"}}
+    },
+    {
+      "strategy": "Swiss.Poster",
+      "widgets": {
+        "headline": {
+          "type": "Type.Display", 
+          "parameters": {"text": "Quantum Supremacy"},
+          "preset": {"surface": "Flat", "shape": "Rounded"}
+        }
+      },
+      "header": {"type": "Type.Body", "parameters": {"text": "One more thing..."}},
+      "footer": {"type": "Type.Body", "parameters": {"text": "Innovation · Simplicity · Excellence"}}
+    },
+    {
+      "strategy": "Focus.Solar_System",
+      "parameters": {
+        "connector": "smooth_curve"
+      },
+      "widgets": {
+        "sun": {
+          "type": "Type.Display", 
+          "parameters": {"text": "AI Core"},
+          "preset": {"surface": "Subtle", "shape": "Organic"}
+        },
+        "planet_1": {
+          "type": "Type.Body", 
+          "parameters": {"text": "Vision Processing"},
+          "preset": {"surface": "Flat", "shape": "Pill"}
+        },
+        "planet_2": {
+          "type": "Type.Body", 
+          "parameters": {"text": "NLP Engine"},
+          "preset": {"surface": "Flat", "shape": "Pill"}
+        },
+        "planet_3": {
+          "type": "Type.Body", 
+          "parameters": {"text": "Predictive Analytics"},
+          "preset": {"surface": "Flat", "shape": "Pill"}
+        },
+        "planet_4": {
+          "type": "Type.Body", 
+          "parameters": {"text": "Anomaly Detection"},
+          "preset": {"surface": "Flat", "shape": "Pill"}
+        },
+        "planet_5": {
+          "type": "Type.Body", 
+          "parameters": {"text": "Neural Training"},
+          "preset": {"surface": "Flat", "shape": "Pill"}
+        },
+        "planet_6": {
+          "type": "Data.Progress", 
+          "parameters": {"percentage": 87, "label": "Processing Load"},
+          "preset": {"surface": "Subtle", "shape": "Pill"}
+        }
+      },
+      "header": {"type": "Type.Body", "parameters": {"text": "One more thing..."}},
+      "footer": {"type": "Type.Body", "parameters": {"text": "Innovation · Simplicity · Excellence"}}
+    },
+    {
+      "strategy": "Data.KPI_Row",
+      "widgets": {
+        "header": {
+          "type": "Type.Heading", 
+          "parameters": {"text": "Network Performance Metrics", "level": 2},
+          "preset": {"surface": "Flat", "shape": "Rounded"}
+        },
+        "kpi_1": {
+          "type": "Data.BigNum", 
+          "parameters": {"number": 847, "label": "Active Nodes"},
+          "preset": {"surface": "Subtle", "shape": "Rounded"}
+        },
+        "kpi_2": {
+          "type": "Data.Progress", 
+          "parameters": {"percentage": 96, "label": "Bandwidth Utilization"},
+          "preset": {"surface": "Flat", "shape": "Pill"}
+        },
+        "kpi_3": {
+          "type": "Data.Trend", 
+          "parameters": {"value": 2.3, "change": -0.8, "direction": "down", "label": "Latency (ms)"},
+          "preset": {"surface": "Subtle", "shape": "Rounded"}
+        },
+        "kpi_4": {
+          "type": "Data.BigNum", 
+          "parameters": {"number": 15700000, "label": "Data Processed (GB)"},
+          "preset": {"surface": "Flat", "shape": "Rounded"}
+        }
+      },
+      "header": {"type": "Type.Body", "parameters": {"text": "One more thing..."}},
+      "footer": {"type": "Type.Body", "parameters": {"text": "Innovation · Simplicity · Excellence"}}
+    },
+    {
+      "strategy": "Bento.Standard",
+      "widgets": {
+        "cell_1": {
+          "type": "Type.Display", 
+          "parameters": {"text": "Quantum Leap"},
+          "preset": {"surface": "Subtle", "shape": "Rounded"}
+        },
+        "cell_2": {
+          "type": "Type.Heading", 
+          "parameters": {"text": "Computing Performance", "level": 2},
+          "preset": {"surface": "Flat", "shape": "Rounded"}
+        },
+        "cell_3": {
+          "type": "Type.Body", 
+          "parameters": {"text": "The convergence of quantum computing and AI represents humanity's greatest technological leap in computational power and intelligence."},
+          "preset": {"surface": "Flat", "shape": "Rounded"}
+        },
+        "cell_4": {
+          "type": "Data.BigNum", 
+          "parameters": {"number": 384, "label": "Quantum Qubits"},
+          "preset": {"surface": "Subtle", "shape": "Rounded"}
+        },
+        "cell_5": {
+          "type": "Data.Progress", 
+          "parameters": {"percentage": 92, "label": "Error Correction"},
+          "preset": {"surface": "Flat", "shape": "Pill"}
+        },
+        "cell_6": {
+          "type": "Data.Trend", 
+          "parameters": {"value": 10500, "change": 47.3, "direction": "up", "label": "FLOPS (Petascale)"},
+          "preset": {"surface": "Subtle", "shape": "Rounded"}
+        }
+      },
+      "header": {"type": "Type.Body", "parameters": {"text": "One more thing..."}},
+      "footer": {"type": "Type.Body", "parameters": {"text": "Innovation · Simplicity · Excellence"}}
+    },
+    {
+      "strategy": "Cinematic.Split_30_70",
+      "widgets": {
+        "sidebar": {
+          "type": "Type.List", 
+          "parameters": {"items": ["Blockchain Integration", "Edge Computing", "5G Infrastructure", "Cybersecurity Mesh", "Digital Twin Framework"], "list_type": "unordered"},
+          "preset": {"surface": "Subtle", "shape": "Rounded"}
+        },
+        "stage": {
+          "type": "Type.Heading", 
+          "parameters": {"text": "Next-Generation Technology Stack", "level": 1},
+          "preset": {"surface": "Flat", "shape": "Rounded"}
+        }
+      },
+      "header": {"type": "Type.Body", "parameters": {"text": "One more thing..."}},
+      "footer": {"type": "Type.Body", "parameters": {"text": "Innovation · Simplicity · Excellence"}}
+    },
+    {
+      "strategy": "Edit.Magazine_Collage",
+      "widgets": {
+        "hero": {
+          "type": "Type.Display", 
+          "parameters": {"text": "Deep Learning"},
+          "preset": {"surface": "Subtle", "shape": "Rounded"}
+        },
+        "sticker_1": {
+          "type": "Data.BigNum", 
+          "parameters": {"number": 256, "label": "GPUs"},
+          "preset": {"surface": "Flat", "shape": "Organic", "effect": "Tape"}
+        },
+        "sticker_2": {
+          "type": "Type.Body", 
+          "parameters": {"text": "TensorFlow"},
+          "preset": {"surface": "Subtle", "shape": "Pill", "effect": "Tape"}
+        },
+        "sticker_3": {
+          "type": "Type.Body", 
+          "parameters": {"text": "PyTorch"},
+          "preset": {"surface": "Subtle", "shape": "Pill", "effect": "Tape"}
+        },
+        "sticker_4": {
+          "type": "Data.Progress", 
+          "parameters": {"percentage": 78, "label": "Training"},
+          "preset": {"surface": "Flat", "shape": "Rounded", "effect": "Tape"}
+        },
+        "sticker_5": {
+          "type": "Data.BigNum", 
+          "parameters": {"number": 42, "label": "Epochs"},
+          "preset": {"surface": "Subtle", "shape": "Rounded", "effect": "Tape"}
+        },
+        "sticker_6": {
+          "type": "Data.Trend", 
+          "parameters": {"value": 0.94, "change": 0.08, "direction": "up", "label": "Accuracy"},
+          "preset": {"surface": "Flat", "shape": "Pill", "effect": "Tape"}
+        }
+      },
+      "header": {"type": "Type.Body", "parameters": {"text": "One more thing..."}},
+      "footer": {"type": "Type.Body", "parameters": {"text": "Innovation · Simplicity · Excellence"}}
+    },
+    {
+      "strategy": "Bento.HeroTop",
+      "widgets": {
+        "hero": {
+          "type": "Type.Display", 
+          "parameters": {"text": "System Status: Optimal"},
+          "preset": {"surface": "Subtle", "shape": "Rounded"}
+        },
+        "footer_1": {
+          "type": "Data.Trend", 
+          "parameters": {"value": 156000, "change": 18.9, "direction": "up", "label": "API Calls"},
+          "preset": {"surface": "Flat", "shape": "Rounded"}
+        },
+        "footer_2": {
+          "type": "Data.Progress", 
+          "parameters": {"percentage": 94, "label": "Security Score"},
+          "preset": {"surface": "Subtle", "shape": "Pill"}
+        },
+        "footer_3": {
+          "type": "Data.BigNum", 
+          "parameters": {"number": 99.99, "label": "Availability %", "format": "percentage"},
+          "preset": {"surface": "Flat", "shape": "Rounded"}
+        }
+      },
+      "header": {"type": "Type.Body", "parameters": {"text": "One more thing..."}},
+      "footer": {"type": "Type.Body", "parameters": {"text": "Innovation · Simplicity · Excellence"}}
+    },
+    {
+      "strategy": "Edit.Overlap_Left",
+      "widgets": {
+        "back": {
+          "type": "Type.Display", 
+          "parameters": {"text": "Think Different"},
+          "preset": {"surface": "Flat", "shape": "Rounded"}
+        },
+        "card": {
+          "type": "Type.Quote", 
+          "parameters": {"text": "In the digital realm, we don't just build systems—we architect realities. Every line of code is a brushstroke on the canvas of tomorrow.", "citation": "Innovators, 2025"},
+          "preset": {"surface": "Subtle", "shape": "Rounded"}
+        }
+      },
+      "header": {"type": "Type.Body", "parameters": {"text": "One more thing..."}},
+      "footer": {"type": "Type.Body", "parameters": {"text": "Innovation · Simplicity · Excellence"}}
+    },
+    {
+      "strategy": "Swiss.Asymmetry",
+      "widgets": {
+        "content": {
+          "type": "Type.Quote", 
+          "parameters": {"text": "The future belongs to those who can harness the chaos of data and transform it into actionable intelligence.", "citation": "Digital Revolution, 2025"},
+          "preset": {"surface": "Subtle", "shape": "Rounded"}
+        }
+      },
+      "header": {"type": "Type.Body", "parameters": {"text": "One more thing..."}},
+      "footer": {"type": "Type.Body", "parameters": {"text": "Innovation · Simplicity · Excellence"}}
+    }
+  ],
+  "theme": {
+    "sequence_pattern": "alternating_background",
+    "primary_background": "#ffffff",
+    "secondary_background": "#f5f5f7",
+    "primary_color": "#1d1d1f",
+    "secondary_color": "#515154",
+    "accent_color": "#0071e3",
+    "text_color": "#1d1d1f",
+    "background_color": "#ffffff",
+    "margin_x": "120px",
+    "margin_y": "100px",
+    "gutter": "60px",
+    "header_footer": {
+      "header_height": "6%",
+      "footer_height": "5%",
+      "header_position": "fixed_top_left",
+      "footer_position": "fixed_bottom_left",
+      "header_decoration": "none",
+      "footer_decoration": "none"
+    },
+    "typography": {
+      "h1": {"size": 72, "weight": "semibold", "line_height": 1.05},
+      "h2": {"size": 48, "weight": "semibold", "line_height": 1.1},
+      "h3": {"size": 32, "weight": "medium", "line_height": 1.15},
+      "body": {"size": 21, "weight": "regular", "line_height": 1.48},
+      "caption": {"size": 14, "weight": "regular", "line_height": 1.4}
+    }
+  },
+  "style": {
+    "theme_name": "stevejobs",
+    "widgets": {
+      "Type.Display": {
+        "font": "h1",
+        "align": "center",
+        "foreground": "primary_color"
+      },
+      "Type.Heading": {
+        "font": "h2",
+        "align": "left",
+        "foreground": "primary_color"
+      },
+      "Type.Body": {
+        "font": "body",
+        "align": "left",
+        "foreground": "text_color"
+      },
+      "Type.List": {
+        "font": "body",
+        "align": "left",
+        "foreground": "text_color"
+      },
+      "Type.Quote": {
+        "font": "h3",
+        "align": "center",
+        "foreground": "secondary_color"
+      },
+      "Data.BigNum": {
+        "font": "h1",
+        "align": "center",
+        "foreground": "primary_color"
+      },
+      "Data.Progress": {
+        "font": "caption",
+        "align": "center",
+        "foreground": "accent_color"
+      },
+      "Data.Trend": {
+        "font": "h2",
+        "align": "center",
+        "foreground": "accent_color"
+      }
+    }
+  },
+  "presets": {
+    "Surface": {
+      "Flat": {
+        "bg": "#ffffff",
+        "border": "none"
+      },
+      "Subtle": {
+        "bg": "#f5f5f7",
+        "border": "none"
+      }
+    }
+  }
+}

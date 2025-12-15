@@ -4,12 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Multi-Slide Presentation</title>
-    <link rel="stylesheet" href="static/presets.css">
     <style>
         :root {
             {% for key, value in theme_vars.items() %}
             {{ key }}: {{ value }};
             {% endfor %}
+            
+            /* Preset CSS Variables */
+{{ preset_vars }}
         }
 
         * {
@@ -224,6 +226,9 @@
 
         /* Layout-specific styles for all slides */
         {{ all_slide_styles | safe }}
+        
+        /* Embedded Preset Styles */
+{{ presets_css }}
     </style>
 <body>
     <div class="slide-deck">

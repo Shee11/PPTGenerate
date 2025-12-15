@@ -41,7 +41,9 @@ class LayoutContext:
         self.content_x = margin_x
         self.content_y = margin_y + header_height
         self.content_width = canvas_width - (margin_x * 2)
-        self.content_height = canvas_height - (margin_y * 2) - header_height - footer_height
+        # Content height: from after header to before footer (margins already in content_y)
+        # Don't subtract bottom margin since footer position already accounts for it
+        self.content_height = canvas_height - margin_y - header_height - footer_height - margin_y
 
 
 class WidgetLayoutInput:

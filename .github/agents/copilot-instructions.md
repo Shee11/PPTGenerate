@@ -46,8 +46,8 @@ Python 3.11+: Follow PEP 8, use type hints, prefer Pydantic for validation
 # Render to stdout
 python -m cli examples/cyber-tech.json
 
-# Render to file (automatically deploys static/presets.css)
-python -m cli examples/cyber-tech.json --output presentation.html
+# Render to file (self-contained HTML with embedded preset CSS)
+python -m cli examples/cyber-tech.json --output output/presentation.html
 
 # Validate configuration only
 python -m cli examples/cyber-tech.json --validate-only
@@ -168,11 +168,15 @@ Available strategies (use `--list-strategies` for full details):
 }
 ```
 
-## Static File Deployment
+## Preset CSS Architecture
 
-When using `--output`, the CLI automatically:
-1. Creates output directory if needed
-2. Creates `static/` subdirectory
-3. Copies `presets.css` to `{output_dir}/static/presets.css`
+**All preset CSS is generated in-memory** with zero file dependencies:
+1. Preset defaults defined in `src/render/preset_defaults.py` (Python dictionaries)
+2. Optional custom presets from layout JSON config under `presets` key
+3. `generate_preset_css()` generates CSS class rules with CSS variable references
+4. `generate_preset_css_variables()` converts preset tokens to CSS variables
+5. Both CSS content and variables embedded inline in output HTML
+
+**No static files**: Previously used `static/presets.css` file has been removed.
 
 <!-- MANUAL ADDITIONS END -->

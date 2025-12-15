@@ -202,7 +202,14 @@ class EditMagazineCollageStrategy:
             max_iterations = 50
             push_step = 15  # pixels to push per iteration
             
-            for _ in range(max_iterations):
+            for iteration in range(max_iterations):
+                # Clamp to content bounds during iteration (prevent going out of viewport)
+                # Account for sticker size so bottom-right corner stays within bounds
+                max_x = context.content_x + context.content_width - sticker['size']
+                max_y = context.content_y + context.content_height - sticker['size']
+                pos_x = max(context.content_x, min(pos_x, max_x))
+                pos_y = max(context.content_y, min(pos_y, max_y))
+                
                 current_bounds = Bounds(x=pos_x, y=pos_y, width=sticker['size'], height=sticker['size'])
                 
                 # Check collision with hero
@@ -218,14 +225,27 @@ class EditMagazineCollageStrategy:
                 
                 # No collision - we're done
                 if not collision:
-                    # Make sure within canvas bounds
-                    pos_x = max(context.content_x, min(pos_x, context.content_x + context.content_width - sticker['size']))
-                    pos_y = max(context.content_y, min(pos_y, context.content_y + context.content_height - sticker['size']))
                     break
+                
+                # If we hit the edge, try a different angle to avoid getting stuck
+                at_edge = (pos_x <= context.content_x or 
+                          pos_x >= max_x or
+                          pos_y <= context.content_y or 
+                          pos_y >= max_y)
+                
+                if at_edge and iteration > 5:
+                    # Try a perpendicular direction
+                    angle += math.pi / 2
                 
                 # Push away from hero along the angle
                 pos_x += math.cos(angle) * push_step
                 pos_y += math.sin(angle) * push_step
+            
+            # Final clamping to ensure within bounds (accounting for size)
+            max_x = context.content_x + context.content_width - sticker['size']
+            max_y = context.content_y + context.content_height - sticker['size']
+            pos_x = max(context.content_x, min(pos_x, max_x))
+            pos_y = max(context.content_y, min(pos_y, max_y))
             
             bounds_map[sticker['role']] = Bounds(
                 x=pos_x,

@@ -441,7 +441,10 @@ def cli(
 
         # Render multi-slide output
         if format.lower() == 'html':
-            renderer = HTMLRenderer()
+            # Load presets from config or use defaults
+            presets_data = config.get('presets')
+            
+            renderer = HTMLRenderer(presets=presets_data)
             html_output = renderer.render(renderables)  # Pass list for multi-slide
 
             if output:
@@ -453,21 +456,8 @@ def cli(
                 
                 output.write_text(html_output, encoding='utf-8')
                 
-                # Copy static CSS files to output directory
-                output_dir = output.parent
-                static_dir = output_dir / 'static'
-                static_dir.mkdir(exist_ok=True)
-                
-                # Copy presets.css from src/render/static/ to output/static/
-                source_css = Path(__file__).parent.parent / 'src' / 'render' / 'static' / 'presets.css'
-                dest_css = static_dir / 'presets.css'
-                
-                if source_css.exists():
-                    shutil.copy2(source_css, dest_css)
-                    if verbose:
-                        click.echo(f"Copied {source_css} -> {dest_css}", err=True)
-                else:
-                    click.echo(f"Warning: presets.css not found at {source_css}", err=True)
+                if verbose:
+                    click.echo(f"HTML output written successfully", err=True)
             else:
                 click.echo(html_output)
 
