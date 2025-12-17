@@ -104,19 +104,8 @@ uce-render --list-themes
 
 ```bash
 # Render a sample configuration
-uce-render data/test_01_bento_standard_typography.json -o output/sample.html
+uce-render --source "data\context\career_talk.txt" --user-instruction "Generate slides, target audience is entry, mid level devs, high contrast style" --output "output\career_talk_density_test.html" --verbose
 
-# Validate configuration without rendering
-uce-render data/test_02_bento_standard_data.json --validate-only
-
-# Render with custom dimensions
-uce-render data/test_06_swiss_poster_display.json -o output/poster.html -w 3840 -h 2160
-
-# Generate from source text with LLM
-uce-render --source examples/content.txt --user-instruction "Create a dashboard" -o output/generated.html
-
-# View output in verbose mode
-uce-render data/test_09_cinematic_split5050_display.json -o output/cinematic.html -v
 ```
 
 ### 4. Create a Configuration File
@@ -155,123 +144,6 @@ uce-render data/test_09_cinematic_split5050_display.json -o output/cinematic.htm
   }
 }
 ```
-
-### 5. Render to HTML
-
-```bash
-# Render to stdout
-uce-render dashboard.json
-
-# Render to file
-uce-render dashboard.json --output dashboard.html
-
-# Validate only
-uce-render dashboard.json --validate-only
-
-# Verbose mode
-uce-render dashboard.json --output result.html --verbose
-```
-
-### 6. Python API
-
-```python
-from src.layout.layout_engine import LayoutEngine
-from src.layout.theme import Theme
-from src.layout.style import Style
-from src.render.html_renderer import HTMLRenderer
-
-# Define theme and style
-theme = Theme(
-    primary_color="#2563eb",
-    accent_color="#7c3aed",
-)
-
-style = Style(
-    theme_name="default",
-    gap="24px",
-    padding="32px"
-)
-
-# Configure widgets
-widgets = {
-    "cell_1": {
-        "type": "Type.Display",
-        "parameters": {"text": "Hello World", "style": "bold"}
-    },
-    "cell_2": {
-        "type": "Data.BigNum",
-        "parameters": {"value": 42, "label": "Answer"}
-    }
-}
-
-# Calculate layout
-renderable = LayoutEngine.calculate(
-    strategy_name="Bento.Standard",
-    widget_assignments=widgets,
-    theme=theme,
-    style=style
-)
-
-# Render to HTML
-renderer = HTMLRenderer()
-html = renderer.render(renderable)
-```
-
-## Project Structure
-
-```
-gggg/
-├── src/
-│   ├── common/           # Shared models (SizeClass, Slot, exceptions)
-│   ├── layout/           # Layout engine and strategies
-│   │   └── strategies/   # Bento, Swiss, Cinematic strategies
-│   └── render/           # HTML renderer and widgets
-│       ├── templates/    # Jinja2 templates
-│       └── widgets/      # Widget implementations
-├── cli/                  # Command-line interface
-├── tests/
-│   ├── contract/         # Schema validation tests
-│   ├── integration/      # End-to-end tests
-│   └── unit/             # Component tests
-├── examples/             # Example configurations
-└── specs/                # Feature specifications
-    └── 001-uce-render/   # UCE render specification
-```
-
-## Testing
-
-```bash
-# Run all tests
-python -m pytest tests/ -v
-
-# Run with coverage
-python -m pytest tests/ --cov=src --cov-report=html
-
-# Run specific test categories
-python -m pytest tests/contract/ -v      # Contract tests
-python -m pytest tests/integration/ -v   # Integration tests
-python -m pytest tests/unit/ -v          # Unit tests
-```
-
-## Development Status
-
-### ✅ Phase 1-7: MVP COMPLETE
-- [X] Project setup and dependencies
-- [X] Foundation infrastructure (SizeClass, Theme, Style, Slot, BaseWidget)
-- [X] US1: Basic Layout Rendering (3 strategies, 6 widgets, templates)
-- [X] US2: T-Shirt Size Validation (constraint checking, error messages)
-- [X] US3: Widget Parameter Application (style, align, color, format, level parameters)
-- [X] US4: Multi-Variant Layout Support (10 strategies across 3 families)
-- [X] CLI Implementation (uce-render command with validation mode)
-- [X] Essential Widgets (TypeList, TypeQuote)
-- [X] **131 tests passing** with 70% coverage
-
-### ⏳ Future Enhancements (Post-MVP)
-- [ ] US5: Chart Data Binding (Bar, Line, Pie, Radar, Sankey widgets)
-- [ ] Media widgets (MediaFrame, MediaCode, MediaIcon)
-- [ ] Performance optimization (template caching, memoization)
-- [ ] Additional examples (executive-dashboard, product-launch, comparison-view)
-- [ ] 90%+ test coverage target
 
 ## Architecture
 
