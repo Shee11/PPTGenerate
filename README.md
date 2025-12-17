@@ -56,6 +56,11 @@ All widgets and slots use T-Shirt sizing (S/M/L/XL) with automatic constraint va
 
 ## Quick Start
 
+### 0. Code
+```bash
+git clone https://github.com/wcpeter19882/gggg.git
+cd gggg
+
 ### 1. Set Up Virtual Environment
 
 **Windows (PowerShell):**
