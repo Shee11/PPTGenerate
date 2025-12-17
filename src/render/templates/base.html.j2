@@ -108,6 +108,15 @@
             padding: {{ margin_y }} {{ margin_x }};
         }
         
+        /* Center content-based layouts */
+        .layout-content:has(.matrix-grid),
+        .layout-content:has(.comparison-grid),
+        .layout-content:has(.swiss-layout) {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
         .widget {
             border-radius: var(--border-radius, 8px);
             background: white;
@@ -149,6 +158,56 @@
             line-height: var(--font-caption-line-height);
         }
         
+        /* Comparison Widget Styles */
+        .widget-comparison {
+            padding: 0;
+            background: transparent;
+            box-shadow: none;
+        }
+        
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .comparison-column {
+            padding: 1rem;
+        }
+        
+        .comparison-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+        
+        .comparison-list {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .comparison-list li {
+            padding: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+        
+        .comparison-list li:before {
+            content: "•";
+            position: absolute;
+            left: 0.5rem;
+            font-weight: bold;
+        }
+        
+        .comparison-note {
+            padding: 1rem 1.5rem;
+            background: var(--color-surface-subtle, rgba(0,0,0,0.05));
+            border-radius: var(--border-radius, 8px);
+            font-size: 0.9rem;
+            font-style: italic;
+        }
+        
         {% block layout_styles %}
         {% endblock %}
         
@@ -161,11 +220,13 @@
         {% if header_widget %}
         <div class="layout-header widget{% for key, value in header_widget.preset.items() %} preset-{{ key }}-{{ value }}{% endfor %}">
             {% if header_widget.type == 'Type.Heading' %}
-                <h{{ header_widget.data.level }} style="{% for prop, value in header_widget.style.items() %}{{ prop }}: {{ value }};{% endfor %}">{{ header_widget.data.content }}</h{{ header_widget.data.level }}>
+                <h{{ header_widget.data.level }} style="{% for prop, value in header_widget.style.items() %}{{ prop }}: {{ value }};{% endfor %}">{{ header_widget.data.content | markdown_format | safe }}</h{{ header_widget.data.level }}>
             {% elif header_widget.type == 'Type.Body' %}
-                <p style="{% for prop, value in header_widget.style.items() %}{{ prop }}: {{ value }};{% endfor %}">{{ header_widget.data.content }}</p>
+                <p style="{% for prop, value in header_widget.style.items() %}{{ prop }}: {{ value }};{% endfor %}">{{ header_widget.data.content | markdown_format | safe }}</p>
             {% elif header_widget.type == 'Type.Display' %}
-                <h1 style="{% for prop, value in header_widget.style.items() %}{{ prop }}: {{ value }};{% endfor %}">{{ header_widget.data.content }}</h1>
+                <h1 style="{% for prop, value in header_widget.style.items() %}{{ prop }}: {{ value }};{% endfor %}">{{ header_widget.data.content | markdown_format | safe }}</h1>
+            {% elif header_widget.type == 'Type.Caption' %}
+                <p style="{% for prop, value in header_widget.style.items() %}{{ prop }}: {{ value }};{% endfor %}">{{ header_widget.data.content | markdown_format | safe }}</p>
             {% endif %}
         </div>
         {% endif %}
@@ -178,11 +239,13 @@
         {% if footer_widget %}
         <div class="layout-footer widget{% for key, value in footer_widget.preset.items() %} preset-{{ key }}-{{ value }}{% endfor %}">
             {% if footer_widget.type == 'Type.Heading' %}
-                <h{{ footer_widget.data.level }} style="{% for prop, value in footer_widget.style.items() %}{{ prop }}: {{ value }};{% endfor %}">{{ footer_widget.data.content }}</h{{ footer_widget.data.level }}>
+                <h{{ footer_widget.data.level }} style="{% for prop, value in footer_widget.style.items() %}{{ prop }}: {{ value }};{% endfor %}">{{ footer_widget.data.content | markdown_format | safe }}</h{{ footer_widget.data.level }}>
             {% elif footer_widget.type == 'Type.Body' %}
-                <p style="{% for prop, value in footer_widget.style.items() %}{{ prop }}: {{ value }};{% endfor %}">{{ footer_widget.data.content }}</p>
+                <p style="{% for prop, value in footer_widget.style.items() %}{{ prop }}: {{ value }};{% endfor %}">{{ footer_widget.data.content | markdown_format | safe }}</p>
             {% elif footer_widget.type == 'Type.Display' %}
-                <h1 style="{% for prop, value in footer_widget.style.items() %}{{ prop }}: {{ value }};{% endfor %}">{{ footer_widget.data.content }}</h1>
+                <h1 style="{% for prop, value in footer_widget.style.items() %}{{ prop }}: {{ value }};{% endfor %}">{{ footer_widget.data.content | markdown_format | safe }}</h1>
+            {% elif footer_widget.type == 'Type.Caption' %}
+                <p style="{% for prop, value in footer_widget.style.items() %}{{ prop }}: {{ value }};{% endfor %}">{{ footer_widget.data.content | markdown_format | safe }}</p>
             {% endif %}
         </div>
         {% endif %}

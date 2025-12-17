@@ -12,6 +12,7 @@ from src.common.exceptions import UCERenderError
 from src.common.patchable_context_pydantic import Patch
 from src.common.slide import Slide
 from src.common.slides import Slides
+from src.generation.orchestrator import generate_from_file, GenerationOrchestrator
 from src.layout.layout_engine import LayoutEngine
 from src.layout.style import Style
 from src.layout.theme import Theme
@@ -78,6 +79,33 @@ from src.render.html_renderer import HTMLRenderer
     is_flag=True,
     help='List all available widget preset variants'
 )
+@click.option(
+    '--source',
+    type=click.Path(exists=True, path_type=Path),
+    help='Source content file (.txt or .vtt) for LLM-based generation'
+)
+@click.option(
+    '--user-instruction',
+    type=str,
+    help='User guidance for LLM content generation'
+)
+@click.option(
+    '--use-cache',
+    type=click.Choice(['true', 'false'], case_sensitive=False),
+    default='true',
+    help='Enable caching for LLM calls (default: true)'
+)
+@click.option(
+    '--maxiter',
+    type=int,
+    default=3,
+    help='Maximum refinement iterations for layout validation (default: 3, 0 to disable)'
+)
+@click.option(
+    '--interactive', '-i',
+    is_flag=True,
+    help='Interactive mode: prompt for source and instructions'
+)
 def cli(
     config_file: Optional[Path],
     output: Optional[Path],
@@ -91,6 +119,11 @@ def cli(
     list_widgets: bool,
     list_strategies: bool,
     list_presets: bool,
+    source: Optional[Path],
+    user_instruction: Optional[str],
+    use_cache: str,
+    maxiter: int,
+    interactive: bool,
 ) -> None:
     """Render layouts using the Universal Content Engine.
     
@@ -98,11 +131,28 @@ def cli(
     
     Examples:
     
-        # Render to stdout
+        # Render from config file
         uce-render config.json
         
         # Render to file
         uce-render config.json --output result.html
+        
+        # Interactive mode (prompts for input)
+        uce-render --interactive --output presentation.html
+        uce-render -i -o slides.html
+        
+        # LLM-based generation from source content
+        uce-render --source input.txt --output presentation.html
+        uce-render --source subtitles.vtt --output slides.html
+        
+        # LLM generation with user guidance
+        uce-render --source doc.txt --user-instruction "Focus on key concepts" --output result.html
+        
+        # Disable caching for LLM calls
+        uce-render --source input.txt --use-cache false --output result.html
+        
+        # Combine LLM generation with custom dimensions
+        uce-render --source input.txt --width 3840 --height 2160 --output 4k.html
         
         # Validate configuration only
         uce-render config.json --validate-only
@@ -260,6 +310,7 @@ def cli(
                         "description": "Background patterns and fills",
                         "variants": [
                             {"name": "Solid_Brand", "description": "Solid brand color background"},
+                            {"name": "Solid_Surface", "description": "Solid surface/background color"},
                             {"name": "Subtle", "description": "Light neutral background"},
                             {"name": "Gradient_Linear", "description": "Linear gradient (primary to secondary)"},
                             {"name": "Gradient_Mesh", "description": "Radial mesh gradient"},
@@ -344,155 +395,555 @@ def cli(
                 click.echo(f"Total: {len(strategies)} strategies\n")
             sys.exit(0)
         
-        # Require config_file if not listing assets
-        if not config_file:
-            click.echo("Error: CONFIG_FILE is required when not using --list-* options", err=True)
-            sys.exit(1)
+        # Convert use_cache string to boolean
+        use_cache_bool = use_cache.lower() == 'true'
         
-        # Load configuration
-        if verbose:
-            click.echo(f"Loading configuration from {config_file}", err=True)
-
-        try:
-            with open(config_file, 'r', encoding='utf-8') as f:
-                config = json.load(f)
-        except json.JSONDecodeError as e:
-            click.echo(f"Error: Invalid JSON in configuration file: {e}", err=True)
-            sys.exit(1)
-        except Exception as e:
-            click.echo(f"Error: Could not read configuration file: {e}", err=True)
-            sys.exit(1)
-
-        # Multi-slide format required
-        if 'slides' not in config:
-            click.echo("Error: Configuration must contain 'slides' array", err=True)
-            sys.exit(1)
-        
-        # Extract common configuration
-        theme_data = config.get('theme', {})
-        style_data = config.get('style', {})
-        layout_width = width if width is not None else config.get('width', 1920)
-        layout_height = height if height is not None else config.get('height', 1080)
-
-        # Ensure style has theme_name
-        if 'theme_name' not in style_data:
-            style_data['theme_name'] = 'default'
-
-        # Create theme and style models
-        try:
-            theme = Theme(**theme_data)
-            style = Style(**style_data)
-        except Exception as e:
-            click.echo(f"Error: Invalid theme or style configuration: {e}", err=True)
-            sys.exit(1)
-
-        if verbose:
-            click.echo("Processing multi-slide configuration", err=True)
-
-        slides_data = config.get('slides', [])
-        
-        # Create Slides collection
-        slides = Slides()
-        
-        # Add slides using patch operations
-        operations = []
-        for slide_data in slides_data:
-            # Ensure required fields
-            if 'id' not in slide_data:
-                slide_data['id'] = f"slide-{slide_data.get('rank', len(operations) + 1)}"
-            if 'rank' not in slide_data:
-                slide_data['rank'] = len(operations)
-            if 'state' not in slide_data:
-                slide_data['state'] = 'active'
+        # Handle interactive mode - setup phase
+        if interactive:
+            click.echo("\n" + "=" * 80)
+            click.echo("Interactive Mode - UCE Render")
+            click.echo("=" * 80 + "\n")
             
-            # Create Slide instance for validation
-            try:
-                slide = Slide(**slide_data)
-                operations.append({"add": slide})
-            except Exception as e:
-                click.echo(f"Error: Invalid slide configuration: {e}", err=True)
-                sys.exit(1)
-        
-        # Apply patch to add all slides
-        if operations:
-            patch = Patch(operations=operations)
-            slides.patch(patch)
-
-        if verbose:
-            click.echo(f"Loaded {slides.count()} slides", err=True)
-            click.echo(f"Size: {layout_width}x{layout_height}", err=True)
-
-        # Calculate layouts for all slides
-        try:
-            renderables = LayoutEngine.calculate_slides(
-                slides=slides,
-                theme=theme,
-                style=style,
-                width=layout_width,
-                height=layout_height
-            )
-        except UCERenderError as e:
-            click.echo(f"Error: {e}", err=True)
-            sys.exit(1)
-
-        if validate_only:
-            click.echo(f"✓ Configuration is valid ({len(renderables)} slides)", err=True)
-            sys.exit(0)
-
-        # Render multi-slide output
-        if format.lower() == 'html':
-            # Load presets from config or use defaults
-            presets_data = config.get('presets')
+            # Ensure source is provided or prompt for it
+            if not source:
+                source_input = click.prompt(
+                    "Enter source content file path (.txt or .vtt)",
+                    type=str
+                ).strip()
+                source = Path(source_input)
+                
+                if not source.exists():
+                    click.echo(f"Error: File not found: {source}", err=True)
+                    sys.exit(1)
             
-            renderer = HTMLRenderer(presets=presets_data)
-            html_output = renderer.render(renderables)  # Pass list for multi-slide
-
-            if output:
+            # Ensure user_instruction is provided or prompt for it
+            if not user_instruction:
+                click.echo("💬 Provide generation instructions (or press Enter to use intent guidance only):")
+                click.echo("   Examples:")
+                click.echo("   - 'Focus on key technical concepts'")
+                click.echo("   - 'Create executive summary slides'")
+                click.echo("   - 'Target audience: entry-level developers'")
+                click.echo()
+                user_instruction = click.prompt(
+                    "Your instructions",
+                    type=str,
+                    default="",
+                    show_default=False
+                ).strip()
+                
+                if not user_instruction:
+                    user_instruction = None
+                    click.echo("✓ Using intent detection guidance only.\n")
+                else:
+                    click.echo(f"\n✓ Instructions: {user_instruction}\n")
+            
+            # Ensure output is provided or prompt for it
+            if not output:
+                default_output = source.stem + "_slides.html"
+                output_input = click.prompt(
+                    "Output HTML file path",
+                    type=str,
+                    default=default_output,
+                    show_default=True
+                ).strip()
+                output = Path(output_input)
+        
+        # Validate that we have a source for LLM generation or config file
+        if not source and not config_file:
+            click.echo("Error: Either CONFIG_FILE or --source is required when not using --list-* options", err=True)
+            sys.exit(1)
+        
+        # Interactive loop for iterative refinement
+        continue_generation = True
+        iteration_count = 0
+        
+        # Create orchestrator for interactive mode to maintain state
+        orchestrator = GenerationOrchestrator(use_cache=use_cache_bool) if interactive else None
+        
+        while continue_generation:
+            iteration_count += 1
+            
+            if interactive and iteration_count > 1:
+                click.echo("\n" + "=" * 80)
+                click.echo(f"Iteration {iteration_count} - Refine Generation")
+                click.echo("=" * 80 + "\n")
+                
+                # Prompt for new instructions
+                click.echo("💬 Enter new instructions to refine the presentation (or 'quit' to exit):")
+                click.echo("   Examples:")
+                click.echo("   - 'Make it more technical'")
+                click.echo("   - 'Add more examples'")
+                click.echo("   - 'Simplify for beginners'")
+                click.echo("   - 'Use different layouts'")
+                click.echo()
+                
+                new_instruction = click.prompt(
+                    "New instructions",
+                    type=str,
+                    default="",
+                    show_default=False
+                ).strip()
+                
+                if new_instruction.lower() in ['quit', 'exit', 'q']:
+                    click.echo("\n✓ Exiting interactive mode.\n")
+                    break
+                
+                if not new_instruction:
+                    click.echo("\n✓ No changes - keeping previous instructions.\n")
+                    continue_generation = False
+                    break
+                else:
+                    user_instruction = new_instruction
+                    click.echo(f"\n✓ New instructions: {user_instruction}\n")
+            
+            # Handle LLM-based generation workflow
+            if source:
                 if verbose:
-                    click.echo(f"Writing multi-slide HTML to {output}", err=True)
+                    click.echo(f"LLM-based generation from source: {source}", err=True)
                 
-                # Create output directory if it doesn't exist
-                output.parent.mkdir(parents=True, exist_ok=True)
+                # Show file preview and run intent detection on first iteration in interactive mode
+                if interactive and iteration_count == 1:
+                    # Show file preview
+                    click.echo(f"\n📄 Source file: {source}")
+                    try:
+                        with open(source, 'r', encoding='utf-8') as f:
+                            preview = f.read(500)
+                            click.echo(f"\nPreview (first 500 chars):")
+                            click.echo("-" * 80)
+                            click.echo(preview)
+                            if len(preview) == 500:
+                                click.echo("...")
+                            click.echo("-" * 80 + "\n")
+                    except Exception as e:
+                        click.echo(f"Warning: Could not preview file: {e}", err=True)
+                    
+                    # Run intent detection
+                    click.echo("🔍 Detecting intent...")
+                    try:
+                        from src.generation.intent.detector import detect_intent
+                        
+                        with open(source, 'r', encoding='utf-8') as f:
+                            source_content = f.read()
+                        
+                        intent_result = detect_intent(source_content, use_cache=use_cache_bool)
+                        
+                        click.echo("\n✓ Intent Detection Results:")
+                        click.echo("-" * 80)
+                        click.echo(f"Audience: {intent_result.audience}")
+                        click.echo(f"Pattern: {intent_result.pattern}")
+                        click.echo(f"Tone: {intent_result.tone}")
+                        if intent_result.guidance:
+                            click.echo(f"\nGuidance:")
+                            for line in intent_result.guidance.split('\n'):
+                                click.echo(f"  {line}")
+                        click.echo("-" * 80 + "\n")
+                        
+                    except Exception as e:
+                        click.echo(f"Warning: Intent detection failed: {e}", err=True)
+                        if verbose:
+                            import traceback
+                            traceback.print_exc()
+                    
+                    click.echo(f"\n🎨 Generating presentation...")
+                    if user_instruction:
+                        click.echo(f"   Instructions: {user_instruction}")
+                    click.echo(f"   Output: {output}\n")
                 
-                output.write_text(html_output, encoding='utf-8')
+                # Try to generate from file
+                try:
+                    # Use orchestrator for first iteration or standalone generation
+                    if iteration_count == 1:
+                        if interactive:
+                            # First iteration in interactive mode - use orchestrator instance
+                            slides = orchestrator.generate_from_source(
+                                source_path=source,
+                                user_instruction=user_instruction
+                            )
+                        else:
+                            # Non-interactive mode - use convenience function
+                            slides = generate_from_file(
+                                source_path=source,
+                                user_instruction=user_instruction,
+                                use_cache=use_cache_bool
+                            )
+                    else:
+                        # Subsequent iterations - use orchestrator's regenerate method
+                        slides = orchestrator.regenerate_with_instruction(
+                            new_instruction=user_instruction,
+                            reuse_atoms=True,  # Reuse atoms for faster iteration
+                            redetect_intent=True  # Re-detect intent with new instruction
+                        )
+                    
+                    if verbose:
+                        click.echo(f"Generated {slides.count()} slides", err=True)
+                    
+                except FileNotFoundError as e:
+                    click.echo(f"Error: {e}", err=True)
+                    sys.exit(1)
+                except ValueError as e:
+                    click.echo(f"Error: {e}", err=True)
+                    sys.exit(1)
+                except RuntimeError as e:
+                    click.echo(f"Error: {e}", err=True)
+                    sys.exit(1)
+                except Exception as e:
+                    click.echo(f"Error: Generation failed: {e}", err=True)
+                    if verbose:
+                        import traceback
+                        traceback.print_exc()
+                    sys.exit(1)
                 
-                if verbose:
-                    click.echo(f"HTML output written successfully", err=True)
-            else:
-                click.echo(html_output)
-
-        elif format.lower() == 'json':
-            json_output = {
-                "total_slides": len(renderables),
-                "width": layout_width,
-                "height": layout_height,
-                "slides": [
-                    {
-                        "slide_number": r.slide_number,
-                        "slide_id": r.slide_id,
-                        "strategy": r.strategy_name,
-                        "widgets": [
-                            {
-                                "role": assignment.role,
-                                "type": assignment.widget.get_widget_type(),
-                                "size": str(assignment.slot.size),
-                            }
-                            for assignment in r.widget_assignments
-                        ],
+                # Use generated theme if available, otherwise default theme
+                if slides.theme:
+                    if verbose:
+                        click.echo(f"Using generated theme from LLM", err=True)
+                    theme = Theme(**slides.theme)
+                else:
+                    if verbose:
+                        click.echo(f"Using default theme (no theme generated by LLM)", err=True)
+                    theme = Theme()
+                
+                # Generate style from theme and preset (don't load from file)
+                if slides.preset or slides.theme:
+                    # Build style from generated components
+                    style_data = {
+                        'theme_name': theme.id if hasattr(theme, 'id') else 'generated',
+                        'widgets': {}
                     }
-                    for r in renderables
-                ],
-            }
-
-            if output:
-                if verbose:
-                    click.echo(f"Writing JSON to {output}", err=True)
-                output.write_text(json.dumps(json_output, indent=2), encoding='utf-8')
+                    
+                    # If preset is provided, apply it as global widget defaults
+                    if slides.preset:
+                        if verbose:
+                            click.echo(f"Applying generated preset from LLM", err=True)
+                        
+                        # Get all widget types from AssetManager
+                        widget_list = AssetManager.list_widgets()
+                        
+                        # Apply preset to all widget types
+                        for widget in widget_list:
+                            widget_type = widget['type']
+                            style_data['widgets'][widget_type] = dict(slides.preset)
+                        
+                        if verbose:
+                            click.echo(f"Created style with generated preset for {len(widget_list)} widget types", err=True)
+                    else:
+                        if verbose:
+                            click.echo(f"No preset generated, using minimal style", err=True)
+                    
+                    style = Style(**style_data)
+                else:
+                    # Fallback: load default style only if no theme/preset generated
+                    if verbose:
+                        click.echo(f"No theme or preset generated, loading default style", err=True)
+                        
+                    default_style_path = Path(__file__).parent.parent / "examples" / "style_example.json"
+                    try:
+                        with open(default_style_path, 'r', encoding='utf-8') as f:
+                            style_data = json.load(f)
+                        style = Style(**style_data)
+                        if verbose:
+                            click.echo(f"Loaded default style from {default_style_path}", err=True)
+                    except Exception as e:
+                        click.echo(f"Warning: Could not load default style: {e}", err=True)
+                        # Fallback to minimal style
+                        style = Style(theme_name="default", widgets={})
+                
+                layout_width = width if width is not None else 1920
+                layout_height = height if height is not None else 1080
+            
             else:
-                click.echo(json.dumps(json_output, indent=2))
+                # Original config file workflow
+                # Require config_file if not listing assets and no source
+                if not config_file:
+                    click.echo("Error: Either CONFIG_FILE or --source is required when not using --list-* options", err=True)
+                    sys.exit(1)
+                
+                # Load configuration
+                if verbose:
+                    click.echo(f"Loading configuration from {config_file}", err=True)
 
-        if verbose:
-            click.echo("✓ Rendering complete", err=True)
+                try:
+                    with open(config_file, 'r', encoding='utf-8') as f:
+                        config = json.load(f)
+                except json.JSONDecodeError as e:
+                    click.echo(f"Error: Invalid JSON in configuration file: {e}", err=True)
+                    sys.exit(1)
+                except Exception as e:
+                    click.echo(f"Error: Could not read configuration file: {e}", err=True)
+                    sys.exit(1)
+
+                # Multi-slide format required
+                if 'slides' not in config:
+                    click.echo("Error: Configuration must contain 'slides' array", err=True)
+                    sys.exit(1)
+                
+                # Extract common configuration
+                theme_data = config.get('theme', {})
+                style_data = config.get('style', {})
+                layout_width = width if width is not None else config.get('width', 1920)
+                layout_height = height if height is not None else config.get('height', 1080)
+
+                # Ensure style has theme_name
+                if 'theme_name' not in style_data:
+                    style_data['theme_name'] = 'default'
+
+                # Ensure style has default widget styles if not provided
+                if 'widgets' not in style_data or not style_data['widgets']:
+                    from src.layout.style import WidgetStyle
+                    
+                    # Create default widget styles for all widget types
+                    default_widget_styles = {
+                        # Typography widgets
+                        "Type.Display": {"font": "h1", "align": "left"},
+                        "Type.Heading": {"font": "h2", "align": "left"},
+                        "Type.Body": {"font": "body", "align": "left"},
+                        "Type.Caption": {"font": "caption", "align": "left"},
+                        "Type.Quote": {"font": "h3", "align": "left"},
+                        "Type.List": {"font": "body", "align": "left"},
+                        "Type.Comparison": {"font": "body", "align": "left"},
+                        
+                        # Data widgets
+                        "Data.BigNum": {"font": "h1", "align": "center"},
+                        "Data.Metric": {"font": "h2", "align": "center"},
+                        "Data.Table": {"font": "body", "align": "left"},
+                        "Data.Chart": {"align": "center"},
+                    }
+                    
+                    style_data['widgets'] = default_widget_styles
+
+                # Create theme and style models
+                try:
+                    theme = Theme(**theme_data)
+                    style = Style(**style_data)
+                except Exception as e:
+                    click.echo(f"Error: Invalid theme or style configuration: {e}", err=True)
+                    sys.exit(1)
+
+                if verbose:
+                    click.echo("Processing multi-slide configuration", err=True)
+
+                slides_data = config.get('slides', [])
+                
+                # Create Slides collection
+                slides = Slides()
+                
+                # Add slides using patch operations
+                operations = []
+                for slide_data in slides_data:
+                    # Ensure required fields
+                    if 'id' not in slide_data:
+                        slide_data['id'] = f"slide-{slide_data.get('rank', len(operations) + 1)}"
+                    if 'rank' not in slide_data:
+                        slide_data['rank'] = len(operations)
+                    if 'state' not in slide_data:
+                        slide_data['state'] = 'active'
+                    
+                    # Create Slide instance for validation
+                    try:
+                        slide = Slide(**slide_data)
+                        operations.append({"add": slide})
+                    except Exception as e:
+                        click.echo(f"Error: Invalid slide configuration: {e}", err=True)
+                        sys.exit(1)
+                
+                # Apply patch to add all slides
+                if operations:
+                    patch = Patch(operations=operations)
+                    slides.patch(patch)
+
+                if verbose:
+                    click.echo(f"Loaded {slides.count()} slides", err=True)
+                    click.echo(f"Size: {layout_width}x{layout_height}", err=True)
+            
+            # Common rendering workflow (for both config file and LLM-generated content)
+            
+            print(f"⚙ Rendering {slides.count()} slides with templates...")
+            
+            # Calculate layouts for all slides
+            try:
+                renderables = LayoutEngine.calculate_slides(
+                    slides=slides,
+                    theme=theme,
+                    style=style,
+                    width=layout_width,
+                    height=layout_height
+                )
+            except UCERenderError as e:
+                click.echo(f"Error: {e}", err=True)
+                sys.exit(1)
+            
+            # Refinement loop for LLM-generated content (if enabled)
+            if source and maxiter > 0:
+                from src.generation.content.generator import refine_layout_with_validation
+                from src.generation.atom.collection import AtomCollection
+                from src.utils.generation_config import GenerationConfig
+                from src.generation.atom.prompts import get_atom_extraction_config
+                
+                # Need to get atoms and config for refinement
+                # For simplicity, re-extract atoms (could optimize by storing in orchestrator)
+                if verbose:
+                    click.echo(f"Validating layout (maxiter={maxiter})...", err=True)
+                
+                # Re-create atoms for refinement (ideally this would be cached in orchestrator)
+                from src.common.source import Source
+                source_content = source.read_text(encoding='utf-8')
+                source_obj = Source(
+                    source_id=f"source_{source.stem}",
+                    name=source.name,
+                    file_path=str(source.absolute()),
+                    content=source_content,
+                    content_type='text/plain' if source.suffix.lower() == '.txt' else 'text/vtt',
+                    metadata={'filename': source.name}
+                )
+                
+                from src.generation.atom.extractor import extract_atoms
+                config = get_atom_extraction_config()
+                atoms = extract_atoms(source=source_obj, config=config, use_cache=use_cache_bool)
+                
+                # Run refinement iterations
+                refined_slides = slides
+                iteration = 0
+                while iteration < maxiter:
+                    iteration += 1
+                    
+                    # Validate current renderables
+                    from src.layout.validation import LayoutValidator, format_issues_for_llm
+                    all_issues = []
+                    for renderable in renderables:
+                        issues = LayoutValidator.validate(renderable)
+                        all_issues.extend(issues)
+                    
+                    # If no issues, done
+                    if not all_issues:
+                        if verbose:
+                            click.echo(f"✓ Validation passed on iteration {iteration}", err=True)
+                        break
+                    
+                    # Show issues
+                    if verbose:
+                        click.echo(f"⚠ Found {len(all_issues)} issue(s) - refining (iteration {iteration}/{maxiter})...", err=True)
+                        for issue in all_issues:
+                            click.echo(f"  [{issue.severity}] {issue.category}: {issue.message}", err=True)
+                    
+                    # Generate refinement
+                    feedback = format_issues_for_llm(all_issues)
+                    from src.generation.content.generator import _generate_refinement
+                    
+                    refinement_patch_ops = _generate_refinement(
+                        current_slides=refined_slides,
+                        atoms=atoms,
+                        user_instruction=user_instruction or "Create slides from the content",
+                        config=config,
+                        intent_guidance="",  # Could pass from orchestrator
+                        validation_feedback=feedback
+                    )
+                    
+                    # Apply refinement
+                    if isinstance(refinement_patch_ops, dict):
+                        refinement_patch_ops = [refinement_patch_ops]
+                    
+                    refinement_patch = Patch.from_json_str(json.dumps(refinement_patch_ops))
+                    refined_slides.patch(refinement_patch)
+                    
+                    # Re-render with refined slides
+                    try:
+                        renderables = LayoutEngine.calculate_slides(
+                            slides=refined_slides,
+                            theme=theme,
+                            style=style,
+                            width=layout_width,
+                            height=layout_height
+                        )
+                    except UCERenderError as e:
+                        click.echo(f"Warning: Refinement caused rendering error: {e}", err=True)
+                        break
+                
+                if iteration >= maxiter and all_issues:
+                    if verbose:
+                        click.echo(f"⚠ Max iterations ({maxiter}) reached with {len(all_issues)} remaining issue(s)", err=True)
+                
+                # Update slides to refined version
+                slides = refined_slides
+
+            if validate_only:
+                click.echo(f"✓ Configuration is valid ({len(renderables)} slides)", err=True)
+                sys.exit(0)
+
+            # Render multi-slide output
+            if format.lower() == 'html':
+                # Load presets from config if available (config file workflow)
+                presets_data = None
+                if not source and config_file:
+                    presets_data = config.get('presets')
+                
+                renderer = HTMLRenderer(presets=presets_data)
+                html_output = renderer.render(renderables)  # Pass list for multi-slide
+
+                if output:
+                    if verbose:
+                        click.echo(f"Writing multi-slide HTML to {output}", err=True)
+                    
+                    # Create output directory if it doesn't exist
+                    output.parent.mkdir(parents=True, exist_ok=True)
+                    
+                    output.write_text(html_output, encoding='utf-8')
+                    
+                    if verbose:
+                        click.echo(f"HTML output written successfully", err=True)
+                else:
+                    click.echo(html_output)
+
+            elif format.lower() == 'json':
+                json_output = {
+                    "total_slides": len(renderables),
+                    "width": layout_width,
+                    "height": layout_height,
+                    "slides": [
+                        {
+                            "slide_number": r.slide_number,
+                            "slide_id": r.slide_id,
+                            "strategy": r.strategy_name,
+                            "widgets": [
+                                {
+                                    "role": assignment.role,
+                                    "type": assignment.widget.get_widget_type(),
+                                    "size": str(assignment.slot.size),
+                                }
+                                for assignment in r.widget_assignments
+                            ],
+                        }
+                        for r in renderables
+                    ],
+                }
+
+                if output:
+                    if verbose:
+                        click.echo(f"Writing JSON to {output}", err=True)
+                    output.write_text(json.dumps(json_output, indent=2), encoding='utf-8')
+                else:
+                    click.echo(json.dumps(json_output, indent=2))
+
+            if verbose:
+                click.echo("✓ Rendering complete", err=True)
+            
+            # Interactive mode continuation prompt
+            if interactive:
+                # Inform user of completion
+                click.echo("\n" + "=" * 80)
+                click.echo("✓ Generation complete!")
+                click.echo(f"   Output: {output}")
+                click.echo("   Open the file in a browser to view the presentation.")
+                click.echo("=" * 80)
+                
+                # Don't prompt on first iteration - loop will handle it
+                if iteration_count == 1:
+                    continue  # Go back to start of while loop for iteration 2
+                else:
+                    # This shouldn't be reached as loop breaks when user exits
+                    continue_generation = False
+            else:
+                # Non-interactive mode - exit after one generation
+                continue_generation = False
 
         sys.exit(0)
 

@@ -74,8 +74,8 @@ class PatchableContextBase(BaseModel):
 
 
 class AddOperation(BaseModel):
-    """Add operation - full context data"""
-    add: PatchableContextBase
+    """Add operation - full context data (dict or Pydantic model)"""
+    add: Union[Dict[str, Any], PatchableContextBase]
 
     model_config = ConfigDict(extra='forbid')
 
@@ -88,20 +88,34 @@ class RemoveOperation(BaseModel):
 
 
 class ReplaceOperation(BaseModel):
-    """Replace operation - full context data"""
-    replace: PatchableContextBase
+    """Replace operation - full context data (dict or Pydantic model)"""
+    replace: Union[Dict[str, Any], PatchableContextBase]
+
+    model_config = ConfigDict(extra='forbid')
+
+
+class SetThemeOperation(BaseModel):
+    """Set theme operation - theme configuration"""
+    set_theme: Dict[str, Any]
+
+    model_config = ConfigDict(extra='forbid')
+
+
+class SetPresetOperation(BaseModel):
+    """Set preset operation - global preset configuration"""
+    set_preset: Dict[str, Any]
 
     model_config = ConfigDict(extra='forbid')
 
 
 class Patch(BaseModel):
     """
-    Patch containing operations (add, remove, replace).
+    Patch containing operations (add, remove, replace, set_theme, set_preset).
     
     Uses Pydantic for validation.
     Can be created from JSON directly.
     """
-    operations: List[Union[AddOperation, ReplaceOperation, RemoveOperation]] = Field(
+    operations: List[Union[AddOperation, ReplaceOperation, RemoveOperation, SetThemeOperation, SetPresetOperation]] = Field(
         ...,
         min_length=1,
         description="List of operations to apply"
@@ -114,16 +128,24 @@ class Patch(BaseModel):
         """
         Create a Patch from JSON string.
         
-        Supports both formats:
-        - {"operations": [...]}
-        - [...]
+        Expected format: [{"add": {...}}, {"replace": {...}}, {"set_theme": {...}}, ...]
+        Also accepts: {"operations": [{"add": {...}}, ...]}
         """
         data = json.loads(json_str)
 
-        # If array, wrap in operations key
+        # If already has operations key, use directly
+        if isinstance(data, dict) and "operations" in data:
+            return cls.model_validate(data)
+        
+        # If bare array (expected from LLM), wrap in operations key
         if isinstance(data, list):
-            data = {"operations": data}
-
+            return cls.model_validate({"operations": data})
+        
+        # If single operation object, wrap in array then operations
+        if isinstance(data, dict) and ("add" in data or "replace" in data or "remove" in data or "set_theme" in data or "set_preset" in data):
+            return cls.model_validate({"operations": [data]})
+        
+        # Otherwise try to validate as-is (will fail with helpful error)
         return cls.model_validate(data)
 
     def __len__(self) -> int:
@@ -186,10 +208,14 @@ class PatchableCollection:
 
         return self
 
-    def _patch_add(self, context: PatchableContextBase):
+    def _patch_add(self, context_data: Dict[str, Any]):
         """Execute add operation"""
-        # Re-validate with correct model class
-        context = self._model_class.model_validate(context.model_dump())
+        # Validate with model class (supports both dict and Pydantic model input)
+        if isinstance(context_data, dict):
+            context = self._model_class.model_validate(context_data)
+        else:
+            # Already a Pydantic model (from Python code, not JSON)
+            context = self._model_class.model_validate(context_data.model_dump())
 
         if context.id in self._contexts:
             raise PatchError(f"Cannot add: context '{context.id}' already exists")
@@ -203,10 +229,14 @@ class PatchableCollection:
 
         del self._contexts[context_id]
 
-    def _patch_replace(self, context: PatchableContextBase):
+    def _patch_replace(self, context_data: Dict[str, Any]):
         """Execute replace operation"""
-        # Re-validate with correct model class
-        context = self._model_class.model_validate(context.model_dump())
+        # Validate with model class (supports both dict and Pydantic model input)
+        if isinstance(context_data, dict):
+            context = self._model_class.model_validate(context_data)
+        else:
+            # Already a Pydantic model (from Python code, not JSON)
+            context = self._model_class.model_validate(context_data.model_dump())
 
         if context.id not in self._contexts:
             raise PatchError(f"Cannot replace: context '{context.id}' not found")

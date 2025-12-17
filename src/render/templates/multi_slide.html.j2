@@ -184,11 +184,21 @@
             padding: var(--margin-y) var(--margin-x);
         }
         
+        /* Center content-based layouts */
+        .layout-content:has(.matrix-grid),
+        .layout-content:has(.comparison-grid),
+        .layout-content:has(.swiss-layout) {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
         .widget {
             border-radius: var(--border-radius, 8px);
             background: white;
             padding: 1.5rem;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            color: var(--color-text);
         }
         
         h1 {
@@ -212,16 +222,36 @@
             font-family: var(--font-heading);
         }
         
+        h4 {
+            font-size: 32px;
+            font-weight: 600;
+            line-height: 1.3;
+            font-family: var(--font-heading);
+        }
+        
+        h5 {
+            font-size: 28px;
+            font-weight: 600;
+            line-height: 1.4;
+            font-family: var(--font-heading);
+        }
+        
         p, .widget-type-body {
             font-size: var(--font-body-size);
             font-weight: var(--font-body-weight);
             line-height: var(--font-body-line-height);
+            font-size: 24px !important;
         }
         
         .caption, small {
             font-size: var(--font-caption-size);
             font-weight: var(--font-caption-weight);
             line-height: var(--font-caption-line-height);
+        }
+
+        /* Larger font sizes for presentation */
+        li {
+            font-size: 24px;
         }
 
         /* Layout-specific styles for all slides */

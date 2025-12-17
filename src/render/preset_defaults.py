@@ -65,6 +65,10 @@ PRESET_DEFAULTS = {
             "bg": "var(--color-primary, #00ff9f)",
             "color": "#ffffff",
         },
+        "Solid_Surface": {
+            "bg": "var(--color-background, #ffffff)",
+            "color": "var(--color-text, #000000)",
+        },
         "Subtle": {
             "bg": "rgba(255, 255, 255, 0.03)",
             "border": "1px solid rgba(255, 255, 255, 0.1)",
@@ -236,6 +240,11 @@ def generate_preset_css() -> str:
 .preset-fill-Solid_Brand {
     background: var(--preset-solid-brand-bg, var(--color-primary, #00ff9f)) !important;
     color: var(--preset-solid-brand-color, #ffffff) !important;
+}
+
+.preset-fill-Solid_Surface {
+    background: var(--preset-solid-surface-bg, var(--color-background, #ffffff)) !important;
+    color: var(--preset-solid-surface-color, var(--color-text, #000000)) !important;
 }
 
 .preset-fill-Subtle {

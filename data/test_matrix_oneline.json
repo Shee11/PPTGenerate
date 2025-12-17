@@ -1,0 +1,19 @@
+{
+  "slides": [
+    {
+      "id": "slide_001",
+      "rank": 1,
+      "state": "active",
+      "strategy": "Matrix.Timeline",
+      "widgets": {
+        "stage1_title": {"type": "Type.Heading", "parameters": {"text": "Phase 1"}},
+        "stage1_detail": {"type": "Type.Body", "parameters": {"text": "Initial setup"}},
+        "stage2_title": {"type": "Type.Heading", "parameters": {"text": "Phase 2"}},
+        "stage2_detail": {"type": "Type.Body", "parameters": {"text": "Development"}}
+      },
+      "header": {"type": "Type.Caption", "parameters": {"text": "Project Timeline"}},
+      "footer": {"type": "Type.Caption", "parameters": {"text": "Slide 1"}},
+      "parameters": {}
+    }
+  ]
+}

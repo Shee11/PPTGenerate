@@ -23,6 +23,8 @@ dependencies = [
     "pydantic>=2.0,<3.0",
     "jinja2>=3.1,<4.0",
     "click>=8.0,<9.0",
+    "openai>=1.0.0",
+    "python-dotenv>=1.0.0",
 ]
 
 [project.optional-dependencies]
@@ -37,7 +39,7 @@ dev = [
 uce-render = "cli.uce_render:cli"
 
 [tool.setuptools]
-packages = ["src", "src.common", "src.layout", "src.layout.strategies", "src.render", "src.widgets", "cli"]
+packages = ["src", "src.common", "src.layout", "src.layout.strategies", "src.render", "src.widgets", "src.utils", "src.generation", "src.generation.atom", "src.generation.content", "cli"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

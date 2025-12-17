@@ -45,23 +45,23 @@ class Typography(BaseModel):
     """Typography system with semantic tokens."""
     
     h1: TypographyToken = Field(
-        default=TypographyToken(size=60, weight="bold", line_height=1.1),
+        default=TypographyToken(size=72, weight="bold", line_height=1.1),
         description="Primary heading style"
     )
     h2: TypographyToken = Field(
-        default=TypographyToken(size=40, weight="medium", line_height=1.2),
+        default=TypographyToken(size=48, weight="medium", line_height=1.2),
         description="Secondary heading style"
     )
     h3: TypographyToken = Field(
-        default=TypographyToken(size=28, weight="medium", line_height=1.3),
+        default=TypographyToken(size=36, weight="medium", line_height=1.3),
         description="Tertiary heading style"
     )
     body: TypographyToken = Field(
-        default=TypographyToken(size=18, weight="regular", line_height=1.5),
+        default=TypographyToken(size=28, weight="regular", line_height=1.5),
         description="Body text style"
     )
     caption: TypographyToken = Field(
-        default=TypographyToken(size=14, weight="regular", line_height=1.4),
+        default=TypographyToken(size=20, weight="regular", line_height=1.4),
         description="Caption/small text style"
     )
 

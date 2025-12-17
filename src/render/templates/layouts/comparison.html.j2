@@ -1,0 +1,89 @@
+{% extends "base.html.j2" %}
+
+{% block layout_styles %}
+{% if strategy == "Comparison.TwoColumn" %}
+.comparison-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto auto;
+    gap: {{ gutter }};
+    width: 100%;
+    height: auto;
+    place-self: center;
+}
+.comparison-cell[data-role="left_header"] { grid-column: 1; grid-row: 1; }
+.comparison-cell[data-role="right_header"] { grid-column: 2; grid-row: 1; }
+.comparison-cell[data-role="left_body"] { grid-column: 1; grid-row: 2; }
+.comparison-cell[data-role="right_body"] { grid-column: 2; grid-row: 2; }
+.comparison-cell[data-role="bottom_left"] { grid-column: 1; grid-row: 3; }
+.comparison-cell[data-role="bottom_right"] { grid-column: 2; grid-row: 3; }
+
+{% elif strategy == "Comparison.ThreeColumn" %}
+.comparison-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: auto auto;
+    gap: {{ gutter }};
+    width: 100%;
+    height: auto;
+    place-self: center;
+}
+.comparison-cell[data-role="col1_header"] { grid-column: 1; grid-row: 1; }
+.comparison-cell[data-role="col2_header"] { grid-column: 2; grid-row: 1; }
+.comparison-cell[data-role="col3_header"] { grid-column: 3; grid-row: 1; }
+.comparison-cell[data-role="col1_body"] { grid-column: 1; grid-row: 2; }
+.comparison-cell[data-role="col2_body"] { grid-column: 2; grid-row: 2; }
+.comparison-cell[data-role="col3_body"] { grid-column: 3; grid-row: 2; }
+{% endif %}
+
+.comparison-cell {
+    min-height: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text);
+}
+
+/* Header cells are emphasized */
+.comparison-cell[data-role$="_header"] {
+    font-weight: bold;
+    border-bottom: 2px solid var(--color-accent, var(--color-primary));
+}
+
+/* Add visual separator between columns */
+.comparison-cell[data-role^="right_"],
+.comparison-cell[data-role^="col2_"],
+.comparison-cell[data-role^="col3_"] {
+    border-left: 1px solid rgba(128, 128, 128, 0.2);
+}
+{% endblock %}
+
+{% block layout_content %}
+<div class="comparison-grid">
+    {% if strategy == "Comparison.TwoColumn" %}
+        {% for role in ["left_header", "right_header", "left_body", "right_body", "bottom_left", "bottom_right"] %}
+            {% set widget = widgets.get(role) %}
+            {% if widget or role in ["left_header", "right_header", "left_body", "right_body"] %}
+            <div class="comparison-cell widget {% if widget and widget.preset %}{% include 'widgets/_preset_classes.html.j2' %}{% endif %}" data-role="{{ role }}">
+                {% if widget %}
+                    {% include 'widgets/_widget_content.html.j2' %}
+                {% else %}
+                    <div class="empty-slot">{{ role }}</div>
+                {% endif %}
+            </div>
+            {% endif %}
+        {% endfor %}
+    {% elif strategy == "Comparison.ThreeColumn" %}
+        {% for role in ["col1_header", "col2_header", "col3_header", "col1_body", "col2_body", "col3_body"] %}
+            {% set widget = widgets.get(role) %}
+            <div class="comparison-cell widget {% if widget and widget.preset %}{% include 'widgets/_preset_classes.html.j2' %}{% endif %}" data-role="{{ role }}">
+                {% if widget %}
+                    {% include 'widgets/_widget_content.html.j2' %}
+                {% else %}
+                    <div class="empty-slot">{{ role }}</div>
+                {% endif %}
+            </div>
+        {% endfor %}
+    {% endif %}
+</div>
+{% endblock %}

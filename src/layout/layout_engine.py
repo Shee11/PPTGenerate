@@ -13,6 +13,7 @@ from src.layout.strategies.bento import (
     BentoHeroTopStrategy,
     BentoQuarterStrategy,
     BentoStandardStrategy,
+    BentoVerticalStackStrategy,
 )
 from src.layout.strategies.cinematic import (
     CinematicFullBleedStrategy,
@@ -34,6 +35,14 @@ from src.layout.strategies.swiss import (
     SwissPosterStrategy,
     SwissSplitTypoStrategy,
 )
+from src.layout.strategies.comparison import (
+    ComparisonTwoColumnStrategy,
+    ComparisonThreeColumnStrategy,
+)
+from src.layout.strategies.matrix import (
+    MatrixGridStrategy,
+    MatrixTimelineStrategy,
+)
 from src.layout.style import Style
 from src.layout.theme import Theme
 from src.widgets.base import WidgetRegistry
@@ -54,6 +63,7 @@ class LayoutEngine:
         "Bento.HeroLeft": BentoHeroLeftStrategy,
         "Bento.HeroTop": BentoHeroTopStrategy,
         "Bento.Quarter": BentoQuarterStrategy,
+        "Bento.VerticalStack": BentoVerticalStackStrategy,
         "Swiss.Poster": SwissPosterStrategy,
         "Swiss.Asymmetry": SwissAsymmetryStrategy,
         "Swiss.SplitTypo": SwissSplitTypoStrategy,
@@ -66,6 +76,10 @@ class LayoutEngine:
         "Data.KPI_Row": DataKPIRowStrategy,
         "Focus.Solar_System": FocusSolarSystemStrategy,
         "Focus.Offset_Title": FocusOffsetTitleStrategy,
+        "Comparison.TwoColumn": ComparisonTwoColumnStrategy,
+        "Comparison.ThreeColumn": ComparisonThreeColumnStrategy,
+        "Matrix.Grid": MatrixGridStrategy,
+        "Matrix.Timeline": MatrixTimelineStrategy,
     }
 
     # Default presets for each widget type
@@ -414,7 +428,7 @@ class LayoutEngine:
 
             # Calculate layout for this slide
             layout = cls.calculate(
-                strategy_name=slide.strategy,
+                strategy_name=slide.layout,
                 widget_assignments=slide.widgets,
                 theme=theme,
                 style=slide_style,

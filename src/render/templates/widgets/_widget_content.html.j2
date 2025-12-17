@@ -19,7 +19,9 @@
 {% endif %}
 {%- endmacro %}
 
-{% if widget_type.startswith('Type.') %}
+{% if widget_type == 'Type.Comparison' %}
+    {% include 'widgets/comparison.html.j2' %}
+{% elif widget_type.startswith('Type.') %}
     {% include 'widgets/typography.html.j2' %}
 {% elif widget_type.startswith('Data.') %}
     {% include 'widgets/data.html.j2' %}

@@ -1,7 +1,7 @@
 {
   "slides": [
     {
-      "strategy": "Bento.Standard",
+      "layout": "Bento.Standard",
       "widgets": {
         "cell_1": {
           "type": "Type.Display", 
@@ -38,7 +38,7 @@
       "footer": {"type": "Type.Body", "parameters": {"text": "Episode 01 | Subscribe for More!"}}
     },
     {
-      "strategy": "Swiss.Poster",
+      "layout": "Swiss.Poster",
       "widgets": {
         "headline": {
           "type": "Type.Display", 
@@ -50,7 +50,7 @@
       "footer": {"type": "Type.Body", "parameters": {"text": "Episode 02 | Subscribe for More!"}}
     },
     {
-      "strategy": "Focus.Solar_System",
+      "layout": "Focus.Solar_System",
       "parameters": {
         "connector": "smooth_curve"
       },
@@ -95,7 +95,7 @@
       "footer": {"type": "Type.Body", "parameters": {"text": "Episode 03 | Subscribe for More!"}}
     },
     {
-      "strategy": "Data.KPI_Row",
+      "layout": "Data.KPI_Row",
       "widgets": {
         "header": {
           "type": "Type.Heading", 
@@ -127,7 +127,7 @@
       "footer": {"type": "Type.Body", "parameters": {"text": "Episode 04 | Subscribe for More!"}}
     },
     {
-      "strategy": "Bento.Standard",
+      "layout": "Bento.Standard",
       "widgets": {
         "cell_1": {
           "type": "Type.Display", 
@@ -164,7 +164,7 @@
       "footer": {"type": "Type.Body", "parameters": {"text": "Episode 05 | Subscribe for More!"}}
     },
     {
-      "strategy": "Cinematic.Split_30_70",
+      "layout": "Cinematic.Split_30_70",
       "widgets": {
         "sidebar": {
           "type": "Type.List", 
@@ -181,7 +181,7 @@
       "footer": {"type": "Type.Body", "parameters": {"text": "Episode 06 | Subscribe for More!"}}
     },
     {
-      "strategy": "Edit.Magazine_Collage",
+      "layout": "Edit.Magazine_Collage",
       "widgets": {
         "hero": {
           "type": "Type.Display", 
@@ -223,7 +223,7 @@
       "footer": {"type": "Type.Body", "parameters": {"text": "Episode 07 | Subscribe for More!"}}
     },
     {
-      "strategy": "Bento.HeroTop",
+      "layout": "Bento.HeroTop",
       "widgets": {
         "hero": {
           "type": "Type.Display", 
@@ -250,7 +250,7 @@
       "footer": {"type": "Type.Body", "parameters": {"text": "Episode 08 | Subscribe for More!"}}
     },
     {
-      "strategy": "Edit.Overlap_Left",
+      "layout": "Edit.Overlap_Left",
       "widgets": {
         "back": {
           "type": "Type.Display", 
@@ -267,7 +267,7 @@
       "footer": {"type": "Type.Body", "parameters": {"text": "Episode 09 | Subscribe for More!"}}
     },
     {
-      "strategy": "Swiss.Asymmetry",
+      "layout": "Swiss.Asymmetry",
       "widgets": {
         "content": {
           "type": "Type.Quote", 

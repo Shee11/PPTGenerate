@@ -1,7 +1,7 @@
 {
   "slides": [
     {
-      "strategy": "Bento.Standard",
+      "layout": "Bento.Standard",
       "widgets": {
         "cell_1": {
           "type": "Type.Display", 
@@ -26,7 +26,7 @@
       "footer": {"type": "Type.Body", "parameters": {"text": "NODE-001 | UPLINK ACTIVE"}}
     },
     {
-      "strategy": "Swiss.Poster",
+      "layout": "Swiss.Poster",
       "widgets": {
         "headline": {
           "type": "Type.Display", 
@@ -38,7 +38,7 @@
       "footer": {"type": "Type.Body", "parameters": {"text": "NODE-002 | UPLINK ACTIVE"}}
     },
     {
-      "strategy": "Focus.Solar_System",
+      "layout": "Focus.Solar_System",
       "parameters": {
         "connector": "dashed_arrow"
       },
@@ -83,7 +83,7 @@
       "footer": {"type": "Type.Body", "parameters": {"text": "NODE-003 | UPLINK ACTIVE"}}
     },
     {
-      "strategy": "Data.KPI_Row",
+      "layout": "Data.KPI_Row",
       "widgets": {
         "header": {
           "type": "Type.Heading", 
@@ -115,7 +115,7 @@
       "footer": {"type": "Type.Body", "parameters": {"text": "NODE-004 | UPLINK ACTIVE"}}
     },
     {
-      "strategy": "Bento.Standard",
+      "layout": "Bento.Standard",
       "widgets": {
         "cell_1": {
           "type": "Type.Display", 
@@ -152,7 +152,7 @@
       "footer": {"type": "Type.Body", "parameters": {"text": "NODE-005 | UPLINK ACTIVE"}}
     },
     {
-      "strategy": "Cinematic.Split_30_70",
+      "layout": "Cinematic.Split_30_70",
       "widgets": {
         "sidebar": {
           "type": "Type.List", 
@@ -169,7 +169,7 @@
       "footer": {"type": "Type.Body", "parameters": {"text": "NODE-006 | UPLINK ACTIVE"}}
     },
     {
-      "strategy": "Edit.Magazine_Collage",
+      "layout": "Edit.Magazine_Collage",
       "widgets": {
         "hero": {
           "type": "Type.Display", 
@@ -211,7 +211,7 @@
       "footer": {"type": "Type.Body", "parameters": {"text": "NODE-007 | UPLINK ACTIVE"}}
     },
     {
-      "strategy": "Bento.HeroTop",
+      "layout": "Bento.HeroTop",
       "widgets": {
         "hero": {
           "type": "Type.Display", 
@@ -238,7 +238,7 @@
       "footer": {"type": "Type.Body", "parameters": {"text": "NODE-008 | UPLINK ACTIVE"}}
     },
     {
-      "strategy": "Edit.Overlap_Left",
+      "layout": "Edit.Overlap_Left",
       "widgets": {
         "back": {
           "type": "Type.Display", 
@@ -255,7 +255,7 @@
       "footer": {"type": "Type.Body", "parameters": {"text": "NODE-009 | UPLINK ACTIVE"}}
     },
     {
-      "strategy": "Swiss.Asymmetry",
+      "layout": "Swiss.Asymmetry",
       "widgets": {
         "content": {
           "type": "Type.Quote", 

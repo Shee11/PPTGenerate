@@ -293,3 +293,84 @@ class BentoQuarterStrategy:
                 )
         
         return bounds_map
+
+
+class BentoVerticalStackStrategy:
+    """Bento.VerticalStack: Vertical stack flow with arrow separators.
+    
+    Layout: Max 3 S slots or 1 M + 1 S slot arranged vertically.
+    Each stage displays content stacked top-to-bottom. Arrows between stages.
+    Perfect for sequential processes, step-by-step flows, simple vertical progressions.
+    
+    Layout Algorithm:
+    - All stages get equal height: content_height / num_stages
+    - Full content width for each stage
+    - Arrows rendered between stages (pointing downward)
+    
+    Slot Constraints:
+    - Max 3 S (small) widgets for simple sequences
+    - OR 1 M (medium) + 1 S (small) for mixed content
+    """
+
+    @staticmethod
+    def get_strategy_name() -> str:
+        """Return strategy name."""
+        return "Bento.VerticalStack"
+
+    @staticmethod
+    def get_slots() -> List[Slot]:
+        """Return vertical stack slots.
+        
+        Supports either:
+        - Max 3 S (small) slots for simple sequential steps
+        - 1 M (medium) + 1 S (small) for mixed content
+        """
+        return [
+            Slot(role="stage_1", size=SizeClass.S),
+            Slot(role="stage_2", size=SizeClass.S),
+            Slot(role="stage_3", size=SizeClass.S),
+        ]
+    
+    @staticmethod
+    def calculate_layout(
+        widgets: List[WidgetLayoutInput],
+        context: LayoutContext,
+    ) -> Dict[str, Bounds]:
+        """Calculate vertical stack layout with equal-height stages.
+        
+        Layout structure (max 3 stages):
+        [stage_1]
+            ↓
+        [stage_2]
+            ↓
+        [stage_3]
+        
+        Args:
+            widgets: List of widgets (max 3 S or 1 M + 1 S)
+            context: Layout context
+            
+        Returns:
+            Dictionary mapping role -> Bounds
+        """
+        bounds_map: Dict[str, Bounds] = {}
+        
+        num_stages = len(widgets)
+        if num_stages < 1 or num_stages > 3:
+            # Fallback to 3 stages if invalid count
+            num_stages = 3
+        
+        # Each stage gets equal height
+        stage_width = context.content_width
+        stage_height = context.content_height / num_stages
+        
+        for i, widget in enumerate(widgets):
+            y = context.content_y + (i * stage_height)
+            
+            bounds_map[widget.role] = Bounds(
+                x=context.content_x,
+                y=y,
+                width=stage_width,
+                height=stage_height
+            )
+        
+        return bounds_map

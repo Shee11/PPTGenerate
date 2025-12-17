@@ -1,7 +1,7 @@
 {
   "slides": [
     {
-      "strategy": "Bento.Standard",
+      "layout": "Bento.Standard",
       "widgets": {
         "cell_1": {"type": "Type.Display", "parameters": {"text": "Q4 2025 BUSINESS REVIEW"}},
         "cell_2": {"type": "Type.Heading", "parameters": {"text": "Executive Summary", "level": 2}},
@@ -14,7 +14,7 @@
       "footer": {"type": "Type.Body", "parameters": {"text": "Fiscal Year 2025 | Page 1"}}
     },
     {
-      "strategy": "Swiss.Poster",
+      "layout": "Swiss.Poster",
       "widgets": {
         "headline": {"type": "Type.Display", "parameters": {"text": "EXCELLENCE IN EXECUTION"}}
       },
@@ -22,7 +22,7 @@
       "footer": {"type": "Type.Body", "parameters": {"text": "Fiscal Year 2025 | Page 2"}}
     },
     {
-      "strategy": "Bento.HeroLeft",
+      "layout": "Bento.HeroLeft",
       "widgets": {
         "hero": {"type": "Type.Quote", "parameters": {"text": "We delivered outstanding results by focusing on operational efficiency, customer satisfaction, and strategic innovation. Our disciplined approach to execution has positioned us for continued success.", "citation": "Jane Anderson, CEO"}},
         "side_1": {"type": "Data.BigNum", "parameters": {"number": 156000, "label": "Active Customers"}},
@@ -34,7 +34,7 @@
       "footer": {"type": "Type.Body", "parameters": {"text": "Fiscal Year 2025 | Page 3"}}
     },
     {
-      "strategy": "Data.KPI_Row",
+      "layout": "Data.KPI_Row",
       "widgets": {
         "header": {"type": "Type.Heading", "parameters": {"text": "Financial Performance Metrics", "level": 2}},
         "kpi_1": {"type": "Data.BigNum", "parameters": {"number": 24.5, "label": "Revenue (M)", "format": "number"}},
@@ -46,7 +46,7 @@
       "footer": {"type": "Type.Body", "parameters": {"text": "Fiscal Year 2025 | Page 4"}}
     },
     {
-      "strategy": "Cinematic.Split_50_50",
+      "layout": "Cinematic.Split_50_50",
       "widgets": {
         "left": {"type": "Type.Heading", "parameters": {"text": "Strategic Initiatives", "level": 1}},
         "right": {"type": "Type.List", "parameters": {"items": ["Digital Transformation: Migrate 80% of operations to cloud infrastructure", "Market Expansion: Enter three new geographic regions", "Product Innovation: Launch next-generation platform Q1 2026", "Operational Excellence: Reduce costs by 15% through automation", "Talent Development: Comprehensive leadership training program"], "list_type": "ordered"}}
@@ -55,7 +55,7 @@
       "footer": {"type": "Type.Body", "parameters": {"text": "Fiscal Year 2025 | Page 5"}}
     },
     {
-      "strategy": "Bento.HeroTop",
+      "layout": "Bento.HeroTop",
       "widgets": {
         "hero": {"type": "Type.Heading", "parameters": {"text": "Departmental Performance Overview", "level": 2}},
         "footer_1": {"type": "Data.Trend", "parameters": {"value": 8200000, "change": 15.3, "direction": "up", "label": "Sales"}},
@@ -66,7 +66,7 @@
       "footer": {"type": "Type.Body", "parameters": {"text": "Fiscal Year 2025 | Page 6"}}
     },
     {
-      "strategy": "Bento.Quarter",
+      "layout": "Bento.Quarter",
       "widgets": {
         "quadrant_1": {"type": "Type.Heading", "parameters": {"text": "Strengths", "level": 3}},
         "quadrant_2": {"type": "Type.Heading", "parameters": {"text": "Opportunities", "level": 3}},
@@ -77,7 +77,7 @@
       "footer": {"type": "Type.Body", "parameters": {"text": "Fiscal Year 2025 | Page 7"}}
     },
     {
-      "strategy": "Swiss.SplitTypo",
+      "layout": "Swiss.SplitTypo",
       "widgets": {
         "headline": {"type": "Type.Display", "parameters": {"text": "LOOKING AHEAD"}},
         "body": {"type": "Type.Body", "parameters": {"text": "As we move into 2026, our focus remains on sustainable growth, operational excellence, and delivering exceptional value to our stakeholders. We are well-positioned to capitalize on market opportunities while maintaining our commitment to quality and innovation."}}

@@ -1,0 +1,151 @@
+{% extends "base.html.j2" %}
+
+{% block layout_styles %}
+{% if strategy == "Matrix.Grid" %}
+.matrix-grid.matrix-grid-2col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto repeat(4, auto);
+    gap: {{ gutter }};
+    width: 100%;
+    height: auto;
+    place-self: center;
+}
+.matrix-cell[data-role="header_left"] { grid-column: 1; grid-row: 1; }
+.matrix-cell[data-role="header_right"] { grid-column: 2; grid-row: 1; }
+.matrix-cell[data-role="row1_left"] { grid-column: 1; grid-row: 2; }
+.matrix-cell[data-role="row1_right"] { grid-column: 2; grid-row: 2; }
+.matrix-cell[data-role="row2_left"] { grid-column: 1; grid-row: 3; }
+.matrix-cell[data-role="row2_right"] { grid-column: 2; grid-row: 3; }
+.matrix-cell[data-role="row3_left"] { grid-column: 1; grid-row: 4; }
+.matrix-cell[data-role="row3_right"] { grid-column: 2; grid-row: 4; }
+.matrix-cell[data-role="row4_left"] { grid-column: 1; grid-row: 5; }
+.matrix-cell[data-role="row4_right"] { grid-column: 2; grid-row: 5; }
+
+{% elif strategy == "Matrix.Timeline" %}
+.matrix-grid.matrix-timeline {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: auto auto;
+    gap: {{ gutter }};
+    width: 100%;
+    height: auto;
+    position: relative;
+    place-self: center;
+}
+.matrix-cell[data-role="stage1_title"] { grid-column: 1; grid-row: 1; }
+.matrix-cell[data-role="stage2_title"] { grid-column: 2; grid-row: 1; }
+.matrix-cell[data-role="stage3_title"] { grid-column: 3; grid-row: 1; }
+.matrix-cell[data-role="stage4_title"] { grid-column: 4; grid-row: 1; }
+.matrix-cell[data-role="stage1_detail"] { grid-column: 1; grid-row: 2; }
+.matrix-cell[data-role="stage2_detail"] { grid-column: 2; grid-row: 2; }
+.matrix-cell[data-role="stage3_detail"] { grid-column: 3; grid-row: 2; }
+.matrix-cell[data-role="stage4_detail"] { grid-column: 4; grid-row: 2; }
+
+/* Timeline arrow connector */
+.matrix-grid::before {
+    content: '';
+    position: absolute;
+    top: 25%;
+    left: 5%;
+    right: 5%;
+    height: 2px;
+    background: linear-gradient(to right, 
+        var(--color-primary) 0%, 
+        var(--color-secondary) 50%, 
+        var(--color-accent) 100%);
+    pointer-events: none;
+    z-index: 0;
+}
+{% endif %}
+
+.matrix-cell {
+    min-height: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 1;
+    color: var(--color-text);
+}
+
+/* Header cells are emphasized */
+.matrix-cell[data-role^="header_"] {
+    font-weight: bold;
+    background: rgba(var(--color-primary-rgb, 37, 99, 235), 0.1);
+    border-bottom: 2px solid var(--color-accent, var(--color-primary));
+}
+
+/* Timeline stage titles are numbered */
+{% if strategy == "Matrix.Timeline" %}
+.matrix-cell[data-role$="_title"] {
+    font-weight: bold;
+    position: relative;
+}
+.matrix-cell[data-role="stage1_title"]::before { content: "1"; }
+.matrix-cell[data-role="stage2_title"]::before { content: "2"; }
+.matrix-cell[data-role="stage3_title"]::before { content: "3"; }
+.matrix-cell[data-role="stage4_title"]::before { content: "4"; }
+
+.matrix-cell[data-role$="_title"]::before {
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: bold;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    z-index: 2;
+}
+{% endif %}
+
+/* Add subtle border between rows/columns */
+.matrix-cell:not([data-role^="header_"]) {
+    border-top: 1px solid rgba(128, 128, 128, 0.1);
+}
+.matrix-cell[data-role$="_right"],
+.matrix-cell[data-role="stage2_title"],
+.matrix-cell[data-role="stage2_detail"],
+.matrix-cell[data-role="stage3_title"],
+.matrix-cell[data-role="stage3_detail"],
+.matrix-cell[data-role="stage4_title"],
+.matrix-cell[data-role="stage4_detail"] {
+    border-left: 1px solid rgba(128, 128, 128, 0.1);
+}
+{% endblock %}
+
+{% block layout_content %}
+<div class="matrix-grid{% if strategy == 'Matrix.Grid' %} matrix-grid-2col{% elif strategy == 'Matrix.Timeline' %} matrix-timeline{% endif %}">
+    {% if strategy == "Matrix.Grid" %}
+        {% for role in ["header_left", "header_right", "row1_left", "row1_right", "row2_left", "row2_right", "row3_left", "row3_right", "row4_left", "row4_right"] %}
+            {% set widget = widgets.get(role) %}
+            <div class="matrix-cell widget {% if widget and widget.preset %}{% include 'widgets/_preset_classes.html.j2' %}{% endif %}" data-role="{{ role }}">
+                {% if widget %}
+                    {% include 'widgets/_widget_content.html.j2' %}
+                {% else %}
+                    <div class="empty-slot">{{ role }}</div>
+                {% endif %}
+            </div>
+        {% endfor %}
+    {% elif strategy == "Matrix.Timeline" %}
+        {% for role in ["stage1_title", "stage2_title", "stage3_title", "stage4_title", "stage1_detail", "stage2_detail", "stage3_detail", "stage4_detail"] %}
+            {% set widget = widgets.get(role) %}
+            <div class="matrix-cell widget {% if widget and widget.preset %}{% include 'widgets/_preset_classes.html.j2' %}{% endif %}" data-role="{{ role }}">
+                {% if widget %}
+                    {% include 'widgets/_widget_content.html.j2' %}
+                {% else %}
+                    <div class="empty-slot">{{ role }}</div>
+                {% endif %}
+            </div>
+        {% endfor %}
+    {% endif %}
+</div>
+{% endblock %}

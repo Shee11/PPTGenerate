@@ -1,7 +1,7 @@
 {
   "slides": [
     {
-      "strategy": "Bento.Standard",
+      "layout": "Bento.Standard",
       "widgets": {
         "cell_1": {
           "type": "Type.Display", 
@@ -38,7 +38,7 @@
       "footer": {"type": "Type.Body", "parameters": {"text": "hands-on | lab-01 | ./run.sh"}}
     },
     {
-      "strategy": "Swiss.Poster",
+      "layout": "Swiss.Poster",
       "widgets": {
         "headline": {
           "type": "Type.Display", 
@@ -50,7 +50,7 @@
       "footer": {"type": "Type.Body", "parameters": {"text": "hands-on | lab-02 | ./run.sh"}}
     },
     {
-      "strategy": "Focus.Solar_System",
+      "layout": "Focus.Solar_System",
       "parameters": {
         "connector": "straight_line"
       },
@@ -95,7 +95,7 @@
       "footer": {"type": "Type.Body", "parameters": {"text": "hands-on | lab-03 | ./run.sh"}}
     },
     {
-      "strategy": "Data.KPI_Row",
+      "layout": "Data.KPI_Row",
       "widgets": {
         "header": {
           "type": "Type.Heading", 
@@ -127,7 +127,7 @@
       "footer": {"type": "Type.Body", "parameters": {"text": "hands-on | lab-04 | ./run.sh"}}
     },
     {
-      "strategy": "Bento.Standard",
+      "layout": "Bento.Standard",
       "widgets": {
         "cell_1": {
           "type": "Type.Display", 
@@ -164,7 +164,7 @@
       "footer": {"type": "Type.Body", "parameters": {"text": "hands-on | lab-05 | ./run.sh"}}
     },
     {
-      "strategy": "Cinematic.Split_30_70",
+      "layout": "Cinematic.Split_30_70",
       "widgets": {
         "sidebar": {
           "type": "Type.List", 
@@ -181,7 +181,7 @@
       "footer": {"type": "Type.Body", "parameters": {"text": "hands-on | lab-06 | ./run.sh"}}
     },
     {
-      "strategy": "Edit.Magazine_Collage",
+      "layout": "Edit.Magazine_Collage",
       "widgets": {
         "hero": {
           "type": "Type.Display", 
@@ -223,7 +223,7 @@
       "footer": {"type": "Type.Body", "parameters": {"text": "hands-on | lab-07 | ./run.sh"}}
     },
     {
-      "strategy": "Bento.HeroTop",
+      "layout": "Bento.HeroTop",
       "widgets": {
         "hero": {
           "type": "Type.Display", 
@@ -250,7 +250,7 @@
       "footer": {"type": "Type.Body", "parameters": {"text": "hands-on | lab-08 | ./run.sh"}}
     },
     {
-      "strategy": "Edit.Overlap_Left",
+      "layout": "Edit.Overlap_Left",
       "widgets": {
         "back": {
           "type": "Type.Display", 
@@ -267,7 +267,7 @@
       "footer": {"type": "Type.Body", "parameters": {"text": "hands-on | lab-09 | ./run.sh"}}
     },
     {
-      "strategy": "Swiss.Asymmetry",
+      "layout": "Swiss.Asymmetry",
       "widgets": {
         "content": {
           "type": "Type.Quote", 

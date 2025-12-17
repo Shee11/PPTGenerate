@@ -42,8 +42,44 @@ class HTMLRenderer:
             lstrip_blocks=True,
         )
         
+        # Register custom filters
+        self.env.filters['markdown_format'] = self._markdown_format
+        
         # Generate preset CSS content in-memory (no file dependency)
         self.presets_css_content = generate_preset_css()
+
+    @staticmethod
+    def _markdown_format(text: str) -> str:
+        """Convert markdown-style formatting to HTML with theme styling.
+        
+        Converts:
+        - ==highlight== to <mark style="background-color: var(--color-accent); color: var(--color-text); padding: 0 0.2em;">highlight</mark>
+        - **bold** to <strong style="color: var(--color-accent); font-weight: bold;">bold</strong>
+        
+        Args:
+            text: Text with markdown formatting
+            
+        Returns:
+            HTML string with styled spans
+        """
+        if not text:
+            return text
+        
+        # Convert ==highlight== to styled mark
+        text = re.sub(
+            r'==(.*?)==',
+            r'<mark style="background-color: var(--color-accent); color: var(--color-text); padding: 0 0.2em; border-radius: 3px;">\1</mark>',
+            text
+        )
+        
+        # Convert **bold** to styled strong
+        text = re.sub(
+            r'\*\*(.*?)\*\*',
+            r'<strong style="color: var(--color-accent); font-weight: bold;">\1</strong>',
+            text
+        )
+        
+        return text
 
     @staticmethod
     def _merge_presets(defaults: Dict[str, Any], custom: Dict[str, Any]) -> Dict[str, Any]:

@@ -1,0 +1,314 @@
+{
+  "user_instruction": "Create 4 slides demonstrating the evolution of AI development roles, comparing traditional approaches with modern LLM-based workflows.",
+  "slides": [
+    {
+      "id": "slide_001",
+      "rank": 1,
+      "state": "active",
+      "strategy": "Comparison.TwoColumn",
+      "widgets": {
+        "left_header": {
+          "type": "Type.Heading",
+          "parameters": {
+            "text": "Traditional AI",
+            "level": 2
+          }
+        },
+        "right_header": {
+          "type": "Type.Heading",
+          "parameters": {
+            "text": "LLM Era",
+            "level": 2
+          }
+        },
+        "left_body": {
+          "type": "Type.List",
+          "parameters": {
+            "items": [
+              "Linear pipeline: data → model → training → deploy",
+              "Months of data collection and tuning",
+              "Focus on model accuracy",
+              "Siloed roles (data engineers, ML scientists, developers)"
+            ]
+          }
+        },
+        "right_body": {
+          "type": "Type.List",
+          "parameters": {
+            "items": [
+              "Compositional: combine models and services",
+              "Fast iteration with existing models",
+              "Focus on UX and reliability",
+              "Blurred boundaries: everyone owns product"
+            ]
+          }
+        },
+        "bottom_left": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "Slow, expensive, specialized"
+          }
+        },
+        "bottom_right": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "Fast, orchestrated, collaborative"
+          }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": {
+          "text": "AI Development: Then vs Now",
+          "level": 3
+        }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": {
+          "text": "Slide 1 of 4"
+        }
+      }
+    },
+    {
+      "id": "slide_002",
+      "rank": 2,
+      "state": "active",
+      "strategy": "Matrix.Grid",
+      "widgets": {
+        "header_left": {
+          "type": "Type.Heading",
+          "parameters": {
+            "text": "Past Focus",
+            "level": 3
+          }
+        },
+        "header_right": {
+          "type": "Type.Heading",
+          "parameters": {
+            "text": "Current Focus",
+            "level": 3
+          }
+        },
+        "row1_left": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "Model accuracy and micro-optimizations"
+          }
+        },
+        "row1_right": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "User experience and iteration speed"
+          }
+        },
+        "row2_left": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "Deep expertise in single domain"
+          }
+        },
+        "row2_right": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "Cross-domain combination skills"
+          }
+        },
+        "row3_left": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "Clear role separation (scientist vs engineer)"
+          }
+        },
+        "row3_right": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "Overlapping responsibilities and collaboration"
+          }
+        },
+        "row4_left": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "Standalone model development"
+          }
+        },
+        "row4_right": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "Prompt design and agent orchestration"
+          }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": {
+          "text": "Role Evolution Matrix",
+          "level": 3
+        }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": {
+          "text": "Slide 2 of 4"
+        }
+      }
+    },
+    {
+      "id": "slide_003",
+      "rank": 3,
+      "state": "active",
+      "strategy": "Matrix.Timeline",
+      "widgets": {
+        "stage1_title": {
+          "type": "Type.Heading",
+          "parameters": {
+            "text": "Traditional Dev",
+            "level": 3
+          }
+        },
+        "stage1_detail": {
+          "type": "Type.List",
+          "parameters": {
+            "items": [
+              "Features, stability",
+              "Languages & frameworks"
+            ]
+          }
+        },
+        "stage2_title": {
+          "type": "Type.Heading",
+          "parameters": {
+            "text": "ML/AI Dev",
+            "level": 3
+          }
+        },
+        "stage2_detail": {
+          "type": "Type.List",
+          "parameters": {
+            "items": [
+              "Data pipelines",
+              "Model training"
+            ]
+          }
+        },
+        "stage3_title": {
+          "type": "Type.Heading",
+          "parameters": {
+            "text": "LLM App Engineer",
+            "level": 3
+          }
+        },
+        "stage3_detail": {
+          "type": "Type.List",
+          "parameters": {
+            "items": [
+              "Prompt engineering",
+              "API integration"
+            ]
+          }
+        },
+        "stage4_title": {
+          "type": "Type.Heading",
+          "parameters": {
+            "text": "Agent Orchestration",
+            "level": 3
+          }
+        },
+        "stage4_detail": {
+          "type": "Type.List",
+          "parameters": {
+            "items": [
+              "Multi-agent systems",
+              "Workflow design"
+            ]
+          }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": {
+          "text": "Career Evolution Timeline",
+          "level": 3
+        }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": {
+          "text": "Slide 3 of 4"
+        }
+      }
+    },
+    {
+      "id": "slide_004",
+      "rank": 4,
+      "state": "active",
+      "strategy": "Comparison.ThreeColumn",
+      "widgets": {
+        "col1_header": {
+          "type": "Type.Heading",
+          "parameters": {
+            "text": "Problem Definition",
+            "level": 3
+          }
+        },
+        "col1_body": {
+          "type": "Type.List",
+          "parameters": {
+            "items": [
+              "Imagine useful products",
+              "Define system scope",
+              "Think beyond current models"
+            ]
+          }
+        },
+        "col2_header": {
+          "type": "Type.Heading",
+          "parameters": {
+            "text": "Evaluation & Tuning",
+            "level": 3
+          }
+        },
+        "col2_body": {
+          "type": "Type.List",
+          "parameters": {
+            "items": [
+              "Automated validation loops",
+              "Telemetry and feedback",
+              "Iterative prompt refinement"
+            ]
+          }
+        },
+        "col3_header": {
+          "type": "Type.Heading",
+          "parameters": {
+            "text": "Cross-Domain Combination",
+            "level": 3
+          }
+        },
+        "col3_body": {
+          "type": "Type.List",
+          "parameters": {
+            "items": [
+              "Connect models and tools",
+              "Bridge technical domains",
+              "Deliver integrated solutions"
+            ]
+          }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": {
+          "text": "High-ROI Skill Areas",
+          "level": 3
+        }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": {
+          "text": "Slide 4 of 4"
+        }
+      }
+    }
+  ]
+}

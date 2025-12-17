@@ -1,0 +1,26 @@
+{# Comparison Widget Template - Side-by-side comparison #}
+<div class="widget widget-comparison" style="width: 100%; height: 100%; {{ render_style(applied_style) }}">
+    <div class="comparison-grid">
+        <div class="comparison-column comparison-left">
+            <h4 class="comparison-title" style="color: {{ widget_data.left_color }}">{{ widget_data.left_title | markdown_format | safe }}</h4>
+            <ul class="comparison-list">
+                {% for item in widget_data.left_items %}
+                <li>{{ item | markdown_format | safe }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        
+        <div class="comparison-column comparison-right">
+            <h4 class="comparison-title" style="color: {{ widget_data.right_color }}">{{ widget_data.right_title | markdown_format | safe }}</h4>
+            <ul class="comparison-list">
+                {% for item in widget_data.right_items %}
+                <li>{{ item | markdown_format | safe }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    
+    {% if widget_data.bottom_note %}
+    <div class="comparison-note">{{ widget_data.bottom_note | markdown_format | safe }}</div>
+    {% endif %}
+</div>

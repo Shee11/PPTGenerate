@@ -1,5 +1,5 @@
 {
-  "strategy": "Swiss.Poster",
+  "layout": "Swiss.Poster",
   "theme": {
     "primary_color": "#000000",
     "background_color": "#ffffff",

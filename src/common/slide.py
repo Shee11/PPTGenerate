@@ -1,5 +1,5 @@
 """Slide model for multi-slide layout configurations."""
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 from pydantic import Field
 
@@ -11,12 +11,34 @@ class Slide(PatchableContextBase):
     
     Each slide has:
     - id, rank, state (from PatchableContextBase)
-    - strategy: Layout strategy name
+    - story: Narrative description of slide's purpose and content
+    - atoms: List of atom IDs related to this slide
+    - density: Information density level ('minimal', 'moderate', 'dense')
+    - layout: Layout name
     - widgets: Widget assignments for this slide
     - style_override: Optional style overrides specific to this slide
+    
+    Two-phase generation:
+    1. Draft state: story + atoms + density defined, layout/widgets empty
+    2. Active state: layout + widgets populated based on story and density
     """
     
-    strategy: str = Field(..., description="Layout strategy name (e.g., 'Bento.Standard')")
+    story: str = Field(
+        default="",
+        description="Narrative description of what this slide conveys and why"
+    )
+    atoms: List[str] = Field(
+        default_factory=list,
+        description="List of atom IDs that are relevant to this slide's content"
+    )
+    density: str = Field(
+        default="moderate",
+        description="Information density level: 'minimal' (1-2 key points), 'moderate' (3-4 points), 'dense' (5+ points)"
+    )
+    layout: str = Field(
+        default="",
+        description="Layout name (e.g., 'Bento.Standard')"
+    )
     widgets: Dict[str, Dict[str, Any]] = Field(
         default_factory=dict,
         description="Widget assignments mapping slot roles to widget configs"
@@ -40,16 +62,24 @@ class Slide(PatchableContextBase):
     
     def format_abstract(self) -> str:
         """Format slide as abstract."""
-        return f"Slide #{self.rank} [{self.state}]: {self.strategy} with {len(self.widgets)} widgets"
+        if self.state == "draft":
+            return f"Slide #{self.rank} [DRAFT]: {self.story[:50]}... ({len(self.atoms)} atoms)"
+        return f"Slide #{self.rank} [ACTIVE]: {self.layout} with {len(self.widgets)} widgets"
     
     def format_summary(self) -> str:
         """Format slide summary."""
         lines = [
             f"Slide #{self.rank} [{self.state}]",
             f"ID: {self.id}",
-            f"Strategy: {self.strategy}",
-            f"Widgets: {', '.join(self.widgets.keys())}"
         ]
+        if self.story:
+            lines.append(f"Story: {self.story}")
+        if self.atoms:
+            lines.append(f"Atoms: {', '.join(self.atoms)}")
+        if self.layout:
+            lines.append(f"Layout: {self.layout}")
+        if self.widgets:
+            lines.append(f"Widgets: {', '.join(self.widgets.keys())}")
         if self.style_override:
             lines.append(f"Style Overrides: {', '.join(self.style_override.keys())}")
         return "\n".join(lines)

@@ -7,12 +7,12 @@
         {% elif widget_data.format == 'percentage' %}
             {{ widget_data.number }}%
         {% else %}
-            {{ widget_data.number }}
+            {{ widget_data.number | markdown_format | safe }}
         {% endif %}
     </div>
     {% if widget_data.show_label %}
     <div class="bignum-label" style="margin-top: 0.5rem; opacity: 0.7;">
-        {{ widget_data.label }}
+        {{ widget_data.label | markdown_format | safe }}
     </div>
     {% endif %}
 </div>
@@ -25,19 +25,19 @@
         'flat': '#6b7280'
     } %}
     <div class="trend-value" style="font-size: 2rem; font-weight: bold;">
-        {{ widget_data.value }}
+        {{ widget_data.value | markdown_format | safe }}
     </div>
     <div class="trend-change" style="color: {{ direction_color.get(widget_data.direction, '#6b7280') }};">
-        {% if widget_data.direction == 'up' %}↑{% elif widget_data.direction == 'down' %}↓{% else %}→{% endif %} {{ widget_data.change }}
+        {% if widget_data.direction == 'up' %}↑{% elif widget_data.direction == 'down' %}↓{% else %}→{% endif %} {{ widget_data.change | markdown_format | safe }}
     </div>
     <div class="trend-label" style="margin-top: 0.5rem; opacity: 0.7;">
-        {{ widget_data.label }}
+        {{ widget_data.label | markdown_format | safe }}
     </div>
 </div>
 
 {% elif widget_type == 'Data.Progress' %}
 <div class="widget-data-progress" style="width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; {{ render_style(applied_style) }}">
-    <div class="progress-label" style="margin-bottom: 0.5rem;">{{ widget_data.label }}</div>
+    <div class="progress-label" style="margin-bottom: 0.5rem;">{{ widget_data.label | markdown_format | safe }}</div>
     <div class="progress-bar" style="width: 100%; height: 20px; background: rgba(0,0,0,0.1); border-radius: 10px; overflow: hidden;">
         <div class="progress-fill" style="width: {{ widget_data.percentage }}%; height: 100%; background: currentColor;"></div>
     </div>

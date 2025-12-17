@@ -1,0 +1,106 @@
+{
+  "width": 1920,
+  "height": 1080,
+  "slides": [
+    {
+      "id": "comparison_widget_test",
+      "title": "The LLM Shift",
+      "strategy": "Bento.HeroLeft",
+      "widgets": {
+        "hero": {
+          "type": "Type.Comparison",
+          "parameters": {
+            "left_title": "From Building...",
+            "left_items": [
+              "Writing every function from scratch",
+              "Stitching together APIs manually",
+              "Debugging cryptic errors alone"
+            ],
+            "right_title": "To Composing...",
+            "right_items": [
+              "Describing what you want in plain language",
+              "Letting AI generate boilerplate code",
+              "Pair programming with an intelligent assistant"
+            ],
+            "left_color": "#EF4444",
+            "right_color": "#10B981",
+            "bottom_note": "We shift from micro-optimization to macro-orchestration."
+          }
+        },
+        "side_1": {
+          "type": "Type.Heading",
+          "parameters": {
+            "text": "New Era",
+            "level": 3
+          }
+        }
+      }
+    },
+    {
+      "id": "vertical_stack_with_arrows",
+      "title": "Pipeline with Arrows",
+      "strategy": "Bento.VerticalStack",
+      "parameters": {
+        "connector": "arrow"
+      },
+      "widgets": {
+        "stage_1": {
+          "type": "Type.Heading",
+          "parameters": {
+            "text": "The Challenge",
+            "level": 2
+          }
+        },
+        "stage_2": {
+          "type": "Type.Comparison",
+          "parameters": {
+            "left_title": "Old Way",
+            "left_items": [
+              "Manual coding",
+              "Slow iteration"
+            ],
+            "right_title": "New Way",
+            "right_items": [
+              "AI assistance",
+              "Rapid prototyping"
+            ],
+            "left_color": "#ef4444",
+            "right_color": "#22c55e"
+          }
+        },
+        "stage_3": {
+          "type": "Type.Quote",
+          "parameters": {
+            "text": "The future is already here—it's just not evenly distributed.",
+            "attribution": "William Gibson"
+          }
+        }
+      }
+    },
+    {
+      "id": "vertical_stack_no_connectors",
+      "title": "Clean Stack",
+      "strategy": "Bento.VerticalStack",
+      "widgets": {
+        "stage_1": {
+          "type": "Type.Display",
+          "parameters": {
+            "text": "Step 1"
+          }
+        },
+        "stage_2": {
+          "type": "Type.Display",
+          "parameters": {
+            "text": "Step 2"
+          }
+        },
+        "stage_3": {
+          "type": "Type.Display",
+          "parameters": {
+            "text": "Step 3"
+          }
+        }
+      }
+    }
+  ]
+}

@@ -73,7 +73,7 @@
       "id": "intro",
       "rank": 0,
       "state": "active",
-      "strategy": "Swiss.Poster",
+      "layout": "Swiss.Poster",
       "widgets": {
         "headline": {
           "type": "Type.Display",
@@ -87,7 +87,7 @@
       "id": "features",
       "rank": 1,
       "state": "active",
-      "strategy": "Bento.Standard",
+      "layout": "Bento.Standard",
       "widgets": {
         "cell_1": {
           "type": "Type.Heading",
@@ -134,7 +134,7 @@
       "id": "architecture",
       "rank": 2,
       "state": "active",
-      "strategy": "Cinematic.Split_50_50",
+      "layout": "Cinematic.Split_50_50",
       "widgets": {
         "left": {
           "type": "Type.Heading",
@@ -162,7 +162,7 @@
       "id": "conclusion",
       "rank": 3,
       "state": "active",
-      "strategy": "Swiss.Poster",
+      "layout": "Swiss.Poster",
       "widgets": {
         "headline": {
           "type": "Type.Display",

@@ -1,7 +1,7 @@
 {
   "slides": [
     {
-      "strategy": "Bento.Standard",
+      "layout": "Bento.Standard",
       "widgets": {
         "cell_1": {"type": "Type.Display", "parameters": {"text": "THEME SHOWCASE"}},
         "cell_2": {"type": "Type.Heading", "parameters": {"text": "Demonstrating All Theme Features", "level": 2}},
@@ -14,7 +14,7 @@
       "footer": {"type": "Type.Body", "parameters": {"text": "Slide 1 | Theme Features Demo"}}
     },
     {
-      "strategy": "Swiss.Poster",
+      "layout": "Swiss.Poster",
       "widgets": {
         "headline": {"type": "Type.Display", "parameters": {"text": "ALTERNATING BACKGROUNDS"}}
       },
@@ -22,7 +22,7 @@
       "footer": {"type": "Type.Body", "parameters": {"text": "Slide 2 | Light Background"}}
     },
     {
-      "strategy": "Bento.HeroLeft",
+      "layout": "Bento.HeroLeft",
       "widgets": {
         "hero": {"type": "Type.Quote", "parameters": {"text": "Headers and footers provide consistent branding across all slides. They reserve space at the top and bottom of the canvas.", "citation": "UCE Design Guide"}},
         "side_1": {"type": "Data.Progress", "parameters": {"percentage": 15, "label": "Header %"}},
@@ -30,11 +30,11 @@
         "side_3": {"type": "Data.BigNum", "parameters": {"number": 3, "label": "Positions"}},
         "side_4": {"type": "Data.BigNum", "parameters": {"number": 4, "label": "Decorations"}}
       },
-      "header": {"type": "Type.Heading", "parameters": {"text": "Header/Footer Strategy", "level": 3}},
+      "header": {"type": "Type.Heading", "parameters": {"text": "Header/Footer Layout", "level": 3}},
       "footer": {"type": "Type.Body", "parameters": {"text": "Slide 3 | Dark Background"}}
     },
     {
-      "strategy": "Cinematic.Split_50_50",
+      "layout": "Cinematic.Split_50_50",
       "widgets": {
         "left": {"type": "Type.Heading", "parameters": {"text": "Typography Tokens", "level": 1}},
         "right": {"type": "Type.List", "parameters": {"items": ["H1: 48px, bold, 1.1 line-height", "H2: 36px, 600 weight, 1.2 line-height", "H3: 28px, 600 weight, 1.3 line-height", "Body: 18px, normal, 1.5 line-height", "Caption: 14px, normal, 1.4 line-height"], "list_type": "unordered"}}
@@ -43,7 +43,7 @@
       "footer": {"type": "Type.Body", "parameters": {"text": "Slide 4 | Light Background"}}
     },
     {
-      "strategy": "Bento.HeroTop",
+      "layout": "Bento.HeroTop",
       "widgets": {
         "hero": {"type": "Type.Display", "parameters": {"text": "Sequence Patterns"}},
         "footer_1": {"type": "Type.Body", "parameters": {"text": "uniform: All slides same color"}},
@@ -54,7 +54,7 @@
       "footer": {"type": "Type.Body", "parameters": {"text": "Slide 5 | Dark Background"}}
     },
     {
-      "strategy": "Data.KPI_Row",
+      "layout": "Data.KPI_Row",
       "widgets": {
         "header": {"type": "Type.Heading", "parameters": {"text": "Header Decorations", "level": 2}},
         "kpi_1": {"type": "Type.Body", "parameters": {"text": "none"}},
@@ -66,7 +66,7 @@
       "footer": {"type": "Type.Body", "parameters": {"text": "Slide 6 | Light Background"}}
     },
     {
-      "strategy": "Focus.Solar_System",
+      "layout": "Focus.Solar_System",
       "widgets": {
         "sun": {"type": "Type.Display", "parameters": {"text": "THEME"}},
         "planet_1": {"type": "Type.Body", "parameters": {"text": "Colors"}},
@@ -80,7 +80,7 @@
       "footer": {"type": "Type.Body", "parameters": {"text": "Slide 7 | Dark Background"}}
     },
     {
-      "strategy": "Bento.Quarter",
+      "layout": "Bento.Quarter",
       "widgets": {
         "quadrant_1": {"type": "Data.BigNum", "parameters": {"number": 7, "label": "Color Tokens"}},
         "quadrant_2": {"type": "Data.BigNum", "parameters": {"number": 5, "label": "Typography Levels"}},

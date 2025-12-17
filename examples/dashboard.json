@@ -1,5 +1,5 @@
 {
-  "strategy": "Bento.Standard",
+  "layout": "Bento.Standard",
   "theme": {
     "primary_color": "#2563eb",
     "accent_color": "#7c3aed",

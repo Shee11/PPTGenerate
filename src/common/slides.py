@@ -1,7 +1,7 @@
 """Slides collection for managing multiple slide configurations."""
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
 
-from src.common.patchable_context_pydantic import PatchableCollection
+from src.common.patchable_context_pydantic import PatchableCollection, Patch, SetThemeOperation, SetPresetOperation
 from src.common.slide import Slide
 
 
@@ -9,7 +9,7 @@ class Slides(PatchableCollection):
     """Collection of Slide instances with patchable context support.
     
     Manages slides in rank order and provides methods for accessing
-    slides by index or id.
+    slides by index or id. Also stores theme and preset configurations.
     """
     
     def __init__(self, id: str = "slides"):
@@ -19,6 +19,29 @@ class Slides(PatchableCollection):
             id: Collection identifier (default: "slides")
         """
         super().__init__(id=id, model_class=Slide)
+        self.theme: Optional[Dict[str, Any]] = None
+        self.preset: Optional[Dict[str, Any]] = None
+    
+    def patch(self, patch: Patch) -> 'Slides':
+        """
+        Apply a Patch to this collection, including theme and preset operations.
+        
+        Args:
+            patch: Patch instance with operations
+            
+        Returns:
+            Self for chaining
+        """
+        for op in patch.operations:
+            if isinstance(op, SetThemeOperation):
+                self.theme = op.set_theme
+            elif isinstance(op, SetPresetOperation):
+                self.preset = op.set_preset
+            # else: delegate to parent class for add/remove/replace operations
+        
+        # Call parent patch for standard operations
+        super().patch(patch)
+        return self
     
     def get_by_rank(self) -> List[Slide]:
         """Get all slides sorted by rank.
