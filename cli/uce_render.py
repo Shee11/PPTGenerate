@@ -12,7 +12,7 @@ from src.common.exceptions import UCERenderError
 from src.common.patchable_context_pydantic import Patch
 from src.common.slide import Slide
 from src.common.slides import Slides
-from src.generation.orchestrator import generate_from_file, GenerationOrchestrator
+from src.generation.orchestrator import GenerationOrchestrator
 from src.layout.layout_engine import LayoutEngine
 from src.layout.style import Style
 from src.layout.theme import Theme
@@ -457,8 +457,8 @@ def cli(
         continue_generation = True
         iteration_count = 0
         
-        # Create orchestrator for interactive mode to maintain state
-        orchestrator = GenerationOrchestrator(use_cache=use_cache_bool) if interactive else None
+        # Create orchestrator for all LLM generation (both interactive and non-interactive)
+        orchestrator = GenerationOrchestrator(use_cache=use_cache_bool) if source else None
         
         while continue_generation:
             iteration_count += 1
@@ -489,12 +489,11 @@ def cli(
                     break
                 
                 if not new_instruction:
-                    click.echo("\n✓ No changes - keeping previous instructions.\n")
-                    continue_generation = False
-                    break
-                else:
-                    user_instruction = new_instruction
-                    click.echo(f"\n✓ New instructions: {user_instruction}\n")
+                    click.echo("\n⚠ No instructions provided. Please provide instructions or type 'quit' to exit.\n")
+                    continue  # Skip this iteration and prompt again
+                
+                user_instruction = new_instruction
+                click.echo(f"\n✓ New instructions: {user_instruction}\n")
             
             # Handle LLM-based generation workflow
             if source:
@@ -525,17 +524,38 @@ def cli(
                         with open(source, 'r', encoding='utf-8') as f:
                             source_content = f.read()
                         
-                        intent_result = detect_intent(source_content, use_cache=use_cache_bool)
+                        # Provide minimal user instruction for standalone intent detection
+                        user_instruction = user_instruction if user_instruction else "Generate slides from this content"
+                        
+                        # Create basic preview (abstract will be set after atom extraction)
+                        content_lines = source_content.split('\n')
+                        title_line = content_lines[0] if content_lines else source.name
+                        source_preview = f"{title_line}\n\nContent preview: {source_content[:200]}..."
+                        
+                        intent_result = detect_intent(
+                            user_instruction=user_instruction,
+                            source_preview=source_preview,
+                            source_refs=[{
+                                'ref': f'source_{source.stem}',
+                                'summary': f'{source.name}: {title_line[:100]}'
+                            }],
+                            existing_slides_summary=None,  # No existing slides on first generation
+                            use_cache=use_cache_bool
+                        )
                         
                         click.echo("\n✓ Intent Detection Results:")
                         click.echo("-" * 80)
                         click.echo(f"Audience: {intent_result.audience}")
                         click.echo(f"Pattern: {intent_result.pattern}")
                         click.echo(f"Tone: {intent_result.tone}")
-                        if intent_result.guidance:
-                            click.echo(f"\nGuidance:")
-                            for line in intent_result.guidance.split('\n'):
-                                click.echo(f"  {line}")
+                        click.echo(f"Visual Density: {intent_result.visual_density}")
+                        if intent_result.reasoning:
+                            click.echo(f"\nReasoning: {intent_result.reasoning}")
+                        if intent_result.visual_change:
+                            click.echo(f"\nVisual Guidance:")
+                            click.echo(f"  Should Generate: {intent_result.visual_change.should_generate}")
+                            if intent_result.visual_change.visual_guidance:
+                                click.echo(f"  Guidance: {intent_result.visual_change.visual_guidance[:200]}...")
                         click.echo("-" * 80 + "\n")
                         
                     except Exception as e:
@@ -551,21 +571,13 @@ def cli(
                 
                 # Try to generate from file
                 try:
-                    # Use orchestrator for first iteration or standalone generation
+                    # Use orchestrator for first iteration
                     if iteration_count == 1:
-                        if interactive:
-                            # First iteration in interactive mode - use orchestrator instance
-                            slides = orchestrator.generate_from_source(
-                                source_path=source,
-                                user_instruction=user_instruction
-                            )
-                        else:
-                            # Non-interactive mode - use convenience function
-                            slides = generate_from_file(
-                                source_path=source,
-                                user_instruction=user_instruction,
-                                use_cache=use_cache_bool
-                            )
+                        # Use orchestrator instance for all modes
+                        slides = orchestrator.generate_from_source(
+                            source_path=source,
+                            user_instruction=user_instruction
+                        )
                     else:
                         # Subsequent iterations - use orchestrator's regenerate method
                         slides = orchestrator.regenerate_with_instruction(
@@ -593,48 +605,55 @@ def cli(
                         traceback.print_exc()
                     sys.exit(1)
                 
+                # Get visual styling from orchestrator (always available now)
+                visual = orchestrator.get_visual()
+                
                 # Use generated theme if available, otherwise default theme
-                if slides.theme:
+                if visual and visual.theme:
                     if verbose:
-                        click.echo(f"Using generated theme from LLM", err=True)
-                    theme = Theme(**slides.theme)
+                        click.echo(f"Using generated theme from Visual object", err=True)
+                    theme = Theme(**visual.theme)
                 else:
                     if verbose:
-                        click.echo(f"Using default theme (no theme generated by LLM)", err=True)
+                        click.echo(f"Using default theme (no visual generated by LLM)", err=True)
                     theme = Theme()
                 
-                # Generate style from theme and preset (don't load from file)
-                if slides.preset or slides.theme:
-                    # Build style from generated components
+                # Use generated style if available, otherwise build from theme/preset
+                if visual and visual.style:
+                    if verbose:
+                        click.echo(f"Using generated style from Visual object", err=True)
+                    style = Style(**visual.style)
+                elif visual and (visual.preset or visual.theme):
+                    # Build style from generated components (legacy fallback)
+                    if verbose:
+                        click.echo(f"Building style from visual theme/preset (no style generated)", err=True)
+                    
                     style_data = {
                         'theme_name': theme.id if hasattr(theme, 'id') else 'generated',
                         'widgets': {}
                     }
                     
-                    # If preset is provided, apply it as global widget defaults
-                    if slides.preset:
+                    # If preset is provided, apply it as global widget defaults (WRONG but kept for compatibility)
+                    if visual.preset:
                         if verbose:
-                            click.echo(f"Applying generated preset from LLM", err=True)
+                            click.echo(f"Warning: Using preset as widget style defaults (incorrect schema)", err=True)
                         
                         # Get all widget types from AssetManager
                         widget_list = AssetManager.list_widgets()
                         
-                        # Apply preset to all widget types
+                        # Apply preset to all widget types (this is incorrect - preset != widget style)
                         for widget in widget_list:
                             widget_type = widget['type']
-                            style_data['widgets'][widget_type] = dict(slides.preset)
+                            style_data['widgets'][widget_type] = dict(visual.preset)
                         
                         if verbose:
-                            click.echo(f"Created style with generated preset for {len(widget_list)} widget types", err=True)
-                    else:
-                        if verbose:
-                            click.echo(f"No preset generated, using minimal style", err=True)
+                            click.echo(f"Created style with preset for {len(widget_list)} widget types", err=True)
                     
                     style = Style(**style_data)
                 else:
-                    # Fallback: load default style only if no theme/preset generated
+                    # Fallback: load default style only if nothing generated
                     if verbose:
-                        click.echo(f"No theme or preset generated, loading default style", err=True)
+                        click.echo(f"No visual generated, loading default style", err=True)
                         
                     default_style_path = Path(__file__).parent.parent / "examples" / "style_example.json"
                     try:
@@ -779,26 +798,16 @@ def cli(
                 from src.utils.generation_config import GenerationConfig
                 from src.generation.atom.prompts import get_atom_extraction_config
                 
-                # Need to get atoms and config for refinement
-                # For simplicity, re-extract atoms (could optimize by storing in orchestrator)
                 if verbose:
                     click.echo(f"Validating layout (maxiter={maxiter})...", err=True)
                 
-                # Re-create atoms for refinement (ideally this would be cached in orchestrator)
-                from src.common.source import Source
-                source_content = source.read_text(encoding='utf-8')
-                source_obj = Source(
-                    source_id=f"source_{source.stem}",
-                    name=source.name,
-                    file_path=str(source.absolute()),
-                    content=source_content,
-                    content_type='text/plain' if source.suffix.lower() == '.txt' else 'text/vtt',
-                    metadata={'filename': source.name}
-                )
+                # Get atoms from orchestrator (always available since we always use orchestrator now)
+                atoms = orchestrator._atoms
+                if verbose:
+                    click.echo(f"✓ Using cached atom extraction", err=True)
                 
-                from src.generation.atom.extractor import extract_atoms
+                # Get config for refinement
                 config = get_atom_extraction_config()
-                atoms = extract_atoms(source=source_obj, config=config, use_cache=use_cache_bool)
                 
                 # Run refinement iterations
                 refined_slides = slides
@@ -926,21 +935,14 @@ def cli(
             if verbose:
                 click.echo("✓ Rendering complete", err=True)
             
-            # Interactive mode continuation prompt
+            # Interactive mode continuation - show completion message and loop
             if interactive:
-                # Inform user of completion
                 click.echo("\n" + "=" * 80)
                 click.echo("✓ Generation complete!")
                 click.echo(f"   Output: {output}")
                 click.echo("   Open the file in a browser to view the presentation.")
                 click.echo("=" * 80)
-                
-                # Don't prompt on first iteration - loop will handle it
-                if iteration_count == 1:
-                    continue  # Go back to start of while loop for iteration 2
-                else:
-                    # This shouldn't be reached as loop breaks when user exits
-                    continue_generation = False
+                # Loop will continue to next iteration and prompt for refinement
             else:
                 # Non-interactive mode - exit after one generation
                 continue_generation = False

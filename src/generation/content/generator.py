@@ -496,3 +496,100 @@ def _generate_refinement(
     patch_operations = json.loads(response)
     
     return patch_operations
+
+
+def refine_layout(
+    existing_slides: Slides,
+    atoms: AtomCollection,
+    refinement_instruction: str,
+    config: GenerationConfig,
+    use_cache: bool = True,
+    intent_guidance: str = ""
+) -> Slides:
+    """
+    Incrementally refine existing slides based on user's refinement instruction.
+    
+    Uses LLM to generate patches that modify existing slides rather than 
+    regenerating from scratch. This is faster and preserves slide structure
+    while applying targeted changes.
+    
+    Args:
+        existing_slides: Current Slides collection to refine
+        atoms: AtomCollection with extracted content
+        refinement_instruction: User's refinement request (e.g., "Make it more technical")
+        config: Generation configuration
+        use_cache: Whether to use cached results if available
+        intent_guidance: Optional guidance from intent detection
+        
+    Returns:
+        Refined Slides collection with patches applied
+        
+    Raises:
+        ValueError: If slides or instruction is empty
+        json.JSONDecodeError: If LLM output is not valid JSON
+    """
+    # Validate inputs
+    if len(existing_slides) == 0:
+        raise ValueError("Cannot refine empty slide collection")
+    
+    if not refinement_instruction or not refinement_instruction.strip():
+        raise ValueError("Refinement instruction cannot be empty")
+    
+    # Build refinement prompt
+    from src.generation.content.prompts import render_user_refinement_prompt, get_slide_generation_config
+    
+    user_prompt = render_user_refinement_prompt(
+        existing_slides=existing_slides,
+        atoms=atoms,
+        refinement_instruction=refinement_instruction,
+        intent_guidance=intent_guidance
+    )
+    
+    system_prompt = """You are an expert presentation designer. You refine existing presentations based on user feedback.
+
+Given:
+1. Current slide collection (with widgets, layouts, styling)
+2. Available content atoms
+3. User's refinement instruction
+
+Generate a JSON Patch with operations to refine the slides:
+- Use 'replace' to modify existing slides (change content, layout, styling)
+- Use 'add' to insert new slides if needed
+- Use 'remove' to delete slides if needed
+
+Focus on incremental changes that address the user's refinement instruction.
+Preserve existing structure where possible - only modify what's needed.
+
+Output ONLY a valid JSON array of patch operations. No markdown, no explanations."""
+    
+    content_config = get_slide_generation_config()
+    
+    # Call LLM
+    response = call_llm(
+        system_prompt=system_prompt,
+        user_prompt=user_prompt,
+        deployment=config.model,
+        temperature=content_config.temperature,
+        max_tokens=content_config.max_tokens,
+        max_reasoning_tokens=content_config.max_reasoning_tokens
+    )
+    
+    # Parse and apply patches
+    response_data = json.loads(response)
+    
+    # Handle both formats: {"operations": [...]} or just [...]
+    if isinstance(response_data, dict) and "operations" in response_data:
+        patch_operations = response_data["operations"]
+    elif isinstance(response_data, list):
+        patch_operations = response_data
+    else:
+        raise ValueError(f"Unexpected response format: {type(response_data)}")
+    
+    patch = Patch(operations=patch_operations)
+    
+    # Apply patches to existing slides
+    existing_slides.patch(patch)
+    
+    print(f"✓ Applied {len(patch_operations)} refinement operation(s)")
+    
+    return existing_slides

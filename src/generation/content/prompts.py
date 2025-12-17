@@ -179,74 +179,70 @@ def _get_preset_schema() -> str:
 }"""
 
 
+def _get_style_schema() -> str:
+    """Get JSON schema for style configuration (widget-type defaults).
+    
+    Returns:
+        JSON schema string for style
+    """
+    return """{
+  "type": "object",
+  "description": "Widget-type styling defaults that map widget types to theme tokens",
+  "properties": {
+    "theme_name": {"type": "string", "description": "Reference to theme ID"},
+    "widgets": {
+      "type": "object",
+      "description": "Per widget-type styling (e.g., 'Type.Display', 'Data.BigNum')",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "font": {"type": "string", "description": "Theme typography token (h1, h2, h3, body, caption)"},
+          "align": {"type": "string", "enum": ["left", "center", "right", "justify"], "description": "Text alignment"},
+          "vertical_align": {"type": "string", "enum": ["top", "center", "bottom"], "description": "Vertical alignment"},
+          "foreground": {"type": "string", "description": "Theme color token for text (primary_color, text_color, etc.)"},
+          "background": {"type": "string", "description": "Theme color token for background"},
+          "border_radius": {"type": "string", "description": "Border radius (e.g., '8px', '12px')"}
+        }
+      }
+    }
+  }
+}"""
+
+
 def _get_patch_schema_for_add() -> str:
-    """Get JSON schema for patch 'add' operations including theme/preset setup.
+    """Get JSON schema for patch 'add' operations (storyline generation only).
+    
+    Note: Theme, style, preset are now handled separately in visual generation.
     
     Returns:
         JSON schema string for add operations
     """
     return """{
   "type": "array",
-  "description": "Array of patch operations: set_theme, set_preset (FIRST), then add operations for slides",
+  "description": "Array of add operations to create draft slides with story and atom references",
   "items": {
-    "oneOf": [
-      {
+    "type": "object",
+    "properties": {
+      "add": {
         "type": "object",
+        "description": "Add operation to create a new draft slide",
         "properties": {
-          "set_theme": {
-            "type": "object",
-            "description": "Set presentation theme colors, typography, spacing",
-            "properties": {
-              "id": {"type": "string", "description": "Theme identifier"},
-              "primary_color": {"type": "string", "description": "Primary brand color (hex)"},
-              "secondary_color": {"type": "string", "description": "Secondary color (hex)"},
-              "accent_color": {"type": "string", "description": "Accent/highlight color (hex)"},
-              "background_color": {"type": "string", "description": "Background color (hex)"},
-              "text_color": {"type": "string", "description": "Text color (hex)"}
-            },
-            "required": ["id", "primary_color", "background_color", "text_color"]
-          }
+          "id": {"type": "string", "description": "Unique slide identifier (e.g., 'slide_001')"},
+          "rank": {"type": "integer", "description": "Slide order position (1-based)"},
+          "state": {"type": "string", "enum": ["draft"], "description": "Slide state (always 'draft' in storyline)"},
+          "story": {"type": "string", "description": "Narrative description of slide purpose and content"},
+          "atoms": {"type": "array", "items": {"type": "string"}, "description": "List of atom IDs used in this slide"},
+          "density": {"type": "string", "enum": ["minimal", "moderate", "dense"], "description": "Information density"},
+          "layout": {"type": "string", "description": "Layout name (empty in draft, populated later)"},
+          "widgets": {"type": "object", "description": "Widget assignments (empty {} in draft state)"},
+          "header": {"type": "object", "description": "Optional header widget"},
+          "footer": {"type": "object", "description": "Optional footer widget"},
+          "parameters": {"type": "object", "description": "Layout-specific parameters"}
         },
-        "required": ["set_theme"]
-      },
-      {
-        "type": "object",
-        "properties": {
-          "set_preset": {
-            "type": "object",
-            "description": "Set global preset visual style",
-            "properties": {
-              "surface": {"type": "string", "enum": ["Flat", "Elevated", "Outline", "Glass", "Sunken", "NeoBrutal", "Subtle"]},
-              "shape": {"type": "string", "enum": ["Sharp", "Rounded", "Curve", "Pill", "Squircle", "Organic"]},
-              "fill": {"type": "string", "enum": ["Solid_Brand", "Solid_Surface", "Subtle", "Gradient_Linear", "Gradient_Mesh", "Pattern_Dot", "Noise"]},
-              "effect": {"type": "string", "enum": ["Duotone", "Glitch", "Glow", "Tape", "Shadow"]}
-            }
-          }
-        },
-        "required": ["set_preset"]
-      },
-      {
-        "type": "object",
-        "properties": {
-          "add": {
-            "type": "object",
-            "description": "Add operation to create a new slide",
-            "properties": {
-              "id": {"type": "string", "description": "Unique slide identifier (e.g., 'slide_001')"},
-              "rank": {"type": "integer", "description": "Slide order position (1-based)"},
-              "state": {"type": "string", "enum": ["draft", "active"], "description": "Slide state"},
-              "layout": {"type": "string", "description": "Layout name (e.g., 'Bento.Standard')"},
-              "widgets": {"type": "object", "description": "Widget assignments (empty {} in draft state)"},
-              "header": {"type": "object", "description": "Optional header widget"},
-              "footer": {"type": "object", "description": "Optional footer widget"},
-              "parameters": {"type": "object", "description": "Layout-specific parameters"}
-            },
-            "required": ["id", "rank", "state", "layout", "widgets", "parameters"]
-          }
-        },
-        "required": ["add"]
+        "required": ["id", "rank", "state", "story", "atoms", "density", "layout", "widgets", "parameters"]
       }
-    ]
+    },
+    "required": ["add"]
   }
 }"""
 
@@ -263,7 +259,7 @@ def _get_patch_schema_for_replace() -> str:
     # Build widgets schema separately to avoid f-string nesting issues
     widgets_schema = f"""{{
                 "type": "object",
-                "description": "Widget assignments mapping slot roles to widget configs",
+                "description": "Widget assignments mapping slot roles to widget configs. DO NOT include 'atom_id' field - only include 'type', 'parameters', and optionally 'preset'.",
                 "patternProperties": {{
                   ".*": {{
                     "type": "object",
@@ -443,12 +439,6 @@ Use markdown syntax in widget text for emphasis:
 - Synthesize content across widgets
 - Example: 6 feature atoms → 1 Bento.Standard slide with 6 cells
 
-**THEME & PRESET**:
-Start output with "set_theme" and "set_preset" operations:
-- Theme: Choose colors for tone (Tech → dark bg #0a0a0a, blue primary #0066ff)
-- Preset: surface (Flat/Elevated/Glass), shape (Sharp/Rounded/Pill), fill (Solid_Brand/Gradient_Linear/Subtle)
-- Ensure color contrast (WCAG AA: 4.5:1 text/bg ratio)
-
 **SPECIAL ATOMS**:
 - QuoteAtom: Use Type.Quote widget with quote_text → text, speaker → attribution
 - ActionItemAtom: Use Type.List with items formatted as "[State] Task - Assignee (Due)"
@@ -460,13 +450,12 @@ Start output with "set_theme" and "set_preset" operations:
 
 {presets_list}
 
-**OUTPUT**: JSON array with set_theme, set_preset, then replace operations.
+**OUTPUT**: JSON array with add operations for draft slides (visual styling handled separately).
 
 Example:
 [
-  {{"set_theme": {{"id": "tech", "primary_color": "#0066ff", "background_color": "#0a0a0a", "text_color": "#ffffff"}}}},
-  {{"set_preset": {{"surface": "Flat", "shape": "Sharp", "fill": "Solid_Brand"}}}},
-  {{"replace": {{"id": "slide_001", "rank": 1, "state": "active", "layout": "Swiss.Poster", "widgets": {{"stage": {{"type": "Type.Display", "parameters": {{"text": "AI Revolution"}}}}}}, "header": {{"type": "Type.Caption", "parameters": {{"text": "Tech Talk"}}}}, "footer": {{"type": "Type.Caption", "parameters": {{"text": "© 2025"}}}}, "parameters": {{}}}}}}
+  {{"add": {{"id": "slide_001", "rank": 1, "state": "draft", "story": "Bold opener introducing the problem", "atoms": ["stmt_001", "stmt_002"], "density": "minimal", "layout": "", "widgets": {{}}, "parameters": {{}}}}}},
+  {{"add": {{"id": "slide_002", "rank": 2, "state": "draft", "story": "Key evidence with data points", "atoms": ["metric_001", "stmt_003"], "density": "moderate", "layout": "", "widgets": {{}}, "parameters": {{}}}}}}
 ]
 
 {patch_schema}"""
@@ -516,10 +505,8 @@ Instructions:
     # Add intent guidance if provided
     if intent_guidance:
         user_prompt += f"""
-Presentation Guidance (FOLLOW THESE RECOMMENDATIONS):
+Presentation Guidance (for context only):
 {intent_guidance}
-
-**CRITICAL**: Use the theme and preset recommendations from the guidance above. Generate \"set_theme\" and \"set_preset\" as your FIRST patch operations (before any slide operations).
 
 """
     
@@ -680,6 +667,127 @@ Return ONLY the JSON array of patch operations."""
     return user_prompt
 
 
+def render_user_refinement_prompt(
+    existing_slides: 'Slides',
+    atoms: 'AtomCollection',
+    refinement_instruction: str,
+    intent_guidance: str = ""
+) -> str:
+    """
+    Render refinement prompt for applying user's refinement instruction to existing slides.
+    
+    This is different from validation-based refinement because:
+    - User-driven changes (not fixing validation errors)
+    - May require content/structure changes (not just layout fixes)
+    - Can add/remove slides as needed
+    
+    Args:
+        existing_slides: Current Slides collection
+        atoms: AtomCollection with extracted content
+        refinement_instruction: User's refinement request
+        intent_guidance: Optional guidance from intent detection
+        
+    Returns:
+        Formatted refinement prompt string
+        
+    Raises:
+        ValueError: If slides or instruction is empty
+    """
+    if len(existing_slides) == 0:
+        raise ValueError("Cannot render refinement prompt with empty slide collection")
+    
+    if not refinement_instruction or not refinement_instruction.strip():
+        raise ValueError("Refinement instruction cannot be empty")
+    
+    # Serialize existing slides and atoms to JSON
+    slides_json = json.dumps(existing_slides.to_dict(), indent=2)
+    atoms_json = atoms.to_json(indent=2)
+    
+    user_prompt = f"""Refine this presentation based on user's request:
+
+Current Slides:
+{slides_json}
+
+Available Atoms:
+{atoms_json}
+
+User's Refinement Request:
+{refinement_instruction}"""
+    
+    if intent_guidance:
+        user_prompt += f"\n\nIntent Guidance:\n{intent_guidance}"
+    
+    user_prompt += """
+
+---
+
+Generate patch operations to refine the slides using our Patch model format.
+
+IMPORTANT: When creating/replacing slides, include ALL required fields:
+- id: Unique slide identifier (must match existing slide ID when replacing)
+- rank: Integer for ordering (e.g., 100, 200, 300)
+- state: MUST be "active" for slides to render (NOT "draft" or "archived")
+- layout: Layout strategy name (e.g., "Bento.HeroLeft", "Matrix.Timeline")
+- widgets: Object mapping slot roles to widget configurations
+  **CRITICAL**: Only use slot roles that exist in the chosen layout strategy!
+  Example: Bento.HeroLeft has slots: hero, side_1, side_2, side_3, side_4
+  Do NOT invent slot names like "supporting", "main", "content" unless they exist in the strategy!
+- header: Optional header widget (can be empty object {})
+- footer: Optional footer widget (can be empty object {})
+- parameters: Layout-specific parameters (can be empty object {})
+
+Available Operations:
+1. AddOperation: {"add": <complete Slide object>} - adds new slide
+2. ReplaceOperation: {"replace": <complete Slide object>} - replaces existing slide with matching ID
+3. RemoveOperation: {"remove": {"id": "slide_id"}} - removes slide by ID
+
+Example (replacing slide_01 with modified version):
+{
+  "operations": [
+    {
+      "replace": {
+        "id": "slide_01",
+        "rank": 1,
+        "state": "active",
+        "layout": "Bento.HeroLeft",
+        "widgets": {
+          "hero": {
+            "type": "Type.Display",
+            "parameters": {"text": "Updated Title"},
+            "preset": {"surface": "Flat", "shape": "Sharp", "fill": "Solid_Brand"}
+          }
+        },
+        "header": {},
+        "footer": {},
+        "parameters": {}
+      }
+    }
+  ]
+}
+
+CRITICAL: Widget objects should ONLY contain "type", "parameters", and optionally "preset".
+DO NOT include "atom_id" or any other fields in widget definitions.
+
+Example (removing slide_04):
+{
+  "operations": [
+    {
+      "remove": {"id": "slide_04_two_eras_compared"}
+    }
+  ]
+}
+
+For different refinement types:
+- Style changes: Use ReplaceOperation with modified widgets/text
+- Content changes: Use ReplaceOperation or AddOperation
+- Structure changes: Use RemoveOperation + AddOperation
+- CRITICAL: When replacing, the new slide's ID must match the old slide's ID
+
+Make incremental, focused changes."""
+    
+    return user_prompt
+
+
 def get_state_transition_config() -> GenerationConfig:
     """Get GenerationConfig for state transition step.
     
@@ -752,64 +860,28 @@ def _build_storyline_system_prompt() -> str:
     Returns:
         Complete system prompt for storyline step
     """
-    # Custom patch schema for storyline (includes story and atoms fields)
+    # Custom patch schema for storyline (add operations only for draft slides)
     storyline_patch_schema = """{
   "type": "array",
-  "description": "Array of patch operations: set_theme, set_preset (FIRST), then add operations for draft slides",
+  "description": "Array of add operations for draft slides with story and atom references",
   "items": {
-    "oneOf": [
-      {
+    "type": "object",
+    "properties": {
+      "add": {
         "type": "object",
+        "description": "Add draft slide with story, atom references, and density level",
         "properties": {
-          "set_theme": {
-            "type": "object",
-            "description": "Set presentation theme colors, typography, spacing",
-            "properties": {
-              "id": {"type": "string"},
-              "primary_color": {"type": "string"},
-              "background_color": {"type": "string"},
-              "text_color": {"type": "string"}
-            },
-            "required": ["id", "primary_color", "background_color", "text_color"]
-          }
+          "id": {"type": "string", "description": "Unique slide identifier"},
+          "rank": {"type": "integer", "description": "Slide order position (1-based)"},
+          "state": {"type": "string", "enum": ["draft"], "description": "Must be 'draft'"},
+          "story": {"type": "string", "description": "1-2 sentence narrative description of slide's purpose"},
+          "atoms": {"type": "array", "items": {"type": "string"}, "description": "List of atom IDs relevant to this slide"},
+          "density": {"type": "string", "enum": ["minimal", "moderate", "dense"], "description": "Information density: minimal (1-2 key points), moderate (3-4 points), dense (5+ points)"}
         },
-        "required": ["set_theme"]
-      },
-      {
-        "type": "object",
-        "properties": {
-          "set_preset": {
-            "type": "object",
-            "description": "Set global preset visual style",
-            "properties": {
-              "surface": {"type": "string"},
-              "shape": {"type": "string"},
-              "fill": {"type": "string"}
-            }
-          }
-        },
-        "required": ["set_preset"]
-      },
-      {
-        "type": "object",
-        "properties": {
-          "add": {
-            "type": "object",
-            "description": "Add draft slide with story, atom references, and density level",
-            "properties": {
-              "id": {"type": "string", "description": "Unique slide identifier"},
-              "rank": {"type": "integer", "description": "Slide order position (1-based)"},
-              "state": {"type": "string", "enum": ["draft"], "description": "Must be 'draft'"},
-              "story": {"type": "string", "description": "1-2 sentence narrative description of slide's purpose"},
-              "atoms": {"type": "array", "items": {"type": "string"}, "description": "List of atom IDs relevant to this slide"},
-              "density": {"type": "string", "enum": ["minimal", "moderate", "dense"], "description": "Information density: minimal (1-2 key points), moderate (3-4 points), dense (5+ points)"}
-            },
-            "required": ["id", "rank", "state", "story", "atoms", "density"]
-          }
-        },
-        "required": ["add"]
+        "required": ["id", "rank", "state", "story", "atoms", "density"]
       }
-    ]
+    },
+    "required": ["add"]
   }
 }"""
     
@@ -824,10 +896,9 @@ def _build_storyline_system_prompt() -> str:
 - It's better to leave atoms unused than to force weak slide connections
 
 **CRITICAL RULES**:
-1. **START with theme/preset**: Generate "set_theme" (colors) and "set_preset" (visual style) operations FIRST
-2. **NO DUPLICATE ATOMS**: Each atom can only appear in ONE slide's atoms array (scan and verify before submitting)
-3. **Story quality over atom coverage**: Skip atoms that don't fit the narrative flow
-4. Draft slides need: id, rank, state="draft", story (1-2 sentences), atoms (2-5 atom IDs), density ("minimal"/"moderate"/"dense")
+1. **NO DUPLICATE ATOMS**: Each atom can only appear in ONE slide's atoms array (scan and verify before submitting)
+2. **Story quality over atom coverage**: Skip atoms that don't fit the narrative flow
+3. Draft slides need: id, rank, state="draft", story (1-2 sentences), atoms (2-5 atom IDs), density ("minimal"/"moderate"/"dense")
 
 **DENSITY ASSIGNMENT**:
 Assign information density based on slide's narrative role:
@@ -848,11 +919,6 @@ Assign information density based on slide's narrative role:
 - Content slides: **moderate** (preferred for 80-90% of presentation)
 - Comprehensive references/procedures: **dense** (max 1-2 slides per presentation)
 - NEVER use consecutive dense slides—always interleave with minimal/moderate
-
-**THEME & PRESET** (generate once at start):
-- set_theme: Choose id, primary_color, background_color, text_color based on content tone
-- set_preset: Pick surface (Flat/Elevated/Glass), shape (Sharp/Rounded/Pill), fill (Solid_Brand/Gradient_Linear/Subtle)
-- Example: Tech content → dark bg (#0f172a), blue primary (#2563eb), Flat+Sharp+Solid_Brand
 
 **NARRATIVE ARC REQUIREMENT**:
 Structure slides following classic storytelling patterns:
@@ -896,7 +962,8 @@ Before finalizing storyline, verify:
 **NO DUPLICATE ATOMS - FINAL VALIDATION**:
 Scan all "atoms" arrays—is any ID repeated? If yes, REVISE IMMEDIATELY.
 
-**OUTPUT FORMAT**: JSON array: [{{"set_theme": {{...}}}}, {{"set_preset": {{...}}}}, {{"add": {{"id", "rank", "state", "story", "atoms", "density"}}}}]
+**OUTPUT FORMAT**: JSON array of add operations only: [{{"add": {{"id", "rank", "state", "story", "atoms", "density"}}}}]
+**DO NOT generate set_theme or set_preset operations - visual styling is handled separately.**
 
 {storyline_patch_schema}
 """
@@ -971,12 +1038,30 @@ Choose layout that reinforces narrative structure, not just fits content:
 - **Comparison layout**: Before/after, traditional vs modern, trade-offs (contrast atoms)
 - **Bento grids**: Multi-faceted concepts, skill categories, parallel dimensions (4+ related atoms)
 - **Vertical stack (Bento.VerticalStack)**: Simple sequential processes (max 3 S widgets OR 1 M + 1 S)
-- Widget sizes: Type.Comparison/Table/Timeline need M/L slots (cell_1, not stage4_detail)
-- See schemas below for exact slot names
+
+**CRITICAL SLOT ROLE VALIDATION** (violations cause render errors):
+- ONLY use slot roles that exist in the chosen layout strategy
+- Example: Bento.HeroLeft has slots: hero, side_1, side_2, side_3, side_4
+- DO NOT invent slot names like "supporting", "main", "content" - check the Available Layout Strategies list
+- Each strategy lists its exact slot roles - use ONLY those exact names
+- Mismatch = immediate render failure with "Missing slot role" error
+
+**CRITICAL WIDGET SIZE CONSTRAINTS** (violations cause render errors):
+- Type.Comparison widget requires M or L slot → Use in hero, cell_1, main, focal, NOT in side_1/side_2/side_3/side_4
+- Type.List, Type.Body, Type.Display work in any slot size (S, M, or L)
+- Bento.HeroLeft side slots (side_1/side_2/side_3/side_4) are ALL size S → Can only fit Type.List, Type.Body, Type.Display, Type.Heading
+- For comparison content in Bento.HeroLeft → Put Type.Comparison in 'hero' slot ONLY
+- See layout schemas below for exact slot names and sizes
 
 {strategies_list}
 
 {widgets_list}
+
+**CRITICAL - DO NOT CONFUSE LAYOUTS WITH WIDGETS**:
+- Layout names (e.g., "Bento.VerticalStack", "Matrix.Timeline") go in the "layout" field
+- Widget types (e.g., "Type.Display", "Type.List") go in the "widgets" object with type field
+- NEVER use layout names as widget types (e.g., NO "Type.VerticalStack", NO "Type.Timeline")
+- Valid widget types are ONLY those listed above in "Supported Widget Types"
 
 **PRESET USAGE** (apply to each widget):
 - surface: Flat (clean), Elevated (depth), Glass (modern), Outline (minimal)

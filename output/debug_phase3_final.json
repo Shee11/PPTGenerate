@@ -3,35 +3,158 @@
   "model": "Slide",
   "contexts": [
     {
-      "id": "slide_01_opening",
+      "id": "slide_01_setup_shift",
       "rank": 1,
       "state": "active",
       "story": "",
       "atoms": [],
       "density": "moderate",
-      "layout": "Cinematic.Split_50_50",
+      "layout": "Matrix.Timeline",
       "widgets": {
-        "left": {
+        "stage1_title": {
           "type": "Type.Display",
           "parameters": {
-            "text": "From vision engineer\nto AI era guide"
+            "text": "==2011== \u00b7 Microsoft entry"
           },
           "preset": {
             "surface": "Flat",
             "shape": "Sharp",
-            "fill": "Solid_Brand",
-            "effect": "Glow"
+            "fill": "Subtle",
+            "effect": "Shadow"
           }
         },
-        "right": {
+        "stage1_detail": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "Vision algorithms and service-side components, including initial Face API and infrastructure."
+          },
+          "preset": {
+            "surface": "Flat",
+            "shape": "Rounded",
+            "fill": "Subtle",
+            "effect": "Shadow"
+          }
+        },
+        "stage2_title": {
+          "type": "Type.Display",
+          "parameters": {
+            "text": "\u2248==2016== \u00b7 Edge inference"
+          },
+          "preset": {
+            "surface": "Flat",
+            "shape": "Sharp",
+            "fill": "Subtle",
+            "effect": "Shadow"
+          }
+        },
+        "stage2_detail": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "Pushed vision models onto mobile devices, starting real-world edge AI deployment."
+          },
+          "preset": {
+            "surface": "Flat",
+            "shape": "Rounded",
+            "fill": "Subtle",
+            "effect": "Shadow"
+          }
+        },
+        "stage3_title": {
+          "type": "Type.Display",
+          "parameters": {
+            "text": "\u2248==2018== \u00b7 Generative vision"
+          },
+          "preset": {
+            "surface": "Flat",
+            "shape": "Sharp",
+            "fill": "Subtle",
+            "effect": "Shadow"
+          }
+        },
+        "stage3_detail": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "Cross-platform inference and vision-related generative algorithms, including video generation work."
+          },
+          "preset": {
+            "surface": "Flat",
+            "shape": "Rounded",
+            "fill": "Subtle",
+            "effect": "Shadow"
+          }
+        },
+        "stage4_title": {
+          "type": "Type.Display",
+          "parameters": {
+            "text": "==2021== \u00b7 Teams vision pipeline"
+          },
+          "preset": {
+            "surface": "Flat",
+            "shape": "Sharp",
+            "fill": "Subtle",
+            "effect": "Shadow"
+          }
+        },
+        "stage4_detail": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "Joined Teams organization, owning vision pipeline and collaborating with Teams CMD features."
+          },
+          "preset": {
+            "surface": "Flat",
+            "shape": "Rounded",
+            "fill": "Subtle",
+            "effect": "Shadow"
+          }
+        }
+      },
+      "header": {
+        "type": "Type.Display",
+        "parameters": {
+          "text": "From vision APIs to Teams: ==2011\u21922021== journey"
+        }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": {
+          "text": "We\u2019ll use this journey to explore how AI roles evolve\u2014and how your strategy must adapt."
+        }
+      },
+      "style_override": {},
+      "parameters": {}
+    },
+    {
+      "id": "slide_02_from_pipeline_to_platform",
+      "rank": 2,
+      "state": "active",
+      "story": "",
+      "atoms": [],
+      "density": "moderate",
+      "layout": "Comparison.TwoColumn",
+      "widgets": {
+        "left_header": {
+          "type": "Type.Heading",
+          "parameters": {
+            "text": "Traditional AI pipeline",
+            "level": 2
+          },
+          "preset": {
+            "surface": "Flat",
+            "shape": "Sharp",
+            "fill": "Subtle",
+            "effect": "Shadow"
+          }
+        },
+        "left_body": {
           "type": "Type.List",
           "parameters": {
+            "list_type": "unordered",
             "items": [
-              "==2011==: Microsoft vision, Face API",
-              "Edge, cross\u2011platform, video generation",
-              "Now: sharing a practical dev roadmap"
-            ],
-            "list_type": "unordered"
+              "Linear: data \u2192 model \u2192 train \u2192 deploy",
+              "Standalone models, accuracy is king",
+              "Infra built largely from scratch",
+              "Clear data/ML/infra/product silos"
+            ]
           },
           "preset": {
             "surface": "Flat",
@@ -39,27 +162,221 @@
             "fill": "Solid_Surface",
             "effect": "Shadow"
           }
+        },
+        "right_header": {
+          "type": "Type.Heading",
+          "parameters": {
+            "text": "LLM-centric platform era",
+            "level": 2
+          },
+          "preset": {
+            "surface": "Flat",
+            "shape": "Sharp",
+            "fill": "Subtle",
+            "effect": "Shadow"
+          }
+        },
+        "right_body": {
+          "type": "Type.List",
+          "parameters": {
+            "list_type": "unordered",
+            "items": [
+              "Compose existing base models",
+              "Focus on UX, speed, reliability",
+              "Optimize prompts, workflows, eval loops",
+              "Blurred roles: shared orchestration work"
+            ]
+          },
+          "preset": {
+            "surface": "Flat",
+            "shape": "Sharp",
+            "fill": "Solid_Surface",
+            "effect": "Shadow"
+          }
+        },
+        "bottom_left": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "Old world: slow, expensive, infra re\u2011invented each time; strong role boundaries."
+          },
+          "preset": {
+            "surface": "Flat",
+            "shape": "Curve",
+            "fill": "Subtle",
+            "effect": "Shadow"
+          }
+        },
+        "bottom_right": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "New world: faster iteration on top of shared models; more product-centric engineering."
+          },
+          "preset": {
+            "surface": "Flat",
+            "shape": "Curve",
+            "fill": "Subtle",
+            "effect": "Shadow"
+          }
         }
       },
       "header": {
-        "type": "Type.Heading",
+        "type": "Type.Display",
         "parameters": {
-          "text": "Chao Wang\u2019s AI journey as your map",
-          "level": 2
+          "text": "From linear pipeline to LLM platform"
         }
       },
       "footer": {
         "type": "Type.Body",
         "parameters": {
-          "text": "For entry and mid\u2011level devs navigating AI and LLM career paths."
+          "text": "Key shift for developers: from training standalone models to orchestrating model-powered products."
         }
       },
       "style_override": {},
       "parameters": {}
     },
     {
-      "id": "slide_02_traditional_ai_world",
-      "rank": 2,
+      "id": "slide_03_how_llm_apps_are_built_now",
+      "rank": 3,
+      "state": "active",
+      "story": "",
+      "atoms": [],
+      "density": "moderate",
+      "layout": "Matrix.Timeline",
+      "widgets": {
+        "stage1_title": {
+          "type": "Type.Display",
+          "parameters": {
+            "text": "Start from a strong base model"
+          },
+          "preset": {
+            "surface": "Flat",
+            "shape": "Sharp",
+            "fill": "Solid_Surface",
+            "effect": "Shadow"
+          }
+        },
+        "stage1_detail": {
+          "type": "Type.List",
+          "parameters": {
+            "items": [
+              "Use a large model as unified knowledge + reasoning engine",
+              "Skip training from scratch; compose on top"
+            ],
+            "list_type": "unordered"
+          },
+          "preset": {
+            "surface": "Subtle",
+            "shape": "Rounded",
+            "fill": "Subtle",
+            "effect": "Shadow"
+          }
+        },
+        "stage2_title": {
+          "type": "Type.Display",
+          "parameters": {
+            "text": "Define the problem broadly"
+          },
+          "preset": {
+            "surface": "Flat",
+            "shape": "Sharp",
+            "fill": "Solid_Surface",
+            "effect": "Shadow"
+          }
+        },
+        "stage2_detail": {
+          "type": "Type.List",
+          "parameters": {
+            "items": [
+              "Capture user needs and target outcomes",
+              "Include data feedback and human\u2013AI co-creation patterns"
+            ],
+            "list_type": "unordered"
+          },
+          "preset": {
+            "surface": "Subtle",
+            "shape": "Rounded",
+            "fill": "Subtle",
+            "effect": "Shadow"
+          }
+        },
+        "stage3_title": {
+          "type": "Type.Display",
+          "parameters": {
+            "text": "Design prompts, tools, and agents"
+          },
+          "preset": {
+            "surface": "Flat",
+            "shape": "Sharp",
+            "fill": "Solid_Surface",
+            "effect": "Shadow"
+          }
+        },
+        "stage3_detail": {
+          "type": "Type.List",
+          "parameters": {
+            "items": [
+              "Orchestrate model, tools, and context calls",
+              "Focus on prompts, agent architectures, and workflows",
+              "Aim for reliability, robustness, and fast iteration"
+            ],
+            "list_type": "unordered"
+          },
+          "preset": {
+            "surface": "Subtle",
+            "shape": "Rounded",
+            "fill": "Subtle",
+            "effect": "Shadow"
+          }
+        },
+        "stage4_title": {
+          "type": "Type.Display",
+          "parameters": {
+            "text": "Implement workflows and feedback loops"
+          },
+          "preset": {
+            "surface": "Flat",
+            "shape": "Sharp",
+            "fill": "Solid_Surface",
+            "effect": "Shadow"
+          }
+        },
+        "stage4_detail": {
+          "type": "Type.List",
+          "parameters": {
+            "items": [
+              "Integrate multimodal inputs and outputs where needed",
+              "Add evaluation, telemetry, and automatic feedback loops",
+              "Continuously refine prompts, workflows, and system design"
+            ],
+            "list_type": "unordered"
+          },
+          "preset": {
+            "surface": "Subtle",
+            "shape": "Rounded",
+            "fill": "Subtle",
+            "effect": "Shadow"
+          }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": {
+          "text": "Modern LLM\u2011centric development workflow",
+          "level": 1
+        }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": {
+          "text": "High\u2011leverage work: prompts, agent architectures, workflows, and feedback loops\u2014rather than micro\u2011optimizing models."
+        }
+      },
+      "style_override": {},
+      "parameters": {}
+    },
+    {
+      "id": "slide_04_high_roi_skills_for_devs",
+      "rank": 4,
       "state": "active",
       "story": "",
       "atoms": [],
@@ -69,39 +386,20 @@
         "cell_1": {
           "type": "Type.Display",
           "parameters": {
-            "text": "Traditional model\u2011centric AI world"
+            "text": "High-ROI skills in the LLM era"
           },
           "preset": {
             "surface": "Flat",
             "shape": "Sharp",
             "fill": "Solid_Brand",
-            "effect": "Glow"
+            "effect": "Shadow"
           }
         },
         "cell_2": {
           "type": "Type.Heading",
           "parameters": {
-            "text": "Linear pipeline workflow",
+            "text": "1. Precise problem definition",
             "level": 3
-          },
-          "preset": {
-            "surface": "Flat",
-            "shape": "Sharp",
-            "fill": "Solid_Surface",
-            "effect": "Shadow"
-          }
-        },
-        "cell_3": {
-          "type": "Type.List",
-          "parameters": {
-            "items": [
-              "Collect and curate data",
-              "Select or design architecture",
-              "Train and tune for accuracy",
-              "Deploy with latency, throughput focus",
-              "Measure user impact, outcomes"
-            ],
-            "list_type": "unordered"
           },
           "preset": {
             "surface": "Flat",
@@ -110,33 +408,39 @@
             "effect": "Shadow"
           }
         },
+        "cell_3": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "Start from user value; define problems precisely and broadly, scoping the real system."
+          },
+          "preset": {
+            "surface": "Flat",
+            "shape": "Rounded",
+            "fill": "Subtle",
+            "effect": "Shadow"
+          }
+        },
         "cell_4": {
           "type": "Type.Heading",
           "parameters": {
-            "text": "Clear role boundaries",
+            "text": "2. Evaluation and validation",
             "level": 3
           },
           "preset": {
             "surface": "Flat",
             "shape": "Sharp",
-            "fill": "Solid_Surface",
+            "fill": "Subtle",
             "effect": "Shadow"
           }
         },
         "cell_5": {
-          "type": "Type.List",
+          "type": "Type.Body",
           "parameters": {
-            "items": [
-              "Data engineers: own data",
-              "Scientists: own accuracy",
-              "Engineers: own systems",
-              "PMs: own user impact"
-            ],
-            "list_type": "unordered"
+            "text": "Design robust evaluation and automatic validation pipelines to iterate faster and ensure reliability."
           },
           "preset": {
             "surface": "Flat",
-            "shape": "Sharp",
+            "shape": "Rounded",
             "fill": "Subtle",
             "effect": "Shadow"
           }
@@ -145,16 +449,16 @@
           "type": "Type.List",
           "parameters": {
             "items": [
-              "Slow, expensive workflows",
-              "Reinvent infra each project",
-              "Duplicate eval and optimization"
+              "Cultivate cross-domain thinking and toolchains.",
+              "Shift from micro-optimizing models to system-level impact.",
+              "Use correct problem scope as your key human advantage."
             ],
             "list_type": "unordered"
           },
           "preset": {
             "surface": "Flat",
-            "shape": "Sharp",
-            "fill": "Solid_Surface",
+            "shape": "Rounded",
+            "fill": "Subtle",
             "effect": "Shadow"
           }
         }
@@ -162,208 +466,14 @@
       "header": {
         "type": "Type.Heading",
         "parameters": {
-          "text": "Baseline: traditional AI before LLMs",
+          "text": "Translating workflow shifts into a skills roadmap",
           "level": 2
         }
       },
       "footer": {
         "type": "Type.Body",
         "parameters": {
-          "text": "Remember this structure\u2014we\u2019ll contrast how LLM\u2011era roles and workflows break this model."
-        }
-      },
-      "style_override": {},
-      "parameters": {}
-    },
-    {
-      "id": "slide_03_shift_to_llm_era",
-      "rank": 3,
-      "state": "active",
-      "story": "",
-      "atoms": [],
-      "density": "moderate",
-      "layout": "Comparison.TwoColumn",
-      "widgets": {
-        "left_header": {
-          "type": "Type.Display",
-          "parameters": {
-            "text": "Traditional AI (pre\u2011LLM)"
-          },
-          "preset": {
-            "surface": "Flat",
-            "shape": "Sharp",
-            "fill": "Solid_Surface",
-            "effect": "Shadow"
-          }
-        },
-        "left_body": {
-          "type": "Type.List",
-          "parameters": {
-            "items": [
-              "Primary focus: single\u2011model accuracy",
-              "Unit: standalone models per problem",
-              "Roles: clear, siloed boundaries",
-              "Optimize: accuracy, latency, throughput",
-              "Iteration: slow, months\u2011long cycles"
-            ],
-            "list_type": "unordered"
-          },
-          "preset": {
-            "surface": "Flat",
-            "shape": "Sharp",
-            "fill": "Subtle",
-            "effect": "Shadow"
-          }
-        },
-        "right_header": {
-          "type": "Type.Display",
-          "parameters": {
-            "text": "LLM\u2011Era AI (large models)"
-          },
-          "preset": {
-            "surface": "Flat",
-            "shape": "Sharp",
-            "fill": "Solid_Brand",
-            "effect": "Glow"
-          }
-        },
-        "right_body": {
-          "type": "Type.List",
-          "parameters": {
-            "items": [
-              "==Large models== as unified knowledge base",
-              "Unit: composed systems, orchestration",
-              "Roles: blurry, product\u2011oriented teams",
-              "Leverage: prompts, workflows, agents",
-              "Iteration: fast, feedback\u2011driven loops"
-            ],
-            "list_type": "unordered"
-          },
-          "preset": {
-            "surface": "Flat",
-            "shape": "Sharp",
-            "fill": "Subtle",
-            "effect": "Shadow"
-          }
-        },
-        "bottom_left": {
-          "type": "Type.Body",
-          "parameters": {
-            "text": "Work centered on training pipelines and micro\u2011optimizing individual model internals."
-          },
-          "preset": {
-            "surface": "Flat",
-            "shape": "Sharp",
-            "fill": "Subtle",
-            "effect": "Shadow"
-          }
-        },
-        "bottom_right": {
-          "type": "Type.Body",
-          "parameters": {
-            "text": "Teams now design prompts, agent architectures, and feedback loops around powerful base models."
-          },
-          "preset": {
-            "surface": "Flat",
-            "shape": "Sharp",
-            "fill": "Solid_Surface",
-            "effect": "Shadow"
-          }
-        }
-      },
-      "header": {
-        "type": "Type.Heading",
-        "parameters": {
-          "text": "From standalone models to LLM\u2011era systems",
-          "level": 1
-        }
-      },
-      "footer": {
-        "type": "Type.Body",
-        "parameters": {
-          "text": "Implication: build skills in prompting, orchestration, and feedback\u2011driven iteration."
-        }
-      },
-      "style_override": {},
-      "parameters": {}
-    },
-    {
-      "id": "slide_04_redefining_problems_products",
-      "rank": 4,
-      "state": "active",
-      "story": "",
-      "atoms": [],
-      "density": "moderate",
-      "layout": "Bento.HeroTop",
-      "widgets": {
-        "hero": {
-          "type": "Type.Display",
-          "parameters": {
-            "text": "Redefining problems in the LLM era"
-          },
-          "preset": {
-            "surface": "Flat",
-            "shape": "Sharp",
-            "fill": "Solid_Brand",
-            "effect": "Glow"
-          }
-        },
-        "footer_1": {
-          "type": "Type.List",
-          "parameters": {
-            "items": [
-              "From fitting components to imagining products",
-              "Define problems around truly useful products"
-            ],
-            "list_type": "unordered"
-          },
-          "preset": {
-            "surface": "Flat",
-            "shape": "Sharp",
-            "fill": "Solid_Surface",
-            "effect": "Shadow"
-          }
-        },
-        "footer_2": {
-          "type": "Type.List",
-          "parameters": {
-            "items": [
-              "Use data feedback to refine definitions",
-              "Think beyond current model demos"
-            ],
-            "list_type": "unordered"
-          },
-          "preset": {
-            "surface": "Flat",
-            "shape": "Sharp",
-            "fill": "Solid_Surface",
-            "effect": "Shadow"
-          }
-        },
-        "footer_3": {
-          "type": "Type.Body",
-          "parameters": {
-            "text": "Human\u2013AI co-creation makes product and interface design an iterative, multi-round interaction with AI, not a one-time design activity."
-          },
-          "preset": {
-            "surface": "Flat",
-            "shape": "Sharp",
-            "fill": "Subtle",
-            "effect": "Shadow"
-          }
-        }
-      },
-      "header": {
-        "type": "Type.Heading",
-        "parameters": {
-          "text": "Expanding what \u201cproblem definition\u201d means",
-          "level": 2
-        }
-      },
-      "footer": {
-        "type": "Type.Body",
-        "parameters": {
-          "text": "Ask: what AI product would be genuinely useful in my daily work?"
+          "text": "Focus your learning on scoping, evaluation, and cross-domain system design for maximum career ROI."
         }
       },
       "style_override": {},
@@ -376,35 +486,102 @@
       "story": "",
       "atoms": [],
       "density": "moderate",
-      "layout": "Bento.Quarter",
+      "layout": "Bento.VerticalStack",
       "widgets": {
-        "quadrant_1": {
+        "stage_1": {
           "type": "Type.Display",
           "parameters": {
-            "text": "Building reliable LLM systems"
+            "text": "Practical patterns for reliable LLM systems"
           },
           "preset": {
             "surface": "Flat",
             "shape": "Sharp",
             "fill": "Solid_Brand",
-            "effect": "Glow"
+            "effect": "Shadow"
+          }
+        },
+        "stage_2": {
+          "type": "Type.List",
+          "parameters": {
+            "items": [
+              "Prompt tuning: handle 90% common paths",
+              "Iterate on real edge-case failures",
+              "Planner\u2013executor: LLM plans, code executes",
+              "Verification loop to stop error cascades"
+            ],
+            "list_type": "unordered"
+          },
+          "preset": {
+            "surface": "Flat",
+            "shape": "Rounded",
+            "fill": "Subtle",
+            "effect": "Shadow"
+          }
+        },
+        "stage_3": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "Prompt tuning reduces errors but is not a silver bullet; combine with **planner\u2013executor** separation and verification to prevent hallucinations and error accumulation in LLM-powered systems."
+          },
+          "preset": {
+            "surface": "Flat",
+            "shape": "Curve",
+            "fill": "Subtle",
+            "effect": "Shadow"
+          }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": {
+          "text": "Making reliability patterns concrete",
+          "level": 2
+        }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": {
+          "text": "Focus: prompt tuning workflow + planner\u2013executor architecture developers can implement today."
+        }
+      },
+      "style_override": {},
+      "parameters": {}
+    },
+    {
+      "id": "slide_06_roles_evolving_and_staying_current",
+      "rank": 6,
+      "state": "active",
+      "story": "",
+      "atoms": [],
+      "density": "moderate",
+      "layout": "Bento.Quarter",
+      "widgets": {
+        "quadrant_1": {
+          "type": "Type.Display",
+          "parameters": {
+            "text": "Roles are converging in AI"
+          },
+          "preset": {
+            "surface": "Flat",
+            "shape": "Sharp",
+            "fill": "Solid_Brand",
+            "effect": "Shadow"
           }
         },
         "quadrant_2": {
           "type": "Type.List",
           "parameters": {
             "items": [
-              "Define prompt for ~==90%== cases",
-              "Collect real edge and failure cases",
-              "Refine prompt to cover edge cases",
-              "Repeat until remaining failures acceptable"
+              "Engineer: system design, stability",
+              "Focus: architecture, end\u2011to\u2011end behavior",
+              "Now: LLMs, orchestration, some science"
             ],
             "list_type": "unordered"
           },
           "preset": {
             "surface": "Flat",
-            "shape": "Sharp",
-            "fill": "Solid_Surface",
+            "shape": "Rounded",
+            "fill": "Subtle",
             "effect": "Shadow"
           }
         },
@@ -412,15 +589,15 @@
           "type": "Type.List",
           "parameters": {
             "items": [
-              "Prompt tuning reduces hallucinations, errors",
-              "Not a silver bullet for reliability",
-              "Multi-step workflows still accumulate errors"
+              "Applied scientist: model behavior",
+              "Focus: features from better models",
+              "Now: overlaps with engineering delivery"
             ],
             "list_type": "unordered"
           },
           "preset": {
             "surface": "Flat",
-            "shape": "Sharp",
+            "shape": "Rounded",
             "fill": "Subtle",
             "effect": "Shadow"
           }
@@ -429,18 +606,17 @@
           "type": "Type.List",
           "parameters": {
             "items": [
-              "LLM **planner** proposes multi-step plans",
-              "Executor layer runs steps, tracks state",
-              "Executor validates steps in real time",
-              "On failure, trigger retries or alternatives",
-              "Persist critical state outside the LLM"
+              "Tester roles largely disappeared",
+              "Dev now owns code and tests",
+              "Expect similar evolution with AI",
+              "Evolve roles, don\u2019t cling to titles"
             ],
             "list_type": "unordered"
           },
           "preset": {
             "surface": "Flat",
-            "shape": "Sharp",
-            "fill": "Solid_Surface",
+            "shape": "Rounded",
+            "fill": "Gradient_Linear",
             "effect": "Shadow"
           }
         }
@@ -448,119 +624,55 @@
       "header": {
         "type": "Type.Heading",
         "parameters": {
-          "text": "From prompt tuning to planner\u2013executor reliability",
+          "text": "Engineering vs applied science: roles are shifting",
           "level": 2
         }
       },
       "footer": {
         "type": "Type.Body",
         "parameters": {
-          "text": "Key challenge: error accumulation across steps; **planner\u2013executor** with real-time verification limits it."
+          "text": "Your job: deliver useful AI products, keep evolving, and stay current without burning out."
         }
       },
       "style_override": {},
       "parameters": {}
     },
     {
-      "id": "slide_06_roles_and_high_roi_skills",
-      "rank": 6,
+      "id": "slide_07_closing_make_every_step_solid",
+      "rank": 7,
       "state": "active",
       "story": "",
       "atoms": [],
       "density": "moderate",
-      "layout": "Comparison.TwoColumn",
+      "layout": "Swiss.SplitTypo",
       "widgets": {
-        "left_header": {
-          "type": "Type.Heading",
+        "headline": {
+          "type": "Type.Quote",
           "parameters": {
-            "text": "Engineers vs Applied Scientists",
-            "level": 2
+            "text": "Make every step solid.",
+            "citation": "Chao Wang, Applied Scientist"
           },
           "preset": {
             "surface": "Flat",
             "shape": "Sharp",
             "fill": "Solid_Brand",
-            "effect": "Glow"
-          }
-        },
-        "left_body": {
-          "type": "Type.Comparison",
-          "parameters": {
-            "left_title": "Engineer",
-            "right_title": "Applied Scientist",
-            "left_items": [
-              "Deliver stable, scalable systems.",
-              "Focus: system design, integration.",
-              "Overlap: uses AI tools, experiments.",
-              "Work: pipelines, LLM integration, reliability."
-            ],
-            "right_items": [
-              "Push model capabilities, enable features.",
-              "Focus: model behavior, orchestration.",
-              "Also cares about product usefulness.",
-              "Work: new LLM features, prompts, robustness."
-            ],
-            "bottom_note": "Modern base models narrow the gap: both aim to deliver useful products."
-          },
-          "preset": {
-            "surface": "Flat",
-            "shape": "Sharp",
-            "fill": "Solid_Surface",
             "effect": "Shadow"
           }
         },
-        "right_header": {
-          "type": "Type.Heading",
-          "parameters": {
-            "text": "High-ROI Skills to Build",
-            "level": 2
-          },
-          "preset": {
-            "surface": "Flat",
-            "shape": "Sharp",
-            "fill": "Solid_Brand",
-            "effect": "Glow"
-          }
-        },
-        "right_body": {
+        "body": {
           "type": "Type.List",
           "parameters": {
             "items": [
-              "Move beyond single-domain depth; combine tools, domains.",
-              "Shift from tiny accuracy gains to telemetry and adaptive loops.",
-              "1) Precise problem definition with data feedback.",
-              "2) Robust evaluation, automatic evaluation, feedback loops.",
-              "3) Cross-domain combination to solve complex problems."
+              "Code that works as well as it can",
+              "Designs that are genuinely good enough",
+              "Questions until you truly understand answers",
+              "Each Q&A becomes durable knowledge"
             ],
             "list_type": "unordered"
           },
           "preset": {
             "surface": "Flat",
-            "shape": "Sharp",
-            "fill": "Solid_Surface",
-            "effect": "Shadow"
-          }
-        },
-        "bottom_left": {
-          "type": "Type.Body",
-          "parameters": {
-            "text": "Both roles evolve toward integrating systems, telemetry, and evaluation to accelerate iteration."
-          },
-          "preset": {
-            "surface": "Flat",
-            "shape": "Sharp",
-            "fill": "Subtle",
-            "effect": "Shadow"
-          }
-        },
-        "bottom_right": {
-          "type": "Type.Body",
-          "parameters": {
-            "text": "Invest in skills that define problems well, measure outcomes, and connect domains."
-          },
-          "preset": {
-            "surface": "Flat",
-            "shape": "Sharp",
+            "shape": "Rounded",
             "fill": "Subtle",
             "effect": "Shadow"
           }
@@ -569,228 +681,25 @@
       "header": {
         "type": "Type.Display",
         "parameters": {
-          "text": "Roles Converging, Skills Shifting"
+          "text": "Closing: Make Every Step Solid"
+        },
+        "preset": {
+          "surface": "Flat",
+          "shape": "Sharp",
+          "fill": "Subtle",
+          "effect": "Shadow"
         }
       },
       "footer": {
         "type": "Type.Body",
         "parameters": {
-          "text": "Entry & mid-level dev takeaway: specialize less in silos, more in systems + evaluation."
-        }
-      },
-      "style_override": {},
-      "parameters": {}
-    },
-    {
-      "id": "slide_07_human_edge_and_staying_relevant",
-      "rank": 7,
-      "state": "active",
-      "story": "",
-      "atoms": [],
-      "density": "moderate",
-      "layout": "Bento.HeroTop",
-      "widgets": {
-        "hero": {
-          "type": "Type.Display",
-          "parameters": {
-            "text": "Where humans still have an edge"
-          },
-          "preset": {
-            "surface": "Flat",
-            "shape": "Sharp",
-            "fill": "Solid_Brand",
-            "effect": "Glow"
-          }
+          "text": "Tie technical excellence to long-term growth by making each piece of work truly reliable."
         },
-        "footer_1": {
-          "type": "Type.List",
-          "parameters": {
-            "items": [
-              "Low-level tuning: ==C++==, memory, cache",
-              "Whole-system problem scoping and impact"
-            ],
-            "list_type": "unordered"
-          },
-          "preset": {
-            "surface": "Flat",
-            "shape": "Sharp",
-            "fill": "Solid_Surface",
-            "effect": "Shadow"
-          }
-        },
-        "footer_2": {
-          "type": "Type.List",
-          "parameters": {
-            "items": [
-              "Local speedups can miss real bottlenecks",
-              "Pipeline call frequency can dominate cost"
-            ],
-            "list_type": "unordered"
-          },
-          "preset": {
-            "surface": "Flat",
-            "shape": "Sharp",
-            "fill": "Solid_Surface",
-            "effect": "Shadow"
-          }
-        },
-        "footer_3": {
-          "type": "Type.List",
-          "parameters": {
-            "items": [
-              "Evolve with LLMs, stay curious",
-              "Embrace automation, expand your skill set"
-            ],
-            "list_type": "unordered"
-          },
-          "preset": {
-            "surface": "Flat",
-            "shape": "Sharp",
-            "fill": "Solid_Surface",
-            "effect": "Shadow"
-          }
-        }
-      },
-      "header": {
-        "type": "Type.Heading",
-        "parameters": {
-          "text": "Human edge and staying relevant",
-          "level": 2
-        }
-      },
-      "footer": {
-        "type": "Type.Body",
-        "parameters": {
-          "text": "LLMs will surpass us in many areas\u2014our edge is system thinking, performance, and adaptability."
-        }
-      },
-      "style_override": {},
-      "parameters": {}
-    },
-    {
-      "id": "slide_08_how_chao_uses_ai_tools",
-      "rank": 8,
-      "state": "active",
-      "story": "",
-      "atoms": [],
-      "density": "moderate",
-      "layout": "Bento.VerticalStack",
-      "widgets": {
-        "stage_1": {
-          "type": "Type.Display",
-          "parameters": {
-            "text": "Chao\u2019s AI\u2011augmented workflow"
-          },
-          "preset": {
-            "surface": "Flat",
-            "shape": "Sharp",
-            "fill": "Solid_Brand",
-            "effect": "Glow"
-          }
-        },
-        "stage_2": {
-          "type": "Type.List",
-          "parameters": {
-            "items": [
-              "Write an abstract/spec as source of truth",
-              "Set up MCP for PowerPoint, Word, Mermaid",
-              "Use LLMs as translators to generate slides, docs, diagrams",
-              "Iterate on the spec and regenerate everything as needed"
-            ],
-            "list_type": "unordered"
-          },
-          "preset": {
-            "surface": "Flat",
-            "shape": "Sharp",
-            "fill": "Solid_Surface",
-            "effect": "Shadow"
-          }
-        },
-        "stage_3": {
-          "type": "Type.List",
-          "parameters": {
-            "items": [
-              "Adopt tools only for concrete tasks",
-              "Stay updated by scanning key research categories",
-              "Focus on patterns, not every new tool or paper"
-            ],
-            "list_type": "unordered"
-          },
-          "preset": {
-            "surface": "Flat",
-            "shape": "Sharp",
-            "fill": "Subtle",
-            "effect": "Shadow"
-          }
-        }
-      },
-      "header": {
-        "type": "Type.Heading",
-        "parameters": {
-          "text": "How Chao actually uses AI tools",
-          "level": 2
-        }
-      },
-      "footer": {
-        "type": "Type.Body",
-        "parameters": {
-          "text": "Takeaway: Treat specs as your single source of truth and adopt tools task\u2011first."
-        }
-      },
-      "style_override": {},
-      "parameters": {}
-    },
-    {
-      "id": "slide_09_closing_principle",
-      "rank": 9,
-      "state": "active",
-      "story": "",
-      "atoms": [],
-      "density": "moderate",
-      "layout": "Swiss.SplitTypo",
-      "widgets": {
-        "headline": {
-          "type": "Type.Display",
-          "parameters": {
-            "text": "Make every step solid."
-          },
-          "preset": {
-            "surface": "Flat",
-            "shape": "Sharp",
-            "fill": "Solid_Brand",
-            "effect": "Glow"
-          }
-        },
-        "body": {
-          "type": "Type.List",
-          "parameters": {
-            "items": [
-              "Ship code that truly works well",
-              "Design solutions genuinely good enough",
-              "Ask until you fully understand"
-            ],
-            "list_type": "unordered"
-          },
-          "preset": {
-            "surface": "Flat",
-            "shape": "Sharp",
-            "fill": "Solid_Surface",
-            "effect": "Shadow"
-          }
-        }
-      },
-      "header": {
-        "type": "Type.Heading",
-        "parameters": {
-          "text": "Closing Principle",
-          "level": 2
-        }
-      },
-      "footer": {
-        "type": "Type.Quote",
-        "parameters": {
-          "text": "Chao Wang, Applied Scientist",
-          "citation": "Core compass for growing in a fast\u2011changing AI world"
+        "preset": {
+          "surface": "Flat",
+          "shape": "Curve",
+          "fill": "Subtle",
+          "effect": "Shadow"
         }
       },
       "style_override": {},

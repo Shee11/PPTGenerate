@@ -94,6 +94,11 @@ def extract_atoms(
     if "atoms" not in data:
         raise KeyError("Response missing 'atoms' key")
     
+    # Store abstract in source metadata if provided
+    if "abstract" in data and data["abstract"]:
+        source.metadata["abstract"] = data["abstract"]
+        logger.info(f"Extracted abstract: {data['abstract'][:100]}...")
+    
     # Save to cache if enabled
     if use_cache and cache_key is not None:
         cache.save(cache_key, data)

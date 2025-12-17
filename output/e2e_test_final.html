@@ -6,13 +6,13 @@
     <title>Multi-Slide Presentation</title>
     <style>
         :root {
-            --color-primary: #1F6FFF;
-            --color-secondary: #666666;
-            --color-accent: #0066cc;
-            --color-background: #05070A;
+            --color-primary: #1E88E5;
+            --color-secondary: #26A69A;
+            --color-accent: #1E88E5;
+            --color-background: #05060A;
             --color-text: #F5F7FA;
-            --font-family: sans-serif;
-            --font-heading: sans-serif;
+            --font-family: Roboto;
+            --font-heading: Roboto;
             --font-size-base: 16px;
             --line-height: 1.5;
             --margin-x: 40px;
@@ -388,662 +388,18 @@
             font-style: italic;
         }
         
-.matrix-grid.matrix-timeline {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: auto auto;
-    gap: 20px;
-    width: 100%;
-    height: auto;
-    position: relative;
-    place-self: center;
-}
-.matrix-cell[data-role="stage1_title"] { grid-column: 1; grid-row: 1; }
-.matrix-cell[data-role="stage2_title"] { grid-column: 2; grid-row: 1; }
-.matrix-cell[data-role="stage3_title"] { grid-column: 3; grid-row: 1; }
-.matrix-cell[data-role="stage4_title"] { grid-column: 4; grid-row: 1; }
-.matrix-cell[data-role="stage1_detail"] { grid-column: 1; grid-row: 2; }
-.matrix-cell[data-role="stage2_detail"] { grid-column: 2; grid-row: 2; }
-.matrix-cell[data-role="stage3_detail"] { grid-column: 3; grid-row: 2; }
-.matrix-cell[data-role="stage4_detail"] { grid-column: 4; grid-row: 2; }
-
-/* Timeline arrow connector */
-.matrix-grid::before {
-    content: '';
-    position: absolute;
-    top: 25%;
-    left: 5%;
-    right: 5%;
-    height: 2px;
-    background: linear-gradient(to right, 
-        var(--color-primary) 0%, 
-        var(--color-secondary) 50%, 
-        var(--color-accent) 100%);
-    pointer-events: none;
-    z-index: 0;
-}
-
-.matrix-cell {
-    min-height: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    z-index: 1;
-    color: var(--color-text);
-}
-
-/* Header cells are emphasized */
-.matrix-cell[data-role^="header_"] {
-    font-weight: bold;
-    background: rgba(var(--color-primary-rgb, 37, 99, 235), 0.1);
-    border-bottom: 2px solid var(--color-accent, var(--color-primary));
-}
-
-/* Timeline stage titles are numbered */
-.matrix-cell[data-role$="_title"] {
-    font-weight: bold;
-    position: relative;
-}
-.matrix-cell[data-role="stage1_title"]::before { content: "1"; }
-.matrix-cell[data-role="stage2_title"]::before { content: "2"; }
-.matrix-cell[data-role="stage3_title"]::before { content: "3"; }
-.matrix-cell[data-role="stage4_title"]::before { content: "4"; }
-
-.matrix-cell[data-role$="_title"]::before {
-    position: absolute;
-    top: -20px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    background: var(--color-primary);
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 18px;
-    font-weight: bold;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-    z-index: 2;
-}
-
-/* Add subtle border between rows/columns */
-.matrix-cell:not([data-role^="header_"]) {
-    border-top: 1px solid rgba(128, 128, 128, 0.1);
-}
-.matrix-cell[data-role$="_right"],
-.matrix-cell[data-role="stage2_title"],
-.matrix-cell[data-role="stage2_detail"],
-.matrix-cell[data-role="stage3_title"],
-.matrix-cell[data-role="stage3_detail"],
-.matrix-cell[data-role="stage4_title"],
-.matrix-cell[data-role="stage4_detail"] {
-    border-left: 1px solid rgba(128, 128, 128, 0.1);
-}
-        
-        /* Embedded Preset Styles */
-
-/* ===== SURFACE PRESETS ===== */
-.preset-surface-Flat {
-    background: var(--preset-flat-bg, transparent) !important;
-    border: var(--preset-flat-border, none) !important;
-    box-shadow: var(--preset-flat-shadow, none) !important;
-}
-
-.preset-surface-Elevated {
-    background: var(--preset-elevated-bg, var(--color-surface, rgba(255, 255, 255, 0.05))) !important;
-    box-shadow: var(--preset-elevated-shadow, 0 4px 6px rgba(0, 0, 0, 0.3), 0 2px 4px rgba(0, 0, 0, 0.2)) !important;
-}
-
-.preset-surface-Outline {
-    background: var(--preset-outline-bg, transparent) !important;
-    border: var(--preset-outline-border, 2px solid var(--color-primary, #00ff9f)) !important;
-}
-
-.preset-surface-Glass {
-    background: var(--preset-glass-bg, rgba(255, 255, 255, 0.05)) !important;
-    backdrop-filter: blur(var(--preset-glass-blur, 10px)) !important;
-    border: var(--preset-glass-border, 1px solid rgba(255, 255, 255, 0.1)) !important;
-}
-
-.preset-surface-Sunken {
-    background: var(--preset-sunken-bg, rgba(0, 0, 0, 0.3)) !important;
-    box-shadow: var(--preset-sunken-shadow, inset 0 2px 4px rgba(0, 0, 0, 0.4), inset 0 0 0 1px rgba(0, 0, 0, 0.2)) !important;
-}
-
-.preset-surface-NeoBrutal {
-    background: var(--preset-neobrutal-bg, var(--color-surface, #ffffff)) !important;
-    border: var(--preset-neobrutal-border_width, 3px) solid var(--preset-neobrutal-border_color, currentColor) !important;
-    box-shadow: var(--preset-neobrutal-shadow_offset, 6px) var(--preset-neobrutal-shadow_offset, 6px) 0 var(--preset-neobrutal-shadow_color, currentColor) !important;
-}
-
-/* ===== SHAPE PRESETS ===== */
-.preset-shape-Sharp {
-    border-radius: var(--preset-sharp-radius, 0) !important;
-}
-
-.preset-shape-Rounded {
-    border-radius: var(--preset-rounded-radius, 12px) !important;
-}
-
-.preset-shape-Curve {
-    border-radius: var(--preset-curve-radius, 20px) !important;
-}
-
-.preset-shape-Pill {
-    border-radius: var(--preset-pill-radius, 9999px) !important;
-}
-
-.preset-shape-Squircle {
-    border-radius: var(--preset-squircle-radius, 20%) !important;
-}
-
-.preset-shape-Organic {
-    border-radius: var(--preset-organic-radius, 30% 70% 70% 30% / 30% 30% 70% 70%) !important;
-}
-
-/* ===== FILL PRESETS ===== */
-.preset-fill-Solid_Brand {
-    background: var(--preset-solid-brand-bg, var(--color-primary, #00ff9f)) !important;
-    color: var(--preset-solid-brand-color, #ffffff) !important;
-}
-
-.preset-fill-Solid_Surface {
-    background: var(--preset-solid-surface-bg, var(--color-background, #ffffff)) !important;
-    color: var(--preset-solid-surface-color, var(--color-text, #000000)) !important;
-}
-
-.preset-fill-Subtle {
-    background: var(--preset-subtle-bg, rgba(255, 255, 255, 0.03)) !important;
-    border: var(--preset-subtle-border, 1px solid rgba(255, 255, 255, 0.1)) !important;
-    color: var(--preset-subtle-color, var(--color-text, #e0e7ff)) !important;
-}
-
-.preset-fill-Gradient_Linear {
-    background: var(--preset-gradient-linear-bg, linear-gradient(135deg, var(--color-primary, #00ff9f) 0%, var(--color-secondary, #00d4ff) 100%)) !important;
-    color: var(--preset-gradient-linear-color, #ffffff) !important;
-}
-
-.preset-fill-Gradient_Mesh {
-    background: var(--preset-gradient-mesh-bg, radial-gradient(at 20% 30%, var(--color-primary, #00ff9f) 0%, transparent 50%), radial-gradient(at 80% 70%, var(--color-secondary, #00d4ff) 0%, transparent 50%), radial-gradient(at 50% 50%, var(--color-accent, #ff00ff) 0%, transparent 50%), rgba(10, 14, 39, 0.8)) !important;
-    background-blend-mode: var(--preset-gradient-mesh-blend, screen, screen, screen, normal) !important;
-    color: var(--preset-gradient-mesh-color, var(--color-text, #e0e7ff)) !important;
-}
-
-.preset-fill-Pattern_Dot {
-    background-image: var(--preset-pattern-dot-image, radial-gradient(circle, rgba(255, 255, 255, 0.1) 1px, transparent 1px)) !important;
-    background-size: var(--preset-pattern-dot-size, 20px 20px) !important;
-    background-color: var(--preset-pattern-dot-bg, rgba(255, 255, 255, 0.02)) !important;
-    color: var(--preset-pattern-dot-color, var(--color-text, #e0e7ff)) !important;
-}
-
-.preset-fill-Noise {
-    background: var(--preset-noise-bg, rgba(255, 255, 255, 0.03)) !important;
-    background-image: var(--preset-noise-texture, url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E")) !important;
-    opacity: var(--preset-noise-opacity, 0.5) !important;
-    color: var(--preset-noise-color, var(--color-text, #e0e7ff)) !important;
-}
-
-/* ===== EFFECT PRESETS ===== */
-.preset-effect-Duotone {
-    filter: var(--preset-duotone-filter, contrast(1.2) saturate(1.5)) !important;
-}
-
-.preset-effect-Glitch {
-    animation: glitch var(--preset-glitch-duration, 3s) infinite !important;
-}
-
-@keyframes glitch {
-    0%, 100% { transform: translate(0, 0); }
-    33% { transform: translate(var(--preset-glitch-x, -2px), var(--preset-glitch-y, 1px)); }
-    66% { transform: translate(calc(-1 * var(--preset-glitch-x, -2px)), calc(-1 * var(--preset-glitch-y, 1px))); }
-}
-
-.preset-effect-Glow {
-    box-shadow: var(--preset-glow-shadow, 0 0 20px var(--color-primary, #00ff9f), 0 0 40px var(--color-primary, #00ff9f), 0 0 60px var(--color-primary, #00ff9f)) !important;
-    filter: brightness(var(--preset-glow-brightness, 1.2)) !important;
-}
-
-.preset-effect-Tape {
-    position: relative;
-}
-
-.preset-effect-Tape::before {
-    content: '';
-    position: absolute;
-    top: var(--preset-tape-top, -12px);
-    left: 50%;
-    transform: translateX(-50%) rotate(var(--preset-tape-rotation, -2deg));
-    width: var(--preset-tape-width, 80px);
-    height: var(--preset-tape-height, 25px);
-    background: var(--preset-tape-bg, linear-gradient(135deg, rgba(255, 220, 100, 0.7) 0%, rgba(255, 235, 150, 0.6) 50%, rgba(255, 220, 100, 0.7) 100%));
-    border: var(--preset-tape-border, 1px solid rgba(255, 200, 50, 0.4));
-    box-shadow: var(--preset-tape-shadow, 0 2px 8px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.3));
-    border-radius: var(--preset-tape-radius, 2px);
-    opacity: var(--preset-tape-opacity, 0.85);
-    clip-path: polygon(
-        0% 5%, 3% 0%, 6% 5%, 9% 0%, 12% 5%, 15% 0%, 18% 5%, 21% 0%, 24% 5%, 27% 0%,
-        30% 5%, 33% 0%, 36% 5%, 39% 0%, 42% 5%, 45% 0%, 48% 5%, 51% 0%, 54% 5%, 57% 0%,
-        60% 5%, 63% 0%, 66% 5%, 69% 0%, 72% 5%, 75% 0%, 78% 5%, 81% 0%, 84% 5%, 87% 0%,
-        90% 5%, 93% 0%, 96% 5%, 100% 0%,
-        100% 100%, 96% 95%, 93% 100%, 90% 95%, 87% 100%, 84% 95%, 81% 100%, 78% 95%,
-        75% 100%, 72% 95%, 69% 100%, 66% 95%, 63% 100%, 60% 95%, 57% 100%, 54% 95%,
-        51% 100%, 48% 95%, 45% 100%, 42% 95%, 39% 100%, 36% 95%, 33% 100%, 30% 95%,
-        27% 100%, 24% 95%, 21% 100%, 18% 95%, 15% 100%, 12% 95%, 9% 100%, 6% 95%,
-        3% 100%, 0% 95%
-    );
-}
-
-/* Ensure effect presets can work together */
-.preset-effect-Duotone,
-.preset-effect-Glitch,
-.preset-effect-Tape {
-    position: relative;
-}
-
-/* Override text color for branded fills */
-.preset-fill-Solid_Brand,
-.preset-fill-Gradient_Linear {
-    --text-color-override: var(--color-on-primary, #ffffff);
-}
-/* Comparison Widget Styles */
-        .widget-comparison {
-            padding: 0;
-            background: transparent;
-            box-shadow: none;
-        }
-        
-        .comparison-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-            margin-bottom: 1rem;
-        }
-        
-        .comparison-column {
-            padding: 1rem;
-        }
-        
-        .comparison-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            margin-bottom: 0.75rem;
-        }
-        
-        .comparison-list {
-            list-style: none;
-            padding-left: 0;
-        }
-        
-        .comparison-list li {
-            padding: 0.5rem 0;
-            padding-left: 1.5rem;
-            position: relative;
-        }
-        
-        .comparison-list li:before {
-            content: "•";
-            position: absolute;
-            left: 0.5rem;
-            font-weight: bold;
-        }
-        
-        .comparison-note {
-            padding: 1rem 1.5rem;
-            background: var(--color-surface-subtle, rgba(0,0,0,0.05));
-            border-radius: var(--border-radius, 8px);
-            font-size: 0.9rem;
-            font-style: italic;
-        }
-        
-.matrix-grid.matrix-timeline {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: auto auto;
-    gap: 20px;
-    width: 100%;
-    height: auto;
-    position: relative;
-    place-self: center;
-}
-.matrix-cell[data-role="stage1_title"] { grid-column: 1; grid-row: 1; }
-.matrix-cell[data-role="stage2_title"] { grid-column: 2; grid-row: 1; }
-.matrix-cell[data-role="stage3_title"] { grid-column: 3; grid-row: 1; }
-.matrix-cell[data-role="stage4_title"] { grid-column: 4; grid-row: 1; }
-.matrix-cell[data-role="stage1_detail"] { grid-column: 1; grid-row: 2; }
-.matrix-cell[data-role="stage2_detail"] { grid-column: 2; grid-row: 2; }
-.matrix-cell[data-role="stage3_detail"] { grid-column: 3; grid-row: 2; }
-.matrix-cell[data-role="stage4_detail"] { grid-column: 4; grid-row: 2; }
-
-/* Timeline arrow connector */
-.matrix-grid::before {
-    content: '';
-    position: absolute;
-    top: 25%;
-    left: 5%;
-    right: 5%;
-    height: 2px;
-    background: linear-gradient(to right, 
-        var(--color-primary) 0%, 
-        var(--color-secondary) 50%, 
-        var(--color-accent) 100%);
-    pointer-events: none;
-    z-index: 0;
-}
-
-.matrix-cell {
-    min-height: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    z-index: 1;
-    color: var(--color-text);
-}
-
-/* Header cells are emphasized */
-.matrix-cell[data-role^="header_"] {
-    font-weight: bold;
-    background: rgba(var(--color-primary-rgb, 37, 99, 235), 0.1);
-    border-bottom: 2px solid var(--color-accent, var(--color-primary));
-}
-
-/* Timeline stage titles are numbered */
-.matrix-cell[data-role$="_title"] {
-    font-weight: bold;
-    position: relative;
-}
-.matrix-cell[data-role="stage1_title"]::before { content: "1"; }
-.matrix-cell[data-role="stage2_title"]::before { content: "2"; }
-.matrix-cell[data-role="stage3_title"]::before { content: "3"; }
-.matrix-cell[data-role="stage4_title"]::before { content: "4"; }
-
-.matrix-cell[data-role$="_title"]::before {
-    position: absolute;
-    top: -20px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    background: var(--color-primary);
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 18px;
-    font-weight: bold;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-    z-index: 2;
-}
-
-/* Add subtle border between rows/columns */
-.matrix-cell:not([data-role^="header_"]) {
-    border-top: 1px solid rgba(128, 128, 128, 0.1);
-}
-.matrix-cell[data-role$="_right"],
-.matrix-cell[data-role="stage2_title"],
-.matrix-cell[data-role="stage2_detail"],
-.matrix-cell[data-role="stage3_title"],
-.matrix-cell[data-role="stage3_detail"],
-.matrix-cell[data-role="stage4_title"],
-.matrix-cell[data-role="stage4_detail"] {
-    border-left: 1px solid rgba(128, 128, 128, 0.1);
-}
-        
-        /* Embedded Preset Styles */
-
-/* ===== SURFACE PRESETS ===== */
-.preset-surface-Flat {
-    background: var(--preset-flat-bg, transparent) !important;
-    border: var(--preset-flat-border, none) !important;
-    box-shadow: var(--preset-flat-shadow, none) !important;
-}
-
-.preset-surface-Elevated {
-    background: var(--preset-elevated-bg, var(--color-surface, rgba(255, 255, 255, 0.05))) !important;
-    box-shadow: var(--preset-elevated-shadow, 0 4px 6px rgba(0, 0, 0, 0.3), 0 2px 4px rgba(0, 0, 0, 0.2)) !important;
-}
-
-.preset-surface-Outline {
-    background: var(--preset-outline-bg, transparent) !important;
-    border: var(--preset-outline-border, 2px solid var(--color-primary, #00ff9f)) !important;
-}
-
-.preset-surface-Glass {
-    background: var(--preset-glass-bg, rgba(255, 255, 255, 0.05)) !important;
-    backdrop-filter: blur(var(--preset-glass-blur, 10px)) !important;
-    border: var(--preset-glass-border, 1px solid rgba(255, 255, 255, 0.1)) !important;
-}
-
-.preset-surface-Sunken {
-    background: var(--preset-sunken-bg, rgba(0, 0, 0, 0.3)) !important;
-    box-shadow: var(--preset-sunken-shadow, inset 0 2px 4px rgba(0, 0, 0, 0.4), inset 0 0 0 1px rgba(0, 0, 0, 0.2)) !important;
-}
-
-.preset-surface-NeoBrutal {
-    background: var(--preset-neobrutal-bg, var(--color-surface, #ffffff)) !important;
-    border: var(--preset-neobrutal-border_width, 3px) solid var(--preset-neobrutal-border_color, currentColor) !important;
-    box-shadow: var(--preset-neobrutal-shadow_offset, 6px) var(--preset-neobrutal-shadow_offset, 6px) 0 var(--preset-neobrutal-shadow_color, currentColor) !important;
-}
-
-/* ===== SHAPE PRESETS ===== */
-.preset-shape-Sharp {
-    border-radius: var(--preset-sharp-radius, 0) !important;
-}
-
-.preset-shape-Rounded {
-    border-radius: var(--preset-rounded-radius, 12px) !important;
-}
-
-.preset-shape-Curve {
-    border-radius: var(--preset-curve-radius, 20px) !important;
-}
-
-.preset-shape-Pill {
-    border-radius: var(--preset-pill-radius, 9999px) !important;
-}
-
-.preset-shape-Squircle {
-    border-radius: var(--preset-squircle-radius, 20%) !important;
-}
-
-.preset-shape-Organic {
-    border-radius: var(--preset-organic-radius, 30% 70% 70% 30% / 30% 30% 70% 70%) !important;
-}
-
-/* ===== FILL PRESETS ===== */
-.preset-fill-Solid_Brand {
-    background: var(--preset-solid-brand-bg, var(--color-primary, #00ff9f)) !important;
-    color: var(--preset-solid-brand-color, #ffffff) !important;
-}
-
-.preset-fill-Solid_Surface {
-    background: var(--preset-solid-surface-bg, var(--color-background, #ffffff)) !important;
-    color: var(--preset-solid-surface-color, var(--color-text, #000000)) !important;
-}
-
-.preset-fill-Subtle {
-    background: var(--preset-subtle-bg, rgba(255, 255, 255, 0.03)) !important;
-    border: var(--preset-subtle-border, 1px solid rgba(255, 255, 255, 0.1)) !important;
-    color: var(--preset-subtle-color, var(--color-text, #e0e7ff)) !important;
-}
-
-.preset-fill-Gradient_Linear {
-    background: var(--preset-gradient-linear-bg, linear-gradient(135deg, var(--color-primary, #00ff9f) 0%, var(--color-secondary, #00d4ff) 100%)) !important;
-    color: var(--preset-gradient-linear-color, #ffffff) !important;
-}
-
-.preset-fill-Gradient_Mesh {
-    background: var(--preset-gradient-mesh-bg, radial-gradient(at 20% 30%, var(--color-primary, #00ff9f) 0%, transparent 50%), radial-gradient(at 80% 70%, var(--color-secondary, #00d4ff) 0%, transparent 50%), radial-gradient(at 50% 50%, var(--color-accent, #ff00ff) 0%, transparent 50%), rgba(10, 14, 39, 0.8)) !important;
-    background-blend-mode: var(--preset-gradient-mesh-blend, screen, screen, screen, normal) !important;
-    color: var(--preset-gradient-mesh-color, var(--color-text, #e0e7ff)) !important;
-}
-
-.preset-fill-Pattern_Dot {
-    background-image: var(--preset-pattern-dot-image, radial-gradient(circle, rgba(255, 255, 255, 0.1) 1px, transparent 1px)) !important;
-    background-size: var(--preset-pattern-dot-size, 20px 20px) !important;
-    background-color: var(--preset-pattern-dot-bg, rgba(255, 255, 255, 0.02)) !important;
-    color: var(--preset-pattern-dot-color, var(--color-text, #e0e7ff)) !important;
-}
-
-.preset-fill-Noise {
-    background: var(--preset-noise-bg, rgba(255, 255, 255, 0.03)) !important;
-    background-image: var(--preset-noise-texture, url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E")) !important;
-    opacity: var(--preset-noise-opacity, 0.5) !important;
-    color: var(--preset-noise-color, var(--color-text, #e0e7ff)) !important;
-}
-
-/* ===== EFFECT PRESETS ===== */
-.preset-effect-Duotone {
-    filter: var(--preset-duotone-filter, contrast(1.2) saturate(1.5)) !important;
-}
-
-.preset-effect-Glitch {
-    animation: glitch var(--preset-glitch-duration, 3s) infinite !important;
-}
-
-@keyframes glitch {
-    0%, 100% { transform: translate(0, 0); }
-    33% { transform: translate(var(--preset-glitch-x, -2px), var(--preset-glitch-y, 1px)); }
-    66% { transform: translate(calc(-1 * var(--preset-glitch-x, -2px)), calc(-1 * var(--preset-glitch-y, 1px))); }
-}
-
-.preset-effect-Glow {
-    box-shadow: var(--preset-glow-shadow, 0 0 20px var(--color-primary, #00ff9f), 0 0 40px var(--color-primary, #00ff9f), 0 0 60px var(--color-primary, #00ff9f)) !important;
-    filter: brightness(var(--preset-glow-brightness, 1.2)) !important;
-}
-
-.preset-effect-Tape {
-    position: relative;
-}
-
-.preset-effect-Tape::before {
-    content: '';
-    position: absolute;
-    top: var(--preset-tape-top, -12px);
-    left: 50%;
-    transform: translateX(-50%) rotate(var(--preset-tape-rotation, -2deg));
-    width: var(--preset-tape-width, 80px);
-    height: var(--preset-tape-height, 25px);
-    background: var(--preset-tape-bg, linear-gradient(135deg, rgba(255, 220, 100, 0.7) 0%, rgba(255, 235, 150, 0.6) 50%, rgba(255, 220, 100, 0.7) 100%));
-    border: var(--preset-tape-border, 1px solid rgba(255, 200, 50, 0.4));
-    box-shadow: var(--preset-tape-shadow, 0 2px 8px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.3));
-    border-radius: var(--preset-tape-radius, 2px);
-    opacity: var(--preset-tape-opacity, 0.85);
-    clip-path: polygon(
-        0% 5%, 3% 0%, 6% 5%, 9% 0%, 12% 5%, 15% 0%, 18% 5%, 21% 0%, 24% 5%, 27% 0%,
-        30% 5%, 33% 0%, 36% 5%, 39% 0%, 42% 5%, 45% 0%, 48% 5%, 51% 0%, 54% 5%, 57% 0%,
-        60% 5%, 63% 0%, 66% 5%, 69% 0%, 72% 5%, 75% 0%, 78% 5%, 81% 0%, 84% 5%, 87% 0%,
-        90% 5%, 93% 0%, 96% 5%, 100% 0%,
-        100% 100%, 96% 95%, 93% 100%, 90% 95%, 87% 100%, 84% 95%, 81% 100%, 78% 95%,
-        75% 100%, 72% 95%, 69% 100%, 66% 95%, 63% 100%, 60% 95%, 57% 100%, 54% 95%,
-        51% 100%, 48% 95%, 45% 100%, 42% 95%, 39% 100%, 36% 95%, 33% 100%, 30% 95%,
-        27% 100%, 24% 95%, 21% 100%, 18% 95%, 15% 100%, 12% 95%, 9% 100%, 6% 95%,
-        3% 100%, 0% 95%
-    );
-}
-
-/* Ensure effect presets can work together */
-.preset-effect-Duotone,
-.preset-effect-Glitch,
-.preset-effect-Tape {
-    position: relative;
-}
-
-/* Override text color for branded fills */
-.preset-fill-Solid_Brand,
-.preset-fill-Gradient_Linear {
-    --text-color-override: var(--color-on-primary, #ffffff);
-}
-/* Comparison Widget Styles */
-        .widget-comparison {
-            padding: 0;
-            background: transparent;
-            box-shadow: none;
-        }
-        
-        .comparison-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-            margin-bottom: 1rem;
-        }
-        
-        .comparison-column {
-            padding: 1rem;
-        }
-        
-        .comparison-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            margin-bottom: 0.75rem;
-        }
-        
-        .comparison-list {
-            list-style: none;
-            padding-left: 0;
-        }
-        
-        .comparison-list li {
-            padding: 0.5rem 0;
-            padding-left: 1.5rem;
-            position: relative;
-        }
-        
-        .comparison-list li:before {
-            content: "•";
-            position: absolute;
-            left: 0.5rem;
-            font-weight: bold;
-        }
-        
-        .comparison-note {
-            padding: 1rem 1.5rem;
-            background: var(--color-surface-subtle, rgba(0,0,0,0.05));
-            border-radius: var(--border-radius, 8px);
-            font-size: 0.9rem;
-            font-style: italic;
-        }
-        
-.comparison-grid {
+.cinematic-layout {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    grid-template-rows: auto auto auto;
     gap: 20px;
-    width: 100%;
-    height: auto;
-    place-self: center;
+    height: 100%;
 }
-.comparison-cell[data-role="left_header"] { grid-column: 1; grid-row: 1; }
-.comparison-cell[data-role="right_header"] { grid-column: 2; grid-row: 1; }
-.comparison-cell[data-role="left_body"] { grid-column: 1; grid-row: 2; }
-.comparison-cell[data-role="right_body"] { grid-column: 2; grid-row: 2; }
-.comparison-cell[data-role="bottom_left"] { grid-column: 1; grid-row: 3; }
-.comparison-cell[data-role="bottom_right"] { grid-column: 2; grid-row: 3; }
 
-
-.comparison-cell {
-    min-height: 0;
+.cinematic-panel {
+    min-height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--color-text);
-}
-
-/* Header cells are emphasized */
-.comparison-cell[data-role$="_header"] {
-    font-weight: bold;
-    border-bottom: 2px solid var(--color-accent, var(--color-primary));
-}
-
-/* Add visual separator between columns */
-.comparison-cell[data-role^="right_"],
-.comparison-cell[data-role^="col2_"],
-.comparison-cell[data-role^="col3_"] {
-    border-left: 1px solid rgba(128, 128, 128, 0.2);
 }
         
         /* Embedded Preset Styles */
@@ -1516,7 +872,242 @@
         
 .bento-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: 2fr 1fr;
+    gap: 20px;
+    width: 100%;
+    height: 100%;
+}
+.bento-cell[data-role="hero"] {
+    grid-column: 1 / 4;
+    grid-row: 1;
+}
+
+.bento-cell {
+    min-height: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+        
+        /* Embedded Preset Styles */
+
+/* ===== SURFACE PRESETS ===== */
+.preset-surface-Flat {
+    background: var(--preset-flat-bg, transparent) !important;
+    border: var(--preset-flat-border, none) !important;
+    box-shadow: var(--preset-flat-shadow, none) !important;
+}
+
+.preset-surface-Elevated {
+    background: var(--preset-elevated-bg, var(--color-surface, rgba(255, 255, 255, 0.05))) !important;
+    box-shadow: var(--preset-elevated-shadow, 0 4px 6px rgba(0, 0, 0, 0.3), 0 2px 4px rgba(0, 0, 0, 0.2)) !important;
+}
+
+.preset-surface-Outline {
+    background: var(--preset-outline-bg, transparent) !important;
+    border: var(--preset-outline-border, 2px solid var(--color-primary, #00ff9f)) !important;
+}
+
+.preset-surface-Glass {
+    background: var(--preset-glass-bg, rgba(255, 255, 255, 0.05)) !important;
+    backdrop-filter: blur(var(--preset-glass-blur, 10px)) !important;
+    border: var(--preset-glass-border, 1px solid rgba(255, 255, 255, 0.1)) !important;
+}
+
+.preset-surface-Sunken {
+    background: var(--preset-sunken-bg, rgba(0, 0, 0, 0.3)) !important;
+    box-shadow: var(--preset-sunken-shadow, inset 0 2px 4px rgba(0, 0, 0, 0.4), inset 0 0 0 1px rgba(0, 0, 0, 0.2)) !important;
+}
+
+.preset-surface-NeoBrutal {
+    background: var(--preset-neobrutal-bg, var(--color-surface, #ffffff)) !important;
+    border: var(--preset-neobrutal-border_width, 3px) solid var(--preset-neobrutal-border_color, currentColor) !important;
+    box-shadow: var(--preset-neobrutal-shadow_offset, 6px) var(--preset-neobrutal-shadow_offset, 6px) 0 var(--preset-neobrutal-shadow_color, currentColor) !important;
+}
+
+/* ===== SHAPE PRESETS ===== */
+.preset-shape-Sharp {
+    border-radius: var(--preset-sharp-radius, 0) !important;
+}
+
+.preset-shape-Rounded {
+    border-radius: var(--preset-rounded-radius, 12px) !important;
+}
+
+.preset-shape-Curve {
+    border-radius: var(--preset-curve-radius, 20px) !important;
+}
+
+.preset-shape-Pill {
+    border-radius: var(--preset-pill-radius, 9999px) !important;
+}
+
+.preset-shape-Squircle {
+    border-radius: var(--preset-squircle-radius, 20%) !important;
+}
+
+.preset-shape-Organic {
+    border-radius: var(--preset-organic-radius, 30% 70% 70% 30% / 30% 30% 70% 70%) !important;
+}
+
+/* ===== FILL PRESETS ===== */
+.preset-fill-Solid_Brand {
+    background: var(--preset-solid-brand-bg, var(--color-primary, #00ff9f)) !important;
+    color: var(--preset-solid-brand-color, #ffffff) !important;
+}
+
+.preset-fill-Solid_Surface {
+    background: var(--preset-solid-surface-bg, var(--color-background, #ffffff)) !important;
+    color: var(--preset-solid-surface-color, var(--color-text, #000000)) !important;
+}
+
+.preset-fill-Subtle {
+    background: var(--preset-subtle-bg, rgba(255, 255, 255, 0.03)) !important;
+    border: var(--preset-subtle-border, 1px solid rgba(255, 255, 255, 0.1)) !important;
+    color: var(--preset-subtle-color, var(--color-text, #e0e7ff)) !important;
+}
+
+.preset-fill-Gradient_Linear {
+    background: var(--preset-gradient-linear-bg, linear-gradient(135deg, var(--color-primary, #00ff9f) 0%, var(--color-secondary, #00d4ff) 100%)) !important;
+    color: var(--preset-gradient-linear-color, #ffffff) !important;
+}
+
+.preset-fill-Gradient_Mesh {
+    background: var(--preset-gradient-mesh-bg, radial-gradient(at 20% 30%, var(--color-primary, #00ff9f) 0%, transparent 50%), radial-gradient(at 80% 70%, var(--color-secondary, #00d4ff) 0%, transparent 50%), radial-gradient(at 50% 50%, var(--color-accent, #ff00ff) 0%, transparent 50%), rgba(10, 14, 39, 0.8)) !important;
+    background-blend-mode: var(--preset-gradient-mesh-blend, screen, screen, screen, normal) !important;
+    color: var(--preset-gradient-mesh-color, var(--color-text, #e0e7ff)) !important;
+}
+
+.preset-fill-Pattern_Dot {
+    background-image: var(--preset-pattern-dot-image, radial-gradient(circle, rgba(255, 255, 255, 0.1) 1px, transparent 1px)) !important;
+    background-size: var(--preset-pattern-dot-size, 20px 20px) !important;
+    background-color: var(--preset-pattern-dot-bg, rgba(255, 255, 255, 0.02)) !important;
+    color: var(--preset-pattern-dot-color, var(--color-text, #e0e7ff)) !important;
+}
+
+.preset-fill-Noise {
+    background: var(--preset-noise-bg, rgba(255, 255, 255, 0.03)) !important;
+    background-image: var(--preset-noise-texture, url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E")) !important;
+    opacity: var(--preset-noise-opacity, 0.5) !important;
+    color: var(--preset-noise-color, var(--color-text, #e0e7ff)) !important;
+}
+
+/* ===== EFFECT PRESETS ===== */
+.preset-effect-Duotone {
+    filter: var(--preset-duotone-filter, contrast(1.2) saturate(1.5)) !important;
+}
+
+.preset-effect-Glitch {
+    animation: glitch var(--preset-glitch-duration, 3s) infinite !important;
+}
+
+@keyframes glitch {
+    0%, 100% { transform: translate(0, 0); }
+    33% { transform: translate(var(--preset-glitch-x, -2px), var(--preset-glitch-y, 1px)); }
+    66% { transform: translate(calc(-1 * var(--preset-glitch-x, -2px)), calc(-1 * var(--preset-glitch-y, 1px))); }
+}
+
+.preset-effect-Glow {
+    box-shadow: var(--preset-glow-shadow, 0 0 20px var(--color-primary, #00ff9f), 0 0 40px var(--color-primary, #00ff9f), 0 0 60px var(--color-primary, #00ff9f)) !important;
+    filter: brightness(var(--preset-glow-brightness, 1.2)) !important;
+}
+
+.preset-effect-Tape {
+    position: relative;
+}
+
+.preset-effect-Tape::before {
+    content: '';
+    position: absolute;
+    top: var(--preset-tape-top, -12px);
+    left: 50%;
+    transform: translateX(-50%) rotate(var(--preset-tape-rotation, -2deg));
+    width: var(--preset-tape-width, 80px);
+    height: var(--preset-tape-height, 25px);
+    background: var(--preset-tape-bg, linear-gradient(135deg, rgba(255, 220, 100, 0.7) 0%, rgba(255, 235, 150, 0.6) 50%, rgba(255, 220, 100, 0.7) 100%));
+    border: var(--preset-tape-border, 1px solid rgba(255, 200, 50, 0.4));
+    box-shadow: var(--preset-tape-shadow, 0 2px 8px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.3));
+    border-radius: var(--preset-tape-radius, 2px);
+    opacity: var(--preset-tape-opacity, 0.85);
+    clip-path: polygon(
+        0% 5%, 3% 0%, 6% 5%, 9% 0%, 12% 5%, 15% 0%, 18% 5%, 21% 0%, 24% 5%, 27% 0%,
+        30% 5%, 33% 0%, 36% 5%, 39% 0%, 42% 5%, 45% 0%, 48% 5%, 51% 0%, 54% 5%, 57% 0%,
+        60% 5%, 63% 0%, 66% 5%, 69% 0%, 72% 5%, 75% 0%, 78% 5%, 81% 0%, 84% 5%, 87% 0%,
+        90% 5%, 93% 0%, 96% 5%, 100% 0%,
+        100% 100%, 96% 95%, 93% 100%, 90% 95%, 87% 100%, 84% 95%, 81% 100%, 78% 95%,
+        75% 100%, 72% 95%, 69% 100%, 66% 95%, 63% 100%, 60% 95%, 57% 100%, 54% 95%,
+        51% 100%, 48% 95%, 45% 100%, 42% 95%, 39% 100%, 36% 95%, 33% 100%, 30% 95%,
+        27% 100%, 24% 95%, 21% 100%, 18% 95%, 15% 100%, 12% 95%, 9% 100%, 6% 95%,
+        3% 100%, 0% 95%
+    );
+}
+
+/* Ensure effect presets can work together */
+.preset-effect-Duotone,
+.preset-effect-Glitch,
+.preset-effect-Tape {
+    position: relative;
+}
+
+/* Override text color for branded fills */
+.preset-fill-Solid_Brand,
+.preset-fill-Gradient_Linear {
+    --text-color-override: var(--color-on-primary, #ffffff);
+}
+/* Comparison Widget Styles */
+        .widget-comparison {
+            padding: 0;
+            background: transparent;
+            box-shadow: none;
+        }
+        
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .comparison-column {
+            padding: 1rem;
+        }
+        
+        .comparison-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+        
+        .comparison-list {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .comparison-list li {
+            padding: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+        
+        .comparison-list li:before {
+            content: "•";
+            position: absolute;
+            left: 0.5rem;
+            font-weight: bold;
+        }
+        
+        .comparison-note {
+            padding: 1rem 1.5rem;
+            background: var(--color-surface-subtle, rgba(0,0,0,0.05));
+            border-radius: var(--border-radius, 8px);
+            font-size: 0.9rem;
+            font-style: italic;
+        }
+        
+.bento-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(2, 1fr);
     gap: 20px;
     width: 100%;
@@ -1747,7 +1338,7 @@
         
 .bento-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(2, 1fr);
     gap: 20px;
     width: 100%;
@@ -1976,33 +1567,563 @@
             font-style: italic;
         }
         
-.bento-stack-vertical {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
+.matrix-grid.matrix-timeline {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: auto auto;
+    gap: 20px;
     width: 100%;
-    height: 100%;
-    gap: 0;
+    height: auto;
+    position: relative;
+    place-self: center;
 }
-.bento-stage-vertical {
-    flex: 1;
+.matrix-cell[data-role="stage1_title"] { grid-column: 1; grid-row: 1; }
+.matrix-cell[data-role="stage2_title"] { grid-column: 2; grid-row: 1; }
+.matrix-cell[data-role="stage3_title"] { grid-column: 3; grid-row: 1; }
+.matrix-cell[data-role="stage4_title"] { grid-column: 4; grid-row: 1; }
+.matrix-cell[data-role="stage1_detail"] { grid-column: 1; grid-row: 2; }
+.matrix-cell[data-role="stage2_detail"] { grid-column: 2; grid-row: 2; }
+.matrix-cell[data-role="stage3_detail"] { grid-column: 3; grid-row: 2; }
+.matrix-cell[data-role="stage4_detail"] { grid-column: 4; grid-row: 2; }
+
+/* Timeline arrow connector */
+.matrix-grid::before {
+    content: '';
+    position: absolute;
+    top: 25%;
+    left: 5%;
+    right: 5%;
+    height: 2px;
+    background: linear-gradient(to right, 
+        var(--color-primary) 0%, 
+        var(--color-secondary) 50%, 
+        var(--color-accent) 100%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.matrix-cell {
+    min-height: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 0;
+    position: relative;
+    z-index: 1;
+    color: var(--color-text);
+}
+
+/* Header cells are emphasized */
+.matrix-cell[data-role^="header_"] {
+    font-weight: bold;
+    background: rgba(var(--color-primary-rgb, 37, 99, 235), 0.1);
+    border-bottom: 2px solid var(--color-accent, var(--color-primary));
+}
+
+/* Timeline stage titles are numbered */
+.matrix-cell[data-role$="_title"] {
+    font-weight: bold;
+    position: relative;
+}
+.matrix-cell[data-role="stage1_title"]::before { content: "1"; }
+.matrix-cell[data-role="stage2_title"]::before { content: "2"; }
+.matrix-cell[data-role="stage3_title"]::before { content: "3"; }
+.matrix-cell[data-role="stage4_title"]::before { content: "4"; }
+
+.matrix-cell[data-role$="_title"]::before {
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: bold;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    z-index: 2;
+}
+
+/* Add subtle border between rows/columns */
+.matrix-cell:not([data-role^="header_"]) {
+    border-top: 1px solid rgba(128, 128, 128, 0.1);
+}
+.matrix-cell[data-role$="_right"],
+.matrix-cell[data-role="stage2_title"],
+.matrix-cell[data-role="stage2_detail"],
+.matrix-cell[data-role="stage3_title"],
+.matrix-cell[data-role="stage3_detail"],
+.matrix-cell[data-role="stage4_title"],
+.matrix-cell[data-role="stage4_detail"] {
+    border-left: 1px solid rgba(128, 128, 128, 0.1);
+}
+        
+        /* Embedded Preset Styles */
+
+/* ===== SURFACE PRESETS ===== */
+.preset-surface-Flat {
+    background: var(--preset-flat-bg, transparent) !important;
+    border: var(--preset-flat-border, none) !important;
+    box-shadow: var(--preset-flat-shadow, none) !important;
+}
+
+.preset-surface-Elevated {
+    background: var(--preset-elevated-bg, var(--color-surface, rgba(255, 255, 255, 0.05))) !important;
+    box-shadow: var(--preset-elevated-shadow, 0 4px 6px rgba(0, 0, 0, 0.3), 0 2px 4px rgba(0, 0, 0, 0.2)) !important;
+}
+
+.preset-surface-Outline {
+    background: var(--preset-outline-bg, transparent) !important;
+    border: var(--preset-outline-border, 2px solid var(--color-primary, #00ff9f)) !important;
+}
+
+.preset-surface-Glass {
+    background: var(--preset-glass-bg, rgba(255, 255, 255, 0.05)) !important;
+    backdrop-filter: blur(var(--preset-glass-blur, 10px)) !important;
+    border: var(--preset-glass-border, 1px solid rgba(255, 255, 255, 0.1)) !important;
+}
+
+.preset-surface-Sunken {
+    background: var(--preset-sunken-bg, rgba(0, 0, 0, 0.3)) !important;
+    box-shadow: var(--preset-sunken-shadow, inset 0 2px 4px rgba(0, 0, 0, 0.4), inset 0 0 0 1px rgba(0, 0, 0, 0.2)) !important;
+}
+
+.preset-surface-NeoBrutal {
+    background: var(--preset-neobrutal-bg, var(--color-surface, #ffffff)) !important;
+    border: var(--preset-neobrutal-border_width, 3px) solid var(--preset-neobrutal-border_color, currentColor) !important;
+    box-shadow: var(--preset-neobrutal-shadow_offset, 6px) var(--preset-neobrutal-shadow_offset, 6px) 0 var(--preset-neobrutal-shadow_color, currentColor) !important;
+}
+
+/* ===== SHAPE PRESETS ===== */
+.preset-shape-Sharp {
+    border-radius: var(--preset-sharp-radius, 0) !important;
+}
+
+.preset-shape-Rounded {
+    border-radius: var(--preset-rounded-radius, 12px) !important;
+}
+
+.preset-shape-Curve {
+    border-radius: var(--preset-curve-radius, 20px) !important;
+}
+
+.preset-shape-Pill {
+    border-radius: var(--preset-pill-radius, 9999px) !important;
+}
+
+.preset-shape-Squircle {
+    border-radius: var(--preset-squircle-radius, 20%) !important;
+}
+
+.preset-shape-Organic {
+    border-radius: var(--preset-organic-radius, 30% 70% 70% 30% / 30% 30% 70% 70%) !important;
+}
+
+/* ===== FILL PRESETS ===== */
+.preset-fill-Solid_Brand {
+    background: var(--preset-solid-brand-bg, var(--color-primary, #00ff9f)) !important;
+    color: var(--preset-solid-brand-color, #ffffff) !important;
+}
+
+.preset-fill-Solid_Surface {
+    background: var(--preset-solid-surface-bg, var(--color-background, #ffffff)) !important;
+    color: var(--preset-solid-surface-color, var(--color-text, #000000)) !important;
+}
+
+.preset-fill-Subtle {
+    background: var(--preset-subtle-bg, rgba(255, 255, 255, 0.03)) !important;
+    border: var(--preset-subtle-border, 1px solid rgba(255, 255, 255, 0.1)) !important;
+    color: var(--preset-subtle-color, var(--color-text, #e0e7ff)) !important;
+}
+
+.preset-fill-Gradient_Linear {
+    background: var(--preset-gradient-linear-bg, linear-gradient(135deg, var(--color-primary, #00ff9f) 0%, var(--color-secondary, #00d4ff) 100%)) !important;
+    color: var(--preset-gradient-linear-color, #ffffff) !important;
+}
+
+.preset-fill-Gradient_Mesh {
+    background: var(--preset-gradient-mesh-bg, radial-gradient(at 20% 30%, var(--color-primary, #00ff9f) 0%, transparent 50%), radial-gradient(at 80% 70%, var(--color-secondary, #00d4ff) 0%, transparent 50%), radial-gradient(at 50% 50%, var(--color-accent, #ff00ff) 0%, transparent 50%), rgba(10, 14, 39, 0.8)) !important;
+    background-blend-mode: var(--preset-gradient-mesh-blend, screen, screen, screen, normal) !important;
+    color: var(--preset-gradient-mesh-color, var(--color-text, #e0e7ff)) !important;
+}
+
+.preset-fill-Pattern_Dot {
+    background-image: var(--preset-pattern-dot-image, radial-gradient(circle, rgba(255, 255, 255, 0.1) 1px, transparent 1px)) !important;
+    background-size: var(--preset-pattern-dot-size, 20px 20px) !important;
+    background-color: var(--preset-pattern-dot-bg, rgba(255, 255, 255, 0.02)) !important;
+    color: var(--preset-pattern-dot-color, var(--color-text, #e0e7ff)) !important;
+}
+
+.preset-fill-Noise {
+    background: var(--preset-noise-bg, rgba(255, 255, 255, 0.03)) !important;
+    background-image: var(--preset-noise-texture, url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E")) !important;
+    opacity: var(--preset-noise-opacity, 0.5) !important;
+    color: var(--preset-noise-color, var(--color-text, #e0e7ff)) !important;
+}
+
+/* ===== EFFECT PRESETS ===== */
+.preset-effect-Duotone {
+    filter: var(--preset-duotone-filter, contrast(1.2) saturate(1.5)) !important;
+}
+
+.preset-effect-Glitch {
+    animation: glitch var(--preset-glitch-duration, 3s) infinite !important;
+}
+
+@keyframes glitch {
+    0%, 100% { transform: translate(0, 0); }
+    33% { transform: translate(var(--preset-glitch-x, -2px), var(--preset-glitch-y, 1px)); }
+    66% { transform: translate(calc(-1 * var(--preset-glitch-x, -2px)), calc(-1 * var(--preset-glitch-y, 1px))); }
+}
+
+.preset-effect-Glow {
+    box-shadow: var(--preset-glow-shadow, 0 0 20px var(--color-primary, #00ff9f), 0 0 40px var(--color-primary, #00ff9f), 0 0 60px var(--color-primary, #00ff9f)) !important;
+    filter: brightness(var(--preset-glow-brightness, 1.2)) !important;
+}
+
+.preset-effect-Tape {
+    position: relative;
+}
+
+.preset-effect-Tape::before {
+    content: '';
+    position: absolute;
+    top: var(--preset-tape-top, -12px);
+    left: 50%;
+    transform: translateX(-50%) rotate(var(--preset-tape-rotation, -2deg));
+    width: var(--preset-tape-width, 80px);
+    height: var(--preset-tape-height, 25px);
+    background: var(--preset-tape-bg, linear-gradient(135deg, rgba(255, 220, 100, 0.7) 0%, rgba(255, 235, 150, 0.6) 50%, rgba(255, 220, 100, 0.7) 100%));
+    border: var(--preset-tape-border, 1px solid rgba(255, 200, 50, 0.4));
+    box-shadow: var(--preset-tape-shadow, 0 2px 8px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.3));
+    border-radius: var(--preset-tape-radius, 2px);
+    opacity: var(--preset-tape-opacity, 0.85);
+    clip-path: polygon(
+        0% 5%, 3% 0%, 6% 5%, 9% 0%, 12% 5%, 15% 0%, 18% 5%, 21% 0%, 24% 5%, 27% 0%,
+        30% 5%, 33% 0%, 36% 5%, 39% 0%, 42% 5%, 45% 0%, 48% 5%, 51% 0%, 54% 5%, 57% 0%,
+        60% 5%, 63% 0%, 66% 5%, 69% 0%, 72% 5%, 75% 0%, 78% 5%, 81% 0%, 84% 5%, 87% 0%,
+        90% 5%, 93% 0%, 96% 5%, 100% 0%,
+        100% 100%, 96% 95%, 93% 100%, 90% 95%, 87% 100%, 84% 95%, 81% 100%, 78% 95%,
+        75% 100%, 72% 95%, 69% 100%, 66% 95%, 63% 100%, 60% 95%, 57% 100%, 54% 95%,
+        51% 100%, 48% 95%, 45% 100%, 42% 95%, 39% 100%, 36% 95%, 33% 100%, 30% 95%,
+        27% 100%, 24% 95%, 21% 100%, 18% 95%, 15% 100%, 12% 95%, 9% 100%, 6% 95%,
+        3% 100%, 0% 95%
+    );
+}
+
+/* Ensure effect presets can work together */
+.preset-effect-Duotone,
+.preset-effect-Glitch,
+.preset-effect-Tape {
+    position: relative;
+}
+
+/* Override text color for branded fills */
+.preset-fill-Solid_Brand,
+.preset-fill-Gradient_Linear {
+    --text-color-override: var(--color-on-primary, #ffffff);
+}
+/* Comparison Widget Styles */
+        .widget-comparison {
+            padding: 0;
+            background: transparent;
+            box-shadow: none;
+        }
+        
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .comparison-column {
+            padding: 1rem;
+        }
+        
+        .comparison-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+        
+        .comparison-list {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .comparison-list li {
+            padding: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+        
+        .comparison-list li:before {
+            content: "•";
+            position: absolute;
+            left: 0.5rem;
+            font-weight: bold;
+        }
+        
+        .comparison-note {
+            padding: 1rem 1.5rem;
+            background: var(--color-surface-subtle, rgba(0,0,0,0.05));
+            border-radius: var(--border-radius, 8px);
+            font-size: 0.9rem;
+            font-style: italic;
+        }
+        
+.bento-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    grid-template-rows: repeat(2, 1fr);
+    gap: 20px;
     width: 100%;
+    height: 100%;
 }
-.bento-stage-vertical .widget {
-    width: auto;
-    max-width: 80%;
+.bento-cell[data-role="hero"] {
+    grid-column: 1;
+    grid-row: 1 / 3;
+    z-index: 1;
 }
-.bento-arrow-vertical {
-    font-size: 2rem;
-    color: var(--color-text-secondary, #888);
-    text-align: center;
-    padding: 0.5rem 0;
-    flex-shrink: 0;
+.bento-cell[data-role="side_1"] { grid-column: 2; grid-row: 1; z-index: 2; }
+.bento-cell[data-role="side_2"] { grid-column: 3; grid-row: 1; z-index: 2; }
+.bento-cell[data-role="side_3"] { grid-column: 2; grid-row: 2; z-index: 2; }
+.bento-cell[data-role="side_4"] { grid-column: 3; grid-row: 2; z-index: 2; }
+
+.bento-cell {
+    min-height: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+        
+        /* Embedded Preset Styles */
+
+/* ===== SURFACE PRESETS ===== */
+.preset-surface-Flat {
+    background: var(--preset-flat-bg, transparent) !important;
+    border: var(--preset-flat-border, none) !important;
+    box-shadow: var(--preset-flat-shadow, none) !important;
+}
+
+.preset-surface-Elevated {
+    background: var(--preset-elevated-bg, var(--color-surface, rgba(255, 255, 255, 0.05))) !important;
+    box-shadow: var(--preset-elevated-shadow, 0 4px 6px rgba(0, 0, 0, 0.3), 0 2px 4px rgba(0, 0, 0, 0.2)) !important;
+}
+
+.preset-surface-Outline {
+    background: var(--preset-outline-bg, transparent) !important;
+    border: var(--preset-outline-border, 2px solid var(--color-primary, #00ff9f)) !important;
+}
+
+.preset-surface-Glass {
+    background: var(--preset-glass-bg, rgba(255, 255, 255, 0.05)) !important;
+    backdrop-filter: blur(var(--preset-glass-blur, 10px)) !important;
+    border: var(--preset-glass-border, 1px solid rgba(255, 255, 255, 0.1)) !important;
+}
+
+.preset-surface-Sunken {
+    background: var(--preset-sunken-bg, rgba(0, 0, 0, 0.3)) !important;
+    box-shadow: var(--preset-sunken-shadow, inset 0 2px 4px rgba(0, 0, 0, 0.4), inset 0 0 0 1px rgba(0, 0, 0, 0.2)) !important;
+}
+
+.preset-surface-NeoBrutal {
+    background: var(--preset-neobrutal-bg, var(--color-surface, #ffffff)) !important;
+    border: var(--preset-neobrutal-border_width, 3px) solid var(--preset-neobrutal-border_color, currentColor) !important;
+    box-shadow: var(--preset-neobrutal-shadow_offset, 6px) var(--preset-neobrutal-shadow_offset, 6px) 0 var(--preset-neobrutal-shadow_color, currentColor) !important;
+}
+
+/* ===== SHAPE PRESETS ===== */
+.preset-shape-Sharp {
+    border-radius: var(--preset-sharp-radius, 0) !important;
+}
+
+.preset-shape-Rounded {
+    border-radius: var(--preset-rounded-radius, 12px) !important;
+}
+
+.preset-shape-Curve {
+    border-radius: var(--preset-curve-radius, 20px) !important;
+}
+
+.preset-shape-Pill {
+    border-radius: var(--preset-pill-radius, 9999px) !important;
+}
+
+.preset-shape-Squircle {
+    border-radius: var(--preset-squircle-radius, 20%) !important;
+}
+
+.preset-shape-Organic {
+    border-radius: var(--preset-organic-radius, 30% 70% 70% 30% / 30% 30% 70% 70%) !important;
+}
+
+/* ===== FILL PRESETS ===== */
+.preset-fill-Solid_Brand {
+    background: var(--preset-solid-brand-bg, var(--color-primary, #00ff9f)) !important;
+    color: var(--preset-solid-brand-color, #ffffff) !important;
+}
+
+.preset-fill-Solid_Surface {
+    background: var(--preset-solid-surface-bg, var(--color-background, #ffffff)) !important;
+    color: var(--preset-solid-surface-color, var(--color-text, #000000)) !important;
+}
+
+.preset-fill-Subtle {
+    background: var(--preset-subtle-bg, rgba(255, 255, 255, 0.03)) !important;
+    border: var(--preset-subtle-border, 1px solid rgba(255, 255, 255, 0.1)) !important;
+    color: var(--preset-subtle-color, var(--color-text, #e0e7ff)) !important;
+}
+
+.preset-fill-Gradient_Linear {
+    background: var(--preset-gradient-linear-bg, linear-gradient(135deg, var(--color-primary, #00ff9f) 0%, var(--color-secondary, #00d4ff) 100%)) !important;
+    color: var(--preset-gradient-linear-color, #ffffff) !important;
+}
+
+.preset-fill-Gradient_Mesh {
+    background: var(--preset-gradient-mesh-bg, radial-gradient(at 20% 30%, var(--color-primary, #00ff9f) 0%, transparent 50%), radial-gradient(at 80% 70%, var(--color-secondary, #00d4ff) 0%, transparent 50%), radial-gradient(at 50% 50%, var(--color-accent, #ff00ff) 0%, transparent 50%), rgba(10, 14, 39, 0.8)) !important;
+    background-blend-mode: var(--preset-gradient-mesh-blend, screen, screen, screen, normal) !important;
+    color: var(--preset-gradient-mesh-color, var(--color-text, #e0e7ff)) !important;
+}
+
+.preset-fill-Pattern_Dot {
+    background-image: var(--preset-pattern-dot-image, radial-gradient(circle, rgba(255, 255, 255, 0.1) 1px, transparent 1px)) !important;
+    background-size: var(--preset-pattern-dot-size, 20px 20px) !important;
+    background-color: var(--preset-pattern-dot-bg, rgba(255, 255, 255, 0.02)) !important;
+    color: var(--preset-pattern-dot-color, var(--color-text, #e0e7ff)) !important;
+}
+
+.preset-fill-Noise {
+    background: var(--preset-noise-bg, rgba(255, 255, 255, 0.03)) !important;
+    background-image: var(--preset-noise-texture, url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E")) !important;
+    opacity: var(--preset-noise-opacity, 0.5) !important;
+    color: var(--preset-noise-color, var(--color-text, #e0e7ff)) !important;
+}
+
+/* ===== EFFECT PRESETS ===== */
+.preset-effect-Duotone {
+    filter: var(--preset-duotone-filter, contrast(1.2) saturate(1.5)) !important;
+}
+
+.preset-effect-Glitch {
+    animation: glitch var(--preset-glitch-duration, 3s) infinite !important;
+}
+
+@keyframes glitch {
+    0%, 100% { transform: translate(0, 0); }
+    33% { transform: translate(var(--preset-glitch-x, -2px), var(--preset-glitch-y, 1px)); }
+    66% { transform: translate(calc(-1 * var(--preset-glitch-x, -2px)), calc(-1 * var(--preset-glitch-y, 1px))); }
+}
+
+.preset-effect-Glow {
+    box-shadow: var(--preset-glow-shadow, 0 0 20px var(--color-primary, #00ff9f), 0 0 40px var(--color-primary, #00ff9f), 0 0 60px var(--color-primary, #00ff9f)) !important;
+    filter: brightness(var(--preset-glow-brightness, 1.2)) !important;
+}
+
+.preset-effect-Tape {
+    position: relative;
+}
+
+.preset-effect-Tape::before {
+    content: '';
+    position: absolute;
+    top: var(--preset-tape-top, -12px);
+    left: 50%;
+    transform: translateX(-50%) rotate(var(--preset-tape-rotation, -2deg));
+    width: var(--preset-tape-width, 80px);
+    height: var(--preset-tape-height, 25px);
+    background: var(--preset-tape-bg, linear-gradient(135deg, rgba(255, 220, 100, 0.7) 0%, rgba(255, 235, 150, 0.6) 50%, rgba(255, 220, 100, 0.7) 100%));
+    border: var(--preset-tape-border, 1px solid rgba(255, 200, 50, 0.4));
+    box-shadow: var(--preset-tape-shadow, 0 2px 8px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.3));
+    border-radius: var(--preset-tape-radius, 2px);
+    opacity: var(--preset-tape-opacity, 0.85);
+    clip-path: polygon(
+        0% 5%, 3% 0%, 6% 5%, 9% 0%, 12% 5%, 15% 0%, 18% 5%, 21% 0%, 24% 5%, 27% 0%,
+        30% 5%, 33% 0%, 36% 5%, 39% 0%, 42% 5%, 45% 0%, 48% 5%, 51% 0%, 54% 5%, 57% 0%,
+        60% 5%, 63% 0%, 66% 5%, 69% 0%, 72% 5%, 75% 0%, 78% 5%, 81% 0%, 84% 5%, 87% 0%,
+        90% 5%, 93% 0%, 96% 5%, 100% 0%,
+        100% 100%, 96% 95%, 93% 100%, 90% 95%, 87% 100%, 84% 95%, 81% 100%, 78% 95%,
+        75% 100%, 72% 95%, 69% 100%, 66% 95%, 63% 100%, 60% 95%, 57% 100%, 54% 95%,
+        51% 100%, 48% 95%, 45% 100%, 42% 95%, 39% 100%, 36% 95%, 33% 100%, 30% 95%,
+        27% 100%, 24% 95%, 21% 100%, 18% 95%, 15% 100%, 12% 95%, 9% 100%, 6% 95%,
+        3% 100%, 0% 95%
+    );
+}
+
+/* Ensure effect presets can work together */
+.preset-effect-Duotone,
+.preset-effect-Glitch,
+.preset-effect-Tape {
+    position: relative;
+}
+
+/* Override text color for branded fills */
+.preset-fill-Solid_Brand,
+.preset-fill-Gradient_Linear {
+    --text-color-override: var(--color-on-primary, #ffffff);
+}
+/* Comparison Widget Styles */
+        .widget-comparison {
+            padding: 0;
+            background: transparent;
+            box-shadow: none;
+        }
+        
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .comparison-column {
+            padding: 1rem;
+        }
+        
+        .comparison-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+        
+        .comparison-list {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .comparison-list li {
+            padding: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+        
+        .comparison-list li:before {
+            content: "•";
+            position: absolute;
+            left: 0.5rem;
+            font-weight: bold;
+        }
+        
+        .comparison-note {
+            padding: 1rem 1.5rem;
+            background: var(--color-surface-subtle, rgba(0,0,0,0.05));
+            border-radius: var(--border-radius, 8px);
+            font-size: 0.9rem;
+            font-style: italic;
+        }
+        
+.bento-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 20px;
+    width: 100%;
+    height: 100%;
 }
 
 .bento-cell {
@@ -2456,20 +2577,250 @@
             font-style: italic;
         }
         
-#slide-9 .swiss-layout {
-    display: flex;
-    flex-direction: column;
-    height: auto;
-    min-height: 50%;
+.bento-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: 2fr 1fr;
+    gap: 20px;
+    width: 100%;
+    height: 100%;
 }
-#slide-9 .swiss-layout .widget[data-role="headline"] {
-    flex: 0 0 35%;
+.bento-cell[data-role="hero"] {
+    grid-column: 1 / 4;
+    grid-row: 1;
+}
+
+.bento-cell {
+    min-height: 0;
     display: flex;
     align-items: center;
     justify-content: center;
 }
-#slide-9 .swiss-layout .widget[data-role="body"] {
-    flex: 0 0 65%;
+        
+        /* Embedded Preset Styles */
+
+/* ===== SURFACE PRESETS ===== */
+.preset-surface-Flat {
+    background: var(--preset-flat-bg, transparent) !important;
+    border: var(--preset-flat-border, none) !important;
+    box-shadow: var(--preset-flat-shadow, none) !important;
+}
+
+.preset-surface-Elevated {
+    background: var(--preset-elevated-bg, var(--color-surface, rgba(255, 255, 255, 0.05))) !important;
+    box-shadow: var(--preset-elevated-shadow, 0 4px 6px rgba(0, 0, 0, 0.3), 0 2px 4px rgba(0, 0, 0, 0.2)) !important;
+}
+
+.preset-surface-Outline {
+    background: var(--preset-outline-bg, transparent) !important;
+    border: var(--preset-outline-border, 2px solid var(--color-primary, #00ff9f)) !important;
+}
+
+.preset-surface-Glass {
+    background: var(--preset-glass-bg, rgba(255, 255, 255, 0.05)) !important;
+    backdrop-filter: blur(var(--preset-glass-blur, 10px)) !important;
+    border: var(--preset-glass-border, 1px solid rgba(255, 255, 255, 0.1)) !important;
+}
+
+.preset-surface-Sunken {
+    background: var(--preset-sunken-bg, rgba(0, 0, 0, 0.3)) !important;
+    box-shadow: var(--preset-sunken-shadow, inset 0 2px 4px rgba(0, 0, 0, 0.4), inset 0 0 0 1px rgba(0, 0, 0, 0.2)) !important;
+}
+
+.preset-surface-NeoBrutal {
+    background: var(--preset-neobrutal-bg, var(--color-surface, #ffffff)) !important;
+    border: var(--preset-neobrutal-border_width, 3px) solid var(--preset-neobrutal-border_color, currentColor) !important;
+    box-shadow: var(--preset-neobrutal-shadow_offset, 6px) var(--preset-neobrutal-shadow_offset, 6px) 0 var(--preset-neobrutal-shadow_color, currentColor) !important;
+}
+
+/* ===== SHAPE PRESETS ===== */
+.preset-shape-Sharp {
+    border-radius: var(--preset-sharp-radius, 0) !important;
+}
+
+.preset-shape-Rounded {
+    border-radius: var(--preset-rounded-radius, 12px) !important;
+}
+
+.preset-shape-Curve {
+    border-radius: var(--preset-curve-radius, 20px) !important;
+}
+
+.preset-shape-Pill {
+    border-radius: var(--preset-pill-radius, 9999px) !important;
+}
+
+.preset-shape-Squircle {
+    border-radius: var(--preset-squircle-radius, 20%) !important;
+}
+
+.preset-shape-Organic {
+    border-radius: var(--preset-organic-radius, 30% 70% 70% 30% / 30% 30% 70% 70%) !important;
+}
+
+/* ===== FILL PRESETS ===== */
+.preset-fill-Solid_Brand {
+    background: var(--preset-solid-brand-bg, var(--color-primary, #00ff9f)) !important;
+    color: var(--preset-solid-brand-color, #ffffff) !important;
+}
+
+.preset-fill-Solid_Surface {
+    background: var(--preset-solid-surface-bg, var(--color-background, #ffffff)) !important;
+    color: var(--preset-solid-surface-color, var(--color-text, #000000)) !important;
+}
+
+.preset-fill-Subtle {
+    background: var(--preset-subtle-bg, rgba(255, 255, 255, 0.03)) !important;
+    border: var(--preset-subtle-border, 1px solid rgba(255, 255, 255, 0.1)) !important;
+    color: var(--preset-subtle-color, var(--color-text, #e0e7ff)) !important;
+}
+
+.preset-fill-Gradient_Linear {
+    background: var(--preset-gradient-linear-bg, linear-gradient(135deg, var(--color-primary, #00ff9f) 0%, var(--color-secondary, #00d4ff) 100%)) !important;
+    color: var(--preset-gradient-linear-color, #ffffff) !important;
+}
+
+.preset-fill-Gradient_Mesh {
+    background: var(--preset-gradient-mesh-bg, radial-gradient(at 20% 30%, var(--color-primary, #00ff9f) 0%, transparent 50%), radial-gradient(at 80% 70%, var(--color-secondary, #00d4ff) 0%, transparent 50%), radial-gradient(at 50% 50%, var(--color-accent, #ff00ff) 0%, transparent 50%), rgba(10, 14, 39, 0.8)) !important;
+    background-blend-mode: var(--preset-gradient-mesh-blend, screen, screen, screen, normal) !important;
+    color: var(--preset-gradient-mesh-color, var(--color-text, #e0e7ff)) !important;
+}
+
+.preset-fill-Pattern_Dot {
+    background-image: var(--preset-pattern-dot-image, radial-gradient(circle, rgba(255, 255, 255, 0.1) 1px, transparent 1px)) !important;
+    background-size: var(--preset-pattern-dot-size, 20px 20px) !important;
+    background-color: var(--preset-pattern-dot-bg, rgba(255, 255, 255, 0.02)) !important;
+    color: var(--preset-pattern-dot-color, var(--color-text, #e0e7ff)) !important;
+}
+
+.preset-fill-Noise {
+    background: var(--preset-noise-bg, rgba(255, 255, 255, 0.03)) !important;
+    background-image: var(--preset-noise-texture, url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E")) !important;
+    opacity: var(--preset-noise-opacity, 0.5) !important;
+    color: var(--preset-noise-color, var(--color-text, #e0e7ff)) !important;
+}
+
+/* ===== EFFECT PRESETS ===== */
+.preset-effect-Duotone {
+    filter: var(--preset-duotone-filter, contrast(1.2) saturate(1.5)) !important;
+}
+
+.preset-effect-Glitch {
+    animation: glitch var(--preset-glitch-duration, 3s) infinite !important;
+}
+
+@keyframes glitch {
+    0%, 100% { transform: translate(0, 0); }
+    33% { transform: translate(var(--preset-glitch-x, -2px), var(--preset-glitch-y, 1px)); }
+    66% { transform: translate(calc(-1 * var(--preset-glitch-x, -2px)), calc(-1 * var(--preset-glitch-y, 1px))); }
+}
+
+.preset-effect-Glow {
+    box-shadow: var(--preset-glow-shadow, 0 0 20px var(--color-primary, #00ff9f), 0 0 40px var(--color-primary, #00ff9f), 0 0 60px var(--color-primary, #00ff9f)) !important;
+    filter: brightness(var(--preset-glow-brightness, 1.2)) !important;
+}
+
+.preset-effect-Tape {
+    position: relative;
+}
+
+.preset-effect-Tape::before {
+    content: '';
+    position: absolute;
+    top: var(--preset-tape-top, -12px);
+    left: 50%;
+    transform: translateX(-50%) rotate(var(--preset-tape-rotation, -2deg));
+    width: var(--preset-tape-width, 80px);
+    height: var(--preset-tape-height, 25px);
+    background: var(--preset-tape-bg, linear-gradient(135deg, rgba(255, 220, 100, 0.7) 0%, rgba(255, 235, 150, 0.6) 50%, rgba(255, 220, 100, 0.7) 100%));
+    border: var(--preset-tape-border, 1px solid rgba(255, 200, 50, 0.4));
+    box-shadow: var(--preset-tape-shadow, 0 2px 8px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.3));
+    border-radius: var(--preset-tape-radius, 2px);
+    opacity: var(--preset-tape-opacity, 0.85);
+    clip-path: polygon(
+        0% 5%, 3% 0%, 6% 5%, 9% 0%, 12% 5%, 15% 0%, 18% 5%, 21% 0%, 24% 5%, 27% 0%,
+        30% 5%, 33% 0%, 36% 5%, 39% 0%, 42% 5%, 45% 0%, 48% 5%, 51% 0%, 54% 5%, 57% 0%,
+        60% 5%, 63% 0%, 66% 5%, 69% 0%, 72% 5%, 75% 0%, 78% 5%, 81% 0%, 84% 5%, 87% 0%,
+        90% 5%, 93% 0%, 96% 5%, 100% 0%,
+        100% 100%, 96% 95%, 93% 100%, 90% 95%, 87% 100%, 84% 95%, 81% 100%, 78% 95%,
+        75% 100%, 72% 95%, 69% 100%, 66% 95%, 63% 100%, 60% 95%, 57% 100%, 54% 95%,
+        51% 100%, 48% 95%, 45% 100%, 42% 95%, 39% 100%, 36% 95%, 33% 100%, 30% 95%,
+        27% 100%, 24% 95%, 21% 100%, 18% 95%, 15% 100%, 12% 95%, 9% 100%, 6% 95%,
+        3% 100%, 0% 95%
+    );
+}
+
+/* Ensure effect presets can work together */
+.preset-effect-Duotone,
+.preset-effect-Glitch,
+.preset-effect-Tape {
+    position: relative;
+}
+
+/* Override text color for branded fills */
+.preset-fill-Solid_Brand,
+.preset-fill-Gradient_Linear {
+    --text-color-override: var(--color-on-primary, #ffffff);
+}
+/* Comparison Widget Styles */
+        .widget-comparison {
+            padding: 0;
+            background: transparent;
+            box-shadow: none;
+        }
+        
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .comparison-column {
+            padding: 1rem;
+        }
+        
+        .comparison-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+        
+        .comparison-list {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .comparison-list li {
+            padding: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+        
+        .comparison-list li:before {
+            content: "•";
+            position: absolute;
+            left: 0.5rem;
+            font-weight: bold;
+        }
+        
+        .comparison-note {
+            padding: 1rem 1.5rem;
+            background: var(--color-surface-subtle, rgba(0,0,0,0.05));
+            border-radius: var(--border-radius, 8px);
+            font-size: 0.9rem;
+            font-style: italic;
+        }
+        
+.cinematic-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    height: 100%;
+}
+
+.cinematic-panel {
+    min-height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -2810,572 +3161,10 @@
     </style>
 <body>
     <div class="slide-deck">
-        <div class="slide active" data-slide-index="0" id="slide_01_context_shift">
-            <div class="layout-container" style="background: #05070A;">
+        <div class="slide active" data-slide-index="0" id="slide_01_setup">
+            <div class="layout-container" style="background: #05060A;">
         <div class="layout-header widget preset-surface-Flat">
-                <h1 style="">Multiple AI waves, one engineering journey</h1>
-        </div>
-        
-        <div class="layout-content">
-<div class="matrix-grid matrix-timeline">
-            <div class="matrix-cell widget preset-surface-Elevated preset-shape-Sharp preset-fill-Gradient_Linear preset-effect-Glow" data-role="stage1_title">
-
-
-
-<div class="widget-type-display" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; ">
-    <h1 class="display-text">
-        From classical CV to cloud APIs
-    </h1>
-</div>
-
-            </div>
-            <div class="matrix-cell widget preset-surface-Elevated preset-shape-Sharp preset-fill-Gradient_Linear preset-effect-Glow" data-role="stage2_title">
-
-
-
-<div class="widget-type-display" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; ">
-    <h1 class="display-text">
-        Deep nets reshape vision stack
-    </h1>
-</div>
-
-            </div>
-            <div class="matrix-cell widget preset-surface-Elevated preset-shape-Sharp preset-fill-Gradient_Linear preset-effect-Glow" data-role="stage3_title">
-
-
-
-<div class="widget-type-display" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; ">
-    <h1 class="display-text">
-        Edge and cross‑platform inference
-    </h1>
-</div>
-
-            </div>
-            <div class="matrix-cell widget preset-surface-Elevated preset-shape-Sharp preset-fill-Gradient_Linear preset-effect-Glow" data-role="stage4_title">
-
-
-
-<div class="widget-type-display" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; ">
-    <h1 class="display-text">
-        Applied science in collaboration tools
-    </h1>
-</div>
-
-            </div>
-            <div class="matrix-cell widget preset-surface-Flat preset-shape-Sharp preset-fill-Subtle preset-effect-Shadow" data-role="stage1_detail">
-
-
-
-<div class="widget-type-list" style="">
-        <ul>
-            <li><mark style="background-color: var(--color-accent); color: var(--color-text); padding: 0 0.2em; border-radius: 3px;">2011</mark> vision algorithms, Face API</li>
-            <li>Service-side C++/C# vision pipeline</li>
-            <li>Model tuning for production latency</li>
-        </ul>
-</div>
-
-            </div>
-            <div class="matrix-cell widget preset-surface-Flat preset-shape-Sharp preset-fill-Subtle preset-effect-Shadow" data-role="stage2_detail">
-
-
-
-<div class="widget-type-list" style="">
-        <ul>
-            <li>≈<mark style="background-color: var(--color-accent); color: var(--color-text); padding: 0 0.2em; border-radius: 3px;">2015</mark> shift to deep neural nets</li>
-            <li>Architecting training/inference pipelines</li>
-            <li>Balancing accuracy vs. throughput</li>
-        </ul>
-</div>
-
-            </div>
-            <div class="matrix-cell widget preset-surface-Flat preset-shape-Sharp preset-fill-Subtle preset-effect-Shadow" data-role="stage3_detail">
-
-
-
-<div class="widget-type-list" style="">
-        <ul>
-            <li>≈<mark style="background-color: var(--color-accent); color: var(--color-text); padding: 0 0.2em; border-radius: 3px;">2016</mark> mobile device inference</li>
-            <li>≈<mark style="background-color: var(--color-accent); color: var(--color-text); padding: 0 0.2em; border-radius: 3px;">2018</mark> cross‑platform and video gen</li>
-            <li>Latency, memory, and portability trade‑offs</li>
-        </ul>
-</div>
-
-            </div>
-            <div class="matrix-cell widget preset-surface-Flat preset-shape-Sharp preset-fill-Subtle preset-effect-Shadow" data-role="stage4_detail">
-
-
-
-<div class="widget-type-list" style="">
-        <ul>
-            <li><mark style="background-color: var(--color-accent); color: var(--color-text); padding: 0 0.2em; border-radius: 3px;">2021</mark> Teams vision pipeline ownership</li>
-            <li>End‑to‑end product feature integration</li>
-            <li>Bridge between research, infra, product</li>
-        </ul>
-</div>
-
-            </div>
-</div>
-        </div>
-        
-        <div class="layout-footer widget preset-surface-Flat">
-                <p style="">We’ll use this <mark style="background-color: var(--color-accent); color: var(--color-text); padding: 0 0.2em; border-radius: 3px;">2011→2021</mark> path to frame how LLMs now reshape roles, stacks, and skills.</p>
-        </div>
-    </div>
-        </div>
-        <div class="slide" data-slide-index="1" id="slide_02_traditional_pipeline">
-            <div class="layout-container" style="background: #05070A;">
-        <div class="layout-header widget preset-surface-Flat">
-                <h1 style="">Traditional AI: Linear, Role-Siloed Pipeline</h1>
-        </div>
-        
-        <div class="layout-content">
-<div class="matrix-grid matrix-timeline">
-            <div class="matrix-cell widget preset-surface-Elevated preset-shape-Sharp preset-fill-Gradient_Linear preset-effect-Glow" data-role="stage1_title">
-
-
-
-<div class="widget-type-heading" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; ">
-        <h3>Linear, role-partitioned pipeline</h3>
-</div>
-
-            </div>
-            <div class="matrix-cell widget preset-surface-Elevated preset-shape-Sharp preset-fill-Gradient_Linear preset-effect-Glow" data-role="stage2_title">
-
-
-
-<div class="widget-type-heading" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; ">
-        <h4>Data and modeling phases</h4>
-</div>
-
-            </div>
-            <div class="matrix-cell widget preset-surface-Elevated preset-shape-Sharp preset-fill-Gradient_Linear preset-effect-Glow" data-role="stage3_title">
-
-
-
-<div class="widget-type-heading" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; ">
-        <h4>Training and deployment focus</h4>
-</div>
-
-            </div>
-            <div class="matrix-cell widget preset-surface-Elevated preset-shape-Sharp preset-fill-Gradient_Linear preset-effect-Glow" data-role="stage4_title">
-
-
-
-<div class="widget-type-heading" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; ">
-        <h4>Where complexity and waste lived</h4>
-</div>
-
-            </div>
-            <div class="matrix-cell widget preset-surface-Flat preset-shape-Sharp preset-fill-Subtle preset-effect-Shadow" data-role="stage1_detail">
-
-
-
-<div class="widget-type-body" style="width: 100%; height: 100%; display: flex; align-items: center; ">
-    <p>Sequential <strong style="color: var(--color-accent); font-weight: bold;">data→model→training→deployment→measurement</strong> pipeline, each phase owned by specialists.</p>
-</div>
-
-            </div>
-            <div class="matrix-cell widget preset-surface-Flat preset-shape-Sharp preset-fill-Subtle preset-effect-Shadow" data-role="stage2_detail">
-
-
-
-<div class="widget-type-list" style="">
-        <ul>
-            <li>Data engineers: collect, curate coverage</li>
-            <li>ML team: select/design architectures</li>
-        </ul>
-</div>
-
-            </div>
-            <div class="matrix-cell widget preset-surface-Flat preset-shape-Sharp preset-fill-Subtle preset-effect-Shadow" data-role="stage3_detail">
-
-
-
-<div class="widget-type-list" style="">
-        <ul>
-            <li>Train/tune for maximum accuracy</li>
-            <li>Deploy for latency and throughput</li>
-        </ul>
-</div>
-
-            </div>
-            <div class="matrix-cell widget preset-surface-Flat preset-shape-Sharp preset-fill-Subtle preset-effect-Shadow" data-role="stage4_detail">
-
-
-
-<div class="widget-type-list" style="">
-        <ul>
-            <li>Slow, expensive end-to-end cycles</li>
-            <li>Infra, eval, optimization reinvented each project</li>
-            <li>Fragmented ownership across roles</li>
-        </ul>
-</div>
-
-            </div>
-</div>
-        </div>
-        
-        <div class="layout-footer widget preset-surface-Flat">
-                <p style="">Context: pre-LLM projects repeatedly rebuilt data, training, deployment, and evaluation stacks.</p>
-        </div>
-    </div>
-        </div>
-        <div class="slide" data-slide-index="2" id="slide_03_llm_paradigm_shift">
-            <div class="layout-container" style="background: #05070A;">
-        <div class="layout-header widget preset-surface-Flat">
-                <h1 style="">From standalone models to LLM reasoning substrates</h1>
-        </div>
-        
-        <div class="layout-content">
-<div class="comparison-grid">
-            <div class="comparison-cell widget preset-surface-Elevated preset-shape-Sharp preset-fill-Gradient_Linear preset-effect-Glow" data-role="left_header">
-
-
-
-<div class="widget-type-display" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; ">
-    <h1 class="display-text">
-        Traditional AI era
-    </h1>
-</div>
-
-            </div>
-            <div class="comparison-cell widget preset-surface-Elevated preset-shape-Sharp preset-fill-Gradient_Linear preset-effect-Glow" data-role="right_header">
-
-
-
-<div class="widget-type-display" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; ">
-    <h1 class="display-text">
-        Large model / LLM era
-    </h1>
-</div>
-
-            </div>
-            <div class="comparison-cell widget preset-surface-Flat preset-shape-Sharp preset-fill-Subtle preset-effect-Shadow" data-role="left_body">
-
-
-
-<div class="widget-type-list" style="">
-        <ul>
-            <li>Focus: standalone model accuracy</li>
-            <li>Linear pipelines, fixed infra roles</li>
-            <li>Micro-optimizing architectures, training loops</li>
-            <li>Modalities isolated with hard boundaries</li>
-            <li>Slow, manual data and tuning cycles</li>
-        </ul>
-</div>
-
-            </div>
-            <div class="comparison-cell widget preset-surface-Flat preset-shape-Sharp preset-fill-Subtle preset-effect-Shadow" data-role="right_body">
-
-
-
-<div class="widget-type-list" style="">
-        <ul>
-            <li>Unified knowledge + reasoning substrate</li>
-            <li>Compose via prompts, tools, agents</li>
-            <li>Optimize <strong style="color: var(--color-accent); font-weight: bold;">planner‑executor</strong> workflows, telemetry</li>
-            <li>Toward multimodal, integrated interfaces</li>
-            <li>Reliability, robustness, failure handling first</li>
-        </ul>
-</div>
-
-            </div>
-            <div class="comparison-cell widget preset-surface-Flat preset-shape-Sharp preset-fill-Subtle preset-effect-Shadow" data-role="bottom_left">
-
-
-
-<div class="widget-type-body" style="width: 100%; height: 100%; display: flex; align-items: center; ">
-    <p>Shift from model‑centric training to system‑ and UX‑centric orchestration over large models.</p>
-</div>
-
-            </div>
-            <div class="comparison-cell widget preset-surface-Flat preset-shape-Sharp preset-fill-Subtle preset-effect-Shadow" data-role="bottom_right">
-
-
-
-<div class="widget-type-body" style="width: 100%; height: 100%; display: flex; align-items: center; ">
-    <p>Roles emphasize prompt design, agent architectures, and feedback loops for reliable behavior.</p>
-</div>
-
-            </div>
-</div>
-        </div>
-        
-        <div class="layout-footer widget preset-surface-Flat">
-                <p style="">Engineers now design systems around large models, not just models themselves.</p>
-        </div>
-    </div>
-        </div>
-        <div class="slide" data-slide-index="3" id="slide_04_roles_and_overlap">
-            <div class="layout-container" style="background: #05070A;">
-        <div class="layout-header widget preset-surface-Flat">
-                <h1 style="">Engineering vs applied science in LLM systems</h1>
-        </div>
-        
-        <div class="layout-content">
-<div class="comparison-grid">
-            <div class="comparison-cell widget preset-surface-Elevated preset-shape-Sharp preset-fill-Gradient_Linear preset-effect-Glow" data-role="left_header">
-
-
-
-<div class="widget-type-heading" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; ">
-        <h3>Engineer focus</h3>
-</div>
-
-            </div>
-            <div class="comparison-cell widget preset-surface-Elevated preset-shape-Sharp preset-fill-Gradient_Linear preset-effect-Glow" data-role="right_header">
-
-
-
-<div class="widget-type-heading" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; ">
-        <h3>Applied science focus</h3>
-</div>
-
-            </div>
-            <div class="comparison-cell widget preset-surface-Flat preset-shape-Sharp preset-fill-Subtle preset-effect-Shadow" data-role="left_body">
-
-
-
-<div class="widget-type-list" style="">
-        <ul>
-            <li>Primary: system stability, architecture, delivery</li>
-            <li>Work: integration, performance, reliability tuning</li>
-            <li>LLM: tooling, orchestration, infra glue</li>
-            <li>Thinks in end-to-end telemetry pipelines</li>
-        </ul>
-</div>
-
-            </div>
-            <div class="comparison-cell widget preset-surface-Flat preset-shape-Sharp preset-fill-Subtle preset-effect-Shadow" data-role="right_body">
-
-
-
-<div class="widget-type-list" style="">
-        <ul>
-            <li>Primary: model boundaries, feature capability</li>
-            <li>Work: experimentation, prompt/agent design</li>
-            <li>LLM: orchestration, evaluation strategies</li>
-            <li>Thinks in product-level feedback loops</li>
-        </ul>
-</div>
-
-            </div>
-            <div class="comparison-cell widget preset-surface-Flat preset-shape-Sharp preset-fill-Subtle preset-effect-Shadow" data-role="bottom_left">
-
-
-
-<div class="widget-type-body" style="width: 100%; height: 100%; display: flex; align-items: center; ">
-    <p>Boundary is <mark style="background-color: var(--color-accent); color: var(--color-text); padding: 0 0.2em; border-radius: 3px;">blurring</mark>: both roles now optimize LLM systems, not isolated models.</p>
-</div>
-
-            </div>
-            <div class="comparison-cell widget preset-surface-Flat preset-shape-Sharp preset-fill-Subtle preset-effect-Shadow" data-role="bottom_right">
-
-
-
-<div class="widget-type-body" style="width: 100%; height: 100%; display: flex; align-items: center; ">
-    <p>Success comes from telemetry and adaptive feedback loops, not tiny accuracy gains.</p>
-</div>
-
-            </div>
-</div>
-        </div>
-        
-        <div class="layout-footer widget preset-surface-Flat">
-                <p style="">Both must design end-to-end, telemetry-rich LLM products with adaptive feedback.</p>
-        </div>
-    </div>
-        </div>
-        <div class="slide" data-slide-index="4" id="slide_05_prompting_and_architecture">
-            <div class="layout-container" style="background: #05070A;">
-        <div class="layout-header widget preset-surface-Flat">
-                <h2 style="">Prompt Tuning + Planner–Executor Architecture</h2>
-        </div>
-        
-        <div class="layout-content">
-<div class="bento-grid">
-            <div class="bento-cell widget preset-surface-Elevated preset-shape-Sharp preset-fill-Gradient_Linear preset-effect-Glow" data-role="quadrant_1">
-
-
-
-<div class="widget-type-display" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; ">
-    <h1 class="display-text">
-        Prompt tuning ≠ full solution
-    </h1>
-</div>
-
-            </div>
-            <div class="bento-cell widget preset-surface-Elevated preset-shape-Sharp preset-fill-Solid_Surface preset-effect-Shadow" data-role="quadrant_2">
-
-
-
-<div class="widget-type-list" style="">
-        <ul>
-            <li>General prompt covers ~<mark style="background-color: var(--color-accent); color: var(--color-text); padding: 0 0.2em; border-radius: 3px;">90%</mark> cases</li>
-            <li>Collect outputs, log failure modes</li>
-            <li>Encode constraints for edge cases</li>
-            <li>Iterate until ~<mark style="background-color: var(--color-accent); color: var(--color-text); padding: 0 0.2em; border-radius: 3px;">10%</mark> acceptable</li>
-        </ul>
-</div>
-
-            </div>
-            <div class="bento-cell widget preset-surface-Elevated preset-shape-Sharp preset-fill-Solid_Surface preset-effect-Shadow" data-role="quadrant_3">
-
-
-
-<div class="widget-type-list" style="">
-        <ul>
-            <li>LLM <strong style="color: var(--color-accent); font-weight: bold;">planner</strong> generates step plan</li>
-            <li>Steps as structured objects, not text</li>
-            <li>Non-LLM <strong style="color: var(--color-accent); font-weight: bold;">executor</strong> tracks system state</li>
-            <li>Verification gates retries, replans</li>
-            <li>Prevents error drift, wrong outcomes</li>
-        </ul>
-</div>
-
-            </div>
-            <div class="bento-cell widget preset-surface-Elevated preset-shape-Sharp preset-fill-Gradient_Linear preset-effect-Glow" data-role="quadrant_4">
-
-
-
-<div class="widget-type-body" style="width: 100%; height: 100%; display: flex; align-items: center; ">
-    <p><mark style="background-color: var(--color-accent); color: var(--color-text); padding: 0 0.2em; border-radius: 3px;">Prompt tuning</mark> reduces hallucinations but must pair with <strong style="color: var(--color-accent); font-weight: bold;">planner–executor</strong> and verification loops to control error accumulation in production LLM systems.</p>
-</div>
-
-            </div>
-</div>
-        </div>
-        
-        <div class="layout-footer widget preset-surface-Flat">
-                <p style="">Engineer takeaway: combine iterative prompt design with structured <strong style="color: var(--color-accent); font-weight: bold;">planner–executor</strong> patterns for reliable LLM applications.</p>
-        </div>
-    </div>
-        </div>
-        <div class="slide" data-slide-index="5" id="slide_06_problem_definition_and_scope">
-            <div class="layout-container" style="background: #05070A;">
-        <div class="layout-header widget preset-surface-Flat">
-                <h2 style="">Problem Definition and Scope in the LLM Era</h2>
-        </div>
-        
-        <div class="layout-content">
-<div class="bento-grid">
-            <div class="bento-cell widget preset-surface-Elevated preset-shape-Sharp preset-fill-Gradient_Linear preset-effect-Glow" data-role="quadrant_1">
-
-
-
-<div class="widget-type-display" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; ">
-    <h1 class="display-text">
-        From low‑level tweaks to <mark style="background-color: var(--color-accent); color: var(--color-text); padding: 0 0.2em; border-radius: 3px;">problem scope</mark>
-    </h1>
-</div>
-
-            </div>
-            <div class="bento-cell widget preset-surface-Flat preset-shape-Sharp preset-fill-Subtle preset-effect-Shadow" data-role="quadrant_2">
-
-
-
-<div class="widget-type-list" style="">
-        <ul>
-            <li>Depth in one stack is less sufficient</li>
-            <li>High value: combine domains, tools</li>
-            <li>LLMs shift focus to system design</li>
-            <li>Human: define correct problem scope</li>
-        </ul>
-</div>
-
-            </div>
-            <div class="bento-cell widget preset-surface-Elevated preset-shape-Sharp preset-fill-Subtle preset-effect-Glow" data-role="quadrant_3">
-
-
-
-<div class="widget-type-list" style="">
-        <ul>
-            <li>Start from concrete user value</li>
-            <li>Model problem as data+feedback loop</li>
-            <li>Iterate with LLMs as co‑designer</li>
-            <li>Refine scope by feasibility, impact</li>
-        </ul>
-</div>
-
-            </div>
-            <div class="bento-cell widget preset-surface-Elevated preset-shape-Sharp preset-fill-Gradient_Linear preset-effect-Glow" data-role="quadrant_4">
-
-
-
-<div class="widget-type-list" style="">
-        <ul>
-            <li>LLMs weak at low‑level tuning today</li>
-            <li>Humans: identify true perf bottlenecks</li>
-            <li>Check call‑site frequency, lifecycle</li>
-            <li>Fix <mark style="background-color: var(--color-accent); color: var(--color-text); padding: 0 0.2em; border-radius: 3px;">38x/sec</mark> usage, not just intrinsics</li>
-            <li>Scope change can invalidate a “win”</li>
-        </ul>
-</div>
-
-            </div>
-</div>
-        </div>
-        
-        <div class="layout-footer widget preset-surface-Flat">
-                <p style="">Skill to build: technically precise, user‑anchored problem scoping that uses LLMs as collaborators and avoids misguided micro‑optimizations.</p>
-        </div>
-    </div>
-        </div>
-        <div class="slide" data-slide-index="6" id="slide_07_tooling_and_workflows">
-            <div class="layout-container" style="background: #05070A;">
-        <div class="layout-header widget preset-surface-Flat">
-                <h2 style="">Tooling & workflows: spec‑driven AI integration</h2>
-        </div>
-        
-        <div class="layout-content">
-<div class="bento-stack-vertical">
-                <div class="bento-stage-vertical widget preset-surface-Elevated preset-shape-Sharp preset-fill-Gradient_Linear preset-effect-Glow" data-role="stage_1">
-
-
-
-<div class="widget-type-display" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; ">
-    <h1 class="display-text">
-        Task‑driven AI workflow
-    </h1>
-</div>
-
-                </div>
-                <div class="bento-stage-vertical widget preset-surface-Elevated preset-shape-Sharp preset-fill-Gradient_Linear preset-effect-Glow" data-role="stage_2">
-
-
-
-<div class="widget-type-list" style="">
-        <ul>
-            <li>Start from a concrete engineering task</li>
-            <li>Draft a concise abstract spec as <mark style="background-color: var(--color-accent); color: var(--color-text); padding: 0 0.2em; border-radius: 3px;">single source of truth</mark></li>
-            <li>Map spec to AI tools / MCP servers for required artifacts</li>
-            <li>Use LLMs to translate spec into slides, docs, diagrams, code skeletons</li>
-            <li>Iterate spec and artifacts through human–AI co‑creation loops</li>
-        </ul>
-</div>
-
-                </div>
-                <div class="bento-stage-vertical widget preset-surface-Elevated preset-shape-Sharp preset-fill-Gradient_Linear preset-effect-Glow" data-role="stage_3">
-
-
-
-<div class="widget-type-body" style="width: 100%; height: 100%; display: flex; align-items: center; ">
-    <p>Treat the abstract spec as the authoritative interface; LLMs act as format translators, turning one technical description into multiple engineering‑ready outputs.</p>
-</div>
-
-                </div>
-</div>
-        </div>
-        
-        <div class="layout-footer widget preset-surface-Flat">
-                <p style="">Pattern: single abstract spec → LLM translators → iterative human–AI engineering loop.</p>
-        </div>
-    </div>
-        </div>
-        <div class="slide" data-slide-index="7" id="slide_08_staying_relevant">
-            <div class="layout-container" style="background: #05070A;">
-        <div class="layout-header widget preset-surface-Flat">
-                <h2 style="">Career strategy: staying relevant with accelerating AI</h2>
+                <h2 style="font-size: 48px;font-weight: 500;line-height: 1.2;text-align: left;color: #F5F7FA;">Who this talk is for</h2>
         </div>
         
         <div class="layout-content">
@@ -3384,9 +3173,10 @@
 
 
 
-<div class="widget-type-display" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; ">
+<div class="widget-type-display" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 72px;font-weight: 700;line-height: 1.1;text-align: left;">
     <h1 class="display-text">
-        Staying technically relevant in the LLM era
+        AI is reshaping
+software development
     </h1>
 </div>
 
@@ -3396,12 +3186,413 @@
 
 
 
-<div class="widget-type-list" style="">
+<div class="widget-type-body" style="width: 100%; height: 100%; display: flex; align-items: center; font-size: 28px;font-weight: 400;line-height: 1.5;text-align: left;">
+    <p>This session is for entry and mid-level devs who want practical AI/LLM career guidance and skill-building support—without heavy jargon or PhD-level theory.</p>
+</div>
+
+            </div>
+</div>
+        </div>
+        
+        <div class="layout-footer widget preset-surface-Flat">
+                <p style="font-size: 28px;font-weight: 400;line-height: 1.5;text-align: left;color: #F5F7FA;">Audience: entry & mid-level developers exploring AI and LLM roles</p>
+        </div>
+    </div>
+        </div>
+        <div class="slide" data-slide-index="1" id="slide_02_then_now">
+            <div class="layout-container" style="background: #05060A;">
+        <div class="layout-header widget preset-surface-Flat">
+                <h2 style="font-size: 48px;font-weight: 500;line-height: 1.2;text-align: left;color: #F5F7FA;">How AI work is changing</h2>
+        </div>
+        
+        <div class="layout-content">
+<div class="comparison-grid">
+            <div class="comparison-cell widget preset-surface-Flat preset-shape-Sharp preset-fill-Solid_Brand preset-effect-Shadow" data-role="left_header">
+
+
+
+<div class="widget-type-display" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 72px;font-weight: 700;line-height: 1.1;text-align: left;">
+    <h1 class="display-text">
+        Then: Linear AI pipeline
+    </h1>
+</div>
+
+            </div>
+            <div class="comparison-cell widget preset-surface-Flat preset-shape-Sharp preset-fill-Solid_Brand preset-effect-Shadow" data-role="right_header">
+
+
+
+<div class="widget-type-display" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 72px;font-weight: 700;line-height: 1.1;text-align: left;">
+    <h1 class="display-text">
+        Now: LLM‑centric AI work
+    </h1>
+</div>
+
+            </div>
+            <div class="comparison-cell widget preset-surface-Flat preset-shape-Sharp preset-fill-Subtle preset-effect-Shadow" data-role="left_body">
+
+
+
+<div class="widget-type-list" style="font-size: 28px;font-weight: 400;line-height: 1.5;text-align: left;">
         <ul>
-            <li>Continuously evolve with AI-heavy stacks</li>
-            <li>Become a beginner again in new domains</li>
-            <li>Actively adopt and instrument AI tooling</li>
-            <li>Track AI trends via scoped paper scans</li>
+            <li>Fixed roles: data → model → deployment</li>
+            <li>Data engineers owned data quality</li>
+            <li>ML scientists maximized accuracy</li>
+            <li>Developers chased latency, throughput</li>
+            <li>PMs measured user impact, funnels</li>
+            <li>Slow, expensive, infra reinvented</li>
+        </ul>
+</div>
+
+            </div>
+            <div class="comparison-cell widget preset-surface-Flat preset-shape-Sharp preset-fill-Subtle preset-effect-Shadow" data-role="right_body">
+
+
+
+<div class="widget-type-list" style="font-size: 28px;font-weight: 400;line-height: 1.5;text-align: left;">
+        <ul>
+            <li>Large models as unified knowledge base</li>
+            <li>Reasoning interface instead of fixed stages</li>
+            <li>From bespoke models to composition</li>
+            <li>Prompting, lightweight orchestration, tools</li>
+            <li>Roles blur across data, product, infra</li>
+            <li>Focus shifts to application behavior</li>
+        </ul>
+</div>
+
+            </div>
+            <div class="comparison-cell widget preset-surface-Flat preset-shape-Rounded preset-fill-Subtle preset-effect-Shadow" data-role="bottom_left">
+
+
+
+<div class="widget-type-body" style="width: 100%; height: 100%; display: flex; align-items: center; font-size: 28px;font-weight: 400;line-height: 1.5;text-align: left;">
+    <p>Old world: specialize in one pipeline stage and hand off work between roles.</p>
+</div>
+
+            </div>
+            <div class="comparison-cell widget preset-surface-Flat preset-shape-Rounded preset-fill-Subtle preset-effect-Shadow" data-role="bottom_right">
+
+
+
+<div class="widget-type-body" style="width: 100%; height: 100%; display: flex; align-items: center; font-size: 28px;font-weight: 400;line-height: 1.5;text-align: left;">
+    <p>LLM world: collaborate across stages, compose systems, and own end‑to‑end behavior.</p>
+</div>
+
+            </div>
+</div>
+        </div>
+        
+        <div class="layout-footer widget preset-surface-Flat">
+                <p style="font-size: 28px;font-weight: 400;line-height: 1.5;text-align: left;color: #F5F7FA;">Key takeaway: expect blurred role boundaries as LLMs become the core building block.</p>
+        </div>
+    </div>
+        </div>
+        <div class="slide" data-slide-index="2" id="slide_03_shift_in_value">
+            <div class="layout-container" style="background: #05060A;">
+        <div class="layout-header widget preset-surface-Flat">
+                <h2 style="font-size: 48px;font-weight: 500;line-height: 1.2;text-align: left;color: #F5F7FA;">Shift in where technical value lives</h2>
+        </div>
+        
+        <div class="layout-content">
+<div class="bento-grid">
+            <div class="bento-cell widget preset-surface-Flat preset-shape-Sharp preset-fill-Solid_Brand preset-effect-Shadow" data-role="hero">
+
+
+
+<div class="widget-type-display" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 72px;font-weight: 700;line-height: 1.1;text-align: left;">
+    <h1 class="display-text">
+        From accuracy tweaks to LLM experiences
+    </h1>
+</div>
+
+            </div>
+            <div class="bento-cell widget preset-surface-Flat preset-shape-Rounded preset-fill-Subtle preset-effect-Shadow" data-role="footer_1">
+
+
+
+<div class="widget-type-list" style="font-size: 28px;font-weight: 400;line-height: 1.5;text-align: left;">
+        <ul>
+            <li>Stop chasing last 0.0x% accuracy</li>
+            <li>Focus on iteration speed and UX</li>
+            <li>Design prompts, workflows, multimodal flows</li>
+            <li>Build validation and feedback pipelines</li>
+        </ul>
+</div>
+
+            </div>
+            <div class="bento-cell widget preset-surface-Flat preset-shape-Rounded preset-fill-Subtle preset-effect-Shadow" data-role="footer_2">
+
+
+
+<div class="widget-type-body" style="width: 100%; height: 100%; display: flex; align-items: center; font-size: 28px;font-weight: 400;line-height: 1.5;text-align: left;">
+    <p>High‑ROI work: telemetry, adaptive feedback loops, and end‑to‑end systems that meet customer needs.</p>
+</div>
+
+            </div>
+            <div class="bento-cell widget preset-surface-Flat preset-shape-Curve preset-fill-Subtle preset-effect-Shadow" data-role="footer_3">
+
+
+
+<div class="widget-type-body" style="width: 100%; height: 100%; display: flex; align-items: center; font-size: 28px;font-weight: 400;line-height: 1.5;text-align: left;">
+    <p>As an entry/mid‑level dev, treat model accuracy as baseline and invest in experience design and robustness.</p>
+</div>
+
+            </div>
+</div>
+        </div>
+        
+        <div class="layout-footer widget preset-surface-Flat">
+                <p style="font-size: 28px;font-weight: 400;line-height: 1.5;text-align: left;color: #F5F7FA;">Takeaway: Your leverage is in LLM‑powered experiences, not marginal accuracy gains.</p>
+        </div>
+    </div>
+        </div>
+        <div class="slide" data-slide-index="3" id="slide_04_new_roles_shapes">
+            <div class="layout-container" style="background: #05060A;">
+        <div class="layout-header widget preset-surface-Flat">
+                <h2 style="font-size: 48px;font-weight: 500;line-height: 1.2;text-align: left;color: #F5F7FA;">How AI roles are changing</h2>
+        </div>
+        
+        <div class="layout-content">
+<div class="bento-grid">
+            <div class="bento-cell widget preset-surface-Flat preset-shape-Sharp preset-fill-Solid_Brand preset-effect-Shadow" data-role="cell_1">
+
+
+
+<div class="widget-type-display" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 72px;font-weight: 700;line-height: 1.1;text-align: left;">
+    <h1 class="display-text">
+        From models to reliability
+    </h1>
+</div>
+
+            </div>
+            <div class="bento-cell widget preset-surface-Flat preset-shape-Rounded preset-fill-Subtle preset-effect-Shadow" data-role="cell_2">
+
+
+
+<div class="widget-type-body" style="width: 100%; height: 100%; display: flex; align-items: center; font-size: 28px;font-weight: 400;line-height: 1.5;text-align: left;">
+    <p>AI roles now own end-to-end reliability and robustness at the application level.</p>
+</div>
+
+            </div>
+            <div class="bento-cell widget preset-surface-Flat preset-shape-Rounded preset-fill-Subtle preset-effect-Shadow" data-role="cell_3">
+
+
+
+<div class="widget-type-list" style="font-size: 28px;font-weight: 400;line-height: 1.5;text-align: left;">
+        <ul>
+            <li>Prompt and agent architecture design</li>
+            <li>How components invoke models, tools, context</li>
+            <li>Feedback loops for refinement, fast iteration</li>
+        </ul>
+</div>
+
+            </div>
+            <div class="bento-cell widget preset-surface-Flat preset-shape-Sharp preset-fill-Solid_Surface preset-effect-Shadow" data-role="cell_4">
+
+
+
+<div class="widget-type-heading" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 48px;font-weight: 500;line-height: 1.2;text-align: left;">
+        <h3>Applied scientist vs engineer</h3>
+</div>
+
+            </div>
+            <div class="bento-cell widget preset-surface-Flat preset-shape-Rounded preset-fill-Subtle preset-effect-Shadow" data-role="cell_5">
+
+
+
+<div class="widget-type-list" style="font-size: 28px;font-weight: 400;line-height: 1.5;text-align: left;">
+        <ul>
+            <li>Engineers: system stability, architecture</li>
+            <li>Applied scientists: push base model boundaries</li>
+            <li>Both orchestrate models into useful features</li>
+        </ul>
+</div>
+
+            </div>
+            <div class="bento-cell widget " data-role="cell_6">
+                    <div class="empty-slot">Empty slot</div>
+            </div>
+</div>
+        </div>
+        
+        <div class="layout-footer widget preset-surface-Flat">
+                <p style="font-size: 28px;font-weight: 400;line-height: 1.5;text-align: left;color: #F5F7FA;">Goal: give you clarity on AI/LLM career paths and evolving role focus.</p>
+        </div>
+    </div>
+        </div>
+        <div class="slide" data-slide-index="4" id="slide_05_three_high_roi_skills">
+            <div class="layout-container" style="background: #05060A;">
+        <div class="layout-header widget preset-surface-Flat">
+                <h2 style="font-size: 48px;font-weight: 500;line-height: 1.2;text-align: left;color: #F5F7FA;">High‑ROI skills for AI/LLM work</h2>
+        </div>
+        
+        <div class="layout-content">
+<div class="bento-grid">
+            <div class="bento-cell widget preset-surface-Flat preset-shape-Sharp preset-fill-Solid_Surface preset-effect-Shadow" data-role="cell_1">
+
+
+
+<div class="widget-type-display" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 72px;font-weight: 700;line-height: 1.1;text-align: left;">
+    <h1 class="display-text">
+        Three high‑ROI skill paths
+    </h1>
+</div>
+
+            </div>
+            <div class="bento-cell widget preset-surface-Flat preset-shape-Rounded preset-fill-Subtle preset-effect-Shadow" data-role="cell_2">
+
+
+
+<div class="widget-type-body" style="width: 100%; height: 100%; display: flex; align-items: center; font-size: 28px;font-weight: 400;line-height: 1.5;text-align: left;">
+    <p>Grow beyond single‑stack depth by learning to combine domains to solve complex problems.</p>
+</div>
+
+            </div>
+            <div class="bento-cell widget preset-surface-Flat preset-shape-Sharp preset-fill-Solid_Surface preset-effect-Shadow" data-role="cell_3">
+
+
+
+<div class="widget-type-heading" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 48px;font-weight: 500;line-height: 1.2;text-align: left;">
+        <h3>1) Precise problem definition</h3>
+</div>
+
+            </div>
+            <div class="bento-cell widget preset-surface-Flat preset-shape-Rounded preset-fill-Subtle preset-effect-Shadow" data-role="cell_4">
+
+
+
+<div class="widget-type-body" style="width: 100%; height: 100%; display: flex; align-items: center; font-size: 28px;font-weight: 400;line-height: 1.5;text-align: left;">
+    <p>Clarify the real task, constraints, and success criteria before touching AI or code.</p>
+</div>
+
+            </div>
+            <div class="bento-cell widget preset-surface-Flat preset-shape-Sharp preset-fill-Solid_Surface preset-effect-Shadow" data-role="cell_5">
+
+
+
+<div class="widget-type-heading" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 48px;font-weight: 500;line-height: 1.2;text-align: left;">
+        <h3>2) Robust evaluation, tuning</h3>
+</div>
+
+            </div>
+            <div class="bento-cell widget preset-surface-Flat preset-shape-Sharp preset-fill-Solid_Surface preset-effect-Shadow" data-role="cell_6">
+
+
+
+<div class="widget-type-heading" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 48px;font-weight: 500;line-height: 1.2;text-align: left;">
+        <h3>3) Cross‑domain combination</h3>
+</div>
+
+            </div>
+</div>
+        </div>
+        
+        <div class="layout-footer widget preset-surface-Flat">
+                <p style="font-size: 28px;font-weight: 400;line-height: 1.5;text-align: left;color: #F5F7FA;">Use these three areas as a roadmap for your next year of growth.</p>
+        </div>
+    </div>
+        </div>
+        <div class="slide" data-slide-index="5" id="slide_06_building_llm_systems">
+            <div class="layout-container" style="background: #05060A;">
+        <div class="layout-header widget preset-surface-Flat">
+                <h2 style="font-size: 48px;font-weight: 500;line-height: 1.2;text-align: left;color: #F5F7FA;">Building reliable LLM systems: beyond prompt tuning</h2>
+        </div>
+        
+        <div class="layout-content">
+<div class="matrix-grid matrix-timeline">
+            <div class="matrix-cell widget preset-surface-Flat preset-shape-Sharp preset-fill-Subtle preset-effect-Shadow" data-role="stage1_title">
+
+
+
+<div class="widget-type-display" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 72px;font-weight: 700;line-height: 1.1;text-align: left;">
+    <h1 class="display-text">
+        Prompts: necessary, not enough
+    </h1>
+</div>
+
+            </div>
+            <div class="matrix-cell widget preset-surface-Flat preset-shape-Sharp preset-fill-Subtle preset-effect-Shadow" data-role="stage2_title">
+
+
+
+<div class="widget-type-display" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 72px;font-weight: 700;line-height: 1.1;text-align: left;">
+    <h1 class="display-text">
+        Why prompts hit a wall
+    </h1>
+</div>
+
+            </div>
+            <div class="matrix-cell widget preset-surface-Flat preset-shape-Sharp preset-fill-Subtle preset-effect-Shadow" data-role="stage3_title">
+
+
+
+<div class="widget-type-display" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 72px;font-weight: 700;line-height: 1.1;text-align: left;">
+    <h1 class="display-text">
+        Introduce <strong style="color: var(--color-accent); font-weight: bold;">planner–executor</strong> pattern
+    </h1>
+</div>
+
+            </div>
+            <div class="matrix-cell widget preset-surface-Flat preset-shape-Sharp preset-fill-Subtle preset-effect-Shadow" data-role="stage4_title">
+
+
+
+<div class="widget-type-display" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 72px;font-weight: 700;line-height: 1.1;text-align: left;">
+    <h1 class="display-text">
+        How this helps you build
+    </h1>
+</div>
+
+            </div>
+            <div class="matrix-cell widget preset-surface-Flat preset-shape-Rounded preset-fill-Solid_Surface preset-effect-Shadow" data-role="stage1_detail">
+
+
+
+<div class="widget-type-list" style="font-size: 28px;font-weight: 400;line-height: 1.5;text-align: left;">
+        <ul>
+            <li>Design prompt for ~<mark style="background-color: var(--color-accent); color: var(--color-text); padding: 0 0.2em; border-radius: 3px;">90%</mark> cases</li>
+            <li>Then iterate on real failures</li>
+            <li>Explicitly encode constraints, avoidances</li>
+        </ul>
+</div>
+
+            </div>
+            <div class="matrix-cell widget preset-surface-Flat preset-shape-Rounded preset-fill-Solid_Surface preset-effect-Shadow" data-role="stage2_detail">
+
+
+
+<div class="widget-type-list" style="font-size: 28px;font-weight: 400;line-height: 1.5;text-align: left;">
+        <ul>
+            <li>Prompt tuning alone can’t stop hallucinations</li>
+            <li>Errors accumulate across multi-step workflows</li>
+            <li>Need architecture, not just better wording</li>
+        </ul>
+</div>
+
+            </div>
+            <div class="matrix-cell widget preset-surface-Flat preset-shape-Rounded preset-fill-Solid_Surface preset-effect-Shadow" data-role="stage3_detail">
+
+
+
+<div class="widget-type-list" style="font-size: 28px;font-weight: 400;line-height: 1.5;text-align: left;">
+        <ul>
+            <li>LLM <strong style="color: var(--color-accent); font-weight: bold;">planner</strong>: high-level reasoning, action sequence</li>
+            <li>Code/tools <strong style="color: var(--color-accent); font-weight: bold;">executor</strong>: strict guardian, real state</li>
+            <li>Executor validates steps, signals failures back</li>
+            <li>Feedback loop prevents compounding errors</li>
+        </ul>
+</div>
+
+            </div>
+            <div class="matrix-cell widget preset-surface-Flat preset-shape-Rounded preset-fill-Solid_Surface preset-effect-Shadow" data-role="stage4_detail">
+
+
+
+<div class="widget-type-list" style="font-size: 28px;font-weight: 400;line-height: 1.5;text-align: left;">
+        <ul>
+            <li>Treat prompts as components, not magic</li>
+            <li>Add <strong style="color: var(--color-accent); font-weight: bold;">planner–executor</strong> to your toolbox</li>
+            <li>Use architecture to control error accumulation</li>
         </ul>
 </div>
 
@@ -3410,40 +3601,188 @@
         </div>
         
         <div class="layout-footer widget preset-surface-Flat">
-                <p style="">Continuously re-skill, lean into AI tools, and follow directional research trends.</p>
+                <p style="font-size: 28px;font-weight: 400;line-height: 1.5;text-align: left;color: #F5F7FA;">For devs: combine iterative prompt work with <strong style="color: var(--color-accent); font-weight: bold;">planner–executor</strong> architectures to tame errors.</p>
         </div>
     </div>
         </div>
-        <div class="slide" data-slide-index="8" id="slide_09_closing_principle">
-            <div class="layout-container" style="background: #05070A;">
+        <div class="slide" data-slide-index="6" id="slide_07_human_edges">
+            <div class="layout-container" style="background: #05060A;">
         <div class="layout-header widget preset-surface-Flat">
-                <h2 style="">Closing principle for LLM engineers</h2>
+                <h2 style="font-size: 48px;font-weight: 500;line-height: 1.2;text-align: left;color: #F5F7FA;">Human edges in the AI era</h2>
         </div>
         
         <div class="layout-content">
-<div class="swiss-layout">
-            <div class="widget preset-surface-Elevated preset-shape-Sharp preset-fill-Gradient_Linear preset-effect-Glow" data-role="headline">
+<div class="bento-grid">
+            <div class="bento-cell widget preset-surface-Flat preset-shape-Sharp preset-fill-Solid_Brand preset-effect-Shadow" data-role="hero">
 
 
 
-<div class="widget-type-display" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; ">
+<div class="widget-type-display" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 72px;font-weight: 700;line-height: 1.1;text-align: left;">
     <h1 class="display-text">
-        Make every engineering step solid
+        Where humans still beat LLMs
+    </h1>
+</div>
+
+            </div>
+            <div class="bento-cell" data-role="side_1">
+                <div class="widget preset-surface-Subtle preset-shape-Rounded preset-fill-Solid_Surface preset-effect-Shadow" data-role="side_1">
+
+
+
+<div class="widget-type-heading" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 48px;font-weight: 500;line-height: 1.2;text-align: left;">
+        <h3>Human edge #1: low‑level tuning</h3>
+</div>
+
+                </div>
+                <div class="widget preset-surface-Flat preset-shape-Rounded preset-fill-Subtle preset-effect-Shadow" data-role="side_2">
+
+
+
+<div class="widget-type-list" style="font-size: 28px;font-weight: 400;line-height: 1.5;text-align: left;">
+        <ul>
+            <li>Hand‑tuned <mark style="background-color: var(--color-accent); color: var(--color-text); padding: 0 0.2em; border-radius: 3px;">C++</mark> and intrinsics</li>
+            <li>Memory and cache‑aware decisions</li>
+            <li>LLMs still weak at this</li>
+        </ul>
+</div>
+
+                </div>
+            </div>
+            <div class="bento-cell" data-role="side_3">
+                <div class="widget preset-surface-Subtle preset-shape-Rounded preset-fill-Solid_Surface preset-effect-Shadow" data-role="side_3">
+
+
+
+<div class="widget-type-heading" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 48px;font-weight: 500;line-height: 1.2;text-align: left;">
+        <h3>Human edge #2: scoping</h3>
+</div>
+
+                </div>
+                <div class="widget preset-surface-Flat preset-shape-Rounded preset-fill-Subtle preset-effect-Shadow" data-role="side_4">
+
+
+
+<div class="widget-type-list" style="font-size: 28px;font-weight: 400;line-height: 1.5;text-align: left;">
+        <ul>
+            <li>Find the real bottleneck first</li>
+            <li>System‑level impact over micro‑wins</li>
+            <li>Example: <mark style="background-color: var(--color-accent); color: var(--color-text); padding: 0 0.2em; border-radius: 3px;">38x/sec</mark> vs once</li>
+        </ul>
+</div>
+
+                </div>
+            </div>
+</div>
+        </div>
+        
+        <div class="layout-footer widget preset-surface-Flat">
+                <p style="font-size: 28px;font-weight: 400;line-height: 1.5;text-align: left;color: #F5F7FA;">Action: practice low‑level tuning and always question whether optimizations matter at system level.</p>
+        </div>
+    </div>
+        </div>
+        <div class="slide" data-slide-index="7" id="slide_08_working_with_llms_daily">
+            <div class="layout-container" style="background: #05060A;">
+        <div class="layout-header widget preset-surface-Flat">
+                <h2 style="font-size: 48px;font-weight: 500;line-height: 1.2;text-align: left;color: #F5F7FA;">Single-spec workflow with LLM tools</h2>
+        </div>
+        
+        <div class="layout-content">
+<div class="bento-grid">
+            <div class="bento-cell widget preset-surface-Flat preset-shape-Sharp preset-fill-Solid_Brand preset-effect-Shadow" data-role="cell_1">
+
+
+
+<div class="widget-type-display" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 72px;font-weight: 700;line-height: 1.1;text-align: left;">
+    <h1 class="display-text">
+        LLMs as daily translators
+    </h1>
+</div>
+
+            </div>
+            <div class="bento-cell widget preset-surface-Flat preset-shape-Rounded preset-fill-Subtle preset-effect-Shadow" data-role="cell_2">
+
+
+
+<div class="widget-type-body" style="width: 100%; height: 100%; display: flex; align-items: center; font-size: 28px;font-weight: 400;line-height: 1.5;text-align: left;">
+    <p>Use LLMs to translate one clear spec into slides, docs, diagrams, and code scaffolds.</p>
+</div>
+
+            </div>
+            <div class="bento-cell widget preset-surface-Flat preset-shape-Rounded preset-fill-Subtle preset-effect-Shadow" data-role="cell_3">
+
+
+
+<div class="widget-type-list" style="font-size: 28px;font-weight: 400;line-height: 1.5;text-align: left;">
+        <ul>
+            <li>Write concise natural-language spec</li>
+            <li>Keep spec as single truth</li>
+            <li>Work inside IDE (e.g., VS Code)</li>
+        </ul>
+</div>
+
+            </div>
+            <div class="bento-cell widget preset-surface-Flat preset-shape-Rounded preset-fill-Subtle preset-effect-Shadow" data-role="cell_4">
+
+
+
+<div class="widget-type-list" style="font-size: 28px;font-weight: 400;line-height: 1.5;text-align: left;">
+        <ul>
+            <li>Generate PPT slides from spec</li>
+            <li>Create Word design document</li>
+            <li>Produce Mermaid → PNG diagrams</li>
+        </ul>
+</div>
+
+            </div>
+            <div class="bento-cell widget preset-surface-Flat preset-shape-Rounded preset-fill-Subtle preset-effect-Shadow" data-role="cell_5">
+
+
+
+<div class="widget-type-body" style="width: 100%; height: 100%; display: flex; align-items: center; font-size: 28px;font-weight: 400;line-height: 1.5;text-align: left;">
+    <p>Treat LLMs as translators between slides, docs, diagrams, and future code structure.</p>
+</div>
+
+            </div>
+            <div class="bento-cell widget " data-role="cell_6">
+                    <div class="empty-slot">Empty slot</div>
+            </div>
+</div>
+        </div>
+        
+        <div class="layout-footer widget preset-surface-Flat">
+                <p style="font-size: 28px;font-weight: 400;line-height: 1.5;text-align: left;color: #F5F7FA;">Actionable habit: always start from one well-written spec, then let LLMs fan it out.</p>
+        </div>
+    </div>
+        </div>
+        <div class="slide" data-slide-index="8" id="slide_09_staying_current_sustainably">
+            <div class="layout-container" style="background: #05060A;">
+        <div class="layout-header widget preset-surface-Flat">
+                <h2 style="font-size: 48px;font-weight: 500;line-height: 1.2;text-align: left;color: #F5F7FA;">Sustainable AI learning habits</h2>
+        </div>
+        
+        <div class="layout-content">
+<div class="cinematic-layout">
+            <div class="cinematic-panel widget" data-role="left">
+
+
+
+<div class="widget-type-display" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 72px;font-weight: 700;line-height: 1.1;text-align: left;">
+    <h1 class="display-text">
+        Staying current with AI sustainably
     </h1>
 </div>
 
             </div>
             
-            <div class="widget preset-surface-Flat preset-shape-Sharp preset-fill-Subtle preset-effect-Shadow" data-role="body">
+            <div class="cinematic-panel widget" data-role="right">
 
 
 
-<div class="widget-type-list" style="">
+<div class="widget-type-list" style="font-size: 28px;font-weight: 400;line-height: 1.5;text-align: left;">
         <ul>
-            <li>Treat each code change as production‑ready, not a throwaway experiment.</li>
-            <li>Design components so behavior, tradeoffs, and failure modes are fully understood.</li>
-            <li>Ask technical questions until APIs, models, and systems are crystal‑clear.</li>
-            <li>Turn every Q&A into durable, reusable engineering knowledge.</li>
+            <li>Follow a few focused research categories</li>
+            <li>Scan papers for directional trends, not depth</li>
+            <li>Try new tools only for real tasks</li>
         </ul>
 </div>
 
@@ -3452,6 +3791,110 @@
         </div>
         
         <div class="layout-footer widget preset-surface-Flat">
+                <p style="font-size: 28px;font-weight: 400;line-height: 1.5;text-align: left;color: #F5F7FA;">Treat AI learning as an ongoing habit, not an arms race.</p>
+        </div>
+    </div>
+        </div>
+        <div class="slide" data-slide-index="9" id="slide_10_make_every_step_solid">
+            <div class="layout-container" style="background: #05060A;">
+        <div class="layout-header widget preset-surface-Flat">
+                <h2 style="font-size: 48px;font-weight: 500;line-height: 1.2;text-align: left;color: #F5F7FA;">Make Every Step Solid</h2>
+        </div>
+        
+        <div class="layout-content">
+<div class="bento-grid">
+            <div class="bento-cell widget preset-surface-Flat preset-shape-Sharp preset-fill-Subtle preset-effect-Shadow" data-role="hero">
+
+
+
+<div class="widget-type-quote" style="width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; font-size: 36px;font-weight: 500;line-height: 1.3;text-align: left; border-left: 4px solid var(--color-primary, #2563eb); padding-left: 1.5rem; border-radius: 8px;">
+    <blockquote style="margin: 0;">
+        <p style="margin-bottom: 0.5rem;">“Make every step solid.”</p>
+        <cite style="opacity: 0.7; font-style: italic;">Chao Wang, Applied Scientist</cite>
+    </blockquote>
+</div>
+
+            </div>
+            <div class="bento-cell widget preset-surface-Flat preset-shape-Sharp preset-fill-Solid_Brand preset-effect-Glow" data-role="footer_1">
+
+
+
+<div class="widget-type-display" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 72px;font-weight: 700;line-height: 1.1;text-align: left;">
+    <h1 class="display-text">
+        Turn advice into practice
+    </h1>
+</div>
+
+            </div>
+            <div class="bento-cell widget preset-surface-Flat preset-shape-Rounded preset-fill-Subtle preset-effect-Shadow" data-role="footer_2">
+
+
+
+<div class="widget-type-list" style="font-size: 28px;font-weight: 400;line-height: 1.5;text-align: left;">
+        <ul>
+            <li>Ship code that truly works</li>
+            <li>Design systems carefully, end‑to‑end</li>
+            <li>Ask until you really understand</li>
+            <li>Turn answers into durable knowledge</li>
+        </ul>
+</div>
+
+            </div>
+            <div class="bento-cell widget preset-surface-Flat preset-shape-Rounded preset-fill-Subtle preset-effect-Shadow" data-role="footer_3">
+
+
+
+<div class="widget-type-body" style="width: 100%; height: 100%; display: flex; align-items: center; font-size: 28px;font-weight: 400;line-height: 1.5;text-align: left;">
+    <p>For AI/LLM work, each solid step compounds: better code, designs, and questions.</p>
+</div>
+
+            </div>
+</div>
+        </div>
+        
+        <div class="layout-footer widget preset-surface-Flat">
+                <p style="font-size: 28px;font-weight: 400;line-height: 1.5;text-align: left;color: #F5F7FA;">Entry & mid-level dev takeaway: depth of understanding beats rushing to the next task.</p>
+        </div>
+    </div>
+        </div>
+        <div class="slide" data-slide-index="10" id="slide_11_evolve_with_industry">
+            <div class="layout-container" style="background: #05060A;">
+        <div class="layout-header widget preset-surface-Flat">
+                <h2 style="font-size: 48px;font-weight: 500;line-height: 1.2;text-align: left;color: #F5F7FA;">Evolve With the Industry</h2>
+        </div>
+        
+        <div class="layout-content">
+<div class="cinematic-layout">
+            <div class="cinematic-panel widget" data-role="left">
+
+
+
+<div class="widget-type-display" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 72px;font-weight: 700;line-height: 1.1;text-align: left;">
+    <h1 class="display-text">
+        AI will keep changing.
+You need to keep evolving.
+    </h1>
+</div>
+
+            </div>
+            
+            <div class="cinematic-panel widget" data-role="right">
+
+
+
+<div class="widget-type-list" style="font-size: 28px;font-weight: 400;line-height: 1.5;text-align: left;">
+        <ul>
+            <li>Continuously evolve with the industry</li>
+            <li>Leave comfort zones, learn new paradigms</li>
+        </ul>
+</div>
+
+            </div>
+</div>
+        </div>
+        
+        <div class="layout-footer widget preset-surface-Flat">
+                <p style="font-size: 28px;font-weight: 400;line-height: 1.5;text-align: left;color: #F5F7FA;">Stay employable by expanding skills, adapting roles, and embracing beginner mode repeatedly.</p>
         </div>
     </div>
         </div>
@@ -3460,7 +3903,7 @@
     <div class="navigation">
         <button class="nav-button" id="prev-button">← Previous</button>
         <div class="slide-counter">
-            <span id="current-slide">1</span> / <span id="total-slides">9</span>
+            <span id="current-slide">1</span> / <span id="total-slides">11</span>
         </div>
         <div class="slide-dots">
             <div class="dot active" data-slide="0"></div>
@@ -3472,6 +3915,8 @@
             <div class="dot" data-slide="6"></div>
             <div class="dot" data-slide="7"></div>
             <div class="dot" data-slide="8"></div>
+            <div class="dot" data-slide="9"></div>
+            <div class="dot" data-slide="10"></div>
         </div>
         <button class="nav-button" id="next-button">Next →</button>
     </div>

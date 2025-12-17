@@ -53,7 +53,11 @@ Extract six types of atoms:
    **CRITICAL**: Look for chronological markers (years, dates, "from X to Y", "then", "later", "starting from")
    **Example**: "Starting from 2011... 2016... 2021..." → Extract as TimelineAtom, NOT multiple StatementAtoms
 
-**Output Format**: Return a JSON object with an "atoms" array. Each atom must have:
+**Output Format**: Return a JSON object with:
+- "abstract": Brief 2-3 sentence summary of the source content (for intent detection context)
+- "atoms": Array of extracted atoms
+
+Each atom must have:
 - id: Unique identifier (e.g., "stmt_001", "proc_001", "comp_001", "quote_001", "action_001", "timeline_001")
 - type: "StatementAtom" | "ProcessAtom" | "ComparisonAtom" | "QuoteAtom" | "ActionItemAtom" | "TimelineAtom"
 - rank: Integer for ordering (start at 1)
@@ -121,7 +125,9 @@ Focus on atoms that align with the above guidance while extracting from the cont
     
     prompt += """
 Extract all relevant atoms (statements, processes, comparisons) from the content above.
-Return a JSON object with an "atoms" array containing the extracted atoms."""
+Return a JSON object with:
+1. "abstract": 2-3 sentence summary of the source content
+2. "atoms": Array containing the extracted atoms"""
     
     return prompt
 

@@ -94,28 +94,14 @@ class ReplaceOperation(BaseModel):
     model_config = ConfigDict(extra='forbid')
 
 
-class SetThemeOperation(BaseModel):
-    """Set theme operation - theme configuration"""
-    set_theme: Dict[str, Any]
-
-    model_config = ConfigDict(extra='forbid')
-
-
-class SetPresetOperation(BaseModel):
-    """Set preset operation - global preset configuration"""
-    set_preset: Dict[str, Any]
-
-    model_config = ConfigDict(extra='forbid')
-
-
 class Patch(BaseModel):
     """
-    Patch containing operations (add, remove, replace, set_theme, set_preset).
+    Patch containing operations (add, remove, replace).
     
     Uses Pydantic for validation.
     Can be created from JSON directly.
     """
-    operations: List[Union[AddOperation, ReplaceOperation, RemoveOperation, SetThemeOperation, SetPresetOperation]] = Field(
+    operations: List[Union[AddOperation, ReplaceOperation, RemoveOperation]] = Field(
         ...,
         min_length=1,
         description="List of operations to apply"

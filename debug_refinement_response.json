@@ -1,0 +1,692 @@
+[
+  {
+    "replace": {
+      "id": "slide_01_overview",
+      "rank": 100,
+      "style": "bento-hero",
+      "contexts": [
+        {
+          "id": "slide_01_overview_ctx",
+          "type": "DisplayContext",
+          "layout": "Bento.HeroTop",
+          "density": "moderate",
+          "header": {
+            "type": "Type.Heading",
+            "parameters": {
+              "text": "Beginner Python best practices workflow",
+              "level": 1
+            }
+          },
+          "widgets": {
+            "hero": {
+              "type": "Type.Display",
+              "parameters": {
+                "text": "5 core Python habits from day one"
+              },
+              "preset": {
+                "surface": "Flat",
+                "shape": "Sharp",
+                "fill": "Solid_Brand",
+                "effect": "None"
+              }
+            },
+            "footer_1": {
+              "type": "Type.Body",
+              "parameters": {
+                "text": "You will learn a simple workflow that links five beginner-friendly Python best practices, with concrete code examples for each step."
+              },
+              "preset": {
+                "surface": "Flat",
+                "shape": "Sharp",
+                "fill": "Subtle",
+                "effect": "None"
+              }
+            },
+            "footer_2": {
+              "type": "Type.List",
+              "parameters": {
+                "items": [
+                  "Descriptive variable names (before/after code)",
+                  "PEP 8 formatting (messy vs. clean code)",
+                  "Targeted comments (no-comment vs. helpful comment)",
+                  "Git version control (basic command workflow)",
+                  "Unit tests (simple test that catches a bug)"
+                ],
+                "list_type": "unordered"
+              },
+              "preset": {
+                "surface": "Flat",
+                "shape": "Sharp",
+                "fill": "Subtle",
+                "effect": "None"
+              }
+            },
+            "footer_3": {
+              "type": "Type.Body",
+              "parameters": {
+                "text": "Tutorial flow: write code \u2192 improve names \u2192 format with PEP 8 \u2192 add comments \u2192 commit with Git \u2192 write tests."
+              },
+              "preset": {
+                "surface": "Flat",
+                "shape": "Sharp",
+                "fill": "Subtle",
+                "effect": "None"
+              }
+            }
+          },
+          "footer": {
+            "type": "Type.Body",
+            "parameters": {
+              "text": "Audience: new Python developers \u00b7 Goal: write clearer, safer code from the start using real code examples"
+            }
+          },
+          "parameters": {},
+          "style_override": {
+            "background": "#F7F7F9",
+            "text_color": "#222222",
+            "accent_primary": "#306998",
+            "accent_secondary": "#FFD43B",
+            "code_font": "monospace"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "replace": {
+      "id": "slide_02_variables",
+      "rank": 200,
+      "style": "bento-standard",
+      "contexts": [
+        {
+          "id": "slide_02_variables_ctx",
+          "type": "DisplayContext",
+          "layout": "Bento.Standard",
+          "density": "moderate",
+          "header": {
+            "type": "Type.Heading",
+            "parameters": {
+              "text": "Best practice 1: descriptive variable names",
+              "level": 2
+            }
+          },
+          "widgets": {
+            "cell_1": {
+              "type": "Type.Display",
+              "parameters": {
+                "text": "Make variables self-explanatory"
+              },
+              "preset": {
+                "surface": "Flat",
+                "shape": "Sharp",
+                "fill": "Solid_Brand",
+                "effect": "None"
+              }
+            },
+            "cell_2": {
+              "type": "Type.Body",
+              "parameters": {
+                "text": "Use names that clearly describe what data they store or how they\u2019re used. Code should be readable even without extra comments."
+              },
+              "preset": {
+                "surface": "Flat",
+                "shape": "Sharp",
+                "fill": "Subtle",
+                "effect": "None"
+              }
+            },
+            "cell_3": {
+              "type": "Type.List",
+              "parameters": {
+                "items": [
+                  "Short phrase in lowercase_with_underscores",
+                  "Express what the value represents (user_age, total_price)",
+                  "If you can\u2019t guess the meaning in 2 seconds, rename it"
+                ],
+                "list_type": "unordered"
+              },
+              "preset": {
+                "surface": "Flat",
+                "shape": "Sharp",
+                "fill": "Subtle",
+                "effect": "None"
+              }
+            },
+            "cell_4": {
+              "type": "Type.Code",
+              "parameters": {
+                "language": "python",
+                "code": "# \ud83d\udeab Bad: unclear single-letter names\np = 100\nr = 0.08\nt = 5\na = p * (1 + r) ** t\n\n# \u2705 Good: descriptive names\nprincipal = 100\ninterest_rate = 0.08\nyears = 5\nfinal_amount = principal * (1 + interest_rate) ** years"
+              },
+              "preset": {
+                "surface": "Flat",
+                "shape": "Sharp",
+                "fill": "Flat",
+                "effect": "None"
+              }
+            },
+            "cell_5": {
+              "type": "Type.Body",
+              "parameters": {
+                "text": "Pattern: choose names that describe the concept, not how you typed it (user_input is better than s or data)."
+              },
+              "preset": {
+                "surface": "Flat",
+                "shape": "Sharp",
+                "fill": "Subtle",
+                "effect": "None"
+              }
+            }
+          },
+          "footer": {
+            "type": "Type.Body",
+            "parameters": {
+              "text": "Try it now: pick a small script and rename any variable that isn\u2019t obvious at a glance."
+            }
+          },
+          "parameters": {},
+          "style_override": {
+            "background": "#FFFFFF",
+            "text_color": "#222222",
+            "accent_primary": "#306998",
+            "accent_secondary": "#FFD43B",
+            "code_font": "monospace"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "replace": {
+      "id": "slide_03_comments",
+      "rank": 300,
+      "style": "bento-standard",
+      "contexts": [
+        {
+          "id": "slide_03_comments_ctx",
+          "type": "DisplayContext",
+          "layout": "Bento.Standard",
+          "density": "moderate",
+          "header": {
+            "type": "Type.Heading",
+            "parameters": {
+              "text": "Best practice 2: comment complex logic",
+              "level": 2
+            }
+          },
+          "widgets": {
+            "cell_1": {
+              "type": "Type.Display",
+              "parameters": {
+                "text": "Explain intent, not every line"
+              },
+              "preset": {
+                "surface": "Flat",
+                "shape": "Sharp",
+                "fill": "Solid_Brand",
+                "effect": "None"
+              }
+            },
+            "cell_2": {
+              "type": "Type.List",
+              "parameters": {
+                "items": [
+                  "Target non-obvious, multi-step code",
+                  "Explain why the code exists, not just what it does",
+                  "Keep comments short and placed above the logic"
+                ],
+                "list_type": "unordered"
+              },
+              "preset": {
+                "surface": "Flat",
+                "shape": "Sharp",
+                "fill": "Subtle",
+                "effect": "None"
+              }
+            },
+            "cell_3": {
+              "type": "Type.Code",
+              "parameters": {
+                "language": "python",
+                "code": "# \ud83d\udeab Hard to read: no context\nactive_users = []\nfor user in users:\n    if (user.last_login is not None\n            and (today - user.last_login).days <= 30\n            and not user.is_banned):\n        active_users.append(user)\n\n# \u2705 Better: explain the intent once\n# Keep only users who logged in within 30 days and aren\u2019t banned\nactive_users = []\nfor user in users:\n    recently_active = (\n        user.last_login is not None\n        and (today - user.last_login).days <= 30\n    )\n    if recently_active and not user.is_banned:\n        active_users.append(user)"
+              },
+              "preset": {
+                "surface": "Flat",
+                "shape": "Sharp",
+                "fill": "Flat",
+                "effect": "None"
+              }
+            },
+            "cell_4": {
+              "type": "Type.Body",
+              "parameters": {
+                "text": "Rule of thumb: comment complex conditions, algorithms, and clever tricks. Don\u2019t comment simple assignments or obvious loops."
+              },
+              "preset": {
+                "surface": "Flat",
+                "shape": "Sharp",
+                "fill": "Subtle",
+                "effect": "None"
+              }
+            },
+            "cell_5": {
+              "type": "Type.Body",
+              "parameters": {
+                "text": "Beginner tip: start comments with a short summary of the goal, e.g. `# Filter out inactive users before sending emails`."
+              },
+              "preset": {
+                "surface": "Flat",
+                "shape": "Sharp",
+                "fill": "Subtle",
+                "effect": "None"
+              }
+            }
+          },
+          "footer": {
+            "type": "Type.Body",
+            "parameters": {
+              "text": "Goal: future readers should understand the intent in seconds, not by reverse-engineering the code."
+            }
+          },
+          "parameters": {},
+          "style_override": {
+            "background": "#FFFFFF",
+            "text_color": "#222222",
+            "accent_primary": "#306998",
+            "accent_secondary": "#FFD43B",
+            "code_font": "monospace"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "replace": {
+      "id": "slide_04_pep8",
+      "rank": 400,
+      "style": "bento-standard",
+      "contexts": [
+        {
+          "id": "slide_04_pep8_ctx",
+          "type": "DisplayContext",
+          "layout": "Bento.Standard",
+          "density": "moderate",
+          "header": {
+            "type": "Type.Heading",
+            "parameters": {
+              "text": "Best practice 3: follow the PEP 8 style guide",
+              "level": 2
+            }
+          },
+          "widgets": {
+            "cell_1": {
+              "type": "Type.Display",
+              "parameters": {
+                "text": "PEP 8: how Python code should look"
+              },
+              "preset": {
+                "surface": "Flat",
+                "shape": "Sharp",
+                "fill": "Solid_Brand",
+                "effect": "None"
+              }
+            },
+            "cell_2": {
+              "type": "Type.Body",
+              "parameters": {
+                "text": "PEP 8 defines standard conventions for indentation, line length, naming styles, and spacing so code is consistent and readable across projects."
+              },
+              "preset": {
+                "surface": "Flat",
+                "shape": "Sharp",
+                "fill": "Subtle",
+                "effect": "None"
+              }
+            },
+            "cell_3": {
+              "type": "Type.List",
+              "parameters": {
+                "items": [
+                  "Use 4 spaces for indentation (no tabs)",
+                  "Keep lines under ~79 characters",
+                  "snake_case for functions and variables",
+                  "CapWords for classes",
+                  "Use a formatter: black, ruff, or flake8"
+                ],
+                "list_type": "unordered"
+              },
+              "preset": {
+                "surface": "Flat",
+                "shape": "Sharp",
+                "fill": "Subtle",
+                "effect": "None"
+              }
+            },
+            "cell_4": {
+              "type": "Type.Code",
+              "parameters": {
+                "language": "python",
+                "code": "# \ud83d\udeab Messy, non-PEP 8 code\nclass user:  # wrong naming\n\tdef __init__(self,Name,Age):\n\t\tself.Name=Name\n\t\tself.Age=Age\n\n\tdef info(self):\n\t\tprint(self.Name,self.Age)\n\n# \u2705 Clean, PEP 8-compliant code\nclass User:\n    def __init__(self, name: str, age: int) -> None:\n        self.name = name\n        self.age = age\n\n    def info(self) -> None:\n        print(self.name, self.age)"
+              },
+              "preset": {
+                "surface": "Flat",
+                "shape": "Sharp",
+                "fill": "Flat",
+                "effect": "None"
+              }
+            }
+          },
+          "footer": {
+            "type": "Type.Body",
+            "parameters": {
+              "text": "Treat PEP 8 as the default look-and-feel. Let tools auto-format so you can focus on logic, not spacing."
+            }
+          },
+          "parameters": {},
+          "style_override": {
+            "background": "#FFFFFF",
+            "text_color": "#222222",
+            "accent_primary": "#306998",
+            "accent_secondary": "#FFD43B",
+            "code_font": "monospace"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "replace": {
+      "id": "slide_05_git",
+      "rank": 500,
+      "style": "bento-standard",
+      "contexts": [
+        {
+          "id": "slide_05_git_ctx",
+          "type": "DisplayContext",
+          "layout": "Bento.Standard",
+          "density": "moderate",
+          "header": {
+            "type": "Type.Heading",
+            "parameters": {
+              "text": "Best practice 4: use Git for version control",
+              "level": 2
+            }
+          },
+          "widgets": {
+            "cell_1": {
+              "type": "Type.Display",
+              "parameters": {
+                "text": "Git: your coding safety net"
+              },
+              "preset": {
+                "surface": "Flat",
+                "shape": "Sharp",
+                "fill": "Solid_Brand",
+                "effect": "None"
+              }
+            },
+            "cell_2": {
+              "type": "Type.Body",
+              "parameters": {
+                "text": "Use Git to track changes, safely experiment, and collaborate. Start using it even on tiny scripts to build the habit early."
+              },
+              "preset": {
+                "surface": "Flat",
+                "shape": "Sharp",
+                "fill": "Subtle",
+                "effect": "None"
+              }
+            },
+            "cell_3": {
+              "type": "Type.Code",
+              "parameters": {
+                "language": "bash",
+                "code": "# Initialize once per project\n$ git init\n\n# Stage and commit your Python file\n$ git add main.py\n$ git commit -m \"Add basic calculator script\"\n\n# See what changed\n$ git status\n$ git log --oneline"
+              },
+              "preset": {
+                "surface": "Flat",
+                "shape": "Sharp",
+                "fill": "Flat",
+                "effect": "None"
+              }
+            },
+            "cell_4": {
+              "type": "Type.Code",
+              "parameters": {
+                "language": "bash",
+                "code": "# Experiment safely in a branch\n$ git checkout -b feature-add-discount\n# ...edit your Python code...\n$ git commit -am \"Add discount support\"\n\n# If it goes wrong, you can switch back\n$ git checkout main"
+              },
+              "preset": {
+                "surface": "Flat",
+                "shape": "Sharp",
+                "fill": "Flat",
+                "effect": "None"
+              }
+            },
+            "cell_5": {
+              "type": "Type.Body",
+              "parameters": {
+                "text": "Pattern: make small, focused commits with clear messages like \"Handle empty input\" or \"Refactor price calculation\"."
+              },
+              "preset": {
+                "surface": "Flat",
+                "shape": "Sharp",
+                "fill": "Subtle",
+                "effect": "None"
+              }
+            }
+          },
+          "footer": {
+            "type": "Type.Body",
+            "parameters": {
+              "text": "Using Git from day one prevents data loss and teaches professional workflows."
+            }
+          },
+          "parameters": {},
+          "style_override": {
+            "background": "#FFFFFF",
+            "text_color": "#222222",
+            "accent_primary": "#306998",
+            "accent_secondary": "#FFD43B",
+            "code_font": "monospace"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "replace": {
+      "id": "slide_06_tests",
+      "rank": 600,
+      "style": "bento-standard",
+      "contexts": [
+        {
+          "id": "slide_06_tests_ctx",
+          "type": "DisplayContext",
+          "layout": "Bento.Standard",
+          "density": "moderate",
+          "header": {
+            "type": "Type.Heading",
+            "parameters": {
+              "text": "Best practice 5: write basic unit tests",
+              "level": 2
+            }
+          },
+          "widgets": {
+            "cell_1": {
+              "type": "Type.Display",
+              "parameters": {
+                "text": "Unit tests: catch bugs automatically"
+              },
+              "preset": {
+                "surface": "Flat",
+                "shape": "Sharp",
+                "fill": "Solid_Brand",
+                "effect": "None"
+              }
+            },
+            "cell_2": {
+              "type": "Type.Body",
+              "parameters": {
+                "text": "A unit test is a short function that calls your code with known inputs and checks that the outputs match what you expect."
+              },
+              "preset": {
+                "surface": "Flat",
+                "shape": "Sharp",
+                "fill": "Subtle",
+                "effect": "None"
+              }
+            },
+            "cell_3": {
+              "type": "Type.Code",
+              "parameters": {
+                "language": "python",
+                "code": "# my_math.py\n\ndef add(a: int, b: int) -> int:\n    return a + b\n"
+              },
+              "preset": {
+                "surface": "Flat",
+                "shape": "Sharp",
+                "fill": "Flat",
+                "effect": "None"
+              }
+            },
+            "cell_4": {
+              "type": "Type.Code",
+              "parameters": {
+                "language": "python",
+                "code": "# test_my_math.py\n\nimport my_math\n\n\ndef test_add_normal_case():\n    assert my_math.add(2, 3) == 5\n\n\ndef test_add_with_negative():\n    assert my_math.add(-1, 3) == 2"
+              },
+              "preset": {
+                "surface": "Flat",
+                "shape": "Sharp",
+                "fill": "Flat",
+                "effect": "None"
+              }
+            },
+            "cell_5": {
+              "type": "Type.Code",
+              "parameters": {
+                "language": "bash",
+                "code": "# Run tests with pytest\n$ pytest -q\n.\n2 passed in 0.01s"
+              },
+              "preset": {
+                "surface": "Flat",
+                "shape": "Sharp",
+                "fill": "Flat",
+                "effect": "None"
+              }
+            },
+            "cell_6": {
+              "type": "Type.Body",
+              "parameters": {
+                "text": "Aim for at least one normal, one edge, and one invalid-input test per important function."
+              },
+              "preset": {
+                "surface": "Flat",
+                "shape": "Sharp",
+                "fill": "Subtle",
+                "effect": "None"
+              }
+            }
+          },
+          "footer": {
+            "type": "Type.Body",
+            "parameters": {
+              "text": "Tests give you confidence to refactor code without fear of silently breaking behavior."
+            }
+          },
+          "parameters": {},
+          "style_override": {
+            "background": "#FFFFFF",
+            "text_color": "#222222",
+            "accent_primary": "#306998",
+            "accent_secondary": "#FFD43B",
+            "code_font": "monospace"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "replace": {
+      "id": "slide_07_workflow_recap",
+      "rank": 700,
+      "style": "bento-vertical",
+      "contexts": [
+        {
+          "id": "slide_07_workflow_recap_ctx",
+          "type": "DisplayContext",
+          "layout": "Bento.VerticalStack",
+          "density": "moderate",
+          "header": {
+            "type": "Type.Heading",
+            "parameters": {
+              "text": "Recap: turn best practices into a daily checklist",
+              "level": 2
+            }
+          },
+          "widgets": {
+            "stage_1": {
+              "type": "Type.Display",
+              "parameters": {
+                "text": "Daily Python best-practice workflow (with code)"
+              },
+              "preset": {
+                "surface": "Flat",
+                "shape": "Sharp",
+                "fill": "Solid_Brand",
+                "effect": "None"
+              }
+            },
+            "stage_2": {
+              "type": "Type.List",
+              "parameters": {
+                "items": [
+                  "Name variables descriptively (rename x, y to total_price, tax_rate)",
+                  "Comment complex, non-obvious logic (explain tricky conditions)",
+                  "Follow PEP 8 formatting (run black or another formatter)",
+                  "Commit regularly with Git (small, clear commits)",
+                  "Create and run unit tests (pytest or unittest) before refactoring"
+                ],
+                "list_type": "unordered"
+              },
+              "preset": {
+                "surface": "Flat",
+                "shape": "Sharp",
+                "fill": "Subtle",
+                "effect": "None"
+              }
+            },
+            "stage_3": {
+              "type": "Type.Code",
+              "parameters": {
+                "language": "bash",
+                "code": "# Example mini-workflow for a small script\n$ python main.py          # write basic version\n# improve names, comments, and formatting\n$ black main.py           # or another formatter\n$ pytest -q               # run tests (add tests if missing)\n$ git add .\n$ git commit -m \"Improve naming, add tests\""
+              },
+              "preset": {
+                "surface": "Flat",
+                "shape": "Sharp",
+                "fill": "Flat",
+                "effect": "None"
+              }
+            }
+          },
+          "footer": {
+            "type": "Type.Body",
+            "parameters": {
+              "text": "Next step: pick a tiny script today, apply all five practices, and save the result in Git as your new baseline."
+            }
+          },
+          "parameters": {},
+          "style_override": {
+            "background": "#F7F7F9",
+            "text_color": "#222222",
+            "accent_primary": "#306998",
+            "accent_secondary": "#FFD43B",
+            "code_font": "monospace"
+          }
+        }
+      ]
+    }
+  }
+]

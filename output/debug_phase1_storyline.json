@@ -3,10 +3,10 @@
   "model": "Slide",
   "contexts": [
     {
-      "id": "slide_01_opening",
+      "id": "slide_01_setup_shift",
       "rank": 1,
       "state": "draft",
-      "story": "Open with Chao\u2019s journey as a hook to show how an engineer grew with AI waves, and frame the talk as a practical guide for developers navigating the LLM era.",
+      "story": "We\u2019ll start by anchoring the talk in Chao Wang\u2019s own AI journey to show how rapidly the field\u2014and developer roles\u2014have evolved, setting context for why your career strategy must adapt in the LLM era.",
       "atoms": [
         "timeline_001"
       ],
@@ -19,15 +19,14 @@
       "parameters": {}
     },
     {
-      "id": "slide_02_traditional_ai_world",
+      "id": "slide_02_from_pipeline_to_platform",
       "rank": 2,
       "state": "draft",
-      "story": "Describe the traditional AI model-centric world\u2014its linear workflow, clear role boundaries, and pain points\u2014to give the audience a baseline for how different today\u2019s LLM era is.",
+      "story": "Next, we\u2019ll contrast the traditional AI development pipeline with today\u2019s LLM-centric world so you can see how the nature of day-to-day developer work has fundamentally changed.",
       "atoms": [
         "stmt_001",
         "proc_001",
-        "stmt_002",
-        "stmt_003"
+        "comp_001"
       ],
       "density": "moderate",
       "layout": "",
@@ -38,16 +37,14 @@
       "parameters": {}
     },
     {
-      "id": "slide_03_shift_to_llm_era",
+      "id": "slide_03_how_llm_apps_are_built_now",
       "rank": 3,
       "state": "draft",
-      "story": "Show how large models changed the game\u2014from building standalone models to composing systems around powerful base models\u2014and what that means for how teams work.",
+      "story": "With that contrast in mind, we\u2019ll walk through a modern LLM-centric development workflow and highlight where the highest-leverage engineering work now happens.",
       "atoms": [
-        "stmt_004",
-        "proc_002",
-        "comp_001",
-        "stmt_005",
-        "stmt_006"
+        "stmt_002",
+        "stmt_003",
+        "proc_002"
       ],
       "density": "dense",
       "layout": "",
@@ -58,14 +55,15 @@
       "parameters": {}
     },
     {
-      "id": "slide_04_redefining_problems_products",
+      "id": "slide_04_high_roi_skills_for_devs",
       "rank": 4,
       "state": "draft",
-      "story": "Explain how problem definition itself has expanded in the LLM era, emphasizing human\u2013AI co-creation and imagining genuinely useful products beyond current model demos.",
+      "story": "We then translate this workflow shift into a concrete skills roadmap, focusing on the capabilities that most increase your career ROI in the AI era.",
       "atoms": [
-        "stmt_007",
-        "stmt_008",
-        "stmt_009"
+        "stmt_004",
+        "proc_003",
+        "stmt_005",
+        "stmt_008"
       ],
       "density": "moderate",
       "layout": "",
@@ -79,34 +77,32 @@
       "id": "slide_05_building_reliable_llm_systems",
       "rank": 5,
       "state": "draft",
-      "story": "Move from vision to implementation by showing how to make LLM systems reliable in practice, combining high-ROI prompt tuning with planner\u2013executor architectures to control errors.",
+      "story": "To make these skills tangible, we\u2019ll look at practical patterns\u2014prompt tuning and planner\u2013executor architectures\u2014that developers can use to build more reliable LLM-powered systems.",
       "atoms": [
-        "proc_003",
-        "stmt_010",
         "proc_004",
-        "stmt_011"
-      ],
-      "density": "dense",
-      "layout": "",
-      "widgets": {},
-      "header": null,
-      "footer": null,
-      "style_override": {},
-      "parameters": {}
-    },
-    {
-      "id": "slide_06_roles_and_high_roi_skills",
-      "rank": 6,
-      "state": "draft",
-      "story": "Connect system patterns back to people by contrasting engineers and applied scientists, then highlight the high-ROI skills developers should build to thrive in these evolving roles.",
-      "atoms": [
-        "comp_002",
-        "stmt_012",
-        "stmt_013",
-        "stmt_014",
-        "stmt_015",
+        "stmt_006",
         "proc_005"
       ],
+      "density": "moderate",
+      "layout": "",
+      "widgets": {},
+      "header": null,
+      "footer": null,
+      "style_override": {},
+      "parameters": {}
+    },
+    {
+      "id": "slide_06_roles_evolving_and_staying_current",
+      "rank": 6,
+      "state": "draft",
+      "story": "Zooming out, we\u2019ll examine how engineering and applied science roles are converging, why role boundaries are shifting (just like testers did), and how to stay current without burning out.",
+      "atoms": [
+        "comp_002",
+        "stmt_007",
+        "stmt_009",
+        "stmt_010",
+        "proc_006"
+      ],
       "density": "dense",
       "layout": "",
       "widgets": {},
@@ -116,51 +112,13 @@
       "parameters": {}
     },
     {
-      "id": "slide_07_human_edge_and_staying_relevant",
+      "id": "slide_07_closing_make_every_step_solid",
       "rank": 7,
       "state": "draft",
-      "story": "Reassure the audience by clarifying where humans still have an edge\u2014system-level thinking and low-level performance\u2014and how embracing change keeps developers relevant as AI advances.",
-      "atoms": [
-        "stmt_016",
-        "stmt_017",
-        "stmt_018",
-        "stmt_019"
-      ],
-      "density": "moderate",
-      "layout": "",
-      "widgets": {},
-      "header": null,
-      "footer": null,
-      "style_override": {},
-      "parameters": {}
-    },
-    {
-      "id": "slide_08_how_chao_uses_ai_tools",
-      "rank": 8,
-      "state": "draft",
-      "story": "Ground the advice with a concrete example of Chao\u2019s own AI-augmented workflow, showing how to treat specs as a single source of truth and adopt tools in a task-driven way.",
-      "atoms": [
-        "proc_006",
-        "stmt_020",
-        "stmt_021",
-        "stmt_022"
-      ],
-      "density": "moderate",
-      "layout": "",
-      "widgets": {},
-      "header": null,
-      "footer": null,
-      "style_override": {},
-      "parameters": {}
-    },
-    {
-      "id": "slide_09_closing_principle",
-      "rank": 9,
-      "state": "draft",
-      "story": "Close with a simple, memorable principle\u2014making every step solid\u2014as a compass for how developers should approach their work and learning in the fast-changing AI landscape.",
+      "story": "We\u2019ll close with a simple principle\u2014making every step solid\u2014that ties together technical excellence and long-term career growth in the AI era.",
       "atoms": [
         "quote_001",
-        "stmt_023"
+        "stmt_011"
       ],
       "density": "minimal",
       "layout": "",

@@ -2,9 +2,10 @@
 
 This module coordinates the complete generation pipeline:
 1. Detect presentation intent from user instruction
-2. Extract atoms from source content (guided by intent)
-3. Generate slide layouts from atoms (guided by intent)
-4. Return Slides collection ready for rendering
+2. Generate visual styling (theme, style, preset) from intent
+3. Extract atoms from source content (guided by intent)
+4. Generate slide layouts from atoms (guided by intent)
+5. Return Slides collection ready for rendering
 """
 from pathlib import Path
 from typing import Optional
@@ -14,8 +15,9 @@ from src.common.source import Source
 from src.common.slides import Slides
 from src.generation.atom.collection import AtomCollection
 from src.generation.atom.extractor import extract_atoms
-from src.generation.content.generator import generate_layout
+from src.generation.content.generator import generate_layout, refine_layout
 from src.generation.intent.detector import detect_intent, PresentationIntent
+from src.generation.visual.generator import generate_visual, Visual
 from src.utils.generation_config import GenerationConfig
 from src.common.patchable_context_pydantic import AddOperation, Patch
 
@@ -25,7 +27,7 @@ logger = logging.getLogger(__name__)
 class GenerationOrchestrator:
     """Orchestrates the LLM-based content generation workflow.
     
-    Coordinates atom extraction and layout generation with caching support.
+    Coordinates visual generation, atom extraction, and layout generation with caching support.
     Supports continuous refinement with new user instructions while maintaining state.
     """
     
@@ -41,7 +43,9 @@ class GenerationOrchestrator:
         self._source: Optional[Source] = None
         self._created_sources: dict = {}  # Map source_ref -> Source
         self._intent: Optional[PresentationIntent] = None
+        self._visual: Optional[Visual] = None  # Store visual styling
         self._atoms: Optional[AtomCollection] = None
+        self._slides: Optional[Slides] = None  # Store previous slides for refinement
         self._last_instruction: Optional[str] = None
         self._config: Optional[GenerationConfig] = None
     
@@ -108,14 +112,19 @@ class GenerationOrchestrator:
         intent: Optional[PresentationIntent] = None
         try:
             # Get preview of source content for intent detection
-            source_preview = source_content[:1000]  # First 1000 chars
+            # Use abstract from source metadata (set by atom extraction)
+            # If not available yet (before atom extraction), create basic preview
+            source_preview = self._source.metadata.get(
+                "abstract",
+                f"{source.name}\n\nContent preview: {source_content[:200]}..."
+            )
             
             # Build source_refs for multi-source atom extraction tasks
             # For now, single source - future: support multiple sources
             source_refs = [
                 {
                     'ref': source.source_id,
-                    'summary': f"{source.name} ({content_type}): {source_preview[:200]}..."
+                    'summary': source.metadata.get("abstract", f"{source.name}: {source_content[:100]}...")
                 }
             ]
             
@@ -123,6 +132,7 @@ class GenerationOrchestrator:
                 user_instruction=instruction,
                 source_preview=source_preview,
                 source_refs=source_refs,
+                existing_slides_summary=None,  # No existing slides on first generation
                 config=None,  # Use default config
                 use_cache=self.use_cache
             )
@@ -181,12 +191,16 @@ class GenerationOrchestrator:
         should_extract_atoms = True
         atom_guidance = ""
         
-        if intent and intent.stage_changes:
+        # Skip atom extraction if source already has abstract (atoms already extracted)
+        if 'abstract' in source.metadata and self._atoms is not None:
+            should_extract_atoms = False
+            print(f"✓ Source already has atoms extracted, reusing existing atoms")
+        elif intent and intent.stage_changes:
             atom_stage = next((s for s in intent.stage_changes if s.stage_name == "atom_extraction"), None)
             if atom_stage:
                 should_extract_atoms = atom_stage.should_execute
                 atom_guidance = atom_stage.guidance
-                print(f"  Atom extraction stage: {'enabled' if should_extract_atoms else 'skipped'}")
+                print(f"  Atom extraction stage: {'enabled' if should_extract_atoms else 'skipped (per intent)'}")
         
         # Use atom_extraction_guidance fallback if no stage-specific guidance
         if not atom_guidance and intent:
@@ -215,7 +229,7 @@ class GenerationOrchestrator:
             # Sort tasks by priority (1=highest)
             sorted_tasks = sorted(tasks, key=lambda t: t.priority)
             
-            for task in sorted_tasks:
+            for task_idx, task in enumerate(sorted_tasks):
                 # Determine which source to use
                 if task.requires_source_creation:
                     # Use source from source_changes
@@ -238,8 +252,17 @@ class GenerationOrchestrator:
                     intent_guidance=task.extraction_prompt
                 )
                 
-                # Combine atoms from all tasks
+                # Combine atoms with unique IDs (prefix with task index to avoid collisions)
                 for atom in task_atoms.list_contexts():
+                    # Clone atom with prefixed ID if this is not the first task
+                    if task_idx > 0:
+                        atom_dict = atom.model_dump()
+                        original_id = atom_dict['id']
+                        atom_dict['id'] = f"t{task_idx}_{original_id}"
+                        # Recreate atom with new ID
+                        atom_class = type(atom)
+                        atom = atom_class(**atom_dict)
+                    
                     combined_atoms.patch(Patch(operations=[AddOperation(add=atom)]))
                 
                 print(f"    ✓ Extracted {len(task_atoms.list_contexts())} atoms from {task.source_ref}")
@@ -255,13 +278,37 @@ class GenerationOrchestrator:
         # Store atoms for continuous refinement
         self._atoms = atoms
         
-        # Step 2: Generate layout (with intent guidance if available)
+        # Step 2: Generate visual styling if needed
+        if intent and intent.visual_change and intent.visual_change.should_generate:
+            # User explicitly requested visual changes
+            print(f"🎨 Generating visual styling (theme, style, preset)...")
+            self._visual = generate_visual(
+                intent_guidance=intent.visual_change.visual_guidance,
+                audience=intent.audience,
+                tone=intent.visual_change.tone,
+                purpose=intent.purpose,
+                use_cache=self.use_cache
+            )
+            print(f"✓ Visual styling generated")
+        elif self._visual is not None:
+            # Reuse cached visual from previous generation
+            print(f"♻ Reusing cached visual styling")
+        else:
+            # No visual change requested and no cached visual - generate default
+            print(f"🎨 Generating default visual styling...")
+            self._visual = generate_visual(
+                intent_guidance="Professional presentation styling",
+                audience=intent.audience if intent else "general",
+                tone=intent.tone if intent else "professional",
+                purpose=intent.purpose if intent else "inform",
+                use_cache=self.use_cache
+            )
+            print(f"✓ Default visual styling generated")
+        
+        # Step 3: Generate layout (with intent guidance if available)
         if intent:
-            # Format comprehensive guidance including theme and preset
+            # Format content guidance (visual styling handled separately in Visual object)
             content_guidance = f"""**Content Strategy**: {intent.content_generation_guidance}
-
-**Theme Recommendation**: {intent.theme_guidance}
-**Preset Recommendation**: {intent.preset_guidance}
 
 **Additional Context**:
 - Audience: {intent.audience}
@@ -279,6 +326,11 @@ class GenerationOrchestrator:
             use_cache=self.use_cache,
             intent_guidance=content_guidance
         )
+        
+        # Store slides for future refinement
+        # Note: Visual styling is stored separately in self._visual
+        # and accessed via get_visual() method
+        self._slides = slides
         
         return slides
     
@@ -316,18 +368,33 @@ class GenerationOrchestrator:
         # Re-detect intent with new instruction if requested
         if redetect_intent:
             try:
-                source_preview = self._source.content[:1000]
+                # Use abstract from source metadata (set by atom extraction)
+                source_preview = self._source.metadata.get(
+                    "abstract",
+                    f"{self._source.name}\n\nContent preview: {self._source.content[:200]}..."
+                )
+                
                 source_refs = [
                     {
                         'ref': self._source.source_id,
-                        'summary': f"{self._source.name} ({self._source.content_type}): {source_preview[:200]}..."
+                        'summary': self._source.metadata.get("abstract", f"{self._source.name}: {self._source.content[:100]}...")
                     }
                 ]
+                
+                # Build existing slides summary for context
+                existing_slides_summary = None
+                if self._slides and len(self._slides.list_contexts()) > 0:
+                    slides_list = []
+                    for slide in self._slides.get_active_slides():
+                        story_preview = slide.story[:80] + "..." if len(slide.story) > 80 else slide.story
+                        slides_list.append(f"  - Slide {slide.rank}: {slide.id} | {story_preview}")
+                    existing_slides_summary = f"{len(slides_list)} existing slides:\n" + "\n".join(slides_list)
                 
                 self._intent = detect_intent(
                     user_instruction=new_instruction,
                     source_preview=source_preview,
                     source_refs=source_refs,
+                    existing_slides_summary=existing_slides_summary,
                     config=None,
                     use_cache=self.use_cache
                 )
@@ -353,23 +420,88 @@ class GenerationOrchestrator:
                 print(f"⚠ Intent re-detection failed: {e}. Using previous intent.")
                 logger.warning(f"Intent re-detection failed: {e}")
         
-        # Re-extract atoms if not reusing or if new sources detected
-        if not reuse_atoms or (self._intent and self._intent.source_changes):
+        # Regenerate visual if explicitly requested
+        if self._intent and self._intent.visual_change and self._intent.visual_change.should_generate:
+            print(f"🎨 Regenerating visual styling (theme, style, preset)...")
+            self._visual = generate_visual(
+                intent_guidance=self._intent.visual_change.visual_guidance,
+                audience=self._intent.audience,
+                tone=self._intent.visual_change.tone,
+                purpose=self._intent.purpose,
+                use_cache=self.use_cache
+            )
+            print(f"✓ Visual styling regenerated")
+        elif self._visual is not None:
+            # Reuse cached visual
+            print(f"♻ Reusing cached visual styling")
+        else:
+            # No cached visual - generate default
+            print(f"🎨 Generating default visual styling...")
+            self._visual = generate_visual(
+                intent_guidance="Professional presentation styling",
+                audience=self._intent.audience if self._intent else "general",
+                tone=self._intent.tone if self._intent else "professional",
+                purpose=self._intent.purpose if self._intent else "inform",
+                use_cache=self.use_cache
+            )
+            print(f"✓ Default visual styling generated")
+        
+        # Re-extract atoms only if explicitly needed (not for visual-only changes)
+        # Check if this is a visual-only refinement
+        is_visual_only = (
+            self._intent 
+            and self._intent.visual_change 
+            and self._intent.visual_change.should_generate
+            and not any(s.should_execute for s in self._intent.stage_changes if s.stage_name in ["atom_extraction", "storyline", "slide_generation"])
+        )
+        
+        if is_visual_only:
+            print(f"✓ Visual-only refinement detected - skipping atom extraction and content regeneration")
+            # Return existing slides with updated visual
+            return self._slides
+        
+        # Re-extract atoms if not reusing or if intent requires it
+        should_reextract = False
+        if not reuse_atoms:
+            should_reextract = True
+        elif self._intent and self._intent.stage_changes:
+            atom_stage = next((s for s in self._intent.stage_changes if s.stage_name == "atom_extraction"), None)
+            if atom_stage and atom_stage.should_execute:
+                should_reextract = True
+        
+        if should_reextract:
             print(f"⚙ Re-extracting atoms with new guidance...")
             self._atoms = self._extract_atoms_from_intent()
         else:
             print(f"♻ Reusing {len(self._atoms.list_contexts())} atoms from previous extraction")
         
-        # Generate new layout with atoms and new intent
+        # Refine existing slides incrementally with new instruction
         content_guidance = self._build_content_guidance()
         
-        slides = generate_layout(
-            atoms=self._atoms,
-            user_instruction=new_instruction,
-            config=self._config,
-            use_cache=self.use_cache,
-            intent_guidance=content_guidance
-        )
+        if self._slides is not None:
+            # Incremental refinement: patch existing slides
+            print(f"🔧 Applying incremental refinement to {len(self._slides.list_contexts())} existing slides...")
+            slides = refine_layout(
+                existing_slides=self._slides,
+                atoms=self._atoms,
+                refinement_instruction=new_instruction,
+                config=self._config,
+                use_cache=self.use_cache,
+                intent_guidance=content_guidance
+            )
+        else:
+            # Fallback to full generation if no previous slides
+            print(f"⚙ No previous slides found, generating from scratch...")
+            slides = generate_layout(
+                atoms=self._atoms,
+                user_instruction=new_instruction,
+                config=self._config,
+                use_cache=self.use_cache,
+                intent_guidance=content_guidance
+            )
+        
+        # Store refined slides for next iteration
+        self._slides = slides
         
         return slides
     
@@ -416,7 +548,7 @@ class GenerationOrchestrator:
         
         sorted_tasks = sorted(tasks, key=lambda t: t.priority)
         
-        for task in sorted_tasks:
+        for task_idx, task in enumerate(sorted_tasks):
             if task.requires_source_creation:
                 if task.source_ref in self._created_sources:
                     task_source = self._created_sources[task.source_ref]
@@ -433,8 +565,17 @@ class GenerationOrchestrator:
                 intent_guidance=task.extraction_prompt
             )
             
-            # Combine atoms from all tasks
+            # Combine atoms with unique IDs (prefix with task index to avoid collisions)
             for atom in task_atoms.list_contexts():
+                # Clone atom with prefixed ID if this is not the first task
+                if task_idx > 0:
+                    atom_dict = atom.model_dump()
+                    original_id = atom_dict['id']
+                    atom_dict['id'] = f"t{task_idx}_{original_id}"
+                    # Recreate atom with new ID
+                    atom_class = type(atom)
+                    atom = atom_class(**atom_dict)
+                
                 combined_atoms.patch(Patch(operations=[AddOperation(add=atom)]))
             
             print(f"  ✓ Extracted {len(task_atoms.list_contexts())} atoms from {task.source_ref}")
@@ -462,6 +603,14 @@ class GenerationOrchestrator:
 - Tone: {self._intent.tone}
 - Visual Density: {self._intent.visual_density}"""
     
+    def get_visual(self) -> Optional[Visual]:
+        """Get the current visual styling.
+        
+        Returns:
+            Visual object if generated, None otherwise
+        """
+        return self._visual
+    
     def get_current_state(self) -> dict:
         """Get current orchestrator state for inspection.
         
@@ -474,7 +623,9 @@ class GenerationOrchestrator:
             'created_sources': list(self._created_sources.keys()),
             'has_intent': self._intent is not None,
             'intent_pattern': self._intent.pattern if self._intent else None,
+            'has_visual': self._visual is not None,
             'atoms_count': len(self._atoms.list_contexts()) if self._atoms else 0,
+            'slides_count': len(self._slides.list_contexts()) if self._slides else 0,
             'last_instruction': self._last_instruction
         }
     
@@ -483,7 +634,9 @@ class GenerationOrchestrator:
         self._source = None
         self._created_sources = {}
         self._intent = None
+        self._visual = None
         self._atoms = None
+        self._slides = None
         self._last_instruction = None
         self._config = None
     
@@ -511,7 +664,7 @@ def generate_from_file(
     source_path: Path,
     user_instruction: Optional[str] = None,
     use_cache: bool = True
-) -> Slides:
+) -> tuple[Slides, Optional[Visual]]:
     """Convenience function to generate slides from source file.
     
     Args:
@@ -520,7 +673,7 @@ def generate_from_file(
         use_cache: Enable caching for LLM calls (default: True)
         
     Returns:
-        Slides collection ready for rendering
+        Tuple of (Slides collection ready for rendering, Visual styling if generated)
         
     Raises:
         FileNotFoundError: If source file doesn't exist
@@ -528,4 +681,6 @@ def generate_from_file(
         Exception: If LLM generation fails
     """
     orchestrator = GenerationOrchestrator(use_cache=use_cache)
-    return orchestrator.generate_from_source(source_path, user_instruction)
+    slides = orchestrator.generate_from_source(source_path, user_instruction)
+    visual = orchestrator.get_visual()
+    return slides, visual

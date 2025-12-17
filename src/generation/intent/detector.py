@@ -74,7 +74,7 @@ class StageChange(BaseModel):
     
     stage_name: str = Field(
         ...,
-        description="Name of the stage (atom_extraction, storyline, slide_generation, theme, preset)"
+        description="Name of the stage (atom_extraction, storyline, slide_generation, visual)"
     )
     should_execute: bool = Field(
         default=True,
@@ -87,6 +87,27 @@ class StageChange(BaseModel):
     parameters: Dict[str, Any] = Field(
         default_factory=dict,
         description="Stage-specific parameters (e.g., {'focus': 'learning', 'density': 'minimal'})"
+    )
+
+
+class VisualChange(BaseModel):
+    """Specification of visual styling changes (theme, style, preset)."""
+    
+    should_generate: bool = Field(
+        default=True,
+        description="Whether to generate new visual styling"
+    )
+    visual_guidance: str = Field(
+        default="",
+        description="Guidance for visual generation (colors, typography, effects)"
+    )
+    tone: str = Field(
+        default="professional",
+        description="Visual tone (professional, casual, technical, creative, etc.)"
+    )
+    parameters: Dict[str, Any] = Field(
+        default_factory=dict,
+        description="Additional visual parameters"
     )
 
 
@@ -147,12 +168,17 @@ class PresentationIntent(BaseModel):
         default_factory=list,
         description="Stage-specific changes. Downstream stages consume these to conditionally execute or modify behavior."
     )
+    visual_change: Optional[VisualChange] = Field(
+        default=None,
+        description="Visual styling change specification. If present, triggers visual generation (theme, style, preset)."
+    )
 
 
 def detect_intent(
     user_instruction: str,
     source_preview: str,
     source_refs: Optional[List[Dict[str, str]]] = None,
+    existing_slides_summary: Optional[str] = None,
     config: Optional[GenerationConfig] = None,
     use_cache: bool = True
 ) -> PresentationIntent:
@@ -160,10 +186,11 @@ def detect_intent(
     
     Args:
         user_instruction: User's instructions for presentation generation
-        source_preview: Preview of source content (first ~500 chars)
+        source_preview: Brief abstract/summary of source content (NOT full content)
         source_refs: Optional list of source references with summaries.
-                     Each dict should have: {'ref': 'source_id', 'summary': 'brief description'}
+                     Each dict should have: {'ref': 'source_id', 'summary': 'brief abstract'}
                      If provided, atom_extraction_tasks will be generated per source.
+        existing_slides_summary: Optional summary of existing slides (id, rank, story) for refinement
         config: Optional LLM configuration (uses default if not provided)
         use_cache: Enable caching for LLM calls
         
@@ -183,7 +210,7 @@ def detect_intent(
     
     # Build prompt
     system_prompt = _build_intent_detection_system_prompt()
-    user_prompt = _build_intent_detection_user_prompt(user_instruction, source_preview, source_refs)
+    user_prompt = _build_intent_detection_user_prompt(user_instruction, source_preview, source_refs, existing_slides_summary)
     
     # Setup cache
     cache = GenerationCache(Path(".cache/intent"))
@@ -323,19 +350,23 @@ Based on audience, tone, and pattern, recommend:
 Based on user intent, determine what changes each pipeline stage needs:
 
 1. **atom_extraction Stage**:
-   - should_execute: true (always needed) or false (skip if using pre-extracted content)
+   - should_execute: true ONLY if this is initial generation OR user explicitly requests new content extraction
+   - For refinements: default to false (reuse existing atoms) unless explicitly needed
    - guidance: What to focus on extracting (e.g., "Focus on actionable lessons, not biographical details")
    - parameters: {"focus": "learning|narrative|data", "granularity": "high|medium|low"}
+   - Set to false for: visual-only changes, refinements without new content, layout-only changes
 
 2. **storyline Stage**:
-   - should_execute: true (generate storyline) or false (skip if simple linear flow)
+   - should_execute: true (generate storyline) or false (skip if simple linear flow OR visual-only change)
    - guidance: How to structure the narrative arc
    - parameters: {"pattern": "story|tutorial|showcase|pitch|report", "arc": "hero|problem-solution|chronological"}
+   - Set to false for: visual-only changes, minor refinements that don't change story
 
 3. **slide_generation Stage**:
-   - should_execute: true (always needed)
+   - should_execute: true (always needed) or false (visual-only change)
    - guidance: Content generation strategy
    - parameters: {"density": "minimal|moderate|dense", "emphasis": "visual|text|data"}
+   - Set to false for: visual-only changes that don't modify slide content
 
 4. **theme Stage**:
    - should_execute: true (generate custom theme) or false (use default)
@@ -361,6 +392,13 @@ Detect if user instruction contains EMBEDDED CONTENT that should become new sour
 - User provides structured content directly in instruction (not just describing what they want)
 - Content is concrete/specific enough to extract atoms from
 - Content is separate from the style/tone/audience guidance
+
+**When NOT to Create source_changes** (CRITICAL):
+- Visual/styling instructions only: "change to dark theme", "make it colorful", "use rounded corners"
+- General refinement instructions: "make it more technical", "simplify for beginners"
+- Layout/structure changes: "use different layouts", "make slides shorter"
+- Tone/style changes: "be more casual", "add humor"
+- These should set visual_change and stage_changes, but NOT create source_changes
 
 **Example source_change**:
 ```json
@@ -474,30 +512,57 @@ Example with user-provided source:
   ],
   "stage_changes": [
     {
-      "stage_name": "atom_extraction|storyline|slide_generation|theme|preset",
+      "stage_name": "atom_extraction|storyline|slide_generation",
       "should_execute": true|false,
       "guidance": "string - stage-specific guidance",
       "parameters": {"key": "value"}
     }
-  ]
+  ],
+  "visual_change": {
+    "should_generate": true|false,
+    "visual_guidance": "string - ONLY if should_generate=true, combine theme_guidance and preset_guidance into comprehensive visual instructions. Example: 'Dark tech theme: #0a0a0a bg, #0066ff primary, #ff4400 accent. Use Elevated+Rounded+Gradient_Linear+Glow for modern energetic feel.'",
+    "tone": "string - ONLY if should_generate=true, visual tone (professional/casual/energetic/technical/creative)",
+    "parameters": {}
+  }
 }
 
-**Guidelines**:
-- source_changes: Detect embedded content in user_instruction. Empty [] if no embedded content.
-- atom_extraction_tasks: Include tasks for both existing sources AND user-provided sources (from source_changes)
-- Tasks with requires_source_creation=true depend on source_changes being processed first
-- stage_changes: Always provide for all 5 stages (atom_extraction, storyline, slide_generation, theme, preset)
-- should_execute=false only when user explicitly says to skip or when not needed
-- Default: should_execute=true for all stages except when clear intent to skip"""
+**EXAMPLE - Visual-only instruction:**
+User: "change to green theme"
+{
+  "source_changes": [],
+  "stage_changes": [
+    {"stage_name": "atom_extraction", "should_execute": false},
+    {"stage_name": "storyline", "should_execute": false},
+    {"stage_name": "slide_generation", "should_execute": false}
+  ],
+  "visual_change": {
+    "should_generate": true,
+    "visual_guidance": "Green theme: Use green as primary color #00aa00, with dark bg #0f0f0f",
+    "tone": "professional"
+  }
+}
+
+**CRITICAL - visual_change field**:
+- ALWAYS include visual_change in your output
+- Set should_generate=true to trigger custom visual generation
+- Combine theme_guidance and preset_guidance into detailed visual_guidance
+- visual_guidance should include: color palette (hex codes), surface style, shape, fill, effects
+- Default should_generate to true unless user explicitly wants default styling"""
 
 
-def _build_intent_detection_user_prompt(user_instruction: str, source_preview: str, source_refs: Optional[List[Dict[str, str]]] = None) -> str:
+def _build_intent_detection_user_prompt(
+    user_instruction: str, 
+    source_preview: str, 
+    source_refs: Optional[List[Dict[str, str]]] = None,
+    existing_slides_summary: Optional[str] = None
+) -> str:
     """Build user prompt for intent detection.
     
     Args:
         user_instruction: User's instructions
-        source_preview: Preview of source content
+        source_preview: Brief abstract/summary of source (NOT full content)
         source_refs: Optional list of source references with summaries
+        existing_slides_summary: Optional summary of existing slides for refinement
         
     Returns:
         User prompt string
@@ -514,36 +579,61 @@ def _build_intent_detection_user_prompt(user_instruction: str, source_preview: s
     else:
         source_refs_text = "\n\n**Note**: Single source provided. Leave atom_extraction_tasks as empty array [].\n"
     
+    # Build existing slides context if provided
+    slides_context = ""
+    if existing_slides_summary:
+        slides_context = f"""
+
+**Existing Slides** (for refinement):
+{existing_slides_summary}
+"""
+    
     return f"""Analyze this presentation request and detect the optimal approach:
 
 **User Instruction**:
 {user_instruction}
 
-**Source Content Preview**:
-{source_preview[:500]}...{source_refs_text}
+**Source Content Summary** (abstract only, NOT full content):
+{source_preview}{slides_context}{source_refs_text}
 
 Based on the instruction and content, determine:
-1. **CRITICAL**: Does the user instruction contain EMBEDDED CONTENT (lists, topics, data, quotes, requirements)?
+1. **CRITICAL - Check if this is a VISUAL-ONLY or STYLE-ONLY instruction**:
+   - Visual/theme changes: "change to dark/green/blue theme", "make it colorful", "use rounded corners"
+   - If YES: Set source_changes=[], ALL stage_changes.should_execute=false (including atom_extraction), visual_change.should_generate=true
+   - If NO visual request: Set visual_change.should_generate=false (reuse cached visual)
+   - If YES: Skip questions 3-10 below, just set visual_change and return
+   
+2. **CRITICAL - Check if atoms need to be extracted**:
+   - If this is a REFINEMENT (existing slides provided): Default atom_extraction.should_execute=false (reuse cached atoms)
+   - Only set atom_extraction.should_execute=true if user explicitly requests new content extraction
+   - If this is INITIAL GENERATION (no existing slides): Set atom_extraction.should_execute=true
+   
+3. **CRITICAL**: Does the user instruction contain EMBEDDED CONTENT (lists, topics, data, quotes, requirements)?
    - If YES: Extract to source_changes with appropriate content and metadata
    - Create atom_extraction_tasks with requires_source_creation=true for these sources
-2. Who is the target audience? (Consider their expertise, needs, and preferences)
-3. What is the main purpose? (Educate, persuade, inform, entertain?)
-4. Which slide pattern fits best? (Story, tutorial, showcase, pitch, report, techtuber)
-5. What tone should we use? (Professional, casual, energetic, authoritative)
-6. What visual density is appropriate? (Minimal, balanced, rich)
-7. What should the atom extractor focus on? (Key concepts, technical details, metrics, quotes?)
-8. How should content be generated? (Narrative flow, logical steps, data-driven, emotional appeal?)
-9. What changes are needed for each pipeline stage? (Provide stage_changes for all 5 stages)
-10. Create atom_extraction_tasks for:
+   - If NO and not visual-only: Set source_changes=[]
+   
+4. Who is the target audience? (Consider their expertise, needs, and preferences)
+4. What is the main purpose? (Educate, persuade, inform, entertain?)
+5. Which slide pattern fits best? (Story, tutorial, showcase, pitch, report, techtuber)
+6. What tone should we use? (Professional, casual, energetic, authoritative)
+7. What visual density is appropriate? (Minimal, balanced, rich)
+8. What should the atom extractor focus on? (Key concepts, technical details, metrics, quotes?)
+9. How should content be generated? (Narrative flow, logical steps, data-driven, emotional appeal?)
+10. What changes are needed for each pipeline stage? (Provide stage_changes for content stages)
+11. Create atom_extraction_tasks for:
     - Existing sources (from source_refs) with requires_source_creation=false
     - User-provided sources (from source_changes) with requires_source_creation=true
 
-**IMPORTANT**: Look carefully at the user instruction for embedded content patterns:
-- Numbered/bulleted lists
-- "Include these topics: ..."
-- "Show this data: ..."
-- "Cover: A, B, C"
-- Direct quotes or requirements
+**IMPORTANT - Pattern Detection**:
+- **Visual/Style Instructions**: "change theme", "make it colorful", "use different colors"
+  → source_changes=[], stage_changes all false, visual_change.should_generate=true
+  
+- **Embedded Content**: Numbered/bulleted lists, "Include these topics", "Show this data", "Cover: A, B, C"
+  → Create source_changes, atom_extraction_tasks with requires_source_creation=true
+  
+- **General Refinements**: "make it more technical", "simplify", "add examples"
+  → source_changes=[], stage_changes as appropriate, may include visual_change
 
 Return the analysis as JSON following the schema above."""
 
