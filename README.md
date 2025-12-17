@@ -108,43 +108,6 @@ uce-render --source "data\context\career_talk.txt" --user-instruction "Generate 
 
 ```
 
-### 4. Create a Configuration File
-
-`dashboard.json`:
-```json
-{
-  "strategy": "Bento.Standard",
-  "theme": {
-    "primary_color": "#2563eb",
-    "accent_color": "#7c3aed",
-    "font_family": "Inter, sans-serif"
-  },
-  "style": {
-    "theme_name": "default",
-    "gap": "24px",
-    "padding": "32px"
-  },
-  "widgets": {
-    "cell_1": {
-      "type": "Type.Display",
-      "parameters": {
-        "text": "Dashboard",
-        "style": "bold",
-        "align": "center"
-      }
-    },
-    "cell_2": {
-      "type": "Data.BigNum",
-      "parameters": {
-        "value": 1247,
-        "label": "Total Users",
-        "color": "accent"
-      }
-    }
-  }
-}
-```
-
 ## Architecture
 
 **Pipeline**: `Configuration → LayoutEngine → RenderableLayout → HTMLRenderer → HTML`
