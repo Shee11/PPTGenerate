@@ -54,15 +54,72 @@ All widgets and slots use T-Shirt sizing (S/M/L/XL) with automatic constraint va
 - **L** (Large): Emphasized content
 - **XL** (Extra Large): Hero content, full-bleed
 
-## Installation
-
-```bash
-pip install -e ".[dev]"
-```
-
 ## Quick Start
 
-### 1. Create a Configuration File
+### 1. Set Up Virtual Environment
+
+**Windows (PowerShell):**
+```powershell
+# Create virtual environment
+python -m venv venv
+
+# Activate virtual environment
+.\venv\Scripts\Activate.ps1
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Install CLI tool
+pip install -e .
+```
+
+**macOS/Linux:**
+```bash
+# Create virtual environment
+python3 -m venv venv
+
+# Activate virtual environment
+source venv/bin/activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Install CLI tool
+pip install -e .
+```
+
+### 2. Verify Installation
+
+```bash
+# Check CLI is installed
+uce-render --help
+
+# List available resources
+uce-render --list-strategies
+uce-render --list-widgets
+uce-render --list-themes
+```
+
+### 3. Run Sample Commands
+
+```bash
+# Render a sample configuration
+uce-render data/test_01_bento_standard_typography.json -o output/sample.html
+
+# Validate configuration without rendering
+uce-render data/test_02_bento_standard_data.json --validate-only
+
+# Render with custom dimensions
+uce-render data/test_06_swiss_poster_display.json -o output/poster.html -w 3840 -h 2160
+
+# Generate from source text with LLM
+uce-render --source examples/content.txt --user-instruction "Create a dashboard" -o output/generated.html
+
+# View output in verbose mode
+uce-render data/test_09_cinematic_split5050_display.json -o output/cinematic.html -v
+```
+
+### 4. Create a Configuration File
 
 `dashboard.json`:
 ```json
@@ -99,7 +156,7 @@ pip install -e ".[dev]"
 }
 ```
 
-### 2. Render to HTML
+### 5. Render to HTML
 
 ```bash
 # Render to stdout
@@ -115,7 +172,7 @@ uce-render dashboard.json --validate-only
 uce-render dashboard.json --output result.html --verbose
 ```
 
-### 3. Python API
+### 6. Python API
 
 ```python
 from src.layout.layout_engine import LayoutEngine
