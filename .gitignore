@@ -53,3 +53,5 @@ Thumbs.db
 debug/
 .cache/
 .env
+node_modules
+output/

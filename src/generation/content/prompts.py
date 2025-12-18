@@ -243,7 +243,7 @@ IMPORTANT RULES:
 5. Include: id, rank, state="draft", strategy, widgets=(empty dict), parameters=(empty dict)
 6. **CRITICAL**: Do NOT create slides with strategies "Theme.Set" or "Preset.Set" - use patch operations instead
 7. **ONLY use strategies from the Available Layout Strategies list above** for actual content slides
-8. **SLIDE COUNT LIMIT**: Create 7-15 slides MAXIMUM. If you have more atoms, merge them into fewer slides with richer layouts (Bento.Standard, Matrix.Grid, etc.)
+8. **SLIDE COUNT LIMIT**: Create 7-15 slides MAXIMUM. If you have more atoms, merge them into fewer slides with richer layouts.
 
 **Theme/Preset Configuration** (Required):
 - Generate "set_theme" operation with theme colors, typography, spacing
@@ -254,8 +254,8 @@ IMPORTANT RULES:
 [
   {{"set_theme": {{"id": "tech_blue", "primary_color": "#0066ff", "accent_color": "#00ccff", "background_color": "#ffffff", "text_color": "#1a1a1a"}}}},
   {{"set_preset": {{"surface": "Elevated", "shape": "Rounded", "fill": "Solid_Brand", "effect": "Shadow"}}}},
-  {{"add": {{"id": "slide_001", "rank": 1, "state": "draft", "layout": "Swiss.Poster", "widgets": {{}}, "parameters": {{}}}}}},
-  {{"add": {{"id": "slide_002", "rank": 2, "state": "draft", "layout": "Bento.Standard", "widgets": {{}}, "parameters": {{}}}}}}
+  {{"add": {{"id": "slide_001", "rank": 1, "state": "draft", "layout": "<layout_from_docs>", "widgets": {{}}, "parameters": {{}}}}}},
+  {{"add": {{"id": "slide_002", "rank": 2, "state": "draft", "layout": "<layout_from_docs>", "widgets": {{}}, "parameters": {{}}}}}}
 ]
 
 **Output Format**: Return a JSON array where each element is an object with an 'add' key.
@@ -290,13 +290,12 @@ def _build_content_generation_system_prompt() -> str:
 
 **MARKDOWN FORMATTING**:
 Use markdown syntax in widget text for emphasis:
-- ==highlight== for key terms, metrics, technical names (will render with theme accent color background)
-- **bold** for strong emphasis, important concepts (will render with theme accent color)
-- Examples: "Scale to ==1M requests/sec== with **zero downtime**"
+- **bold** for strong emphasis, important concepts, key terms
+- Examples: "Scale to **1M requests/sec** with zero downtime"
 
 **ABSTRACTION EXAMPLES**:
 - ❌ "This architecture provides better performance" → ✅ "Better Performance"
-- ❌ "Significant Performance Improvement" → ✅ "==10x Faster=="
+- ❌ "Significant Performance Improvement" → ✅ "**10x Faster**"
 - ❌ "increased by" → ✅ "↑"
 
 **NARRATIVE ARC** (structure slides as):
@@ -305,9 +304,9 @@ Use markdown syntax in widget text for emphasis:
 3. **Climax** (1-2 slides): Results, vision, call-to-action
 
 **SPECIAL ATOMS**:
-- QuoteAtom: Use Type.Quote widget with quote_text → text, speaker → attribution
-- ActionItemAtom: Use Type.List with items formatted as "[State] Task - Assignee (Due)"
-- TimelineAtom: Use Matrix.Timeline layout with events as stage titles/details
+- QuoteAtom: Use quote widget with quote_text → text, speaker → attribution
+- ActionItemAtom: Use list widget with items formatted as "[State] Task - Assignee (Due)"
+- TimelineAtom: Use timeline layout with events as stage titles/details
 
 {layout_system_docs}
 
@@ -588,11 +587,10 @@ IMPORTANT: When creating/replacing slides, include ALL required fields:
 - id: Unique slide identifier (must match existing slide ID when replacing)
 - rank: Integer for ordering (e.g., 100, 200, 300)
 - state: MUST be "active" for slides to render (NOT "draft" or "archived")
-- layout: Layout strategy name (e.g., "Bento.HeroLeft", "Matrix.Timeline")
+- layout: Layout strategy name (check layout engine documentation)
 - widgets: Object mapping slot roles to widget configurations
   **CRITICAL**: Only use slot roles that exist in the chosen layout strategy!
-  Example: Bento.HeroLeft has slots: hero, side_1, side_2, side_3, side_4
-  Do NOT invent slot names like "supporting", "main", "content" unless they exist in the strategy!
+  Check layout documentation for available slot names - do NOT invent slot names!
 - header: Optional header widget (can be empty object {})
 - footer: Optional footer widget (can be empty object {})
 - parameters: Layout-specific parameters (can be empty object {})
@@ -610,10 +608,10 @@ Example (replacing slide_01 with modified version):
         "id": "slide_01",
         "rank": 1,
         "state": "active",
-        "layout": "Bento.HeroLeft",
+        "layout": "<layout_from_docs>",
         "widgets": {
-          "hero": {
-            "type": "Type.Display",
+          "<slot_from_layout_docs>": {
+            "type": "<widget_type_from_docs>",
             "parameters": {"text": "Updated Title"},
             "preset": {"surface": "Flat", "shape": "Sharp", "fill": "Solid_Brand"}
           }
@@ -721,34 +719,35 @@ def _build_storyline_system_prompt() -> str:
     Returns:
         Complete system prompt for storyline step
     """
-    # Custom patch schema for storyline (add operations only for draft slides)
+    # Custom patch schema for storyline (add operations only for draft slides with visual_design)
     storyline_patch_schema = """{
   "type": "array",
-  "description": "Array of add operations for draft slides with story and atom references",
+  "description": "Array of add operations for draft slides with story, atoms, density, and visual design",
   "items": {
     "type": "object",
     "properties": {
       "add": {
         "type": "object",
-        "description": "Add draft slide with story, atom references, and density level",
+        "description": "Add draft slide with story, atoms, density, and visual design intent",
         "properties": {
           "id": {"type": "string", "description": "Unique slide identifier"},
           "rank": {"type": "integer", "description": "Slide order position (1-based)"},
           "state": {"type": "string", "enum": ["draft"], "description": "Must be 'draft'"},
-          "story": {"type": "string", "description": "1-2 sentence narrative description of slide's purpose"},
-          "atoms": {"type": "array", "items": {"type": "string"}, "description": "List of atom IDs relevant to this slide"},
-          "density": {"type": "string", "enum": ["minimal", "moderate", "dense"], "description": "Information density: minimal (1-2 key points), moderate (3-4 points), dense (5+ points)"}
+          "story": {"type": "string", "description": "1-2 sentence narrative description"},
+          "atoms": {"type": "array", "items": {"type": "string"}, "description": "List of atom IDs"},
+          "density": {"type": "string", "enum": ["minimal", "moderate", "dense"]},
+          "visual_design": {"type": "string", "description": "Visual presentation approach: hierarchical/symmetrical/asymmetrical/split/grid/timeline/full-canvas"}
         },
-        "required": ["id", "rank", "state", "story", "atoms", "density"]
+        "required": ["id", "rank", "state", "story", "atoms", "density", "visual_design"]
       }
     },
     "required": ["add"]
   }
 }"""
     
-    return f"""You are a presentation storyteller specializing in narrative structure and content flow.
+    return f"""You are a presentation storyteller specializing in narrative structure, content flow, and visual design.
 
-**YOUR TASK**: Create a compelling storyline with 7-12 draft slides that tells a cohesive story.
+**YOUR TASK**: Create a compelling storyline with 7-12 draft slides, including visual design intent for each slide.
 
 **STORYTELLING FIRST**:
 - Focus on narrative arc: opening hook → body progression → closing synthesis
@@ -759,12 +758,25 @@ def _build_storyline_system_prompt() -> str:
 **CRITICAL RULES**:
 1. **NO DUPLICATE ATOMS**: Each atom can only appear in ONE slide's atoms array (scan and verify before submitting)
 2. **Story quality over atom coverage**: Skip atoms that don't fit the narrative flow
-3. Draft slides need: id, rank, state="draft", story (1-2 sentences), atoms (2-5 atom IDs), density ("minimal"/"moderate"/"dense")
+3. **Plan visual presentation**: Describe how content should be visually presented (structure, arrangement, emphasis)
+4. Draft slides need: id, rank, state="draft", story (1-2 sentences), atoms (2-5 atom IDs), density ("minimal"/"moderate"/"dense"), visual_design (hierarchical/symmetrical/asymmetrical/split/grid/timeline/full-canvas)
 
-**DENSITY ASSIGNMENT** (affects widget count and layout complexity later):
+**VISUAL DESIGN PLANNING**:
+- Describe visual approach for each slide using abstract design principles:
+  - **hierarchical**: Clear top-down information flow, emphasize priority
+  - **symmetrical**: Balanced, stable, formal presentation
+  - **asymmetrical**: Dynamic, modern, creative tension
+  - **split**: Compare/contrast, before/after, dual concepts
+  - **grid**: Organized data, multiple equal items, structured overview
+  - **timeline**: Sequential progression, chronological flow, process steps
+  - **full-canvas**: Immersive, emotional impact, single bold statement
+- Vary visual approaches across slides for engagement
+- Match design to content type and narrative purpose
+
+**DENSITY ASSIGNMENT** (affects widget count within chosen layout):
 - **minimal**: 1-2 key points (opening/closing slides, transitions)
 - **moderate**: 3-4 points (most content slides - DEFAULT)
-- **dense**: 5-6 points (technical deep-dives - USE SPARINGLY)
+- **dense**: 5-6 points (technical deep-dives - USE SPARINGLY, max 2-3 per presentation)
 - NEVER use consecutive dense slides
 
 **NARRATIVE ARC REQUIREMENT**:
@@ -804,13 +816,16 @@ Before finalizing storyline, verify:
 4. ✓ Smooth transitions between slides (no jarring topic jumps)
 5. ✓ Footer callouts connect slides to audience actions
 6. ✓ Technical specifics preserved (numbers, terms, tools)
-7. ✓ Layout choices will reinforce narrative structure (plan ahead)
+7. ✓ Visual design choices will reinforce narrative structure
 
 **NO DUPLICATE ATOMS - FINAL VALIDATION**:
 Scan all "atoms" arrays—is any ID repeated? If yes, REVISE IMMEDIATELY.
 
-**OUTPUT FORMAT**: JSON array of add operations only: [{{"add": {{"id", "rank", "state", "story", "atoms", "density"}}}}]
-**DO NOT generate set_theme or set_preset operations - visual styling is handled separately.**
+**OUTPUT FORMAT**: JSON array of add operations with visual_design field: 
+[{{"add": {{"id", "rank", "state", "story", "atoms", "density", "visual_design"}}}}]
+
+Example:
+[{{"add": {{"id": "slide_1", "rank": 1, "state": "draft", "story": "Open with dramatic statement showing the problem scale", "atoms": ["metric_001"], "density": "minimal", "visual_design": "full-canvas"}}}}]
 
 {storyline_patch_schema}
 """
@@ -822,35 +837,31 @@ def _build_slide_generation_system_prompt() -> str:
     Returns:
         Complete system prompt for slide generation step
     """
-    # Get complete layout system documentation from active engine
+    # Get layout documentation for matching visual design to actual layouts
+    from src.layout.engine_registry import LayoutEngineRegistry
     active_engine = LayoutEngineRegistry.get_active_engine()
-    layout_system_docs = active_engine.get_layout_documentation()
+    layout_docs = active_engine.get_layout_documentation()
+    
     patch_schema = _get_patch_schema_for_replace()
     
-    return f"""You are a slide content designer specializing in layout selection and widget population.
+    return f"""You are a slide content designer specializing in transforming narrative intent into structured slide content.
 
-Your task: Transform a draft slide (with story + atoms) into an active slide with layout and widgets.
+Your task: Transform a draft slide into an active slide by selecting the best matching layout and populating it with widgets.
+
+{layout_docs}
+
+**LAYOUT SELECTION PROCESS**:
+1. Read the visual_design field from the draft slide
+2. Review layout documentation above and match visual_design characteristics to available layouts
+3. Select the layout whose design characteristics best align with the visual_design intent
+4. Populate that layout's slots with appropriate widgets
 
 **CORE RULES**:
-1. Follow the story (your guide to what this slide should communicate)
-2. Use ONLY provided atoms (don't hallucinate content)
-3. Preserve technical specifics: numbers ("38x/sec"), tech names ("C++", "intrinsics"), years ("2011→2021"), jargon
-4. Extreme brevity: Display (1-6 words), Body (10-15 words), List bullets (3-7 words)
-5. Match layout to atom count & story tone
-6. **RESPECT DENSITY LEVEL**: Follow target density specified in draft slide
-
-**DENSITY-AWARE CONTENT GENERATION**:
-Adjust content amount and layout complexity based on slide's density level:
-- **minimal** (1-2 key points):
-  - Use simple layouts: Bento.Standard (1-2 widgets), Swiss.Poster, Cinematic.Split5050
-  - Limit to 2-3 widgets maximum
-  - List widgets: MAX 2 items
-**CORE RULES**:
-1. Follow the story (your guide to what this slide should communicate)
-2. Use ONLY provided atoms (don't hallucinate content)
-3. Preserve technical specifics: numbers ("38x/sec"), tech terms ("C++", "intrinsics"), years ("2011→2021"), jargon
-4. Extreme brevity: Display (1-6 words), Body (10-15 words), List bullets (3-7 words)
-5. Match layout to atom count & story tone
+1. **Select layout by matching visual_design to documentation** - read design characteristics and choose best match
+2. Follow the story (your guide to what this slide should communicate)
+3. Use ONLY provided atoms (don't hallucinate content)
+4. Preserve technical specifics: numbers ("38x/sec"), tech terms ("C++", "intrinsics"), years ("2011→2021"), jargon
+5. Extreme brevity: Display (1-6 words), Body (10-15 words), List bullets (3-7 words)
 6. **RESPECT DENSITY LEVEL**: Follow target density specified in draft slide
 
 **DENSITY-AWARE CONTENT GENERATION**:
@@ -861,16 +872,14 @@ Adjust content amount and layout complexity based on slide's density level:
 
 **CONTENT SYNTHESIS**:
 - Read story → extract key points from atoms → distribute across slots
-- ✓ PRESERVE: "==38x/sec==", "==C++==", "==2011→2021==", "**planner-executor**"
+- ✓ PRESERVE: "38x/sec", "C++", "2011→2021", "**planner-executor**"
 - ✗ AVOID: "Frequently invoked", "over time", "optimized"
-- Use ==highlight== for metrics, tech terms, years; **bold** for concepts, patterns
-
-{layout_system_docs}
+- Use **bold** for emphasis on metrics, tech terms, years, key concepts
 
 **CRITICAL SLOT VALIDATION**:
 - ONLY use slot roles that exist in the chosen layout strategy
-- Example: Bento.HeroLeft has slots: hero, side_1, side_2, side_3, side_4
-- DO NOT invent slot names - check the layout documentation above
+- Check the layout documentation above for available slot names
+- DO NOT invent slot names - use only what's documented
 - Mismatch = immediate render failure
 
 **OUTPUT**: Single replace operation: [{{"replace": {{"id", "rank", "state": "active", "layout", "widgets", "header", "footer", "parameters"}}}}]
@@ -909,8 +918,6 @@ def render_storyline_prompt(
         user_prompt += f"""
 **Presentation Guidance**:
 {intent_guidance}
-
-Use the theme/preset recommendations. Generate "set_theme" and "set_preset" FIRST.
 """
     
     user_prompt += """
@@ -952,19 +959,20 @@ def render_slide_generation_prompt(
         default=datetime_encoder
     )
     
-    user_prompt = f"""Transform this draft slide into an active slide with layout and widgets:
+    user_prompt = f"""Transform this draft slide into an active slide by creating appropriate content:
 
 **Draft Slide**:
 - ID: {draft_slide.id}
 - Rank: {draft_slide.rank}
 - Story: {draft_slide.story}
 - Density: {draft_slide.density} ({_get_density_description(draft_slide.density)})
+- Visual Design: {draft_slide.visual_design}
 - Atoms: {', '.join(draft_slide.atoms)}
 
 **Related Atoms** (use ONLY these for content):
 {atoms_text}
 
-**User Instructions**:
+**Overall Presentation Context**:
 {user_instruction}
 """
     
@@ -974,12 +982,19 @@ def render_slide_generation_prompt(
 {intent_guidance}
 """
     
-    user_prompt += """
+    user_prompt += f"""
 Generate a "replace" operation that:
-1. Selects appropriate layout based on story, density, and atom count
-2. Populates widgets respecting density constraints (minimal: 1-2 points, moderate: 3-4 points, dense: 5+ points)
-3. Sets state to "active"
-4. Includes header and footer
+1. **MUST use the exact slide ID from above**
+2. **Select layout** by matching visual_design ({draft_slide.visual_design}) to layout documentation's design characteristics
+3. Populate selected layout's slots with appropriate widgets
+4. Respects density constraints (minimal: 1-2 points, moderate: 3-4 points, dense: 5+ points)
+5. Sets state to "active"
+6. Includes header and footer
+
+**CRITICAL**: 
+- id field must be: {draft_slide.id}
+- layout field must be: [choose from documentation by matching {draft_slide.visual_design} characteristics]
+- Only populate slots that exist in your chosen layout (check documentation)
 """
     
     return user_prompt

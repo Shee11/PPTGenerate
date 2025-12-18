@@ -52,13 +52,15 @@ class GenerationOrchestrator:
     def generate_from_source(
         self,
         source_path: Path,
-        user_instruction: Optional[str] = None
+        user_instruction: Optional[str] = None,
+        layout_engine: str = "dummy"
     ) -> Slides:
         """Generate slides from source content file.
         
         Args:
             source_path: Path to source file (.txt or .vtt)
             user_instruction: Optional user guidance for generation
+            layout_engine: Layout engine to use ('dummy' or 'slidev', default: 'dummy')
             
         Returns:
             Slides collection ready for rendering
@@ -324,7 +326,8 @@ class GenerationOrchestrator:
             user_instruction=instruction,
             config=config,
             use_cache=self.use_cache,
-            intent_guidance=content_guidance
+            intent_guidance=content_guidance,
+            layout_engine=layout_engine
         )
         
         # Store slides for future refinement

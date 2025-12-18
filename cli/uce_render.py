@@ -17,6 +17,7 @@ from src.layout.engine_registry import LayoutEngineRegistry
 from src.layout.dummy.style import Style
 from src.layout.dummy.theme import Theme
 from src.render.dummy.html_renderer import HTMLRenderer
+from src.render.slidev.markdown_renderer import SlidevRenderer
 
 
 @click.command()
@@ -31,6 +32,12 @@ from src.render.dummy.html_renderer import HTMLRenderer
     type=click.Choice(['html', 'json', 'table'], case_sensitive=False),
     default='html',
     help='Output format (default: html)'
+)
+@click.option(
+    '--layout-engine',
+    type=click.Choice(['dummy', 'slidev'], case_sensitive=False),
+    default='dummy',
+    help='Layout engine to use (default: dummy, slidev for Slidev layouts)'
 )
 @click.option(
     '--validate-only', '--validate',
@@ -110,6 +117,7 @@ def cli(
     config_file: Optional[Path],
     output: Optional[Path],
     format: str,
+    layout_engine: str,
     validate_only: bool,
     verbose: bool,
     width: Optional[int],
@@ -457,6 +465,16 @@ def cli(
         continue_generation = True
         iteration_count = 0
         
+        # Set active layout engine for content generation
+        if layout_engine:
+            from src.layout.engine_registry import LayoutEngineRegistry
+            try:
+                LayoutEngineRegistry.set_active_engine(layout_engine.lower())
+                if verbose:
+                    click.echo(f"Set active layout engine: {layout_engine.lower()}", err=True)
+            except KeyError as e:
+                click.echo(f"Warning: {e}", err=True)
+        
         # Create orchestrator for all LLM generation (both interactive and non-interactive)
         orchestrator = GenerationOrchestrator(use_cache=use_cache_bool) if source else None
         
@@ -576,7 +594,8 @@ def cli(
                         # Use orchestrator instance for all modes
                         slides = orchestrator.generate_from_source(
                             source_path=source,
-                            user_instruction=user_instruction
+                            user_instruction=user_instruction,
+                            layout_engine=layout_engine
                         )
                     else:
                         # Subsequent iterations - use orchestrator's regenerate method
@@ -779,21 +798,27 @@ def cli(
             print(f"⚙ Rendering {slides.count()} slides with templates...")
             
             # Calculate layouts for all slides using active layout engine
-            try:
-                active_engine = LayoutEngineRegistry.get_active_engine()
-                renderables = active_engine.calculate_slides(
-                    slides=slides,
-                    theme=theme,
-                    style=style,
-                    width=layout_width,
-                    height=layout_height
-                )
-            except UCERenderError as e:
-                click.echo(f"Error: {e}", err=True)
-                sys.exit(1)
+            # Skip calculation for render-only engines like Slidev
+            if layout_engine.lower() == 'slidev':
+                # Slidev is render-only, skip calculate step
+                renderables = None
+            else:
+                try:
+                    active_engine = LayoutEngineRegistry.get_active_engine()
+                    renderables = active_engine.calculate_slides(
+                        slides=slides,
+                        theme=theme,
+                        style=style,
+                        width=layout_width,
+                        height=layout_height
+                    )
+                except UCERenderError as e:
+                    click.echo(f"Error: {e}", err=True)
+                    sys.exit(1)
             
             # Refinement loop for LLM-generated content (if enabled)
-            if source and maxiter > 0:
+            # Skip for render-only engines like Slidev
+            if source and maxiter > 0 and layout_engine.lower() != 'slidev':
                 from src.generation.content.generator import refine_layout_with_validation
                 from src.generation.atom.collection import AtomCollection
                 from src.utils.generation_config import GenerationConfig
@@ -882,13 +907,63 @@ def cli(
 
             # Render multi-slide output
             if format.lower() == 'html':
-                # Load presets from config if available (config file workflow)
-                presets_data = None
-                if not source and config_file:
-                    presets_data = config.get('presets')
-                
-                renderer = HTMLRenderer(presets=presets_data)
-                html_output = renderer.render(renderables)  # Pass list for multi-slide
+                if layout_engine.lower() == 'slidev':
+                    # Use Slidev renderer for markdown generation
+                    if verbose:
+                        click.echo(f"Using Slidev layout engine - converting {slides.count()} slides to Slidev format", err=True)
+                    
+                    slidev_renderer = SlidevRenderer()
+                    
+                    # Extract theme colors for Slidev
+                    theme_data = {}
+                    if theme:
+                        theme_data["primary_color"] = getattr(theme, "primary_color", "#2563eb")
+                        theme_data["background_color"] = getattr(theme, "background_color", "#ffffff")
+                        theme_data["text_color"] = getattr(theme, "text_color", "#1f2937")
+                    
+                    # Convert slides to Slidev JSON format
+                    slidev_slides = []
+                    active_slides = slides.get_active_slides()
+                    
+                    for idx, slide_obj in enumerate(active_slides):
+                        # Extract layout and theme from slide
+                        slide_json = {
+                            "layout": slide_obj.layout if slide_obj.layout else "smart-grid",
+                            "theme": theme_data if theme_data else {"primary_color": "#2563eb"},
+                            "parameters": slide_obj.parameters if slide_obj.parameters else {"cols": 2},
+                            "widgets": {}
+                        }
+                        
+                        # Flatten widget structure - renderer expects flat params, not nested
+                        if slide_obj.widgets:
+                            for slot_name, widget_dict in slide_obj.widgets.items():
+                                # Extract type and flatten parameters
+                                flattened_widget = {"type": widget_dict.get("type", "Type.Body")}
+                                if "parameters" in widget_dict:
+                                    flattened_widget.update(widget_dict["parameters"])
+                                slide_json["widgets"][slot_name] = flattened_widget
+                            
+                        if verbose:
+                            click.echo(f"  Slide {idx+1}: layout={slide_json['layout']}, {len(slide_json['widgets'])} widgets", err=True)
+                        
+                        slidev_slides.append(slide_json)
+                    
+                    if verbose:
+                        click.echo(f"Converted {len(slidev_slides)} slides, rendering to markdown...", err=True)
+                    
+                    html_output = slidev_renderer.render(slidev_slides)
+                    
+                    if verbose:
+                        click.echo(f"Rendered HTML with embedded Slidev: {len(html_output) if html_output else 0} chars", err=True)
+                else:
+                    # Use dummy HTMLRenderer
+                    # Load presets from config if available (config file workflow)
+                    presets_data = None
+                    if not source and config_file:
+                        presets_data = config.get('presets')
+                    
+                    renderer = HTMLRenderer(presets=presets_data)
+                    html_output = renderer.render(renderables)  # Pass list for multi-slide
 
                 if output:
                     if verbose:
@@ -898,6 +973,19 @@ def cli(
                     output.parent.mkdir(parents=True, exist_ok=True)
                     
                     output.write_text(html_output, encoding='utf-8')
+                    
+                    # For Slidev, also copy the dist folder
+                    if layout_engine == "slidev":
+                        import shutil
+                        slidev_build_dir = Path.cwd() / "slidev_build" / "dist"
+                        if slidev_build_dir.exists():
+                            output_dist = output.parent / f"{output.stem}_dist"
+                            if output_dist.exists():
+                                shutil.rmtree(output_dist)
+                            shutil.copytree(slidev_build_dir, output_dist)
+                            if verbose:
+                                click.echo(f"Copied Slidev assets to {output_dist}/", err=True)
+                                click.echo(f"To view: python -m http.server 8000 --directory '{output.parent}' then open http://localhost:8000/{output_dist.name}/", err=True)
                     
                     if verbose:
                         click.echo(f"HTML output written successfully", err=True)
@@ -935,7 +1023,10 @@ def cli(
                     click.echo(json.dumps(json_output, indent=2))
 
             # Always show completion summary
-            click.echo(f"✓ Rendered {len(renderables)} slides → {output}")
+            if renderables:
+                click.echo(f"✓ Rendered {len(renderables)} slides → {output}")
+            else:
+                click.echo(f"✓ Rendered {slides.count()} slides → {output}")
             
             # Interactive mode continuation - show completion message and loop
             if interactive:

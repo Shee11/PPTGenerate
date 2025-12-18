@@ -14,13 +14,14 @@ class Slide(PatchableContextBase):
     - story: Narrative description of slide's purpose and content
     - atoms: List of atom IDs related to this slide
     - density: Information density level ('minimal', 'moderate', 'dense')
-    - layout: Layout name
+    - visual_design: Abstract visual design approach (hierarchical/symmetrical/asymmetrical/split/grid/timeline/full-canvas)
+    - layout: Layout name (populated by layout engine, not by LLM)
     - widgets: Widget assignments for this slide
     - style_override: Optional style overrides specific to this slide
     
     Two-phase generation:
-    1. Draft state: story + atoms + density defined, layout/widgets empty
-    2. Active state: layout + widgets populated based on story and density
+    1. Draft state: story + atoms + density + visual_design defined, layout/widgets empty
+    2. Active state: layout + widgets populated by layout engine based on visual_design and density
     """
     
     story: str = Field(
@@ -35,9 +36,13 @@ class Slide(PatchableContextBase):
         default="moderate",
         description="Information density level: 'minimal' (1-2 key points), 'moderate' (3-4 points), 'dense' (5+ points)"
     )
+    visual_design: str = Field(
+        default="",
+        description="Visual design approach: hierarchical/symmetrical/asymmetrical/split/grid/timeline/full-canvas"
+    )
     layout: str = Field(
         default="",
-        description="Layout name (e.g., 'Bento.Standard')"
+        description="Layout name (populated by layout engine based on visual_design)"
     )
     widgets: Dict[str, Dict[str, Any]] = Field(
         default_factory=dict,
@@ -63,7 +68,8 @@ class Slide(PatchableContextBase):
     def format_abstract(self) -> str:
         """Format slide as abstract."""
         if self.state == "draft":
-            return f"Slide #{self.rank} [DRAFT]: {self.story[:50]}... ({len(self.atoms)} atoms)"
+            design_info = f" [{self.visual_design}]" if self.visual_design else ""
+            return f"Slide #{self.rank} [DRAFT]{design_info}: {self.story[:50]}... ({len(self.atoms)} atoms)"
         return f"Slide #{self.rank} [ACTIVE]: {self.layout} with {len(self.widgets)} widgets"
     
     def format_summary(self) -> str:
@@ -76,6 +82,8 @@ class Slide(PatchableContextBase):
             lines.append(f"Story: {self.story}")
         if self.atoms:
             lines.append(f"Atoms: {', '.join(self.atoms)}")
+        if self.visual_design:
+            lines.append(f"Visual Design: {self.visual_design}")
         if self.layout:
             lines.append(f"Layout: {self.layout}")
         if self.widgets:

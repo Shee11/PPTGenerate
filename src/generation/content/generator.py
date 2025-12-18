@@ -30,7 +30,8 @@ def generate_layout(
     user_instruction: str,
     config: GenerationConfig,
     use_cache: bool = True,
-    intent_guidance: str = ""
+    intent_guidance: str = "",
+    layout_engine: str = "dummy"
 ) -> Slides:
     """
     Generate presentation layout from atoms using LLM (three-step process).
@@ -45,6 +46,7 @@ def generate_layout(
         config: Generation configuration (model, temperature, prompts)
         use_cache: Whether to use cached results if available
         intent_guidance: Optional guidance from intent detection
+        layout_engine: Layout engine to use ('dummy' or 'slidev', default: 'dummy')
         
     Returns:
         Slides collection with active slides and content
@@ -63,7 +65,7 @@ def generate_layout(
     
     # Check cache (include intent_guidance in cache key if provided)
     if use_cache:
-        cache_key = _compute_cache_key(atoms, user_instruction, config, intent_guidance)
+        cache_key = _compute_cache_key(atoms, user_instruction, config, intent_guidance, layout_engine)
         cached_result = _cache.load(cache_key)
         if cached_result:
             # Reconstruct Slides from cached patch data
@@ -325,7 +327,8 @@ def _compute_cache_key(
     atoms: AtomCollection,
     user_instruction: str,
     config: GenerationConfig,
-    intent_guidance: str = ""
+    intent_guidance: str = "",
+    layout_engine: str = "dummy"
 ) -> str:
     """
     Compute cache key for layout generation.
@@ -338,13 +341,14 @@ def _compute_cache_key(
         user_instruction: User's generation instructions
         config: Generation configuration
         intent_guidance: Optional guidance from intent detection
+        layout_engine: Name of the layout engine being used
         
     Returns:
         str: SHA256 hash of inputs including active layout engine
     """
-    # Get active layout engine name to invalidate cache on engine switch
-    from src.layout.engine_registry import LayoutEngineRegistry
-    active_engine_name = LayoutEngineRegistry.get_active_engine_name() or "unknown"
+    # Use the passed layout_engine parameter for cache key
+    # (No need to query registry - engine was already selected by caller)
+    active_engine_name = layout_engine
     
     # Create deterministic string from inputs
     # Use atoms.to_json() for datetime serialization, then parse back for sorting

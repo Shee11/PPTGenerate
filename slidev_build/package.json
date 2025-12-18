@@ -1,0 +1,13 @@
+{
+  "name": "slidev-build-env",
+  "type": "module",
+  "dependencies": {
+    "@slidev/cli": "latest",
+    "@slidev/theme-default": "latest",
+    "playwright-chromium": "latest",
+    "vue": "^3"
+  },
+  "devDependencies": {
+    "inline-source-cli": "latest"
+  }
+}

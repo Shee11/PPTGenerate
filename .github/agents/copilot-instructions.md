@@ -23,6 +23,8 @@ Auto-generated from all feature plans. Last updated: 2025-12-18
 ## Active Technologies
 - Python 3.11 + Pydantic 2.x (for data models), Jinja2 (for templates) (001-uce-render)
 - N/A (stateless rendering) (001-uce-render)
+- Python 3.11+ (backend), JavaScript/Vue 3 (frontend Slidev components) + pydantic, jinja2 (Python); Slidev, Vue 3, UnoCSS (JavaScript) (001-slidev-engine)
+- File-based (.md output files) (001-slidev-engine)
 
 - Python 3.11+ + Pydantic 2.x, Jinja2 3.x, Click 8.x (001-uce-render)
 
@@ -50,10 +52,10 @@ pytest; ruff check src; mypy src
 Python 3.11+: Follow PEP 8, use type hints, prefer Pydantic for validation
 
 ## Recent Changes
+- 001-slidev-engine: Added Python 3.11+ (backend), JavaScript/Vue 3 (frontend Slidev components) + pydantic, jinja2 (Python); Slidev, Vue 3, UnoCSS (JavaScript)
 - 001-llm-content-generation: Added Python 3.11
 - 001-uce-render: Added Python 3.11 + Pydantic 2.x (for data models), Jinja2 (for templates)
 
-- 001-uce-render: Added Python 3.11+ with Pydantic 2.x (validation), Jinja2 3.x (templating), Click 8.x (CLI)
 
 <!-- MANUAL ADDITIONS START -->
 
