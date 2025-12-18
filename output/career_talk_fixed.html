@@ -6,13 +6,13 @@
     <title>Multi-Slide Presentation</title>
     <style>
         :root {
-            --color-primary: #1E88E5;
-            --color-secondary: #666666;
-            --color-accent: #0066cc;
-            --color-background: #0F1115;
-            --color-text: #F5F5F5;
-            --font-family: sans-serif;
-            --font-heading: sans-serif;
+            --color-primary: #00509e;
+            --color-secondary: #f5f5f5;
+            --color-accent: #ff6f61;
+            --color-background: #ffffff;
+            --color-text: #333333;
+            --font-family: Roboto;
+            --font-heading: Roboto;
             --font-size-base: 16px;
             --line-height: 1.5;
             --margin-x: 40px;
@@ -269,7 +269,8 @@
         
         /* Center content-based layouts */
         .layout-content:has(.matrix-grid),
-        .layout-content:has(.comparison-grid) {
+        .layout-content:has(.comparison-grid),
+        .layout-content:has(.swiss-layout) {
             display: flex;
             align-items: center;
             justify-content: center;
@@ -948,6 +949,237 @@
             font-style: italic;
         }
         
+.bento-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 20px;
+    width: 100%;
+    height: 100%;
+}
+
+.bento-cell {
+    min-height: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+        
+        /* Embedded Preset Styles */
+
+/* ===== SURFACE PRESETS ===== */
+.preset-surface-Flat {
+    background: var(--preset-flat-bg, transparent) !important;
+    border: var(--preset-flat-border, none) !important;
+    box-shadow: var(--preset-flat-shadow, none) !important;
+}
+
+.preset-surface-Elevated {
+    background: var(--preset-elevated-bg, var(--color-surface, rgba(255, 255, 255, 0.05))) !important;
+    box-shadow: var(--preset-elevated-shadow, 0 4px 6px rgba(0, 0, 0, 0.3), 0 2px 4px rgba(0, 0, 0, 0.2)) !important;
+}
+
+.preset-surface-Outline {
+    background: var(--preset-outline-bg, transparent) !important;
+    border: var(--preset-outline-border, 2px solid var(--color-primary, #00ff9f)) !important;
+}
+
+.preset-surface-Glass {
+    background: var(--preset-glass-bg, rgba(255, 255, 255, 0.05)) !important;
+    backdrop-filter: blur(var(--preset-glass-blur, 10px)) !important;
+    border: var(--preset-glass-border, 1px solid rgba(255, 255, 255, 0.1)) !important;
+}
+
+.preset-surface-Sunken {
+    background: var(--preset-sunken-bg, rgba(0, 0, 0, 0.3)) !important;
+    box-shadow: var(--preset-sunken-shadow, inset 0 2px 4px rgba(0, 0, 0, 0.4), inset 0 0 0 1px rgba(0, 0, 0, 0.2)) !important;
+}
+
+.preset-surface-NeoBrutal {
+    background: var(--preset-neobrutal-bg, var(--color-surface, #ffffff)) !important;
+    border: var(--preset-neobrutal-border_width, 3px) solid var(--preset-neobrutal-border_color, currentColor) !important;
+    box-shadow: var(--preset-neobrutal-shadow_offset, 6px) var(--preset-neobrutal-shadow_offset, 6px) 0 var(--preset-neobrutal-shadow_color, currentColor) !important;
+}
+
+/* ===== SHAPE PRESETS ===== */
+.preset-shape-Sharp {
+    border-radius: var(--preset-sharp-radius, 0) !important;
+}
+
+.preset-shape-Rounded {
+    border-radius: var(--preset-rounded-radius, 12px) !important;
+}
+
+.preset-shape-Curve {
+    border-radius: var(--preset-curve-radius, 20px) !important;
+}
+
+.preset-shape-Pill {
+    border-radius: var(--preset-pill-radius, 9999px) !important;
+}
+
+.preset-shape-Squircle {
+    border-radius: var(--preset-squircle-radius, 20%) !important;
+}
+
+.preset-shape-Organic {
+    border-radius: var(--preset-organic-radius, 30% 70% 70% 30% / 30% 30% 70% 70%) !important;
+}
+
+/* ===== FILL PRESETS ===== */
+.preset-fill-Solid_Brand {
+    background: var(--preset-solid-brand-bg, var(--color-primary, #00ff9f)) !important;
+    color: var(--preset-solid-brand-color, #ffffff) !important;
+}
+
+.preset-fill-Solid_Surface {
+    background: var(--preset-solid-surface-bg, var(--color-background, #ffffff)) !important;
+    color: var(--preset-solid-surface-color, var(--color-text, #000000)) !important;
+}
+
+.preset-fill-Subtle {
+    background: var(--preset-subtle-bg, rgba(255, 255, 255, 0.03)) !important;
+    border: var(--preset-subtle-border, 1px solid rgba(255, 255, 255, 0.1)) !important;
+    color: var(--preset-subtle-color, var(--color-text, #e0e7ff)) !important;
+}
+
+.preset-fill-Gradient_Linear {
+    background: var(--preset-gradient-linear-bg, linear-gradient(135deg, var(--color-primary, #00ff9f) 0%, var(--color-secondary, #00d4ff) 100%)) !important;
+    color: var(--preset-gradient-linear-color, #ffffff) !important;
+}
+
+.preset-fill-Gradient_Mesh {
+    background: var(--preset-gradient-mesh-bg, radial-gradient(at 20% 30%, var(--color-primary, #00ff9f) 0%, transparent 50%), radial-gradient(at 80% 70%, var(--color-secondary, #00d4ff) 0%, transparent 50%), radial-gradient(at 50% 50%, var(--color-accent, #ff00ff) 0%, transparent 50%), rgba(10, 14, 39, 0.8)) !important;
+    background-blend-mode: var(--preset-gradient-mesh-blend, screen, screen, screen, normal) !important;
+    color: var(--preset-gradient-mesh-color, var(--color-text, #e0e7ff)) !important;
+}
+
+.preset-fill-Pattern_Dot {
+    background-image: var(--preset-pattern-dot-image, radial-gradient(circle, rgba(255, 255, 255, 0.1) 1px, transparent 1px)) !important;
+    background-size: var(--preset-pattern-dot-size, 20px 20px) !important;
+    background-color: var(--preset-pattern-dot-bg, rgba(255, 255, 255, 0.02)) !important;
+    color: var(--preset-pattern-dot-color, var(--color-text, #e0e7ff)) !important;
+}
+
+.preset-fill-Noise {
+    background: var(--preset-noise-bg, rgba(255, 255, 255, 0.03)) !important;
+    background-image: var(--preset-noise-texture, url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E")) !important;
+    opacity: var(--preset-noise-opacity, 0.5) !important;
+    color: var(--preset-noise-color, var(--color-text, #e0e7ff)) !important;
+}
+
+/* ===== EFFECT PRESETS ===== */
+.preset-effect-Duotone {
+    filter: var(--preset-duotone-filter, contrast(1.2) saturate(1.5)) !important;
+}
+
+.preset-effect-Glitch {
+    animation: glitch var(--preset-glitch-duration, 3s) infinite !important;
+}
+
+@keyframes glitch {
+    0%, 100% { transform: translate(0, 0); }
+    33% { transform: translate(var(--preset-glitch-x, -2px), var(--preset-glitch-y, 1px)); }
+    66% { transform: translate(calc(-1 * var(--preset-glitch-x, -2px)), calc(-1 * var(--preset-glitch-y, 1px))); }
+}
+
+.preset-effect-Glow {
+    box-shadow: var(--preset-glow-shadow, 0 0 20px var(--color-primary, #00ff9f), 0 0 40px var(--color-primary, #00ff9f), 0 0 60px var(--color-primary, #00ff9f)) !important;
+    filter: brightness(var(--preset-glow-brightness, 1.2)) !important;
+}
+
+.preset-effect-Tape {
+    position: relative;
+}
+
+.preset-effect-Tape::before {
+    content: '';
+    position: absolute;
+    top: var(--preset-tape-top, -12px);
+    left: 50%;
+    transform: translateX(-50%) rotate(var(--preset-tape-rotation, -2deg));
+    width: var(--preset-tape-width, 80px);
+    height: var(--preset-tape-height, 25px);
+    background: var(--preset-tape-bg, linear-gradient(135deg, rgba(255, 220, 100, 0.7) 0%, rgba(255, 235, 150, 0.6) 50%, rgba(255, 220, 100, 0.7) 100%));
+    border: var(--preset-tape-border, 1px solid rgba(255, 200, 50, 0.4));
+    box-shadow: var(--preset-tape-shadow, 0 2px 8px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.3));
+    border-radius: var(--preset-tape-radius, 2px);
+    opacity: var(--preset-tape-opacity, 0.85);
+    clip-path: polygon(
+        0% 5%, 3% 0%, 6% 5%, 9% 0%, 12% 5%, 15% 0%, 18% 5%, 21% 0%, 24% 5%, 27% 0%,
+        30% 5%, 33% 0%, 36% 5%, 39% 0%, 42% 5%, 45% 0%, 48% 5%, 51% 0%, 54% 5%, 57% 0%,
+        60% 5%, 63% 0%, 66% 5%, 69% 0%, 72% 5%, 75% 0%, 78% 5%, 81% 0%, 84% 5%, 87% 0%,
+        90% 5%, 93% 0%, 96% 5%, 100% 0%,
+        100% 100%, 96% 95%, 93% 100%, 90% 95%, 87% 100%, 84% 95%, 81% 100%, 78% 95%,
+        75% 100%, 72% 95%, 69% 100%, 66% 95%, 63% 100%, 60% 95%, 57% 100%, 54% 95%,
+        51% 100%, 48% 95%, 45% 100%, 42% 95%, 39% 100%, 36% 95%, 33% 100%, 30% 95%,
+        27% 100%, 24% 95%, 21% 100%, 18% 95%, 15% 100%, 12% 95%, 9% 100%, 6% 95%,
+        3% 100%, 0% 95%
+    );
+}
+
+/* Ensure effect presets can work together */
+.preset-effect-Duotone,
+.preset-effect-Glitch,
+.preset-effect-Tape {
+    position: relative;
+}
+
+/* Override text color for branded fills */
+.preset-fill-Solid_Brand,
+.preset-fill-Gradient_Linear {
+    --text-color-override: var(--color-on-primary, #ffffff);
+}
+/* Comparison Widget Styles */
+        .widget-comparison {
+            padding: 0;
+            background: transparent;
+            box-shadow: none;
+        }
+        
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .comparison-column {
+            padding: 1rem;
+        }
+        
+        .comparison-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+        
+        .comparison-list {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .comparison-list li {
+            padding: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+        
+        .comparison-list li:before {
+            content: "•";
+            position: absolute;
+            left: 0.5rem;
+            font-weight: bold;
+        }
+        
+        .comparison-note {
+            padding: 1rem 1.5rem;
+            background: var(--color-surface-subtle, rgba(0,0,0,0.05));
+            border-radius: var(--border-radius, 8px);
+            font-size: 0.9rem;
+            font-style: italic;
+        }
+        
 .comparison-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -1201,33 +1433,244 @@
             font-style: italic;
         }
         
-.bento-stack-vertical {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
+.bento-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 20px;
     width: 100%;
     height: 100%;
-    gap: 0;
 }
-.bento-stage-vertical {
-    flex: 1;
+
+.bento-cell {
+    min-height: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 0;
+}
+        
+        /* Embedded Preset Styles */
+
+/* ===== SURFACE PRESETS ===== */
+.preset-surface-Flat {
+    background: var(--preset-flat-bg, transparent) !important;
+    border: var(--preset-flat-border, none) !important;
+    box-shadow: var(--preset-flat-shadow, none) !important;
+}
+
+.preset-surface-Elevated {
+    background: var(--preset-elevated-bg, var(--color-surface, rgba(255, 255, 255, 0.05))) !important;
+    box-shadow: var(--preset-elevated-shadow, 0 4px 6px rgba(0, 0, 0, 0.3), 0 2px 4px rgba(0, 0, 0, 0.2)) !important;
+}
+
+.preset-surface-Outline {
+    background: var(--preset-outline-bg, transparent) !important;
+    border: var(--preset-outline-border, 2px solid var(--color-primary, #00ff9f)) !important;
+}
+
+.preset-surface-Glass {
+    background: var(--preset-glass-bg, rgba(255, 255, 255, 0.05)) !important;
+    backdrop-filter: blur(var(--preset-glass-blur, 10px)) !important;
+    border: var(--preset-glass-border, 1px solid rgba(255, 255, 255, 0.1)) !important;
+}
+
+.preset-surface-Sunken {
+    background: var(--preset-sunken-bg, rgba(0, 0, 0, 0.3)) !important;
+    box-shadow: var(--preset-sunken-shadow, inset 0 2px 4px rgba(0, 0, 0, 0.4), inset 0 0 0 1px rgba(0, 0, 0, 0.2)) !important;
+}
+
+.preset-surface-NeoBrutal {
+    background: var(--preset-neobrutal-bg, var(--color-surface, #ffffff)) !important;
+    border: var(--preset-neobrutal-border_width, 3px) solid var(--preset-neobrutal-border_color, currentColor) !important;
+    box-shadow: var(--preset-neobrutal-shadow_offset, 6px) var(--preset-neobrutal-shadow_offset, 6px) 0 var(--preset-neobrutal-shadow_color, currentColor) !important;
+}
+
+/* ===== SHAPE PRESETS ===== */
+.preset-shape-Sharp {
+    border-radius: var(--preset-sharp-radius, 0) !important;
+}
+
+.preset-shape-Rounded {
+    border-radius: var(--preset-rounded-radius, 12px) !important;
+}
+
+.preset-shape-Curve {
+    border-radius: var(--preset-curve-radius, 20px) !important;
+}
+
+.preset-shape-Pill {
+    border-radius: var(--preset-pill-radius, 9999px) !important;
+}
+
+.preset-shape-Squircle {
+    border-radius: var(--preset-squircle-radius, 20%) !important;
+}
+
+.preset-shape-Organic {
+    border-radius: var(--preset-organic-radius, 30% 70% 70% 30% / 30% 30% 70% 70%) !important;
+}
+
+/* ===== FILL PRESETS ===== */
+.preset-fill-Solid_Brand {
+    background: var(--preset-solid-brand-bg, var(--color-primary, #00ff9f)) !important;
+    color: var(--preset-solid-brand-color, #ffffff) !important;
+}
+
+.preset-fill-Solid_Surface {
+    background: var(--preset-solid-surface-bg, var(--color-background, #ffffff)) !important;
+    color: var(--preset-solid-surface-color, var(--color-text, #000000)) !important;
+}
+
+.preset-fill-Subtle {
+    background: var(--preset-subtle-bg, rgba(255, 255, 255, 0.03)) !important;
+    border: var(--preset-subtle-border, 1px solid rgba(255, 255, 255, 0.1)) !important;
+    color: var(--preset-subtle-color, var(--color-text, #e0e7ff)) !important;
+}
+
+.preset-fill-Gradient_Linear {
+    background: var(--preset-gradient-linear-bg, linear-gradient(135deg, var(--color-primary, #00ff9f) 0%, var(--color-secondary, #00d4ff) 100%)) !important;
+    color: var(--preset-gradient-linear-color, #ffffff) !important;
+}
+
+.preset-fill-Gradient_Mesh {
+    background: var(--preset-gradient-mesh-bg, radial-gradient(at 20% 30%, var(--color-primary, #00ff9f) 0%, transparent 50%), radial-gradient(at 80% 70%, var(--color-secondary, #00d4ff) 0%, transparent 50%), radial-gradient(at 50% 50%, var(--color-accent, #ff00ff) 0%, transparent 50%), rgba(10, 14, 39, 0.8)) !important;
+    background-blend-mode: var(--preset-gradient-mesh-blend, screen, screen, screen, normal) !important;
+    color: var(--preset-gradient-mesh-color, var(--color-text, #e0e7ff)) !important;
+}
+
+.preset-fill-Pattern_Dot {
+    background-image: var(--preset-pattern-dot-image, radial-gradient(circle, rgba(255, 255, 255, 0.1) 1px, transparent 1px)) !important;
+    background-size: var(--preset-pattern-dot-size, 20px 20px) !important;
+    background-color: var(--preset-pattern-dot-bg, rgba(255, 255, 255, 0.02)) !important;
+    color: var(--preset-pattern-dot-color, var(--color-text, #e0e7ff)) !important;
+}
+
+.preset-fill-Noise {
+    background: var(--preset-noise-bg, rgba(255, 255, 255, 0.03)) !important;
+    background-image: var(--preset-noise-texture, url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E")) !important;
+    opacity: var(--preset-noise-opacity, 0.5) !important;
+    color: var(--preset-noise-color, var(--color-text, #e0e7ff)) !important;
+}
+
+/* ===== EFFECT PRESETS ===== */
+.preset-effect-Duotone {
+    filter: var(--preset-duotone-filter, contrast(1.2) saturate(1.5)) !important;
+}
+
+.preset-effect-Glitch {
+    animation: glitch var(--preset-glitch-duration, 3s) infinite !important;
+}
+
+@keyframes glitch {
+    0%, 100% { transform: translate(0, 0); }
+    33% { transform: translate(var(--preset-glitch-x, -2px), var(--preset-glitch-y, 1px)); }
+    66% { transform: translate(calc(-1 * var(--preset-glitch-x, -2px)), calc(-1 * var(--preset-glitch-y, 1px))); }
+}
+
+.preset-effect-Glow {
+    box-shadow: var(--preset-glow-shadow, 0 0 20px var(--color-primary, #00ff9f), 0 0 40px var(--color-primary, #00ff9f), 0 0 60px var(--color-primary, #00ff9f)) !important;
+    filter: brightness(var(--preset-glow-brightness, 1.2)) !important;
+}
+
+.preset-effect-Tape {
+    position: relative;
+}
+
+.preset-effect-Tape::before {
+    content: '';
+    position: absolute;
+    top: var(--preset-tape-top, -12px);
+    left: 50%;
+    transform: translateX(-50%) rotate(var(--preset-tape-rotation, -2deg));
+    width: var(--preset-tape-width, 80px);
+    height: var(--preset-tape-height, 25px);
+    background: var(--preset-tape-bg, linear-gradient(135deg, rgba(255, 220, 100, 0.7) 0%, rgba(255, 235, 150, 0.6) 50%, rgba(255, 220, 100, 0.7) 100%));
+    border: var(--preset-tape-border, 1px solid rgba(255, 200, 50, 0.4));
+    box-shadow: var(--preset-tape-shadow, 0 2px 8px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.3));
+    border-radius: var(--preset-tape-radius, 2px);
+    opacity: var(--preset-tape-opacity, 0.85);
+    clip-path: polygon(
+        0% 5%, 3% 0%, 6% 5%, 9% 0%, 12% 5%, 15% 0%, 18% 5%, 21% 0%, 24% 5%, 27% 0%,
+        30% 5%, 33% 0%, 36% 5%, 39% 0%, 42% 5%, 45% 0%, 48% 5%, 51% 0%, 54% 5%, 57% 0%,
+        60% 5%, 63% 0%, 66% 5%, 69% 0%, 72% 5%, 75% 0%, 78% 5%, 81% 0%, 84% 5%, 87% 0%,
+        90% 5%, 93% 0%, 96% 5%, 100% 0%,
+        100% 100%, 96% 95%, 93% 100%, 90% 95%, 87% 100%, 84% 95%, 81% 100%, 78% 95%,
+        75% 100%, 72% 95%, 69% 100%, 66% 95%, 63% 100%, 60% 95%, 57% 100%, 54% 95%,
+        51% 100%, 48% 95%, 45% 100%, 42% 95%, 39% 100%, 36% 95%, 33% 100%, 30% 95%,
+        27% 100%, 24% 95%, 21% 100%, 18% 95%, 15% 100%, 12% 95%, 9% 100%, 6% 95%,
+        3% 100%, 0% 95%
+    );
+}
+
+/* Ensure effect presets can work together */
+.preset-effect-Duotone,
+.preset-effect-Glitch,
+.preset-effect-Tape {
+    position: relative;
+}
+
+/* Override text color for branded fills */
+.preset-fill-Solid_Brand,
+.preset-fill-Gradient_Linear {
+    --text-color-override: var(--color-on-primary, #ffffff);
+}
+/* Comparison Widget Styles */
+        .widget-comparison {
+            padding: 0;
+            background: transparent;
+            box-shadow: none;
+        }
+        
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .comparison-column {
+            padding: 1rem;
+        }
+        
+        .comparison-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+        
+        .comparison-list {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .comparison-list li {
+            padding: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+        
+        .comparison-list li:before {
+            content: "•";
+            position: absolute;
+            left: 0.5rem;
+            font-weight: bold;
+        }
+        
+        .comparison-note {
+            padding: 1rem 1.5rem;
+            background: var(--color-surface-subtle, rgba(0,0,0,0.05));
+            border-radius: var(--border-radius, 8px);
+            font-size: 0.9rem;
+            font-style: italic;
+        }
+        
+.bento-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 20px;
     width: 100%;
-}
-.bento-stage-vertical .widget {
-    width: auto;
-    max-width: 80%;
-}
-.bento-arrow-vertical {
-    font-size: 2rem;
-    color: var(--color-text-secondary, #888);
-    text-align: center;
-    padding: 0.5rem 0;
-    flex-shrink: 0;
+    height: 100%;
 }
 
 .bento-cell {
@@ -1703,33 +2146,13 @@
             font-style: italic;
         }
         
-.bento-stack-vertical {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
+.bento-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 20px;
     width: 100%;
     height: 100%;
-    gap: 0;
-}
-.bento-stage-vertical {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 0;
-    width: 100%;
-}
-.bento-stage-vertical .widget {
-    width: auto;
-    max-width: 80%;
-}
-.bento-arrow-vertical {
-    font-size: 2rem;
-    color: var(--color-text-secondary, #888);
-    text-align: center;
-    padding: 0.5rem 0;
-    flex-shrink: 0;
 }
 
 .bento-cell {
@@ -1954,33 +2377,13 @@
             font-style: italic;
         }
         
-.bento-stack-vertical {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
+.bento-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 20px;
     width: 100%;
     height: 100%;
-    gap: 0;
-}
-.bento-stage-vertical {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 0;
-    width: 100%;
-}
-.bento-stage-vertical .widget {
-    width: auto;
-    max-width: 80%;
-}
-.bento-arrow-vertical {
-    font-size: 2rem;
-    color: var(--color-text-secondary, #888);
-    text-align: center;
-    padding: 0.5rem 0;
-    flex-shrink: 0;
 }
 
 .bento-cell {
@@ -2205,37 +2608,15 @@
             font-style: italic;
         }
         
-.bento-stack-vertical {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
+.cinematic-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
     height: 100%;
-    gap: 0;
-}
-.bento-stage-vertical {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 0;
-    width: 100%;
-}
-.bento-stage-vertical .widget {
-    width: auto;
-    max-width: 80%;
-}
-.bento-arrow-vertical {
-    font-size: 2rem;
-    color: var(--color-text-secondary, #888);
-    text-align: center;
-    padding: 0.5rem 0;
-    flex-shrink: 0;
 }
 
-.bento-cell {
-    min-height: 0;
+.cinematic-panel {
+    min-height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -2456,37 +2837,20 @@
             font-style: italic;
         }
         
-.bento-stack-vertical {
+#slide-11 .swiss-layout {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    height: 100%;
-    gap: 0;
+    height: auto;
+    min-height: 50%;
 }
-.bento-stage-vertical {
-    flex: 1;
+#slide-11 .swiss-layout .widget[data-role="headline"] {
+    flex: 0 0 35%;
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 0;
-    width: 100%;
 }
-.bento-stage-vertical .widget {
-    width: auto;
-    max-width: 80%;
-}
-.bento-arrow-vertical {
-    font-size: 2rem;
-    color: var(--color-text-secondary, #888);
-    text-align: center;
-    padding: 0.5rem 0;
-    flex-shrink: 0;
-}
-
-.bento-cell {
-    min-height: 0;
+#slide-11 .swiss-layout .widget[data-role="body"] {
+    flex: 0 0 65%;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -2827,106 +3191,107 @@
     </style>
 <body>
     <div class="slide-deck">
-        <div class="slide active" data-slide-index="0" id="slide_001_opening_landscape">
-            <div class="layout-container" style="background: #0F1115;">
+        <div class="slide active" data-slide-index="0" id="slide_01_context_shift">
+            <div class="layout-container" style="background: #ffffff;">
+        <div class="layout-header widget preset-surface-Flat">
+                <h1 style="font-size: 72px;font-weight: 700;line-height: 1.1;text-align: left;color: #333333;">How AI Roles Shift in a Decade</h1>
+        </div>
         
         <div class="layout-content">
 <div class="matrix-grid matrix-timeline">
-            <div class="matrix-cell widget preset-surface-Flat preset-shape-Sharp preset-fill-Solid_Brand preset-effect-Shadow" data-role="stage1_title">
+            <div class="matrix-cell widget preset-surface-Flat preset-shape-Sharp preset-fill-Subtle " data-role="stage1_title">
 
 
 
-<div class="widget-type-heading" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; ">
-        <h3>2011 → traditional vision</h3>
+<div class="widget-type-display" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 72px;font-weight: 700;line-height: 1.1;text-align: left;">
+    <h1 class="display-text">
+        2011: Vision algorithms at Microsoft
+    </h1>
 </div>
 
             </div>
-            <div class="matrix-cell widget preset-surface-Flat preset-shape-Sharp preset-fill-Solid_Brand preset-effect-Shadow" data-role="stage2_title">
+            <div class="matrix-cell widget preset-surface-Flat preset-shape-Sharp preset-fill-Subtle " data-role="stage2_title">
 
 
 
-<div class="widget-type-heading" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; ">
-        <h3>2015 → deep neural networks</h3>
+<div class="widget-type-display" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 72px;font-weight: 700;line-height: 1.1;text-align: left;">
+    <h1 class="display-text">
+        2016→2018: From devices to generation
+    </h1>
 </div>
 
             </div>
-            <div class="matrix-cell widget preset-surface-Flat preset-shape-Sharp preset-fill-Solid_Brand preset-effect-Shadow" data-role="stage3_title">
+            <div class="matrix-cell widget preset-surface-Flat preset-shape-Sharp preset-fill-Subtle " data-role="stage3_title">
 
 
 
-<div class="widget-type-heading" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; ">
-        <h3>2016–2018 → edge & generative</h3>
+<div class="widget-type-display" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 72px;font-weight: 700;line-height: 1.1;text-align: left;">
+    <h1 class="display-text">
+        2021: Product‑focused AI in Teams
+    </h1>
 </div>
 
             </div>
-            <div class="matrix-cell widget preset-surface-Flat preset-shape-Sharp preset-fill-Solid_Brand preset-effect-Shadow" data-role="stage4_title">
+            <div class="matrix-cell widget preset-surface-Flat preset-shape-Sharp preset-fill-Subtle " data-role="stage4_title">
 
 
 
-<div class="widget-type-heading" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; ">
-        <h3>2021–early 2020s → LLM era</h3>
+<div class="widget-type-display" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 72px;font-weight: 700;line-height: 1.1;text-align: left;">
+    <h1 class="display-text">
+        2020s LLM era: Orchestration
+    </h1>
 </div>
 
             </div>
-            <div class="matrix-cell widget preset-surface-Flat preset-shape-Sharp preset-fill-Solid_Brand preset-effect-Shadow" data-role="stage1_detail">
+            <div class="matrix-cell widget preset-surface-Flat preset-shape-Sharp preset-fill-Subtle " data-role="stage1_detail">
 
 
 
-<div class="widget-type-list" style="">
-        <ul>
-            <li>Microsoft, Face API service</li>
-            <li>Hand-crafted computer vision algorithms</li>
-            <li>Service-side tuning and deployment</li>
-        </ul>
+<div class="widget-type-body" style="width: 100%; height: 100%; display: flex; align-items: center; font-size: 28px;font-weight: 400;line-height: 1.5;text-align: left;">
+    <p>Initial Face API work shows early <strong style="color: var(--color-accent); font-weight: bold;">AI roles</strong> centered on core algorithms and services.</p>
 </div>
 
             </div>
-            <div class="matrix-cell widget preset-surface-Flat preset-shape-Sharp preset-fill-Solid_Brand preset-effect-Shadow" data-role="stage2_detail">
+            <div class="matrix-cell widget preset-surface-Flat preset-shape-Sharp preset-fill-Subtle " data-role="stage2_detail">
 
 
 
-<div class="widget-type-list" style="">
-        <ul>
-            <li>Industry pivots to deep neural networks</li>
-            <li>Move away from hand-crafted features</li>
-            <li>Vision engineers must retool quickly</li>
-        </ul>
+<div class="widget-type-body" style="width: 100%; height: 100%; display: flex; align-items: center; font-size: 28px;font-weight: 400;line-height: 1.5;text-align: left;">
+    <p>Edge and cross‑platform inference, video generation—<strong style="color: var(--color-accent); font-weight: bold;">AI skills</strong> must expand every few years.</p>
 </div>
 
             </div>
-            <div class="matrix-cell widget preset-surface-Flat preset-shape-Sharp preset-fill-Solid_Brand preset-effect-Shadow" data-role="stage3_detail">
+            <div class="matrix-cell widget preset-surface-Flat preset-shape-Sharp preset-fill-Subtle " data-role="stage3_detail">
 
 
 
-<div class="widget-type-list" style="">
-        <ul>
-            <li>Edge inference on mobile devices</li>
-            <li>Cross-platform vision deployment</li>
-            <li>Early video generation experiments</li>
-        </ul>
+<div class="widget-type-body" style="width: 100%; height: 100%; display: flex; align-items: center; font-size: 28px;font-weight: 400;line-height: 1.5;text-align: left;">
+    <p>Vision pipelines power real‑world features—AI work shifts closer to user impact.</p>
 </div>
 
             </div>
-            <div class="matrix-cell widget preset-surface-Flat preset-shape-Sharp preset-fill-Solid_Brand preset-effect-Shadow" data-role="stage4_detail">
+            <div class="matrix-cell widget preset-surface-Flat preset-shape-Sharp preset-fill-Subtle " data-role="stage4_detail">
 
 
 
-<div class="widget-type-list" style="">
-        <ul>
-            <li>Teams vision pipelines and features</li>
-            <li>Shift to large models and LLMs</li>
-            <li>From model-building to app composition</li>
-        </ul>
+<div class="widget-type-body" style="width: 100%; height: 100%; display: flex; align-items: center; font-size: 28px;font-weight: 400;line-height: 1.5;text-align: left;">
+    <p>From training models to <strong style="color: var(--color-accent); font-weight: bold;">LLM composition</strong>: prompts, agents, and workflow design become core.</p>
 </div>
 
             </div>
 </div>
         </div>
         
+        <div class="layout-footer widget preset-surface-Flat">
+                <p style="font-size: 28px;font-weight: 400;line-height: 1.5;text-align: left;color: #333333;">Use Chao Wang’s journey as a <strong style="color: var(--color-accent); font-weight: bold;">playbook</strong>: expect rapid shifts, plan for adaptation.</p>
+        </div>
     </div>
         </div>
-        <div class="slide" data-slide-index="1" id="slide_002_traditional_ai_pipeline">
-            <div class="layout-container" style="background: #0F1115;">
+        <div class="slide" data-slide-index="1" id="slide_02_from_pipelines_to_platforms">
+            <div class="layout-container" style="background: #ffffff;">
+        <div class="layout-header widget preset-surface-Flat">
+                <h2 style="font-size: 48px;font-weight: 500;line-height: 1.2;text-align: left;color: #333333;">From linear AI pipelines to flexible platforms</h2>
+        </div>
         
         <div class="layout-content">
 <div class="bento-stack-vertical">
@@ -2934,52 +3299,36 @@
 
 
 
-<div class="widget-type-heading" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; ">
-        <h2>Traditional AI: Linear, role‑separated pipeline</h2>
+<div class="widget-type-display" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 72px;font-weight: 700;line-height: 1.1;text-align: left;">
+    <h1 class="display-text">
+        Traditional AI: linear and siloed
+    </h1>
 </div>
 
                 </div>
-                <div class="bento-stage-vertical widget preset-surface-Flat preset-shape-Sharp preset-fill-Solid_Brand preset-effect-Shadow" data-role="stage_2">
+                <div class="bento-stage-vertical widget preset-surface-Flat preset-shape-Rounded preset-fill-Subtle preset-effect-Shadow" data-role="stage_2">
 
 
 
-<div class="widget-type-list" style="">
+<div class="widget-type-list" style="font-size: 28px;font-weight: 400;line-height: 1.5;text-align: left;">
         <ul>
-            <li>Data engineers: collect and curate data</li>
-            <li>Researchers: select or design models</li>
-            <li>ML engineers: train and tune for accuracy</li>
-            <li>Developers: deploy, latency and throughput</li>
-            <li>Product: measure user impact, plan iterations</li>
+            <li><mark style="background-color: var(--color-accent); color: var(--color-text); padding: 0 0.2em; border-radius: 3px;">Linear pipeline</mark> from data to impact</li>
+            <li>Fixed roles: engineers, ML, devs, product</li>
+            <li>Each project rebuilt infra, eval, optimization</li>
         </ul>
 </div>
 
                 </div>
-                <div class="bento-stage-vertical widget preset-surface-Flat preset-shape-Sharp preset-fill-Solid_Brand preset-effect-Shadow" data-role="stage_3">
+                <div class="bento-stage-vertical widget preset-surface-Flat preset-shape-Rounded preset-fill-Subtle preset-effect-Shadow" data-role="stage_3">
 
 
 
-<div class="widget-type-list" style="">
-        <ol>
-            <li>1. Collect and curate data (coverage, quality)</li>
-            <li>2. Select or design model structure</li>
-            <li>3. Train and tune to maximize accuracy</li>
-            <li>4. Deploy, optimize latency and throughput</li>
-            <li>5. Measure impact, iterate slowly with tweaks</li>
-        </ol>
-</div>
-
-                </div>
-                <div class="bento-stage-vertical widget preset-surface-Flat preset-shape-Sharp preset-fill-Solid_Brand preset-effect-Shadow" data-role="stage_4">
-
-
-
-<div class="widget-type-list" style="">
+<div class="widget-type-list" style="font-size: 28px;font-weight: 400;line-height: 1.5;text-align: left;">
         <ul>
-            <li>Slow, months‑long iteration cycles</li>
-            <li>Expensive to build and operate</li>
-            <li>Frequent reinvention of infrastructure</li>
-            <li>Rebuilt evaluation and optimization each project</li>
-            <li>Strong contrast with fast LLM‑era workflows</li>
+            <li>Collect and curate data first</li>
+            <li>Then design and train models</li>
+            <li>Only later deploy, then measure impact</li>
+            <li>Slow, expensive, hard to iterate careers around</li>
         </ul>
 </div>
 
@@ -2987,10 +3336,84 @@
 </div>
         </div>
         
+        <div class="layout-footer widget preset-surface-Flat">
+                <p style="font-size: 28px;font-weight: 400;line-height: 1.5;text-align: left;color: #333333;">Old career playbook: specialize in one pipeline stage and optimize that silo.</p>
+        </div>
     </div>
         </div>
-        <div class="slide" data-slide-index="2" id="slide_003_llm_era_shift">
-            <div class="layout-container" style="background: #0F1115;">
+        <div class="slide" data-slide-index="2" id="slide_03_the_llm_era_new_rules">
+            <div class="layout-container" style="background: #ffffff;">
+        <div class="layout-header widget preset-surface-Flat">
+                <h2 style="font-size: 48px;font-weight: 500;line-height: 1.2;text-align: left;color: #333333;">The LLM era: new technical rules for career value</h2>
+        </div>
+        
+        <div class="layout-content">
+<div class="bento-grid">
+            <div class="bento-cell widget preset-surface-Flat preset-shape-Sharp preset-fill-Solid_Brand preset-effect-Shadow" data-role="quadrant_1">
+
+
+
+<div class="widget-type-display" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 72px;font-weight: 700;line-height: 1.1;text-align: left;">
+    <h1 class="display-text">
+        LLMs: new knowledge + reasoning base
+    </h1>
+</div>
+
+            </div>
+            <div class="bento-cell widget preset-surface-Flat preset-shape-Rounded preset-fill-Subtle preset-effect-Shadow" data-role="quadrant_2">
+
+
+
+<div class="widget-type-list" style="font-size: 28px;font-weight: 400;line-height: 1.5;text-align: left;">
+        <ul>
+            <li>Start from a large unified model</li>
+            <li>Treat it as embedded knowledge base</li>
+            <li>Use it as reasoning interface</li>
+        </ul>
+</div>
+
+            </div>
+            <div class="bento-cell widget preset-surface-Flat preset-shape-Rounded preset-fill-Subtle preset-effect-Shadow" data-role="quadrant_3">
+
+
+
+<div class="widget-type-list" style="font-size: 28px;font-weight: 400;line-height: 1.5;text-align: left;">
+        <ul>
+            <li>Compose models via prompting</li>
+            <li>Orchestrate tools and agents</li>
+            <li>Design multi-step workflows</li>
+            <li>Integrate multiple modalities</li>
+        </ul>
+</div>
+
+            </div>
+            <div class="bento-cell widget preset-surface-Flat preset-shape-Rounded preset-fill-Subtle preset-effect-Shadow" data-role="quadrant_4">
+
+
+
+<div class="widget-type-list" style="font-size: 28px;font-weight: 400;line-height: 1.5;text-align: left;">
+        <ul>
+            <li>Optimize prompt strategy first</li>
+            <li>Prioritize user experience quality</li>
+            <li>Embed telemetry and evaluation</li>
+            <li>Accelerate iteration with feedback</li>
+        </ul>
+</div>
+
+            </div>
+</div>
+        </div>
+        
+        <div class="layout-footer widget preset-surface-Flat">
+                <p style="font-size: 28px;font-weight: 400;line-height: 1.5;text-align: left;color: #333333;">Career lens: shift from training standalone models to composing LLM-centered workflows that maximize user impact and learning speed.</p>
+        </div>
+    </div>
+        </div>
+        <div class="slide" data-slide-index="3" id="slide_04_evolving_roles_and_high_roi_work">
+            <div class="layout-container" style="background: #ffffff;">
+        <div class="layout-header widget preset-surface-Flat">
+                <h2 style="font-size: 48px;font-weight: 500;line-height: 1.2;text-align: left;color: #333333;">Evolving Roles: Where High-ROI Work Is Moving</h2>
+        </div>
         
         <div class="layout-content">
 <div class="comparison-grid">
@@ -2998,8 +3421,10 @@
 
 
 
-<div class="widget-type-heading" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; ">
-        <h3>Pre‑LLM focus</h3>
+<div class="widget-type-display" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 72px;font-weight: 700;line-height: 1.1;text-align: left;">
+    <h1 class="display-text">
+        Engineer vs. Scientist: Then
+    </h1>
 </div>
 
             </div>
@@ -3007,59 +3432,59 @@
 
 
 
-<div class="widget-type-heading" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; ">
-        <h3>LLM‑era focus</h3>
+<div class="widget-type-display" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 72px;font-weight: 700;line-height: 1.1;text-align: left;">
+    <h1 class="display-text">
+        Engineer vs. Scientist: Now
+    </h1>
 </div>
 
             </div>
-            <div class="comparison-cell widget preset-surface-Flat preset-shape-Sharp preset-fill-Solid_Brand preset-effect-Shadow" data-role="left_body">
+            <div class="comparison-cell widget preset-surface-Flat preset-shape-Sharp preset-fill-Subtle preset-effect-Shadow" data-role="left_body">
 
 
 
-<div class="widget-type-list" style="">
+<div class="widget-type-list" style="font-size: 28px;font-weight: 400;line-height: 1.5;text-align: left;">
         <ul>
-            <li>Build models from scratch</li>
-            <li>Micro‑optimize model internals</li>
-            <li>Isolated modules, limited multi‑modality</li>
-            <li>UX mostly one‑time design</li>
-            <li>Sparse runtime feedback, slow iteration</li>
+            <li>Engineers: stability, latency, throughput</li>
+            <li>Scientists: model accuracy, metrics</li>
+            <li>Clear boundary, separate workflows</li>
+            <li>Pipelines, infra over prompts</li>
         </ul>
 </div>
 
             </div>
-            <div class="comparison-cell widget preset-surface-Flat preset-shape-Sharp preset-fill-Solid_Brand preset-effect-Shadow" data-role="right_body">
+            <div class="comparison-cell widget preset-surface-Flat preset-shape-Sharp preset-fill-Subtle preset-effect-Shadow" data-role="right_body">
 
 
 
-<div class="widget-type-list" style="">
+<div class="widget-type-list" style="font-size: 28px;font-weight: 400;line-height: 1.5;text-align: left;">
         <ul>
-            <li>Treat large models as knowledge + reasoning substrate</li>
-            <li>Compose via prompting and lightweight orchestration</li>
-            <li>Design agent architectures and workflows</li>
-            <li>Integrate multi‑modality and existing components</li>
-            <li>Embed telemetry, automatic evaluation, feedback loops</li>
+            <li>Both deliver useful AI products</li>
+            <li>Design prompts, agents, feedback loops</li>
+            <li>Embed telemetry, automatic feedback</li>
+            <li>Boundary blurs, focus differs</li>
         </ul>
 </div>
 
             </div>
-            <div class="comparison-cell widget preset-surface-Flat preset-shape-Sharp preset-fill-Subtle preset-effect-Shadow" data-role="bottom_left">
+            <div class="comparison-cell widget preset-surface-Flat preset-shape-Pill preset-fill-Subtle preset-effect-Shadow" data-role="bottom_left">
 
 
 
-<div class="widget-type-body" style="width: 100%; height: 100%; display: flex; align-items: center; ">
-    <p>Human–AI co‑creation turns interface and product design into an iterative, multi‑round interaction process with AI in the loop.</p>
+<div class="widget-type-body" style="width: 100%; height: 100%; display: flex; align-items: center; font-size: 28px;font-weight: 400;line-height: 1.5;text-align: left;">
+    <p>Aim for work on reliability, feedback loops, and product usefulness—not tiny accuracy gains.</p>
 </div>
 
             </div>
-            <div class="comparison-cell widget preset-surface-Flat preset-shape-Sharp preset-fill-Solid_Brand preset-effect-Shadow" data-role="bottom_right">
+            <div class="comparison-cell widget preset-surface-Flat preset-shape-Sharp preset-fill-Subtle preset-effect-Shadow" data-role="bottom_right">
 
 
 
-<div class="widget-type-list" style="">
+<div class="widget-type-list" style="font-size: 28px;font-weight: 400;line-height: 1.5;text-align: left;">
         <ul>
-            <li>Think in workflows, not layers</li>
-            <li>Own UX + feedback loops</li>
-            <li>Orchestrate models, tools, and context</li>
+            <li>Own robustness and failure handling</li>
+            <li>Instrument telemetry and feedback</li>
+            <li>Bridge system and model decisions</li>
         </ul>
 </div>
 
@@ -3067,133 +3492,174 @@
 </div>
         </div>
         
+        <div class="layout-footer widget preset-surface-Flat">
+                <p style="font-size: 28px;font-weight: 400;line-height: 1.5;text-align: left;color: #333333;">Career move: Build skills in prompts, agent architectures, telemetry, and feedback-driven iteration.</p>
+        </div>
     </div>
         </div>
-        <div class="slide" data-slide-index="3" id="slide_004_role_blurring_and_expectations">
-            <div class="layout-container" style="background: #0F1115;">
-        
-        <div class="layout-content">
-<div class="bento-stack-vertical">
-                <div class="bento-stage-vertical widget preset-surface-Flat preset-shape-Sharp preset-fill-Solid_Brand preset-effect-Shadow" data-role="stage_1">
-
-
-
-<div class="widget-type-heading" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; ">
-        <h2>Engineers & applied scientists: roles are blurring</h2>
-</div>
-
-                </div>
-                <div class="bento-stage-vertical widget preset-surface-Flat preset-shape-Sharp preset-fill-Solid_Brand preset-effect-Shadow" data-role="stage_2">
-
-
-
-<div class="widget-type-list" style="">
-        <ul>
-            <li>Both own useful, reliable products</li>
-            <li>Engineers: system stability, performance</li>
-            <li>Scientists: model capabilities, orchestration</li>
-            <li>Focus differences matter more than titles</li>
-            <li>Base models shrink skill gap vs 5 years ago</li>
-        </ul>
-</div>
-
-                </div>
-                <div class="bento-stage-vertical widget preset-surface-Flat preset-shape-Sharp preset-fill-Solid_Brand preset-effect-Shadow" data-role="stage_3">
-
-
-
-<div class="widget-type-list" style="">
-        <ul>
-            <li>Depth in one domain is less sufficient</li>
-            <li>Combine domains, tools, perspectives</li>
-            <li>Define and solve complex, cross-system problems</li>
-            <li>Scope problems across system boundaries</li>
-            <li>LLMs still weak at scoping and tradeoffs</li>
-        </ul>
-</div>
-
-                </div>
-                <div class="bento-stage-vertical widget preset-surface-Flat preset-shape-Sharp preset-fill-Solid_Brand preset-effect-Shadow" data-role="stage_4">
-
-
-
-<div class="widget-type-list" style="">
-        <ul>
-            <li>Entry: learn problem scoping basics</li>
-            <li>Mid: own end‑to‑end product impact</li>
-            <li>Question scopes before optimizing code</li>
-            <li>Example: function called 38 times/second vs once</li>
-            <li>C++ intrinsics matter only at the right scope</li>
-        </ul>
-</div>
-
-                </div>
-</div>
+        <div class="slide" data-slide-index="4" id="slide_05_three_career_leverage_points">
+            <div class="layout-container" style="background: #ffffff;">
+        <div class="layout-header widget preset-surface-Flat">
+                <h2 style="font-size: 48px;font-weight: 500;line-height: 1.2;text-align: left;color: #333333;">Three leverage points for your AI-era career</h2>
         </div>
         
-    </div>
-        </div>
-        <div class="slide" data-slide-index="4" id="slide_005_high_roi_skills_for_devs">
-            <div class="layout-container" style="background: #0F1115;">
-        
         <div class="layout-content">
-<div class="bento-stack-vertical">
-                <div class="bento-stage-vertical widget preset-surface-Flat preset-shape-Sharp preset-fill-Solid_Brand preset-effect-Shadow" data-role="stage_1">
+<div class="bento-grid">
+            <div class="bento-cell widget preset-surface-Flat preset-shape-Sharp preset-fill-Solid_Brand preset-effect-Shadow" data-role="cell_1">
 
 
 
-<div class="widget-type-heading" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; ">
-        <h2>High-ROI skills in the LLM era</h2>
+<div class="widget-type-display" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 72px;font-weight: 700;line-height: 1.1;text-align: left;">
+    <h1 class="display-text">
+        Three high-leverage focus areas
+    </h1>
 </div>
 
-                </div>
-                <div class="bento-stage-vertical widget preset-surface-Flat preset-shape-Sharp preset-fill-Solid_Brand preset-effect-Shadow" data-role="stage_2">
+            </div>
+            <div class="bento-cell widget preset-surface-Flat preset-shape-Sharp preset-fill-Subtle preset-effect-Shadow" data-role="cell_2">
 
 
 
-<div class="widget-type-list" style="">
+<div class="widget-type-heading" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 48px;font-weight: 500;line-height: 1.2;text-align: left;">
+        <h3>1. Precise problem definition</h3>
+</div>
+
+            </div>
+            <div class="bento-cell widget preset-surface-Flat preset-shape-Rounded preset-fill-Subtle preset-effect-Shadow" data-role="cell_3">
+
+
+
+<div class="widget-type-body" style="width: 100%; height: 100%; display: flex; align-items: center; font-size: 28px;font-weight: 400;line-height: 1.5;text-align: left;">
+    <p>Move beyond existing components; imagine truly useful real-life products and workflows.</p>
+</div>
+
+            </div>
+            <div class="bento-cell widget preset-surface-Flat preset-shape-Sharp preset-fill-Subtle preset-effect-Shadow" data-role="cell_4">
+
+
+
+<div class="widget-type-heading" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 48px;font-weight: 500;line-height: 1.2;text-align: left;">
+        <h3>2. Robust evaluation and tuning</h3>
+</div>
+
+            </div>
+            <div class="bento-cell widget preset-surface-Flat preset-shape-Rounded preset-fill-Subtle preset-effect-Shadow" data-role="cell_5">
+
+
+
+<div class="widget-type-body" style="width: 100%; height: 100%; display: flex; align-items: center; font-size: 28px;font-weight: 400;line-height: 1.5;text-align: left;">
+    <p>Shift from micro-optimizing models to validation systems, telemetry, and adaptive loops.</p>
+</div>
+
+            </div>
+            <div class="bento-cell widget preset-surface-Flat preset-shape-Rounded preset-fill-Subtle preset-effect-Shadow" data-role="cell_6">
+
+
+
+<div class="widget-type-list" style="font-size: 28px;font-weight: 400;line-height: 1.5;text-align: left;">
         <ul>
-            <li>Precise problem definition and scope</li>
-            <li>Robust evaluation and tuning loops</li>
             <li>Thoughtful cross-domain combination</li>
+            <li>Combine multiple tools and domains</li>
+            <li>Define and solve complex problems</li>
         </ul>
 </div>
 
-                </div>
-                <div class="bento-stage-vertical widget preset-surface-Flat preset-shape-Sharp preset-fill-Solid_Brand preset-effect-Shadow" data-role="stage_3">
-
-
-
-<div class="widget-type-list" style="">
-        <ul>
-            <li>Start from real-life useful products</li>
-            <li>Include UX, telemetry, multi-step interactions</li>
-            <li>Iteratively refine based on AI behavior</li>
-            <li>Use prompt design to test framing</li>
-        </ul>
-</div>
-
-                </div>
-                <div class="bento-stage-vertical widget preset-surface-Flat preset-shape-Sharp preset-fill-Solid_Brand preset-effect-Shadow" data-role="stage_4">
-
-
-
-<div class="widget-type-list" style="">
-        <ul>
-            <li>Integrate systems with telemetry, adaptive loops</li>
-            <li>Prompt tuning reduces hallucination, not all errors</li>
-            <li>Scope changes what counts as a valid solution</li>
-        </ul>
-</div>
-
-                </div>
+            </div>
 </div>
         </div>
         
+        <div class="layout-footer widget preset-surface-Flat">
+                <p style="font-size: 28px;font-weight: 400;line-height: 1.5;text-align: left;color: #333333;">Use this checklist to prioritize learning, projects, and on-the-job impact.</p>
+        </div>
     </div>
         </div>
-        <div class="slide" data-slide-index="5" id="slide_006_building_reliable_llm_systems">
-            <div class="layout-container" style="background: #0F1115;">
+        <div class="slide" data-slide-index="5" id="slide_06_building_practical_ai_workflows">
+            <div class="layout-container" style="background: #ffffff;">
+        <div class="layout-header widget preset-surface-Flat">
+                <h2 style="font-size: 48px;font-weight: 500;line-height: 1.2;text-align: left;color: #333333;">From concepts to day-to-day AI practice</h2>
+        </div>
+        
+        <div class="layout-content">
+<div class="bento-grid">
+            <div class="bento-cell widget preset-surface-Flat preset-shape-Sharp preset-fill-Solid_Brand preset-effect-Shadow" data-role="cell_1">
+
+
+
+<div class="widget-type-display" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 72px;font-weight: 700;line-height: 1.1;text-align: left;">
+    <h1 class="display-text">
+        Building practical AI workflows
+    </h1>
+</div>
+
+            </div>
+            <div class="bento-cell widget preset-surface-Flat preset-shape-Rounded preset-fill-Subtle preset-effect-Shadow" data-role="cell_2">
+
+
+
+<div class="widget-type-heading" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 48px;font-weight: 500;line-height: 1.2;text-align: left;">
+        <h3>Prompt tuning loop</h3>
+</div>
+
+            </div>
+            <div class="bento-cell widget preset-surface-Flat preset-shape-Rounded preset-fill-Subtle preset-effect-Shadow" data-role="cell_3">
+
+
+
+<div class="widget-type-list" style="font-size: 28px;font-weight: 400;line-height: 1.5;text-align: left;">
+        <ul>
+            <li>Start with a 90% general prompt</li>
+            <li>Collect edge cases and failures</li>
+            <li>Refine with constraints, clarifications</li>
+            <li>Test, repeat until failures acceptable</li>
+        </ul>
+</div>
+
+            </div>
+            <div class="bento-cell widget preset-surface-Outline preset-shape-Pill preset-fill-Subtle preset-effect-Shadow" data-role="cell_4">
+
+
+
+<div class="widget-type-body" style="width: 100%; height: 100%; display: flex; align-items: center; font-size: 28px;font-weight: 400;line-height: 1.5;text-align: left;">
+    <p>Prompt tuning reduces hallucinations, improves behavior, but is not a silver bullet.</p>
+</div>
+
+            </div>
+            <div class="bento-cell widget preset-surface-Flat preset-shape-Rounded preset-fill-Subtle preset-effect-Shadow" data-role="cell_5">
+
+
+
+<div class="widget-type-heading" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 48px;font-weight: 500;line-height: 1.2;text-align: left;">
+        <h3>Planner–executor pattern</h3>
+</div>
+
+            </div>
+            <div class="bento-cell widget preset-surface-Flat preset-shape-Rounded preset-fill-Subtle preset-effect-Shadow" data-role="cell_6">
+
+
+
+<div class="widget-type-list" style="font-size: 28px;font-weight: 400;line-height: 1.5;text-align: left;">
+        <ul>
+            <li>LLM planner generates action steps</li>
+            <li>Store steps as structured persistent data</li>
+            <li>Non-LLM executor tracks real-world state</li>
+            <li>Verification loop prevents error accumulation</li>
+        </ul>
+</div>
+
+            </div>
+</div>
+        </div>
+        
+        <div class="layout-footer widget preset-surface-Flat">
+                <p style="font-size: 28px;font-weight: 400;line-height: 1.5;text-align: left;color: #333333;">Career takeaway: learn prompt tuning and planner–executor workflows to build reliable AI tools.</p>
+        </div>
+    </div>
+        </div>
+        <div class="slide" data-slide-index="6" id="slide_07_using_llms_as_translation_engines">
+            <div class="layout-container" style="background: #ffffff;">
+        <div class="layout-header widget preset-surface-Flat">
+                <h2 style="font-size: 48px;font-weight: 500;line-height: 1.2;text-align: left;color: #333333;">Pattern: Single spec → many artifacts</h2>
+        </div>
         
         <div class="layout-content">
 <div class="bento-stack-vertical">
@@ -3201,239 +3667,278 @@
 
 
 
-<div class="widget-type-heading" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; ">
-        <h2>Building Reliable LLM Systems</h2>
+<div class="widget-type-display" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 72px;font-weight: 700;line-height: 1.1;text-align: left;">
+    <h1 class="display-text">
+        LLMs as spec translators
+    </h1>
 </div>
 
                 </div>
-                <div class="bento-stage-vertical widget preset-surface-Flat preset-shape-Sharp preset-fill-Solid_Brand preset-effect-Shadow" data-role="stage_2">
+                <div class="bento-stage-vertical widget preset-surface-Flat preset-shape-Rounded preset-fill-Subtle preset-effect-Shadow" data-role="stage_2">
 
 
 
-<div class="widget-type-list" style="">
+<div class="widget-type-list" style="font-size: 28px;font-weight: 400;line-height: 1.5;text-align: left;">
         <ul>
-            <li>Start with a general prompt for ~90% of typical cases</li>
-            <li>Observe outputs to find edge cases and failure modes</li>
-            <li>Add explicit constraints and instructions to handle those cases</li>
-            <li>Repeat until remaining failures are at an acceptable level</li>
+            <li>Write one clear project spec</li>
+            <li>Generate slides, docs, diagrams from spec</li>
+            <li>Iterate spec, regenerate to stay aligned</li>
+            <li>Extend translation to code structures</li>
         </ul>
 </div>
 
                 </div>
-                <div class="bento-stage-vertical widget preset-surface-Flat preset-shape-Sharp preset-fill-Solid_Brand preset-effect-Shadow" data-role="stage_3">
+                <div class="bento-stage-vertical widget preset-surface-Flat preset-shape-Rounded preset-fill-Subtle preset-effect-Shadow" data-role="stage_3">
 
 
 
-<div class="widget-type-list" style="">
-        <ul>
-            <li>LLM acts as high-level planner suggesting steps or actions</li>
-            <li>Executor (non-LLM code) runs steps and tracks authoritative state</li>
-            <li>Persist critical state outside the LLM as structured data</li>
-            <li>Executor validates steps, triggers retries or alternative plans</li>
-            <li>Feedback loop stops small errors from compounding into wrong outcomes</li>
-        </ul>
-</div>
-
-                </div>
-                <div class="bento-stage-vertical widget preset-surface-Flat preset-shape-Sharp preset-fill-Solid_Brand preset-effect-Shadow" data-role="stage_4">
-
-
-
-<div class="widget-type-list" style="">
-        <ul>
-            <li>Prevent error accumulation with explicit planning–execution architectures</li>
-            <li>Prompts are not enough without verification and state control</li>
-            <li>Humans still lead at C++ intrinsics and memory/cache behavior</li>
-            <li>Engineers must scope problems correctly across system boundaries</li>
-        </ul>
+<div class="widget-type-body" style="width: 100%; height: 100%; display: flex; align-items: center; font-size: 28px;font-weight: 400;line-height: 1.5;text-align: left;">
+    <p>Treat LLM tools as translators from a single source-of-truth spec into slides, documents, diagrams, and code, so you ship many artifacts with one focused thinking pass.</p>
 </div>
 
                 </div>
 </div>
         </div>
         
+        <div class="layout-footer widget preset-surface-Flat">
+                <p style="font-size: 28px;font-weight: 400;line-height: 1.5;text-align: left;color: #333333;">Career move: use one spec to broadcast your work across formats and stakeholders.</p>
+        </div>
     </div>
         </div>
-        <div class="slide" data-slide-index="6" id="slide_007_human_ai_division_of_labor">
-            <div class="layout-container" style="background: #0F1115;">
+        <div class="slide" data-slide-index="7" id="slide_08_staying_current_without_burnout">
+            <div class="layout-container" style="background: #ffffff;">
+        <div class="layout-header widget preset-surface-Flat">
+                <h2 style="font-size: 48px;font-weight: 500;line-height: 1.2;text-align: left;color: #333333;">Lightweight system to stay current</h2>
+        </div>
         
         <div class="layout-content">
-<div class="bento-stack-vertical">
-                <div class="bento-stage-vertical widget preset-surface-Flat preset-shape-Sharp preset-fill-Solid_Brand preset-effect-Shadow" data-role="stage_1">
+<div class="bento-grid">
+            <div class="bento-cell widget preset-surface-Flat preset-shape-Sharp preset-fill-Solid_Brand preset-effect-Shadow" data-role="cell_1">
 
 
 
-<div class="widget-type-heading" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; ">
-        <h2>Where humans still beat LLMs</h2>
+<div class="widget-type-display" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 72px;font-weight: 700;line-height: 1.1;text-align: left;">
+    <h1 class="display-text">
+        Stay current without burnout
+    </h1>
 </div>
 
-                </div>
-                <div class="bento-stage-vertical widget preset-surface-Flat preset-shape-Sharp preset-fill-Solid_Brand preset-effect-Shadow" data-role="stage_2">
+            </div>
+            <div class="bento-cell widget preset-surface-Subtle preset-shape-Rounded preset-fill-Solid_Surface preset-effect-Shadow" data-role="cell_2">
 
 
 
-<div class="widget-type-list" style="">
+<div class="widget-type-list" style="font-size: 28px;font-weight: 400;line-height: 1.5;text-align: left;">
         <ul>
-            <li>Define problem scope before coding</li>
-            <li>Ask: what actually needs to be fast?</li>
-            <li>Question whether optimization is valid at all</li>
+            <li>Subscribe to curated sources</li>
+            <li>Focus on few key topics</li>
         </ul>
 </div>
 
-                </div>
-                <div class="bento-stage-vertical widget preset-surface-Flat preset-shape-Sharp preset-fill-Solid_Brand preset-effect-Shadow" data-role="stage_3">
+            </div>
+            <div class="bento-cell widget preset-surface-Subtle preset-shape-Rounded preset-fill-Solid_Surface preset-effect-Shadow" data-role="cell_3">
 
 
 
-<div class="widget-type-list" style="">
+<div class="widget-type-body" style="width: 100%; height: 100%; display: flex; align-items: center; font-size: 28px;font-weight: 400;line-height: 1.5;text-align: left;">
+    <p>Skim recommended papers for direction, not exhaustive detail; avoid reading everything.</p>
+</div>
+
+            </div>
+            <div class="bento-cell widget preset-surface-Subtle preset-shape-Rounded preset-fill-Solid_Surface preset-effect-Shadow" data-role="cell_4">
+
+
+
+<div class="widget-type-list" style="font-size: 28px;font-weight: 400;line-height: 1.5;text-align: left;">
         <ul>
-            <li>Avoid micro-tuning a local function</li>
-            <li>Check if it runs 38 times/second</li>
-            <li>Prefer once per lifecycle over tiny tweaks</li>
+            <li>Adopt task-driven tool use</li>
+            <li>Try AI only for real needs</li>
         </ul>
 </div>
 
-                </div>
-                <div class="bento-stage-vertical widget preset-surface-Flat preset-shape-Sharp preset-fill-Solid_Brand preset-effect-Shadow" data-role="stage_4">
+            </div>
+            <div class="bento-cell widget preset-surface-Subtle preset-shape-Rounded preset-fill-Solid_Surface preset-effect-Shadow" data-role="cell_5">
 
 
 
-<div class="widget-type-list" style="">
-        <ul>
-            <li>Focus on high-ROI technical work</li>
-            <li>Integrate telemetry and adaptive loops</li>
-            <li>Ship features that better meet customer needs</li>
-        </ul>
+<div class="widget-type-body" style="width: 100%; height: 100%; display: flex; align-items: center; font-size: 28px;font-weight: 400;line-height: 1.5;text-align: left;">
+    <p>Turn real projects—slides, scripts, design docs—into small AI workflow experiments.</p>
 </div>
 
-                </div>
+            </div>
+            <div class="bento-cell widget " data-role="cell_6">
+                    <div class="empty-slot">Empty slot</div>
+            </div>
 </div>
         </div>
         
+        <div class="layout-footer widget preset-surface-Flat">
+                <p style="font-size: 28px;font-weight: 400;line-height: 1.5;text-align: left;color: #333333;">Keep inputs curated, reading shallow, and experiments tied to real work.</p>
+        </div>
     </div>
         </div>
-        <div class="slide" data-slide-index="7" id="slide_008_daily_workflows_with_ai_tools">
-            <div class="layout-container" style="background: #0F1115;">
+        <div class="slide" data-slide-index="8" id="slide_09_human_edges_in_the_ai_era">
+            <div class="layout-container" style="background: #ffffff;">
+        <div class="layout-header widget preset-surface-Flat">
+                <h2 style="font-size: 48px;font-weight: 500;line-height: 1.2;text-align: left;color: #333333;">Where humans still outperform AI</h2>
+        </div>
         
         <div class="layout-content">
-<div class="bento-stack-vertical">
-                <div class="bento-stage-vertical widget preset-surface-Flat preset-shape-Sharp preset-fill-Solid_Brand preset-effect-Shadow" data-role="stage_1">
+<div class="bento-grid">
+            <div class="bento-cell widget preset-surface-Flat preset-shape-Sharp preset-fill-Solid_Brand preset-effect-Shadow" data-role="cell_1">
 
 
 
-<div class="widget-type-heading" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; ">
-        <h2>Single-source-of-truth daily workflow</h2>
+<div class="widget-type-display" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 72px;font-weight: 700;line-height: 1.1;text-align: left;">
+    <h1 class="display-text">
+        Human edges in the AI era
+    </h1>
 </div>
 
-                </div>
-                <div class="bento-stage-vertical widget preset-surface-Flat preset-shape-Sharp preset-fill-Solid_Brand preset-effect-Shadow" data-role="stage_2">
+            </div>
+            <div class="bento-cell widget preset-surface-Flat preset-shape-Rounded preset-fill-Subtle preset-effect-Shadow" data-role="cell_2">
 
 
 
-<div class="widget-type-list" style="">
+<div class="widget-type-list" style="font-size: 28px;font-weight: 400;line-height: 1.5;text-align: left;">
         <ul>
-            <li>Write an abstract or spec</li>
-            <li>Describe what you want to build or present</li>
-            <li>Treat spec as the single source of truth</li>
+            <li>Define the <mark style="background-color: var(--color-accent); color: var(--color-text); padding: 0 0.2em; border-radius: 3px;">correct scope</mark></li>
+            <li>Find the real system bottleneck</li>
+            <li>Avoid pointless local optimization</li>
         </ul>
 </div>
 
-                </div>
-                <div class="bento-stage-vertical widget preset-surface-Flat preset-shape-Sharp preset-fill-Solid_Brand preset-effect-Shadow" data-role="stage_3">
+            </div>
+            <div class="bento-cell widget preset-surface-Flat preset-shape-Rounded preset-fill-Subtle preset-effect-Shadow" data-role="cell_3">
 
 
 
-<div class="widget-type-list" style="">
+<div class="widget-type-list" style="font-size: 28px;font-weight: 400;line-height: 1.5;text-align: left;">
         <ul>
-            <li>Use LLM-connected tools with the spec</li>
-            <li>MCP servers for Office, diagram renderers</li>
-            <li>Auto-generate slides, documents, diagrams</li>
-            <li>Regenerate artifacts as the spec evolves</li>
+            <li>LLMs weak at <mark style="background-color: var(--color-accent); color: var(--color-text); padding: 0 0.2em; border-radius: 3px;">problem scoping</mark></li>
+            <li>Struggle with system-level tradeoffs</li>
+            <li>Need humans to frame objectives</li>
         </ul>
 </div>
 
-                </div>
-                <div class="bento-stage-vertical widget preset-surface-Flat preset-shape-Sharp preset-fill-Solid_Brand preset-effect-Shadow" data-role="stage_4">
+            </div>
+            <div class="bento-cell widget preset-surface-Flat preset-shape-Rounded preset-fill-Subtle preset-effect-Shadow" data-role="cell_4">
 
 
 
-<div class="widget-type-list" style="">
+<div class="widget-type-list" style="font-size: 28px;font-weight: 400;line-height: 1.5;text-align: left;">
         <ul>
-            <li>Extend pattern to code structure, prototypes</li>
-            <li>LLM as translator between human language and artifacts</li>
-            <li>Adopt tools only when they solve real problems</li>
-            <li>Use curated paper recommendations to track direction</li>
+            <li>LLMs weak at <mark style="background-color: var(--color-accent); color: var(--color-text); padding: 0 0.2em; border-radius: 3px;">C++ intrinsics</mark></li>
+            <li>Limited cache-aware optimization</li>
+            <li>Humans still lead low-level tuning</li>
         </ul>
 </div>
 
-                </div>
+            </div>
+            <div class="bento-cell widget preset-surface-Flat preset-shape-Curve preset-fill-Subtle preset-effect-Shadow" data-role="cell_5">
+
+
+
+<div class="widget-type-body" style="width: 100%; height: 100%; display: flex; align-items: center; font-size: 28px;font-weight: 400;line-height: 1.5;text-align: left;">
+    <p>Cultivate <strong style="color: var(--color-accent); font-weight: bold;">problem scoping</strong> and <strong style="color: var(--color-accent); font-weight: bold;">low-level performance work</strong> as long-term differentiators.</p>
+</div>
+
+            </div>
+            <div class="bento-cell widget preset-surface-Flat preset-shape-Curve preset-fill-Subtle preset-effect-Shadow" data-role="cell_6">
+
+
+
+<div class="widget-type-body" style="width: 100%; height: 100%; display: flex; align-items: center; font-size: 28px;font-weight: 400;line-height: 1.5;text-align: left;">
+    <p>Focus career development on framing the right problems and doing deep optimization.</p>
+</div>
+
+            </div>
 </div>
         </div>
         
+        <div class="layout-footer widget preset-surface-Flat">
+                <p style="font-size: 28px;font-weight: 400;line-height: 1.5;text-align: left;color: #333333;">Action step: Practice scoping real projects and tuning low-level performance-critical code.</p>
+        </div>
     </div>
         </div>
-        <div class="slide" data-slide-index="8" id="slide_009_career_principles_entry_mid">
-            <div class="layout-container" style="background: #0F1115;">
+        <div class="slide" data-slide-index="9" id="slide_10_evolve_with_the_wave_not_against_it">
+            <div class="layout-container" style="background: #ffffff;">
+        <div class="layout-header widget preset-surface-Flat">
+                <h2 style="font-size: 48px;font-weight: 500;line-height: 1.2;text-align: left;color: #333333;">Zooming out: long-term career pattern</h2>
+        </div>
         
         <div class="layout-content">
-<div class="bento-stack-vertical">
-                <div class="bento-stage-vertical widget preset-surface-Flat preset-shape-Sharp preset-fill-Solid_Brand preset-effect-Shadow" data-role="stage_1">
+<div class="cinematic-layout">
+            <div class="cinematic-panel widget" data-role="left">
 
 
 
-<div class="widget-type-heading" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; ">
-        <h2>Career principles for entry & mid-level devs</h2>
+<div class="widget-type-display" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 72px;font-weight: 700;line-height: 1.1;text-align: left;">
+    <h1 class="display-text">
+        Evolve with the AI wave
+    </h1>
 </div>
 
-                </div>
-                <div class="bento-stage-vertical widget preset-surface-Flat preset-shape-Sharp preset-fill-Solid_Brand preset-effect-Shadow" data-role="stage_2">
+            </div>
+            
+            <div class="cinematic-panel widget" data-role="right">
 
 
 
-<div class="widget-type-list" style="">
+<div class="widget-type-list" style="font-size: 28px;font-weight: 400;line-height: 1.5;text-align: left;">
         <ul>
-            <li>Make every step solid</li>
-            <li>Write code that truly works well</li>
-            <li>Design that is genuinely good enough</li>
-            <li>Ask questions until answers are clear</li>
-            <li>Turn answers into lasting knowledge</li>
+            <li>AI will surpass humans in many areas over time</li>
+            <li>Stay curious and keep learning new tools, paradigms, and workflows</li>
+            <li>Use new technologies instead of resisting them in your role</li>
+            <li>Shift like testers who became engineers owning code and tests</li>
         </ul>
 </div>
 
-                </div>
-                <div class="bento-stage-vertical widget preset-surface-Flat preset-shape-Sharp preset-fill-Solid_Brand preset-effect-Shadow" data-role="stage_3">
-
-
-
-<div class="widget-type-list" style="">
-        <ul>
-            <li>Leave comfort zones regularly</li>
-            <li>Be willing to be a beginner again</li>
-            <li>Continuously learn as roles change</li>
-            <li>Continuously learn as tools change</li>
-            <li>Treat learning as part of the job</li>
-        </ul>
-</div>
-
-                </div>
-                <div class="bento-stage-vertical widget preset-surface-Flat preset-shape-Sharp preset-fill-Solid_Brand preset-effect-Shadow" data-role="stage_4">
-
-
-
-<div class="widget-type-list" style="">
-        <ul>
-            <li>Manual tester roles disappeared</li>
-            <li>New tools expanded responsibilities</li>
-            <li>Embracing new tools is safer</li>
-            <li>Resisting change is riskier long-term</li>
-            <li>Evolve with tools, not against them</li>
-        </ul>
-</div>
-
-                </div>
+            </div>
 </div>
         </div>
         
+        <div class="layout-footer widget preset-surface-Flat">
+                <p style="font-size: 28px;font-weight: 400;line-height: 1.5;text-align: left;color: #333333;">Ask: how can I evolve my skills to work with AI, not against it?</p>
+        </div>
+    </div>
+        </div>
+        <div class="slide" data-slide-index="10" id="slide_11_make_every_step_solid">
+            <div class="layout-container" style="background: #ffffff;">
+        <div class="layout-header widget preset-surface-Flat">
+                <h2 style="font-size: 48px;font-weight: 500;line-height: 1.2;text-align: left;color: #333333;">Career Principle: Make Every Step Solid</h2>
+        </div>
+        
+        <div class="layout-content">
+<div class="swiss-layout">
+            <div class="widget preset-surface-Flat preset-shape-Sharp preset-fill-Solid_Brand preset-effect-Shadow" data-role="headline">
+
+
+
+<div class="widget-type-quote" style="width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; font-size: 36px;font-weight: 500;line-height: 1.3;text-align: left; border-left: 4px solid var(--color-primary, #2563eb); padding-left: 1.5rem; border-radius: 8px;">
+    <blockquote style="margin: 0;">
+        <p style="margin-bottom: 0.5rem;">“Make every step solid.”</p>
+        <cite style="opacity: 0.7; font-style: italic;">Chao Wang, Applied Scientist</cite>
+    </blockquote>
+</div>
+
+            </div>
+            
+            <div class="widget preset-surface-Flat preset-shape-Rounded preset-fill-Subtle preset-effect-Shadow" data-role="body">
+
+
+
+<div class="widget-type-body" style="width: 100%; height: 100%; display: flex; align-items: center; font-size: 28px;font-weight: 400;line-height: 1.5;text-align: left;">
+    <p>Write code that truly works, design systems that are good enough, and keep asking questions until answers become part of your knowledge.</p>
+</div>
+
+            </div>
+</div>
+        </div>
+        
+        <div class="layout-footer widget preset-surface-Flat">
+                <p style="font-size: 28px;font-weight: 400;line-height: 1.5;text-align: left;color: #333333;">Daily craft × continuous learning × long-term resilience in a fast-changing AI landscape.</p>
+        </div>
     </div>
         </div>
     </div>
@@ -3441,7 +3946,7 @@
     <div class="navigation">
         <button class="nav-button" id="prev-button">← Previous</button>
         <div class="slide-counter">
-            <span id="current-slide">1</span> / <span id="total-slides">9</span>
+            <span id="current-slide">1</span> / <span id="total-slides">11</span>
         </div>
         <div class="slide-dots">
             <div class="dot active" data-slide="0"></div>
@@ -3453,6 +3958,8 @@
             <div class="dot" data-slide="6"></div>
             <div class="dot" data-slide="7"></div>
             <div class="dot" data-slide="8"></div>
+            <div class="dot" data-slide="9"></div>
+            <div class="dot" data-slide="10"></div>
         </div>
         <button class="nav-button" id="next-button">Next →</button>
     </div>

@@ -1,5 +1,5 @@
 """Test script for layout validation functionality."""
-from src.layout.validation import LayoutValidator, format_issues_for_llm
+from src.layout.dummy.validation import LayoutValidator, format_issues_for_llm
 from src.common.renderable_layout import RenderableLayout, WidgetAssignment
 from src.common.slot import Slot
 from src.common.bounds import Bounds
@@ -191,7 +191,7 @@ def test_style_consistency():
 # Test 5: Format issues for LLM
 def test_format_for_llm():
     print("\n=== Test 5: Format Issues for LLM ===")
-    from src.layout.validation import LayoutIssue
+    from src.layout.dummy.validation import LayoutIssue
     
     issues = [
         LayoutIssue(

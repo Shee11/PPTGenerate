@@ -8,43 +8,43 @@ from src.common.renderable_layout import RenderableLayout, WidgetAssignment
 from src.common.slide import Slide
 from src.common.slides import Slides
 from src.common.slot import Slot
-from src.layout.strategies.bento import (
+from src.layout.dummy.strategies.bento import (
     BentoHeroLeftStrategy,
     BentoHeroTopStrategy,
     BentoQuarterStrategy,
     BentoStandardStrategy,
     BentoVerticalStackStrategy,
 )
-from src.layout.strategies.cinematic import (
+from src.layout.dummy.strategies.cinematic import (
     CinematicFullBleedStrategy,
     CinematicSplit3070Strategy,
     CinematicSplit5050Strategy,
 )
-from src.layout.strategies.data import DataKPIRowStrategy
-from src.layout.strategies.edit import (
+from src.layout.dummy.strategies.data import DataKPIRowStrategy
+from src.layout.dummy.strategies.edit import (
     EditMagazineCollageStrategy,
     EditOverlapLeftStrategy,
     EditStaggeredStrategy,
 )
-from src.layout.strategies.focus import (
+from src.layout.dummy.strategies.focus import (
     FocusOffsetTitleStrategy,
     FocusSolarSystemStrategy,
 )
-from src.layout.strategies.swiss import (
+from src.layout.dummy.strategies.swiss import (
     SwissAsymmetryStrategy,
     SwissPosterStrategy,
     SwissSplitTypoStrategy,
 )
-from src.layout.strategies.comparison import (
+from src.layout.dummy.strategies.comparison import (
     ComparisonTwoColumnStrategy,
     ComparisonThreeColumnStrategy,
 )
-from src.layout.strategies.matrix import (
+from src.layout.dummy.strategies.matrix import (
     MatrixGridStrategy,
     MatrixTimelineStrategy,
 )
-from src.layout.style import Style
-from src.layout.theme import Theme
+from src.layout.dummy.style import Style
+from src.layout.dummy.theme import Theme
 from src.widgets.base import WidgetRegistry
 
 
@@ -55,6 +55,7 @@ class LayoutEngine:
     - Select layout strategy based on configuration
     - Validate widget-to-slot assignments (size constraints)
     - Create RenderableLayout with all necessary rendering data
+    - Provide layout documentation for content generation
     """
 
     # Strategy registry mapping strategy names to classes
@@ -99,6 +100,91 @@ class LayoutEngine:
         "Media.Video": {"surface": "Flat"},
         "Media.Icon": {"surface": "Flat"},
     }
+
+    @classmethod
+    def get_layout_documentation(cls) -> str:
+        """Provide complete layout system documentation for content generation.
+        
+        Returns formatted documentation about layout strategies, widget types,
+        and preset attributes - everything needed for content generation.
+        
+        Returns:
+            Formatted string with complete layout system documentation
+        """
+        # Import here to avoid circular dependency
+        from src.common.asset_manager import AssetManager
+        
+        # ========== LAYOUT STRATEGIES ==========
+        strategies = AssetManager.list_strategies()
+        
+        # Layout family descriptions for content guidance
+        family_descriptions = {
+            "Bento": "Grid-based layouts with multiple content cells. Best for: data comparisons, feature highlights, multi-topic summaries. Content should be parallel in structure and concise.",
+            "Cinematic": "Full-bleed dramatic layouts emphasizing visual impact. Best for: hero statements, key messages, emotional moments. Content should be bold and declarative.",
+            "Swiss": "Typography-focused minimalist layouts. Best for: quotes, philosophical statements, core principles. Content should be distilled to essential truth.",
+            "Data": "Metric-driven layouts with KPIs and numbers. Best for: statistics, performance metrics, quantitative insights. Content should be numeric facts with brief labels.",
+            "Edit": "Magazine-style artistic layouts with overlapping elements. Best for: creative storytelling, visual narratives. Content should be evocative and layered.",
+            "Focus": "Single-point emphasis layouts. Best for: key takeaways, central concepts, primary messages. Content should be the ONE thing that matters."
+        }
+        
+        lines = ["Available Layout Strategies:"]
+        
+        # Group by family
+        families = {}
+        for strategy in strategies:
+            family = strategy['family']
+            if family not in families:
+                families[family] = []
+            families[family].append(strategy)
+        
+        for family, family_strategies in sorted(families.items()):
+            # Add family description
+            if family in family_descriptions:
+                lines.append(f"\n{family} Family: {family_descriptions[family]}")
+            
+            for strategy in family_strategies:
+                # Format each slot with both role and size
+                slot_details = []
+                for slot in strategy['slots']:
+                    slot_details.append(f"{slot['role']} (size: {slot['size']})")
+                
+                slot_info = ", ".join(slot_details)
+                lines.append(f"  - {strategy['name']}: Slots: [{slot_info}]")
+        
+        # ========== WIDGET TYPES ==========
+        widgets = AssetManager.list_widgets()
+        lines.append("\n\nSupported Widget Types:")
+        
+        for widget in widgets:
+            # Extract key parameters
+            param_info = []
+            if 'fields' in widget and 'parameters' in widget['fields']:
+                param_field = widget['fields']['parameters']
+                if 'parameters' in param_field:
+                    params = param_field['parameters']
+                    param_names = [p['name'] for p in params[:3]]  # First 3 params
+                    param_info = [f"parameters: {', '.join(param_names)}"]
+            
+            desc = widget.get('description', '')
+            if param_info:
+                lines.append(f"- {widget['type']}: {desc} ({'; '.join(param_info)})")
+            else:
+                lines.append(f"- {widget['type']}: {desc} (parameters: varies by widget)")
+        
+        # ========== PRESET ATTRIBUTES ==========
+        presets = {
+            "surface": ["Flat", "Elevated", "Outline", "Glass", "Sunken", "NeoBrutal", "Subtle"],
+            "shape": ["Sharp", "Rounded", "Curve", "Pill", "Squircle", "Organic"],
+            "fill": ["Solid_Brand", "Solid_Surface", "Subtle", "Gradient_Linear", "Gradient_Mesh", "Pattern_Dot", "Noise"],
+            "effect": ["Duotone", "Glitch", "Glow", "Tape", "Shadow"]
+        }
+        
+        lines.append("\n\nSupported Preset Attributes (per widget):")
+        for category, variants in presets.items():
+            variants_str = ", ".join(variants)
+            lines.append(f"- {category}: {variants_str}")
+        
+        return "\n".join(lines)
 
     @classmethod
     def register_strategy(cls, strategy_class: Type[Any]) -> None:

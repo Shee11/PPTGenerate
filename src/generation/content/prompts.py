@@ -6,119 +6,10 @@ from typing import Any, List, Dict
 from src.generation.atom.collection import AtomCollection
 from src.common.slides import Slides
 from src.utils.generation_config import GenerationConfig
-from src.common.asset_manager import AssetManager
+from src.layout.engine_registry import LayoutEngineRegistry
 
 
 # ========== Helper Functions for Dynamic Prompt Generation ==========
-
-def _format_strategies_for_prompt() -> str:
-    """Format available layout strategies for LLM prompt.
-    
-    Returns:
-        Formatted string listing all strategies with their slot structures and content guidance
-    """
-    strategies = AssetManager.list_strategies()
-    
-    # Layout family descriptions for content guidance
-    family_descriptions = {
-        "Bento": "Grid-based layouts with multiple content cells. Best for: data comparisons, feature highlights, multi-topic summaries. Content should be parallel in structure and concise.",
-        "Cinematic": "Full-bleed dramatic layouts emphasizing visual impact. Best for: hero statements, key messages, emotional moments. Content should be bold and declarative.",
-        "Swiss": "Typography-focused minimalist layouts. Best for: quotes, philosophical statements, core principles. Content should be distilled to essential truth.",
-        "Data": "Metric-driven layouts with KPIs and numbers. Best for: statistics, performance metrics, quantitative insights. Content should be numeric facts with brief labels.",
-        "Edit": "Magazine-style artistic layouts with overlapping elements. Best for: creative storytelling, visual narratives. Content should be evocative and layered.",
-        "Focus": "Single-point emphasis layouts. Best for: key takeaways, central concepts, primary messages. Content should be the ONE thing that matters."
-    }
-    
-    lines = ["Available Layout Strategies:"]
-    
-    # Group by family
-    families = {}
-    for strategy in strategies:
-        family = strategy['family']
-        if family not in families:
-            families[family] = []
-        families[family].append(strategy)
-    
-    for family, family_strategies in sorted(families.items()):
-        # Add family description
-        if family in family_descriptions:
-            lines.append(f"\n{family} Family: {family_descriptions[family]}")
-        
-        for strategy in family_strategies:
-            # Format each slot with both role and size
-            slot_details = []
-            for slot in strategy['slots']:
-                slot_details.append(f"{slot['role']} (size: {slot['size']})")
-            
-            slot_info = ", ".join(slot_details)
-            lines.append(f"  - {strategy['name']}: Slots: [{slot_info}]")
-    
-    return "\n".join(lines)
-
-
-def _format_widgets_for_prompt() -> str:
-    """Format available widget types for LLM prompt.
-    
-    Returns:
-        Formatted string listing all widget types with their parameters
-    """
-    widgets = AssetManager.list_widgets()
-    lines = ["Supported Widget Types:"]
-    
-    for widget in widgets:
-        # Extract key parameters to include in prompt
-        param_info = []
-        if 'fields' in widget and 'parameters' in widget['fields']:
-            param_field = widget['fields']['parameters']
-            if 'parameters' in param_field:
-                # Has structured parameter info
-                params = param_field['parameters']
-                param_names = [p['name'] for p in params[:3]]  # Show first 3 params
-                param_info = [f"parameters: {', '.join(param_names)}"]
-        
-        # Format widget entry
-        desc = widget.get('description', '')
-        if param_info:
-            lines.append(f"- {widget['type']}: {desc} ({'; '.join(param_info)})")
-        else:
-            lines.append(f"- {widget['type']}: {desc} (parameters: varies by widget)")
-    
-    return "\n".join(lines)
-
-
-def _format_presets_for_prompt() -> str:
-    """Format preset categories and variants for LLM prompt.
-    
-    Returns:
-        Formatted string listing all preset categories and their variants
-    """
-    # Presets are hardcoded in CLI - replicate that structure here
-    presets = {
-        "Surface": {
-            "description": "Visual depth and layering effects",
-            "variants": ["Flat", "Elevated", "Outline", "Glass", "Sunken", "NeoBrutal", "Subtle"]
-        },
-        "Shape": {
-            "description": "Border radius and corner styles",
-            "variants": ["Sharp", "Rounded", "Curve", "Pill", "Squircle", "Organic"]
-        },
-        "Fill": {
-            "description": "Background patterns and fills",
-            "variants": ["Solid_Brand", "Solid_Surface", "Subtle", "Gradient_Linear", "Gradient_Mesh", "Pattern_Dot", "Noise"]
-        },
-        "Effect": {
-            "description": "Visual treatments and filters",
-            "variants": ["Duotone", "Glitch", "Glow", "Tape", "Shadow"]
-        }
-    }
-    
-    lines = ["Supported Preset Attributes (per widget):"]
-    for category, info in presets.items():
-        category_lower = category.lower()
-        variants = ", ".join(info["variants"])
-        lines.append(f"- {category_lower}: {variants}")
-    
-    return "\n".join(lines)
 
 
 def _get_theme_schema() -> str:
@@ -324,12 +215,14 @@ def _get_patch_schema_for_replace() -> str:
 # ========== System Prompts ==========
 
 def _build_state_transition_system_prompt() -> str:
-    """Build state transition system prompt dynamically from AssetManager.
+    """Build state transition system prompt dynamically from layout engine.
     
     Returns:
         Complete system prompt for state transition step
     """
-    strategies_list = _format_strategies_for_prompt()
+    # Get complete layout system documentation from active engine
+    active_engine = LayoutEngineRegistry.get_active_engine()
+    layout_system_docs = active_engine.get_layout_documentation()
     patch_schema = _get_patch_schema_for_add()
     
     return f"""You are a presentation structure designer specializing in layout strategy selection.
@@ -340,7 +233,7 @@ Your task: Analyze atoms and user instructions to determine:
 3. Layout strategy for each slide
 4. Logical slide ordering
 
-{strategies_list}
+{layout_system_docs}
 
 IMPORTANT RULES:
 1. **START with theme/preset operations**: Generate "set_theme" and "set_preset" operations FIRST (before any slide operations)
@@ -375,80 +268,48 @@ IMPORTANT RULES:
 
 
 def _build_content_generation_system_prompt() -> str:
-    """Build content generation system prompt dynamically from AssetManager.
+    """Build content generation system prompt dynamically from layout engine and assets.
     
     Returns:
         Complete system prompt for content generation step
     """
-    strategies_list = _format_strategies_for_prompt()
-    widgets_list = _format_widgets_for_prompt()
-    presets_list = _format_presets_for_prompt()
+    # Get complete layout system documentation from active engine
+    active_engine = LayoutEngineRegistry.get_active_engine()
+    layout_system_docs = active_engine.get_layout_documentation()
     patch_schema = _get_patch_schema_for_replace()
     
     return f"""You are a presentation content designer transforming atoms into slides.
 
 **CORE RULES**:
-1. **Extreme brevity**: Display (1-6 words), Body (10-15 words), List bullets (3-7 words each, max 5)
-2. **Preserve specifics**: Keep numbers ("38x/sec"), tech terms ("C++", "intrinsics"), years ("2011→2021")
-3. **Use provided atoms only** - synthesize, don't hallucinate
-4. **Merge atoms**: 3-6 atoms per slide, group by theme
-5. **Slide limit**: 7-15 slides maximum (target 8-12)
-6. **No duplication**: Each atom used exactly once
-7. **Include header/footer** on every slide
-
-**TEXT LENGTH BY WIDGET**:
-- Display/Heading: 1-6 words (prefer 2-3)
-- Body: 10-15 words max
-- List bullets: 3-7 words, 3-5 bullets total
-- Quote: 15-25 words max
-- Caption: 3-5 words
+1. **Preserve specifics**: Keep numbers ("38x/sec"), tech terms ("C++", "intrinsics"), years ("2011→2021")
+2. **Use provided atoms only** - synthesize, don't hallucinate
+3. **Merge atoms**: 3-6 atoms per slide, group by theme
+4. **Slide limit**: 7-15 slides maximum (target 8-12)
+5. **No duplication**: Each atom used exactly once
+6. **Extreme brevity**: Display (1-6 words), Body (10-15 words), List bullets (3-7 words each, max 5)
 
 **MARKDOWN FORMATTING**:
 Use markdown syntax in widget text for emphasis:
 - ==highlight== for key terms, metrics, technical names (will render with theme accent color background)
 - **bold** for strong emphasis, important concepts (will render with theme accent color)
-- Examples:
-  - "Scale to ==1M requests/sec== with **zero downtime**"
-  - "==C++ intrinsics== optimize performance **38x faster**"
-  - "From ==2011== to ==2021==: **AI revolution**"
+- Examples: "Scale to ==1M requests/sec== with **zero downtime**"
 
 **ABSTRACTION EXAMPLES**:
 - ❌ "This architecture provides better performance" → ✅ "Better Performance"
 - ❌ "Significant Performance Improvement" → ✅ "==10x Faster=="
 - ❌ "increased by" → ✅ "↑"
-- ❌ Remove: "the", "a", "very", "really", "quite", "some", "many"
-
-**LAYOUT SELECTION**:
-- **1 hero point**: Swiss.Poster, Cinematic.FullBleed, Focus.Gradient
-- **1 hero + 2-3 supporting**: Bento.HeroLeft, Bento.HeroTop, Cinematic.Split_30_70
-- **4 equal points**: Bento.Quarter, Bento.Standard
-- **Timeline/sequence**: Matrix.Timeline, Bento.VerticalStack, Edit.Timeline_3
-- **Comparisons**: Data.Comparison_2Col, Type.Comparison widget with Bento layouts
-- **Data-heavy**: Data.KPI_Row, Matrix.Grid, Data.Table_4x3
 
 **NARRATIVE ARC** (structure slides as):
 1. **Hook** (1-2 slides): Bold opener, problem statement
 2. **Body** (5-8 slides): Evidence, concepts, how-to
 3. **Climax** (1-2 slides): Results, vision, call-to-action
 
-**PACING**: Alternate layout density - no 2+ dense slides (Bento.Standard, Data.KPI_Row, Benton.VerticalStack) in sequence. Mix with breathers (Swiss.Poster, Cinematic.FullBleed).
-
-**ATOM MERGING** (mandatory):
-- Group atoms by theme FIRST
-- Select layout with enough slots for all atoms in group
-- Synthesize content across widgets
-- Example: 6 feature atoms → 1 Bento.Standard slide with 6 cells
-
 **SPECIAL ATOMS**:
 - QuoteAtom: Use Type.Quote widget with quote_text → text, speaker → attribution
 - ActionItemAtom: Use Type.List with items formatted as "[State] Task - Assignee (Due)"
 - TimelineAtom: Use Matrix.Timeline layout with events as stage titles/details
 
-{strategies_list}
-
-{widgets_list}
-
-{presets_list}
+{layout_system_docs}
 
 **OUTPUT**: JSON array with add operations for draft slides (visual styling handled separately).
 
@@ -900,25 +761,11 @@ def _build_storyline_system_prompt() -> str:
 2. **Story quality over atom coverage**: Skip atoms that don't fit the narrative flow
 3. Draft slides need: id, rank, state="draft", story (1-2 sentences), atoms (2-5 atom IDs), density ("minimal"/"moderate"/"dense")
 
-**DENSITY ASSIGNMENT**:
-Assign information density based on slide's narrative role:
-- **minimal**: Opening/closing slides, transitions, conceptual intros (1-2 key points)
-  - Use for: Setup slides, philosophical points, call-to-action conclusions
-  - Example: "AI landscape shift" (single timeline), "What this means for you" (1 takeaway)
-- **moderate**: Main content slides with focused narrative (3-4 points)
-  - Use for: Most slides—allows depth without overwhelming (DEFAULT CHOICE)
-  - Example: "Three key patterns in LLM work" (3 patterns), "Trade-offs in system design" (4 comparisons)
-- **dense**: Technical deep-dives requiring 5-6 distinct points (USE VERY RARELY)
-  - Use sparingly: Only when complexity is absolutely essential and cannot be split
-  - Example: "Complete step-by-step debugging workflow", "All 6 optimization techniques compared"
-  - WARNING: Dense slides fatigue audiences—prefer splitting content across 2 moderate slides
-
-**DENSITY DEFAULTS**:
-- Opening/closing slides: **minimal**
-- Transition/conceptual slides: **minimal**
-- Content slides: **moderate** (preferred for 80-90% of presentation)
-- Comprehensive references/procedures: **dense** (max 1-2 slides per presentation)
-- NEVER use consecutive dense slides—always interleave with minimal/moderate
+**DENSITY ASSIGNMENT** (affects widget count and layout complexity later):
+- **minimal**: 1-2 key points (opening/closing slides, transitions)
+- **moderate**: 3-4 points (most content slides - DEFAULT)
+- **dense**: 5-6 points (technical deep-dives - USE SPARINGLY)
+- NEVER use consecutive dense slides
 
 **NARRATIVE ARC REQUIREMENT**:
 Structure slides following classic storytelling patterns:
@@ -975,9 +822,9 @@ def _build_slide_generation_system_prompt() -> str:
     Returns:
         Complete system prompt for slide generation step
     """
-    strategies_list = _format_strategies_for_prompt()
-    widgets_list = _format_widgets_for_prompt()
-    presets_list = _format_presets_for_prompt()
+    # Get complete layout system documentation from active engine
+    active_engine = LayoutEngineRegistry.get_active_engine()
+    layout_system_docs = active_engine.get_layout_documentation()
     patch_schema = _get_patch_schema_for_replace()
     
     return f"""You are a slide content designer specializing in layout selection and widget population.
@@ -998,81 +845,33 @@ Adjust content amount and layout complexity based on slide's density level:
   - Use simple layouts: Bento.Standard (1-2 widgets), Swiss.Poster, Cinematic.Split5050
   - Limit to 2-3 widgets maximum
   - List widgets: MAX 2 items
-  - Focus on single concept or transition
-  - Example: Display widget + 1 body text, or 1 comparison with 2 items each side
-  
-- **moderate** (3-4 points):
-  - Standard layouts work well: Bento.Standard (3-4 widgets), Swiss.Asymmetry, Cinematic.FullBleed
-  - Use 3-5 widgets
-  - List widgets: MAX 4 items per list
-  - This is the default—most slides should use moderate density
-  - Example: Display + 2-3 body/list widgets, or comparison with 3-4 items
-  
-- **dense** (5-6 points MAX):
-  - Complex layouts: Bento.Quarter (4 stages), Swiss.SplitTypo, vertical stacks
-  - Use 5-7 widgets
-  - List widgets: MAX 5-6 items per list (NEVER exceed 6)
-  - Use ONLY when essential—dense slides are fatiguing
-  - Example: Bento.Quarter with 4 list widgets (4-5 items each), or vertical stack with 6 sections
-  - **HARD LIMIT**: Total information points across ALL widgets must stay under 8
+**CORE RULES**:
+1. Follow the story (your guide to what this slide should communicate)
+2. Use ONLY provided atoms (don't hallucinate content)
+3. Preserve technical specifics: numbers ("38x/sec"), tech terms ("C++", "intrinsics"), years ("2011→2021"), jargon
+4. Extreme brevity: Display (1-6 words), Body (10-15 words), List bullets (3-7 words)
+5. Match layout to atom count & story tone
+6. **RESPECT DENSITY LEVEL**: Follow target density specified in draft slide
 
-**CRITICAL DENSITY RULES**:
-- If slide has minimal density but many atoms → synthesize atoms into fewer, more powerful points
-- If slide has dense density but few atoms → flag as mismatched, don't hallucinate content
-- **NEVER create lists with >6 items** - this breaks readability even for "dense" slides
-- If atoms require >6 points, prioritize the most impactful and drop the rest
-
-**INFORMATION DENSITY vs CLARITY BALANCE**:
-Target: 3-5 key points per slide, each substantive
-- Prefer specific examples over generic statements ("38x/sec" not "frequently called")
-- Use numbers, metrics, concrete scenarios from atoms
-- Replace "important to know X" with "X enables Y, as shown in Z"
-Avoid:
-- Bullet lists with >6 items (indicates content should split across slides)
-- Abstract concepts without grounding examples
-- Redundant phrasing across widget text
-
-**LAYOUT SELECTION - VISUAL-NARRATIVE ALIGNMENT**:
-Choose layout that reinforces narrative structure, not just fits content:
-- **Timeline layout**: Chronological progressions, career journeys, evolution (e.g., TimelineAtom)
-- **Comparison layout**: Before/after, traditional vs modern, trade-offs (contrast atoms)
-- **Bento grids**: Multi-faceted concepts, skill categories, parallel dimensions (4+ related atoms)
-- **Vertical stack (Bento.VerticalStack)**: Simple sequential processes (max 3 S widgets OR 1 M + 1 S)
-
-**CRITICAL SLOT ROLE VALIDATION** (violations cause render errors):
-- ONLY use slot roles that exist in the chosen layout strategy
-- Example: Bento.HeroLeft has slots: hero, side_1, side_2, side_3, side_4
-- DO NOT invent slot names like "supporting", "main", "content" - check the Available Layout Strategies list
-- Each strategy lists its exact slot roles - use ONLY those exact names
-- Mismatch = immediate render failure with "Missing slot role" error
-
-**CRITICAL WIDGET SIZE CONSTRAINTS** (violations cause render errors):
-- Type.Comparison widget requires M or L slot → Use in hero, cell_1, main, focal, NOT in side_1/side_2/side_3/side_4
-- Type.List, Type.Body, Type.Display work in any slot size (S, M, or L)
-- Bento.HeroLeft side slots (side_1/side_2/side_3/side_4) are ALL size S → Can only fit Type.List, Type.Body, Type.Display, Type.Heading
-- For comparison content in Bento.HeroLeft → Put Type.Comparison in 'hero' slot ONLY
-- See layout schemas below for exact slot names and sizes
-
-{strategies_list}
-
-{widgets_list}
-
-**CRITICAL - DO NOT CONFUSE LAYOUTS WITH WIDGETS**:
-- Layout names (e.g., "Bento.VerticalStack", "Matrix.Timeline") go in the "layout" field
-- Widget types (e.g., "Type.Display", "Type.List") go in the "widgets" object with type field
-- NEVER use layout names as widget types (e.g., NO "Type.VerticalStack", NO "Type.Timeline")
-- Valid widget types are ONLY those listed above in "Supported Widget Types"
-
-**PRESET USAGE** (apply to each widget):
-- surface: Flat (clean), Elevated (depth), Glass (modern), Outline (minimal)
-- shape: Sharp (tech), Rounded (friendly), Pill (playful)
-- fill: Solid_Brand (bold), Gradient_Linear (dynamic), Subtle (minimal)
+**DENSITY-AWARE CONTENT GENERATION**:
+- **minimal**: 1-2 key points, 2-3 widgets max, simple layouts
+- **moderate**: 3-4 points, 3-5 widgets, standard layouts (DEFAULT)
+- **dense**: 5-6 points max, 5-7 widgets, complex layouts (USE SPARINGLY)
+- **NEVER create lists with >6 items** regardless of density
 
 **CONTENT SYNTHESIS**:
 - Read story → extract key points from atoms → distribute across slots
 - ✓ PRESERVE: "==38x/sec==", "==C++==", "==2011→2021==", "**planner-executor**"
 - ✗ AVOID: "Frequently invoked", "over time", "optimized"
 - Use ==highlight== for metrics, tech terms, years; **bold** for concepts, patterns
+
+{layout_system_docs}
+
+**CRITICAL SLOT VALIDATION**:
+- ONLY use slot roles that exist in the chosen layout strategy
+- Example: Bento.HeroLeft has slots: hero, side_1, side_2, side_3, side_4
+- DO NOT invent slot names - check the layout documentation above
+- Mismatch = immediate render failure
 
 **OUTPUT**: Single replace operation: [{{"replace": {{"id", "rank", "state": "active", "layout", "widgets", "header", "footer", "parameters"}}}}]
 

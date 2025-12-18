@@ -13,10 +13,10 @@ from src.common.patchable_context_pydantic import Patch
 from src.common.slide import Slide
 from src.common.slides import Slides
 from src.generation.orchestrator import GenerationOrchestrator
-from src.layout.layout_engine import LayoutEngine
-from src.layout.style import Style
-from src.layout.theme import Theme
-from src.render.html_renderer import HTMLRenderer
+from src.layout.engine_registry import LayoutEngineRegistry
+from src.layout.dummy.style import Style
+from src.layout.dummy.theme import Theme
+from src.render.dummy.html_renderer import HTMLRenderer
 
 
 @click.command()
@@ -708,7 +708,7 @@ def cli(
 
                 # Ensure style has default widget styles if not provided
                 if 'widgets' not in style_data or not style_data['widgets']:
-                    from src.layout.style import WidgetStyle
+                    from src.layout.dummy.style import WidgetStyle
                     
                     # Create default widget styles for all widget types
                     default_widget_styles = {
@@ -778,9 +778,10 @@ def cli(
             
             print(f"⚙ Rendering {slides.count()} slides with templates...")
             
-            # Calculate layouts for all slides
+            # Calculate layouts for all slides using active layout engine
             try:
-                renderables = LayoutEngine.calculate_slides(
+                active_engine = LayoutEngineRegistry.get_active_engine()
+                renderables = active_engine.calculate_slides(
                     slides=slides,
                     theme=theme,
                     style=style,
@@ -816,7 +817,7 @@ def cli(
                     iteration += 1
                     
                     # Validate current renderables
-                    from src.layout.validation import LayoutValidator, format_issues_for_llm
+                    from src.layout.dummy.validation import LayoutValidator, format_issues_for_llm
                     all_issues = []
                     for renderable in renderables:
                         issues = LayoutValidator.validate(renderable)
@@ -856,7 +857,8 @@ def cli(
                     
                     # Re-render with refined slides
                     try:
-                        renderables = LayoutEngine.calculate_slides(
+                        active_engine = LayoutEngineRegistry.get_active_engine()
+                        renderables = active_engine.calculate_slides(
                             slides=refined_slides,
                             theme=theme,
                             style=style,
@@ -932,8 +934,8 @@ def cli(
                 else:
                     click.echo(json.dumps(json_output, indent=2))
 
-            if verbose:
-                click.echo("✓ Rendering complete", err=True)
+            # Always show completion summary
+            click.echo(f"✓ Rendered {len(renderables)} slides → {output}")
             
             # Interactive mode continuation - show completion message and loop
             if interactive:

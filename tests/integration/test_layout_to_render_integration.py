@@ -11,10 +11,10 @@ from src.common.slides import Slides
 from src.common.slide import Slide
 from src.utils.generation_config import GenerationConfig
 from src.common.patchable_context_pydantic import Patch, AddOperation
-from src.layout.layout_engine import LayoutEngine
-from src.layout.theme import Theme
-from src.layout.style import Style
-from src.render.html_renderer import HTMLRenderer
+from src.layout.dummy.layout_engine import LayoutEngine
+from src.layout.dummy.theme import Theme
+from src.layout.dummy.style import Style
+from src.render.dummy.html_renderer import HTMLRenderer
 
 
 class TestLayoutEngineIntegration:

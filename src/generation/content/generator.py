@@ -17,7 +17,7 @@ from src.common.patchable_context_pydantic import Patch
 from src.utils.generation_config import GenerationConfig
 from src.utils.llm_client import call_llm
 from src.utils.cache import GenerationCache
-from src.layout.validation import LayoutValidator, LayoutIssue, format_issues_for_llm
+from src.layout.dummy.validation import LayoutValidator, LayoutIssue, format_issues_for_llm
 from src.common.renderable_layout import RenderableLayout
 
 
@@ -330,6 +330,9 @@ def _compute_cache_key(
     """
     Compute cache key for layout generation.
     
+    Includes active layout engine name to automatically invalidate cache
+    when switching between different layout engines.
+    
     Args:
         atoms: AtomCollection with extracted content
         user_instruction: User's generation instructions
@@ -337,8 +340,12 @@ def _compute_cache_key(
         intent_guidance: Optional guidance from intent detection
         
     Returns:
-        str: SHA256 hash of inputs
+        str: SHA256 hash of inputs including active layout engine
     """
+    # Get active layout engine name to invalidate cache on engine switch
+    from src.layout.engine_registry import LayoutEngineRegistry
+    active_engine_name = LayoutEngineRegistry.get_active_engine_name() or "unknown"
+    
     # Create deterministic string from inputs
     # Use atoms.to_json() for datetime serialization, then parse back for sorting
     atoms_data = json.loads(atoms.to_json())
@@ -347,7 +354,8 @@ def _compute_cache_key(
         "instruction": user_instruction,
         "model": config.model,
         "temperature": config.temperature,
-        "intent_guidance": intent_guidance
+        "intent_guidance": intent_guidance,
+        "layout_engine": active_engine_name  # Include engine in cache key
     }, sort_keys=True)
     
     # Compute SHA256 hash

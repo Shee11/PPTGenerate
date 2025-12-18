@@ -6,7 +6,24 @@
       "id": "slide_01_setup_shift",
       "rank": 1,
       "state": "draft",
-      "story": "We\u2019ll start by anchoring the talk in Chao Wang\u2019s own AI journey to show how rapidly the field\u2014and developer roles\u2014have evolved, setting context for why your career strategy must adapt in the LLM era.",
+      "story": "Open by framing the talk around one core question: how should engineers evolve their careers as AI rapidly changes the nature of our work, roles, and the skills that matter most?",
+      "atoms": [
+        "comp_001",
+        "stmt_001"
+      ],
+      "density": "moderate",
+      "layout": "",
+      "widgets": {},
+      "header": null,
+      "footer": null,
+      "style_override": {},
+      "parameters": {}
+    },
+    {
+      "id": "slide_02_setup_journey_as_lens",
+      "rank": 2,
+      "state": "draft",
+      "story": "Introduce Chao\u2019s career evolution not as the main story, but as a lens that illustrates how AI work has shifted from traditional computer vision to LLM-based systems and product-integrated AI.",
       "atoms": [
         "timeline_001"
       ],
@@ -19,32 +36,15 @@
       "parameters": {}
     },
     {
-      "id": "slide_02_from_pipeline_to_platform",
-      "rank": 2,
-      "state": "draft",
-      "story": "Next, we\u2019ll contrast the traditional AI development pipeline with today\u2019s LLM-centric world so you can see how the nature of day-to-day developer work has fundamentally changed.",
-      "atoms": [
-        "stmt_001",
-        "proc_001",
-        "comp_001"
-      ],
-      "density": "moderate",
-      "layout": "",
-      "widgets": {},
-      "header": null,
-      "footer": null,
-      "style_override": {},
-      "parameters": {}
-    },
-    {
-      "id": "slide_03_how_llm_apps_are_built_now",
+      "id": "slide_03_dev_how_work_has_changed",
       "rank": 3,
       "state": "draft",
-      "story": "With that contrast in mind, we\u2019ll walk through a modern LLM-centric development workflow and highlight where the highest-leverage engineering work now happens.",
+      "story": "Show how the nature of AI work has changed\u2014from linear, accuracy-obsessed projects to cyclical, orchestration-focused systems\u2014so the audience can see why old career playbooks no longer fit.",
       "atoms": [
+        "proc_001",
         "stmt_002",
         "stmt_003",
-        "proc_002"
+        "stmt_005"
       ],
       "density": "dense",
       "layout": "",
@@ -55,15 +55,14 @@
       "parameters": {}
     },
     {
-      "id": "slide_04_high_roi_skills_for_devs",
+      "id": "slide_04_dev_new_high_roi_work",
       "rank": 4,
       "state": "draft",
-      "story": "We then translate this workflow shift into a concrete skills roadmap, focusing on the capabilities that most increase your career ROI in the AI era.",
+      "story": "Highlight where the highest-return technical work now lies\u2014reliability, evaluation, and feedback loops\u2014so engineers can redirect effort from chasing tiny accuracy gains to building systems that actually succeed in the real world.",
       "atoms": [
         "stmt_004",
-        "proc_003",
-        "stmt_005",
-        "stmt_008"
+        "stmt_006",
+        "proc_002"
       ],
       "density": "moderate",
       "layout": "",
@@ -74,14 +73,14 @@
       "parameters": {}
     },
     {
-      "id": "slide_05_building_reliable_llm_systems",
+      "id": "slide_05_dev_human_ai_cocreation",
       "rank": 5,
       "state": "draft",
-      "story": "To make these skills tangible, we\u2019ll look at practical patterns\u2014prompt tuning and planner\u2013executor architectures\u2014that developers can use to build more reliable LLM-powered systems.",
+      "story": "Explain how human\u2013AI co-creation and cross-domain thinking change what it means to \u2018solve a problem,\u2019 pushing engineers to design iterative experiences and combine tools rather than just ship one-off models.",
       "atoms": [
-        "proc_004",
-        "stmt_006",
-        "proc_005"
+        "stmt_007",
+        "stmt_008",
+        "stmt_010"
       ],
       "density": "moderate",
       "layout": "",
@@ -92,18 +91,14 @@
       "parameters": {}
     },
     {
-      "id": "slide_06_roles_evolving_and_staying_current",
+      "id": "slide_06_dev_architecting_llm_systems",
       "rank": 6,
       "state": "draft",
-      "story": "Zooming out, we\u2019ll examine how engineering and applied science roles are converging, why role boundaries are shifting (just like testers did), and how to stay current without burning out.",
+      "story": "Use a concrete LLM system pattern to show how modern AI work blends reasoning, tooling, and state management, giving the audience a mental model for how to think about building robust AI-powered features.",
       "atoms": [
-        "comp_002",
-        "stmt_007",
-        "stmt_009",
-        "stmt_010",
-        "proc_006"
+        "proc_003"
       ],
-      "density": "dense",
+      "density": "minimal",
       "layout": "",
       "widgets": {},
       "header": null,
@@ -112,13 +107,64 @@
       "parameters": {}
     },
     {
-      "id": "slide_07_closing_make_every_step_solid",
+      "id": "slide_07_res_focus_areas_for_engineers",
       "rank": 7,
       "state": "draft",
-      "story": "We\u2019ll close with a simple principle\u2014making every step solid\u2014that ties together technical excellence and long-term career growth in the AI era.",
+      "story": "Distill the evolving landscape into three high-ROI focus areas that engineers can deliberately invest in to stay valuable and impactful in the LLM era.",
       "atoms": [
-        "quote_001",
-        "stmt_011"
+        "stmt_009",
+        "quote_001"
+      ],
+      "density": "minimal",
+      "layout": "",
+      "widgets": {},
+      "header": null,
+      "footer": null,
+      "style_override": {},
+      "parameters": {}
+    },
+    {
+      "id": "slide_08_res_tools_as_leverage",
+      "rank": 8,
+      "state": "draft",
+      "story": "Show how treating AI tools as leverage and single sources of truth\u2014rather than threats\u2014can multiply an engineer\u2019s impact and free time for higher-level thinking.",
+      "atoms": [
+        "proc_004",
+        "stmt_012"
+      ],
+      "density": "moderate",
+      "layout": "",
+      "widgets": {},
+      "header": null,
+      "footer": null,
+      "style_override": {},
+      "parameters": {}
+    },
+    {
+      "id": "slide_09_res_career_evolution_mindset",
+      "rank": 9,
+      "state": "draft",
+      "story": "Emphasize the mindset shift required for a durable AI career: repeatedly becoming a beginner, tracking where the field is going, and aligning your growth with those shifts.",
+      "atoms": [
+        "stmt_011",
+        "quote_003",
+        "stmt_013"
+      ],
+      "density": "moderate",
+      "layout": "",
+      "widgets": {},
+      "header": null,
+      "footer": null,
+      "style_override": {},
+      "parameters": {}
+    },
+    {
+      "id": "slide_10_res_personal_operating_principle",
+      "rank": 10,
+      "state": "draft",
+      "story": "Close with a simple operating principle\u2014making every step of your work solid\u2014as a practical way to turn daily tasks into compounding expertise in a fast-moving AI world.",
+      "atoms": [
+        "quote_002"
       ],
       "density": "minimal",
       "layout": "",

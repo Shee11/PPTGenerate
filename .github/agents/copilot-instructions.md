@@ -1,6 +1,24 @@
 # gggg Development Guidelines
 
-Auto-generated from all feature plans. Last updated: 2025-12-11
+Auto-generated from all feature plans. Last updated: 2025-12-18
+
+## Architecture Principles
+
+### Layout System Decoupling
+- **Layout/widgets/presets are provided by LayoutEngine** via `get_layout_documentation()` protocol method
+- **Only content-related prompts belong in `src/generation/content/prompts.py`**
+- LayoutEngine implementations (e.g., `src/layout/dummy/layout_engine.py`) define:
+  - Available layout strategies with slot structures
+  - Supported widget types with parameters
+  - Preset attributes (surface, shape, fill, effect)
+- Content generation prompts focus on:
+  - Narrative structure and storytelling
+  - Atom synthesis and content brevity
+  - Markdown formatting and abstraction rules
+- **Runtime engine switching** via `LayoutEngineRegistry`:
+  - Environment variable: `LAYOUT_ENGINE=dummy`
+  - Programmatic: `LayoutEngineRegistry.set_active_engine("engine_name")`
+  - Default: First registered engine
 
 ## Active Technologies
 - Python 3.11 + Pydantic 2.x (for data models), Jinja2 (for templates) (001-uce-render)

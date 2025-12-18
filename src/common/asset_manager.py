@@ -13,8 +13,8 @@ from typing import Any, Dict, List, Optional, Type, TypeVar
 from pydantic import BaseModel
 
 from src.common.size_class import SizeClass
-from src.layout.style import Style
-from src.layout.theme import Theme
+from src.layout.dummy.style import Style
+from src.layout.dummy.theme import Theme
 from src.widgets.base import BaseWidget, WidgetRegistry
 
 T = TypeVar('T', bound=BaseModel)
@@ -370,7 +370,7 @@ class AssetManager:
         Returns:
             List of strategy metadata dictionaries
         """
-        from src.layout.layout_engine import LayoutEngine
+        from src.layout.dummy.layout_engine import LayoutEngine
         
         strategies = []
         

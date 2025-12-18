@@ -3,10 +3,10 @@ import json
 from pathlib import Path
 from src.common.slides import Slides
 from src.common.patchable_context_pydantic import Patch, AddOperation
-from src.layout.theme import Theme
-from src.layout.style import Style
-from src.layout.layout_engine import LayoutEngine
-from src.render.html_renderer import HTMLRenderer
+from src.layout.dummy.theme import Theme
+from src.layout.dummy.style import Style
+from src.layout.dummy.layout_engine import LayoutEngine
+from src.render.dummy.html_renderer import HTMLRenderer
 from src.common.asset_manager import AssetManager
 
 # Load test data
@@ -26,7 +26,7 @@ with open("data/corp_modern_theme.json", 'r', encoding='utf-8') as f:
 theme = Theme(**theme_data)
 
 # Create a simple style (use flat surface for all widgets)
-from src.layout.style import Style, WidgetStyle
+from src.layout.dummy.style import Style, WidgetStyle
 style = Style(
     theme_name="corp_modern",
     widgets={

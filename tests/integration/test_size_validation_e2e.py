@@ -1,8 +1,8 @@
 """End-to-end integration tests for size constraint validation."""
 import pytest
-from src.layout.layout_engine import LayoutEngine
-from src.layout.theme import Theme
-from src.layout.style import Style
+from src.layout.dummy.layout_engine import LayoutEngine
+from src.layout.dummy.theme import Theme
+from src.layout.dummy.style import Style
 from src.common.exceptions import SizeConstraintError, MissingReferenceError
 
 

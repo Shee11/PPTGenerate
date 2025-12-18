@@ -7,7 +7,7 @@ from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 from src.common.renderable_layout import RenderableLayout
 from src.common.spacing_utils import parse_spacing
-from src.render.preset_defaults import PRESET_DEFAULTS, generate_preset_css_variables, generate_preset_css
+from src.render.dummy.preset_defaults import PRESET_DEFAULTS, generate_preset_css_variables, generate_preset_css
 
 
 class HTMLRenderer:
