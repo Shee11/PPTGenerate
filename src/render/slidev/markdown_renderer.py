@@ -372,6 +372,17 @@ colorSchema: auto
         slides_md = self.build_dir / "slides.md"
         slides_md.write_text(markdown_content, encoding='utf-8')
         
+        # Also persist markdown to output directory with timestamp
+        output_dir = Path(__file__).parent.parent.parent.parent / "output"
+        output_dir.mkdir(parents=True, exist_ok=True)
+        
+        from datetime import datetime
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        markdown_output_path = output_dir / f"slides_{timestamp}.md"
+        markdown_output_path.write_text(markdown_content, encoding='utf-8')
+        
+        print(f"✓ Markdown saved to: {markdown_output_path.absolute()}")
+        
         # Clean dist directory if exists
         dist_dir = self.build_dir / "dist"
         if dist_dir.exists():

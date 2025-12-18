@@ -137,28 +137,49 @@ const pieSegments = computed(() => {
 
 <style scoped>
 .chart-widget {
-  padding: 1.5rem;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 0.5rem;
+  padding: 2rem;
+  background: linear-gradient(145deg,
+    color-mix(in srgb, var(--c-bg-base) 98%, white) 0%,
+    color-mix(in srgb, var(--c-bg-base) 95%, white) 100%);
+  border-radius: 12px;
   height: 100%;
+  box-shadow: 
+    0 4px 16px rgba(0, 0, 0, 0.06),
+    0 1px 3px rgba(0, 0, 0, 0.08);
+  border: 1px solid color-mix(in srgb, white 10%, transparent);
+  position: relative;
+}
+
+/* Top accent bar */
+.chart-widget::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, 
+    var(--slidev-theme-primary, #3b82f6) 0%, 
+    color-mix(in srgb, var(--slidev-theme-primary, #3b82f6) 70%, #8b5cf6) 100%);
+  border-radius: 12px 12px 0 0;
 }
 
 .chart-title {
   font-size: 1.25rem;
   font-weight: 600;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
   color: var(--slidev-theme-text, #1f2937);
 }
 
 .chart-container {
-  height: calc(100% - 2rem);
+  height: calc(100% - 3rem);
 }
 
 /* Bar Chart */
 .bar-chart {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 1rem;
   height: 100%;
   justify-content: space-around;
 }
@@ -177,11 +198,14 @@ const pieSegments = computed(() => {
 
 .bar-track {
   flex: 1;
-  height: 2rem;
-  background: rgba(0, 0, 0, 0.1);
-  border-radius: 0.25rem;
+  height: 2.25rem;
+  background: linear-gradient(90deg,
+    rgba(0, 0, 0, 0.04) 0%,
+    rgba(0, 0, 0, 0.06) 100%);
+  border-radius: 6px;
   overflow: hidden;
   position: relative;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .bar-fill {
@@ -189,15 +213,36 @@ const pieSegments = computed(() => {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  padding-right: 0.5rem;
-  transition: width 0.5s ease;
-  border-radius: 0.25rem;
+  padding-right: 0.75rem;
+  border-radius: 6px;
+  background: linear-gradient(90deg,
+    var(--bar-color, var(--slidev-theme-primary, #3b82f6)) 0%,
+    color-mix(in srgb, var(--bar-color, var(--slidev-theme-primary, #3b82f6)) 80%, white) 100%);
+  box-shadow: 
+    0 2px 8px rgba(59, 130, 246, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  position: relative;
+}
+
+/* Gradient overlay on bars */
+.bar-fill::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg,
+    rgba(255, 255, 255, 0.2) 0%,
+    transparent 50%,
+    rgba(0, 0, 0, 0.05) 100%);
+  border-radius: 6px;
 }
 
 .bar-value {
   color: white;
-  font-weight: 600;
-  font-size: 0.85rem;
+  font-weight: 700;
+  font-size: 0.9rem;
+  position: relative;
+  z-index: 1;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 /* Line Chart */
@@ -210,45 +255,74 @@ const pieSegments = computed(() => {
 .line-svg {
   flex: 1;
   width: 100%;
+  filter: drop-shadow(0 4px 8px rgba(59, 130, 246, 0.15));
+}
+
+.line-svg polyline {
+  stroke-width: 4;
+  filter: drop-shadow(0 2px 4px rgba(59, 130, 246, 0.3));
+}
+
+.line-svg circle {
+  filter: drop-shadow(0 2px 6px rgba(59, 130, 246, 0.4));
+}
+
+/* Glow effect on hover */
+.line-svg circle:hover {
+  r: 7;
+  filter: drop-shadow(0 0 10px rgba(59, 130, 246, 0.8));
 }
 
 .line-labels {
   display: flex;
   justify-content: space-around;
-  margin-top: 0.5rem;
+  margin-top: 1rem;
   font-size: 0.85rem;
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.6);
 }
 
 /* Pie Chart */
 .pie-chart {
   display: flex;
   align-items: center;
-  gap: 2rem;
+  gap: 2.5rem;
   height: 100%;
 }
 
 .pie-svg {
   width: 200px;
   height: 200px;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.1));
+}
+
+.pie-svg circle {
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.15));
 }
 
 .pie-legend {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.75rem;
 }
 
 .legend-item {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.75rem;
   font-size: 0.9rem;
+  padding: 0.5rem;
+  border-radius: 6px;
+  background: linear-gradient(90deg,
+    rgba(0, 0, 0, 0.02) 0%,
+    transparent 100%);
 }
 
 .legend-color {
   width: 1rem;
   height: 1rem;
-  border-radius: 0.25rem;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 </style>

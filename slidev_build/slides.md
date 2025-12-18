@@ -64,13 +64,126 @@ a {
 
 
 ---
-layout: full-bleed
-align: center
+layout: timeline
+cols: 2
 ---
 
-# Grow *With* AI, Not Against It
+::title::
 
-Engineers who **evolve with industry shifts** thrive; those clinging to **legacy roles** risk being left behind.
+Chao’s journey: how roles and skills can shift in one career
+
+::step1::
+
+**2011** – Vision algorithms & service-side pipeline (early Face API).
+
+::step2::
+
+**~2016** – Edge inference: running AI models directly on mobile devices.
+
+::step3::
+
+**~2018** – Cross-platform inference & vision **generation** (e.g., video).
+
+::step4::
+
+**2021** – Bringing vision & inference into Microsoft Teams product features.
+
+::step5::
+
+**Lesson** – As AI/LLMs race ahead, careers grow by **evolving skills**, not defending today’s advantage.
+
+---
+layout: comparison
+cols: 2
+---
+
+::title::
+
+# From Linear AI Pipelines to LLM-Centric Work
+
+::beforeLabel::
+
+**Traditional AI Development**
+
+::before::
+
+- **Primary focus**: standalone models, max **accuracy**
+- **Workflow**: linear pipeline, handoffs between teams
+- **Key skills**: data engineering, model design, infra
+- **Evaluation**: offline metrics, small accuracy gains
+- **Roles**: clear boundaries across AI/product teams
+
+::afterLabel::
+
+**LLM-Centric Development**
+
+::after::
+
+- **Primary focus**: composing **large models** into apps
+- **Workflow**: iterative, orchestration + feedback loops
+- **Key skills**: prompt/agent design, tool orchestration
+- **Evaluation**: end-to-end behavior, user impact
+- **Roles**: blurry boundaries, shared responsibilities
+
+---
+layout: smart-grid
+cols: 4
+---
+
+::header::
+
+# Pillar 1: Evolve With the AI Industry
+
+::col1::
+
+- **From models → orchestration**
+- Compose existing models via prompting
+- Prioritize **UX, iteration speed, workflows**
+
+::col2::
+
+- **From accuracy → reliability**
+- Focus on app-level robustness, failures
+- Own prompts, agents, tools, context
+
+::col3::
+
+- **Blurred AI role boundaries**
+- Scientists + engineers ship products
+- Leave comfort zone, be a beginner
+
+::col4::
+
+**Career takeaway:** grow by aligning your skills with these shifts, not with legacy workflows or rigid titles.
+
+---
+layout: smart-grid
+cols: 4
+---
+
+::header::
+
+# Pillar 2: High-ROI Technical Work
+
+::col1::
+
+**1. Define the right problems**
+Precise problem definition now drives most of your career leverage.
+
+::col2::
+
+**2. Build feedback loops**
+Telemetry, evaluation, and tuning prevent error accumulation across steps.
+
+::col3::
+
+**3. Combine domains thoughtfully**
+Cross-domain skills + tools beat depth in a single technical domain.
+
+::col4::
+
+**Shift in high-ROI work**
+From tiny accuracy gains to integrated systems that adapt to customers.
 
 ---
 layout: timeline
@@ -79,137 +192,32 @@ cols: 2
 
 ::title::
 
-# How AI work has shifted
+# Practices for High-Value LLM Work
 
 ::step1::
 
-**Traditional AI pipeline**
-Linear: data collection → model design → training → deployment; slow and expensive.
+**1. Define problems from real life**
+Imagine a product that is truly useful in daily work, not just what the current model can already do.
 
 ::step2::
 
-**Standalone model focus**
-Goal: maximum accuracy from hand-crafted, domain-specific models.
+**2. Treat problems as evolving systems**
+Frame work broadly: include data feedback, iterative improvement, and clear success criteria.
 
 ::step3::
 
-**Deep nets and large models (≈2015+)**
-Shift toward large models as unified knowledge bases with reasoning interfaces.
+**3. Tune prompts for the 90% path**
+Start with a general prompt, test widely, encode critical edge cases, and refine to reduce bad cases.
 
 ::step4::
 
-**LLM‑centric development**
-Compose existing large models into applications that prioritize user experience and iteration speed.
+**4. Stay realistic about prompt limits**
+Prompt tuning can reduce some errors, but it is not a silver bullet for hallucinations or full correctness.
 
 ::step5::
 
-**New core skills**
-Prompt/agent design, tool orchestration, reliability and automatic evaluation across blurred role boundaries.
-
----
-layout: two-cols-header
-cols: 2
----
-
-::left::
-
-- **From models → applications**: Less bespoke training, more **reliable AI products**.
-- **Engineers**: Own **system stability**, failure handling, and application-level robustness.
-
-::right::
-
-- **Scientists**: Probe **model boundaries** and orchestration to unlock new features.
-- **High-ROI work**: Telemetry, **feedback loops**, and automated evaluation for faster iteration.
-
----
-layout: smart-grid
-cols: 3
----
-
-::header::
-
-# Three Levers for Career Leverage in the LLM Era
-
-::col1::
-
-**1. Precise problem definition**
-Clarify goals and constraints so LLMs tackle the *right* problem.
-
-::col2::
-
-**2. Robust evaluation & tuning**
-Catch small errors early to prevent stepwise error accumulation.
-
-::col3::
-
-**3. Cross-domain combination**
-Combine multiple domains and tools to solve complex problems.
-
----
-layout: timeline
-cols: 2
----
-
-::title::
-
-# Defining High-Value Problems & Designing Robust Systems
-
-::step1::
-
-**1. Imagine truly useful products**
-Start from daily-life usefulness, not from what today’s model already does.
-
-::step2::
-
-**2. Frame problems as systems**
-Include data feedback, iteration, and learning loops—not just one-shot features.
-
-::step3::
-
-**3. Explore with LLMs, keep vision wide**
-Use prompts to test framings and paths, without letting current limits shrink ambition.
-
-::step4::
-
-**4. Architect planner–executor flows**
-Let an LLM planner reason; have an executor enforce constraints and precise state.
-
-::step5::
-
-**5. Fight error accumulation as a first-class concern**
-Persist critical state outside the LLM and use executor feedback to stop small errors from becoming failures.
-
----
-layout: smart-grid
-cols: 3
----
-
-::header::
-
-# From Toy to **Reliable LLM Partner**
-
-::col1::
-
-- **Prompt tuning as a process**
-- Start with a **90% case** prompt
-- Test many examples to find failures
-- Encode edge cases and constraints
-- Iterate until "good enough" for work
-
-::col2::
-
-- **Know its limits**
-- Not a **silver bullet** for hallucinations
-- Can **reduce** some errors, not all
-- Never guarantees **full correctness**
-
-::col3::
-
-- **Design for reliability**
-- Watch for **error accumulation** across steps
-- Small mistakes can snowball badly
-- Keep humans on **scope** and **optimization**
-- These skills stay highly valuable
+**5. Use planner–executor to cap errors**
+Let an LLM planner propose steps; a non-LLM executor enforces constraints, validates actions, and prevents error accumulation.
 
 ---
 layout: hero-split
@@ -218,69 +226,53 @@ ratio: 60-40
 
 ::left::
 
-## Enduring Human Edge
+## Human edges in the AI era
 
 - **System-level scope** beats function-level tweaks
-- **Low-level performance** skills stay valuable (e.g., **C++**, memory/cache)
-- Local speedups can **hurt products and careers**
-- Always ask: *"How is this used in the whole system?"*
+- **Low-level performance** skills stay highly valuable
+- LLMs still struggle with **C++ / cache** fine-tuning
+- Your job: choose the **right problem boundary**, then optimize
 
 ::right::
 
-**Chao’s anecdote**
+**Chao’s optimization lesson**
 
-An intrinsic-heavy function was sped up in isolation, but then called **38×/sec** instead of **once per lifecycle**.
-
-Result: the **system got slower**, showing how ignoring call patterns and broader system behavior makes "optimizations" net harmful.
+An intrinsic-heavy function was sped up in isolation, but called **38×/sec** instead of once per lifecycle. The result: a **net harmful** “optimization” because the broader system behavior and call patterns weren’t considered.
 
 ---
-layout: two-cols-header
+layout: timeline
 cols: 2
 ---
 
-::left::
+::title::
 
-- **Roles consolidate**: like manual testers into engineer‑owners.
-- **AI era**: expect fewer narrow jobs, broader **skill sets**.
-- Own **building + testing + learning** as one identity.
+# From Merging Roles to Sustainable AI Habits
 
-::right::
+::step1::
 
-- **Make every step solid** in code, design, and questions.
-- Ship work that **works as well as it reasonably can**.
-- Persist in Q&A until it becomes **durable knowledge**.
+**Roles merge, skills broaden**
+Manual tester jobs faded; engineers now **build + test**. Expect similar AI-era consolidation.
 
----
-layout: smart-grid
-cols: 3
----
+::step2::
 
-::header::
+**Stay aware, not overwhelmed**
+Subscribe to a **few curated AI feeds** and skim for high-level trends.
 
-# Time-Efficient AI Learning Routine
+::step3::
 
-::col1::
+**Learn by doing real work**
+Adopt a **task-driven** approach: try new AI tools when you have concrete tasks.
 
-- **Curate inputs**: a few feeds
-- Focus on relevant AI categories
-- Skim for trends, not details
+::step4::
 
-::col2::
-
-- **Be task-driven** with tools
-- Try new AI when you have a job
-- Slides, docs, diagrams, code stubs
-
-::col3::
-
-**Turn wins into workflows**
-Use LLMs as a **single source of truth** translator: one well-written spec → slides, design docs, diagrams, and code structure.
+**Turn experiments into workflows**
+Use LLMs as **translators**: one good spec → slides, design docs, diagrams, even code structure.
 
 ---
-layout: center
-cols: 2
+layout: full-bleed
+align: center
 ---
 
 # Make every step solid
 
-Each piece of work—code, design, question—should become **durable knowledge**.
+Turn each task into **durable skill** and **future opportunity**.

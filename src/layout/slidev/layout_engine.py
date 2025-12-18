@@ -202,6 +202,8 @@ Slidev Built-in Layouts (also available):
 
 Custom Vue Components (slidev-project/components/):
 
+STANDARD COMPONENTS:
+
 1. <ChartWidget> - Data visualization component
    Usage in markdown:
    ```vue
@@ -329,6 +331,114 @@ Custom Vue Components (slidev-project/components/):
      variant="card"
    />
    ```
+
+STYLE-RICH COMPONENTS (High Design Impact):
+
+5. <PolaroidCard> - Instant photo frame with handwritten caption
+   Usage in markdown:
+   ```vue
+   <PolaroidCard
+     caption="Summer 2023"
+     variant="classic|vintage|modern"
+     :tilt="true"
+   >
+     Your content here (image, text, etc.)
+   </PolaroidCard>
+   ```
+   Props:
+   - caption: Handwritten-style caption text
+   - variant: classic (white), vintage (sepia), modern (dark)
+   - tilt: Enable random rotation (default: true)
+   
+   Best for: Photo galleries, testimonials, portfolio items, creative displays
+
+6. <NeonFrame> - Cyberpunk neon border frame
+   Usage in markdown:
+   ```vue
+   <NeonFrame
+     color="cyan|magenta|lime|orange"
+     :pulse="false"
+   >
+     Your content here
+   </NeonFrame>
+   ```
+   Props:
+   - color: Neon glow color (cyan, magenta, lime, orange)
+   - pulse: Animated pulsing effect (default: false)
+   
+   Best for: Cyber/tech themes, highlighting key content, futuristic aesthetics
+
+7. <GlassCard> - Glassmorphism card with blur and transparency
+   Usage in markdown:
+   ```vue
+   <GlassCard
+     variant="light|dark|tinted"
+     blur="light|medium|heavy"
+   >
+     Your content here
+   </GlassCard>
+   ```
+   Props:
+   - variant: light (white), dark (black), tinted (blue/purple)
+   - blur: Backdrop blur intensity
+   
+   Best for: Modern UI, overlay content, premium feel, iOS-style design
+
+8. <RetroTerminal> - Vintage computer terminal with CRT effects
+   Usage in markdown:
+   ```vue
+   <RetroTerminal
+     title="SYSTEM.EXE"
+     color="green|amber|cyan"
+   >
+     > Your terminal content
+     > Commands and output
+   </RetroTerminal>
+   ```
+   Props:
+   - title: Terminal window title
+   - color: Phosphor color (green, amber, cyan)
+   
+   Best for: Code presentations, retro themes, command-line demos, hacker aesthetic
+
+9. <HolographicCard> - Iridescent holographic effect card
+   Usage in markdown:
+   ```vue
+   <HolographicCard :shimmer="true">
+     Your content here
+   </HolographicCard>
+   ```
+   Props:
+   - shimmer: Animated color-shifting effect (default: true)
+   
+   Best for: Futuristic themes, premium content, eye-catching highlights, sci-fi aesthetic
+
+SHELL LAYER - VIBE EFFECTS:
+
+All slides support a `vibe` parameter for ambient background effects:
+
+Available vibes:
+- none: No effects (default)
+- particles: Floating particles animation
+- waves: Subtle wave motion
+- noise: Film grain texture overlay
+- bokeh: Soft bokeh light orbs
+- mesh: Animated gradient mesh
+
+Usage in frontmatter:
+```yaml
+---
+layout: smart-grid
+vibe: particles
+---
+```
+
+Example combinations:
+- Business presentation: vibe="mesh" for subtle sophistication
+- Tech/Cyber theme: vibe="particles" for dynamic energy
+- Creative/Artistic: vibe="bokeh" for dreamy atmosphere
+- Vintage/Film: vibe="noise" for texture and depth
+- Calm/Serene: vibe="waves" for gentle motion
 
 Widget-to-Markdown Mappings:
 
