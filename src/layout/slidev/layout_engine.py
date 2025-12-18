@@ -1,4 +1,35 @@
-"""Slidev layout engine - provides documentation for LLM content generation."""
+"""Slidev layout engine - provides documentation for LLM content generation.
+
+ARCHITECTURE OVERVIEW:
+
+Directory Structure:
+- slidev-project/: SOURCE directory (version controlled)
+  - layouts/: Custom Vue layout components (.vue files)
+  - components/: Custom Vue widget components (.vue files)
+  - package.json: Slidev dependencies and scripts
+  
+- slidev_build/: BUILD directory (temporary, auto-generated, gitignored)
+  - Created fresh on each render by copying from slidev-project/
+  - Receives generated slides.md from renderer
+  - Executes `npm run build` to generate static HTML
+  - Gets cleaned up after successful build
+
+Development Workflow:
+1. Add/edit layouts in slidev-project/layouts/*.vue
+2. Add/edit components in slidev-project/components/*.vue
+3. Update layout documentation in this file (get_layout_documentation method)
+4. Run UCE render - it will:
+   - Copy slidev-project/ → slidev_build/
+   - Generate slides.md with your layouts
+   - Build static HTML via Slidev/Vite
+   
+Key Design Decisions:
+- slidev-project/ is the single source of truth
+- slidev_build/ is disposable (never edit files here)
+- Layout/component documentation drives LLM content generation
+- LLM matches abstract visual_design to concrete layouts via documentation
+- No hardcoded layout mappings - all via documentation matching
+"""
 
 
 class SlidevLayoutEngine:

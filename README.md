@@ -116,13 +116,37 @@ uce-render --source "data\context\career_talk.txt" --user-instruction "Generate 
 
 ## Architecture
 
-**Pipeline**: `Configuration → LayoutEngine → RenderableLayout → HTMLRenderer → HTML`
+**Pipeline**: `Configuration → LayoutEngine → RenderableLayout → Renderer → HTML`
 
 1. **LayoutEngine**: Validates configuration, selects strategy, creates widget assignments
 2. **RenderableLayout**: Intermediate representation with all rendering data
-3. **HTMLRenderer**: Jinja2-based template rendering to final HTML
+3. **Renderer**: Renders to HTML (HTMLRenderer for static, SlidevRenderer for presentations)
+
+### Layout Engines
+
+**HTML Engine** (Default):
+- Static HTML rendering with Jinja2 templates
+- Best for: Single slides, dashboards, static content
+- Output: Single HTML file with embedded CSS
+
+**Slidev Engine**:
+- Vue-based presentation framework
+- Best for: Multi-slide presentations, interactive content
+- Output: Standalone HTML with Slidev/Vite build
+- Documentation: See `docs/SLIDEV_DEVELOPMENT_GUIDE.md`
+
+Quick differences:
+- `slidev-project/`: SOURCE directory (edit here, version controlled)
+- `slidev_build/`: BUILD directory (temporary, auto-generated, gitignored)
 
 **TDD Approach**: All features implemented test-first following RED-GREEN-REFACTOR cycle
+
+## Documentation
+
+- **Slidev Development**: `docs/SLIDEV_DEVELOPMENT_GUIDE.md` - Complete guide for custom layouts/widgets
+- **Slidev Quick Reference**: `docs/SLIDEV_QUICK_REFERENCE.md` - Quick commands and directory structure
+- **LLM Pipeline**: `docs/LLM_PIPELINE_DIAGRAM.md` - Content generation flow
+- **Refactoring Plans**: `LAYOUT_ENGINE_REFACTOR_PLAN.md`, `STYLE_SYSTEM_REFACTORING.md`
 
 ## License
 
