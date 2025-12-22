@@ -1,15 +1,19 @@
-"""Layout generation from atoms using LLM with three-step process."""
+"""Layout generation from atoms using LLM with unified single-step process.
+
+This module generates complete presentations in a single LLM call, including:
+- Narrative structure (story arc)
+- Layout selection (visual variety)
+- Widget population (content brevity)
+- Deck-level coherence (widget distribution)
+"""
 import json
 import hashlib
 from typing import Any, List
-from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from src.generation.atom.collection import AtomCollection
 from src.generation.content.prompts import (
-    render_storyline_prompt,
     render_slide_generation_prompt,
     render_refinement_prompt,
-    get_storyline_config,
     get_slide_generation_config,
 )
 from src.common.slides import Slides
@@ -17,7 +21,7 @@ from src.common.patchable_context_pydantic import Patch
 from src.utils.generation_config import GenerationConfig
 from src.utils.llm_client import call_llm
 from src.utils.cache import GenerationCache
-from src.layout.dummy.validation import LayoutValidator, LayoutIssue, format_issues_for_llm
+from src.paged.layout.dummy.validation import LayoutValidator, LayoutIssue, format_issues_for_llm
 from src.common.renderable_layout import RenderableLayout
 
 
@@ -31,14 +35,17 @@ def generate_layout(
     config: GenerationConfig,
     use_cache: bool = True,
     intent_guidance: str = "",
-    layout_engine: str = "dummy"
+    layout_engine: str = "slidev",
+    themes: List = None
 ) -> Slides:
     """
-    Generate presentation layout from atoms using LLM (three-step process).
+    Generate presentation layout from atoms using LLM (single-step process).
     
-    Step 1: Generate storyline patch (create draft slides with story + atom references)
-    Step 2: Batch generate individual slides in parallel (draft → active with layout + widgets)
-    Step 3: Update internal state after parallel generation
+    Creates a complete presentation in one LLM call with:
+    - Narrative arc and story structure
+    - Layout selection with deck-level variety
+    - Widget population with content brevity
+    - Deck-level coherence (widget distribution)
     
     Args:
         atoms: AtomCollection with extracted content
@@ -46,7 +53,8 @@ def generate_layout(
         config: Generation configuration (model, temperature, prompts)
         use_cache: Whether to use cached results if available
         intent_guidance: Optional guidance from intent detection
-        layout_engine: Layout engine to use ('dummy' or 'slidev', default: 'dummy')
+        layout_engine: Layout engine to use ('dummy' or 'slidev', default: 'slidev')
+        themes: List of available theme dicts (with 'id' field) for theme assignment
         
     Returns:
         Slides collection with active slides and content
@@ -78,68 +86,35 @@ def generate_layout(
     # Initialize empty slides collection
     slides = Slides(id="slides")
     
-    print(f"⚙ Generating slide storyline via LLM...")
+    print(f"⚙ Generating complete presentation via LLM...")
     
-    # Step 1: Storyline generation (create draft slides with story + atoms)
-    storyline_patch_ops = _generate_storyline(atoms, user_instruction, config, intent_guidance)
+    # Single-step generation: create complete slides with layout + widgets
+    patch_ops = _generate_slides(atoms, user_instruction, config, intent_guidance, themes)
+    
     # Ensure it's a list (LLM might return single operation as dict)
-    if isinstance(storyline_patch_ops, dict):
-        storyline_patch_ops = [storyline_patch_ops]
-    # Convert list of dicts to Patch object
-    storyline_patch = Patch.from_json_str(json.dumps(storyline_patch_ops))
-    slides.patch(storyline_patch)
+    if isinstance(patch_ops, dict):
+        patch_ops = [patch_ops]
     
-    # Get draft slides
-    draft_slides = [s for s in slides.list_contexts() if s.state == "draft"]
-    print(f"✓ Storyline created: {len(draft_slides)} draft slides")
+    # Convert list of dicts to Patch object and apply
+    patch = Patch.from_json_str(json.dumps(patch_ops))
+    slides.patch(patch)
     
-    # Save Phase 1 state for debugging
+    # Save content for debugging
     from pathlib import Path
     output_dir = Path("output")
     output_dir.mkdir(exist_ok=True)
-    phase1_path = output_dir / "debug_phase1_storyline.json"
-    phase1_path.write_text(slides.to_json(), encoding='utf-8')
-    print(f"  📝 Debug: Saved Phase 1 state to {phase1_path.name}")
+    content_path = output_dir / "debug_content.json"
+    content_path.write_text(slides.to_json(), encoding='utf-8')
     
-    # Step 2: Batch generate individual slides in parallel
-    print(f"⚙ Generating {len(draft_slides)} slides in parallel...")
-    slide_patches = _generate_slides_parallel(draft_slides, atoms, user_instruction, config, intent_guidance)
+    active_count = len(slides.get_active_slides())
+    print(f"✓ Generated {active_count} active slides")
     
-    # Save Phase 2 raw patches for debugging
-    phase2_path = output_dir / "debug_phase2_patches.json"
-    phase2_path.write_text(json.dumps(slide_patches, indent=2), encoding='utf-8')
-    print(f"  📝 Debug: Saved Phase 2 patches to {phase2_path.name}")
-    
-    # Step 3: Update internal state with all slide patches
-    print(f"⚙ Updating slides...")
-    for patch_ops in slide_patches:
-        if isinstance(patch_ops, dict):
-            patch_ops = [patch_ops]
-        patch = Patch.from_json_str(json.dumps(patch_ops))
-        slides.patch(patch)
-    
-    # Save final state for debugging
-    layout_json_path = output_dir / "intermediate_layout.json"
-    layout_json_path.write_text(slides.to_json(), encoding='utf-8')
-    print(f"✓ Saved intermediate layout JSON: {layout_json_path.absolute()}")
-    
-    # Save Phase 3 final state separately for debugging
-    phase3_path = output_dir / "debug_phase3_final.json"
-    phase3_path.write_text(slides.to_json(), encoding='utf-8')
-    print(f"  📝 Debug: Saved Phase 3 final state to {phase3_path.name}")
-    print(f"✓ Generated {len(slides.get_active_slides())} active slides")
-    
-    # Cache result (store combined patch operations)
+    # Cache result
     if use_cache:
-        # Combine all patches into one for caching
-        combined_ops = storyline_patch_ops.copy()
-        for slide_patch in slide_patches:
-            combined_ops.extend(slide_patch if isinstance(slide_patch, list) else [slide_patch])
-        
         _cache.save(
             cache_key,
             {
-                "cached_data": json.dumps(combined_ops),  # Store as JSON string
+                "cached_data": json.dumps(patch_ops),  # Store as JSON string
                 "metadata": {
                     "atom_count": len(atoms),
                     "slide_count": len(slides),
@@ -152,137 +127,31 @@ def generate_layout(
     return slides
 
 
-def _generate_storyline(
+def _generate_slides(
     atoms: AtomCollection,
     user_instruction: str,
     config: GenerationConfig,
-    intent_guidance: str = ""
+    intent_guidance: str = "",
+    themes: List = None
 ) -> Any:
     """
-    Generate storyline patch (create draft slides with story + atom references).
+    Generate complete slides in a single LLM call.
     
-    Creates slide entries with story descriptions and related atom IDs.
-    Also generates theme/preset configuration if needed.
-    Does NOT populate layout or widget content yet.
+    Creates slides with:
+    - Story field describing narrative purpose
+    - Layout selection for visual variety
+    - Widget population with brevity
+    - State set to 'active'
     
     Args:
         atoms: AtomCollection with extracted content
         user_instruction: User's generation instructions
         config: Generation configuration
         intent_guidance: Optional guidance from intent detection
+        themes: List of available theme dicts (with 'id' field)
         
     Returns:
-        List of patch operations to create draft slides with stories
-        
-    Raises:
-        json.JSONDecodeError: If LLM output is not valid JSON
-        Exception: If LLM API call fails
-    """
-    # Get configuration for storyline generation
-    storyline_config = get_storyline_config()
-    
-    # Render prompts
-    system_prompt = storyline_config.system_prompt
-    user_prompt = render_storyline_prompt(atoms, user_instruction, intent_guidance)
-    
-    # Call LLM
-    response = call_llm(
-        system_prompt=system_prompt,
-        user_prompt=user_prompt,
-        deployment=config.model,
-        temperature=storyline_config.temperature,
-        max_tokens=storyline_config.max_tokens,
-        max_reasoning_tokens=storyline_config.max_reasoning_tokens
-    )
-    
-    # Parse JSON Patch
-    patch_operations = json.loads(response)
-    
-    return patch_operations
-
-
-def _generate_slides_parallel(
-    draft_slides: List,
-    atoms: AtomCollection,
-    user_instruction: str,
-    config: GenerationConfig,
-    intent_guidance: str = "",
-    max_workers: int = 5
-) -> List[Any]:
-    """
-    Generate individual slides in parallel (draft → active).
-    
-    Each slide is generated independently based on its story and related atoms.
-    Uses ThreadPoolExecutor for parallel LLM calls.
-    
-    Args:
-        draft_slides: List of draft slides with story + atoms defined
-        atoms: AtomCollection with all extracted content
-        user_instruction: User's generation instructions
-        config: Generation configuration
-        intent_guidance: Optional guidance from intent detection
-        max_workers: Maximum number of parallel LLM calls (default: 5)
-        
-    Returns:
-        List of patch operations (one per slide)
-        
-    Raises:
-        json.JSONDecodeError: If LLM output is not valid JSON
-        Exception: If LLM API call fails
-    """
-    slide_patches = []
-    
-    # Use ThreadPoolExecutor for parallel generation
-    with ThreadPoolExecutor(max_workers=max_workers) as executor:
-        # Submit all slide generation tasks
-        future_to_slide = {
-            executor.submit(
-                _generate_single_slide,
-                slide,
-                atoms,
-                user_instruction,
-                config,
-                intent_guidance
-            ): slide
-            for slide in draft_slides
-        }
-        
-        # Collect results as they complete
-        for future in as_completed(future_to_slide):
-            slide = future_to_slide[future]
-            try:
-                patch_ops = future.result()
-                slide_patches.append(patch_ops)
-                print(f"  ✓ Generated slide: {slide.id}")
-            except Exception as exc:
-                print(f"  ✗ Slide {slide.id} failed: {exc}")
-                raise
-    
-    return slide_patches
-
-
-def _generate_single_slide(
-    draft_slide,
-    atoms: AtomCollection,
-    user_instruction: str,
-    config: GenerationConfig,
-    intent_guidance: str = ""
-) -> Any:
-    """
-    Generate a single slide (draft → active).
-    
-    Populates layout and widget content based on the slide's story
-    and using only the atoms referenced in the slide.
-    
-    Args:
-        draft_slide: Draft slide with story and atoms defined
-        atoms: AtomCollection with all extracted content
-        user_instruction: User's generation instructions
-        config: Generation configuration
-        intent_guidance: Optional guidance from intent detection
-        
-    Returns:
-        Patch operations to populate layout/widgets and activate slide
+        List of patch operations to create complete slides
         
     Raises:
         json.JSONDecodeError: If LLM output is not valid JSON
@@ -291,21 +160,9 @@ def _generate_single_slide(
     # Get configuration for slide generation
     slide_config = get_slide_generation_config()
     
-    # Filter atoms to only those referenced by this slide
-    related_atoms = {
-        atom_id: atoms.get_atom(atom_id)
-        for atom_id in draft_slide.atoms
-        if atoms.get_atom(atom_id) is not None
-    }
-    
     # Render prompts
     system_prompt = slide_config.system_prompt
-    user_prompt = render_slide_generation_prompt(
-        draft_slide,
-        related_atoms,
-        user_instruction,
-        intent_guidance
-    )
+    user_prompt = render_slide_generation_prompt(atoms, user_instruction, intent_guidance, themes)
     
     # Call LLM
     response = call_llm(
@@ -317,8 +174,16 @@ def _generate_single_slide(
         max_reasoning_tokens=slide_config.max_reasoning_tokens
     )
     
-    # Parse JSON Patch
-    patch_operations = json.loads(response)
+    # Parse JSON Patch with better error reporting
+    try:
+        patch_operations = json.loads(response)
+    except json.JSONDecodeError as e:
+        print(f"  ✗ JSON Parse Error:")
+        print(f"    Error: {e}")
+        print(f"    LLM Response (first 500 chars):")
+        print(f"    {response[:500]}")
+        print(f"    ...")
+        raise
     
     return patch_operations
 

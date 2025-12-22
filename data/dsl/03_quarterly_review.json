@@ -1,0 +1,446 @@
+{
+  "id": "quarterly_review",
+  "title": "Q4 2024 Business Review",
+  "description": "Professional quarterly business review with metrics and analysis",
+  "slides": [
+    {
+      "id": "slide_01_cover",
+      "rank": 1,
+      "layout": "hero-split",
+      "theme": "business",
+      "parameters": {
+        "vibe": "professional",
+        "ratio": "50-50"
+      },
+      "widgets": {
+        "left": {
+          "type": "Type.Display",
+          "parameters": {
+            "text": "Q4 2024\nBusiness Review"
+          }
+        },
+        "right": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "Exceeding Targets\nDriving Growth\nBuilding the Future"
+          }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "Acme Corporation" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "Confidential • Executive Summary" }
+      }
+    },
+    {
+      "id": "slide_02_highlights",
+      "rank": 2,
+      "layout": "stats-showcase",
+      "theme": "business",
+      "parameters": {
+        "vibe": "professional",
+        "columns": 4,
+        "displayStyle": "cards"
+      },
+      "widgets": {
+        "title": {
+          "type": "Type.Heading",
+          "parameters": { "text": "Q4 Highlights at a Glance" }
+        },
+        "stat-1": {
+          "type": "Type.Body",
+          "parameters": { "text": "$48.2M\nRevenue (+18% YoY)" }
+        },
+        "stat-2": {
+          "type": "Type.Body",
+          "parameters": { "text": "23.4%\nGross Margin (+2.1pp)" }
+        },
+        "stat-3": {
+          "type": "Type.Body",
+          "parameters": { "text": "1,247\nNew Customers" }
+        },
+        "stat-4": {
+          "type": "Type.Body",
+          "parameters": { "text": "94%\nCustomer Satisfaction" }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "Acme Corporation • Q4 2024" }
+      }
+    },
+    {
+      "id": "slide_03_revenue",
+      "rank": 3,
+      "layout": "dashboard",
+      "theme": "business",
+      "parameters": {
+        "vibe": "professional"
+      },
+      "widgets": {
+        "title": {
+          "type": "Type.Heading",
+          "parameters": { "text": "Revenue Performance" }
+        },
+        "metric1": {
+          "type": "MetricWidget",
+          "parameters": {
+            "value": "$48.2M",
+            "label": "Total Revenue",
+            "change": "+18%"
+          }
+        },
+        "metric2": {
+          "type": "MetricWidget",
+          "parameters": {
+            "value": "$32.1M",
+            "label": "Recurring Revenue",
+            "change": "+24%"
+          }
+        },
+        "metric3": {
+          "type": "MetricWidget",
+          "parameters": {
+            "value": "$16.1M",
+            "label": "New Business",
+            "change": "+12%"
+          }
+        },
+        "metric4": {
+          "type": "MetricWidget",
+          "parameters": {
+            "value": "108%",
+            "label": "Target Achievement",
+            "change": "✓"
+          }
+        },
+        "chart": {
+          "type": "ChartWidget",
+          "parameters": {
+            "chartType": "bar",
+            "title": "Revenue by Quarter (in $M)",
+            "data": [38.5, 41.2, 44.8, 48.2],
+            "labels": ["Q1", "Q2", "Q3", "Q4"]
+          }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "Acme Corporation • Q4 2024" }
+      }
+    },
+    {
+      "id": "slide_04_segments",
+      "rank": 4,
+      "layout": "cards-grid",
+      "theme": "business",
+      "parameters": {
+        "vibe": "minimal",
+        "columns": 3,
+        "cardStyle": "flat"
+      },
+      "widgets": {
+        "title": {
+          "type": "Type.Heading",
+          "parameters": { "text": "Performance by Segment" }
+        },
+        "card-1": {
+          "type": "Type.Body",
+          "parameters": { "text": "🏢 Enterprise\n\n$28.4M Revenue\n+22% YoY\n\nStrong growth in financial services and healthcare verticals" }
+        },
+        "card-2": {
+          "type": "Type.Body",
+          "parameters": { "text": "🏪 Mid-Market\n\n$14.6M Revenue\n+15% YoY\n\nExpanded channel partner program driving adoption" }
+        },
+        "card-3": {
+          "type": "Type.Body",
+          "parameters": { "text": "🚀 SMB\n\n$5.2M Revenue\n+8% YoY\n\nSelf-serve platform gaining traction" }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "Acme Corporation • Q4 2024" }
+      }
+    },
+    {
+      "id": "slide_05_wins",
+      "rank": 5,
+      "layout": "feature-grid",
+      "theme": "business",
+      "parameters": {
+        "vibe": "professional",
+        "columns": 3
+      },
+      "widgets": {
+        "title": {
+          "type": "Type.Heading",
+          "parameters": { "text": "Key Customer Wins" }
+        },
+        "feature1": {
+          "type": "Type.Body",
+          "parameters": { "text": "🏦 Global Bank Corp\n\n$2.4M deal\n3-year enterprise agreement" }
+        },
+        "feature2": {
+          "type": "Type.Body",
+          "parameters": { "text": "🏥 HealthFirst Network\n\n$1.8M deal\nExpanded from pilot to enterprise" }
+        },
+        "feature3": {
+          "type": "Type.Body",
+          "parameters": { "text": "🛒 RetailMax Inc\n\n$1.2M deal\nCompetitive displacement" }
+        },
+        "feature4": {
+          "type": "Type.Body",
+          "parameters": { "text": "✈️ SkyTravel Airlines\n\n$950K deal\nNew vertical expansion" }
+        },
+        "feature5": {
+          "type": "Type.Body",
+          "parameters": { "text": "🔧 ManufacturePro\n\n$850K deal\nIoT integration win" }
+        },
+        "feature6": {
+          "type": "Type.Body",
+          "parameters": { "text": "📱 TechStartup Inc\n\n$720K deal\nFastest deal cycle (14 days)" }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "Acme Corporation • Q4 2024" }
+      }
+    },
+    {
+      "id": "slide_06_product",
+      "rank": 6,
+      "layout": "timeline",
+      "theme": "business",
+      "parameters": {
+        "vibe": "dynamic"
+      },
+      "widgets": {
+        "title": {
+          "type": "Type.Heading",
+          "parameters": { "text": "Product Milestones" }
+        },
+        "step1": {
+          "type": "Type.Body",
+          "parameters": {
+            "title": "October",
+            "text": "Platform 3.0 Launch - 40% performance improvement"
+          }
+        },
+        "step2": {
+          "type": "Type.Body",
+          "parameters": {
+            "title": "October",
+            "text": "AI Assistant Beta - 500 enterprise users"
+          }
+        },
+        "step3": {
+          "type": "Type.Body",
+          "parameters": {
+            "title": "November",
+            "text": "SOC2 Type II Certification achieved"
+          }
+        },
+        "step4": {
+          "type": "Type.Body",
+          "parameters": {
+            "title": "December",
+            "text": "Mobile App 2.0 - Redesigned UX"
+          }
+        },
+        "step5": {
+          "type": "Type.Body",
+          "parameters": {
+            "title": "December",
+            "text": "API v4 - 200+ new endpoints"
+          }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "Acme Corporation • Q4 2024" }
+      }
+    },
+    {
+      "id": "slide_07_challenges",
+      "rank": 7,
+      "layout": "two-cols-header",
+      "theme": "business",
+      "parameters": {
+        "vibe": "professional",
+        "ratio": "50-50"
+      },
+      "widgets": {
+        "header": {
+          "type": "Type.Display",
+          "parameters": { "text": "Challenges & Learnings" }
+        },
+        "left": {
+          "type": "Type.List",
+          "parameters": {
+            "title": "Challenges Faced",
+            "items": [
+              "Supply chain delays impacted hardware deliveries",
+              "Competitive pressure in mid-market segment",
+              "Engineering capacity constraints",
+              "Currency headwinds in EMEA"
+            ]
+          }
+        },
+        "right": {
+          "type": "Type.List",
+          "parameters": {
+            "title": "Actions Taken",
+            "items": [
+              "Diversified supplier network",
+              "Launched competitive response program",
+              "Accelerated hiring plan (+25 engineers)",
+              "Implemented hedging strategy"
+            ]
+          }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "Acme Corporation • Q4 2024" }
+      }
+    },
+    {
+      "id": "slide_08_team",
+      "rank": 8,
+      "layout": "stats-showcase",
+      "theme": "business",
+      "parameters": {
+        "vibe": "calm",
+        "columns": 3,
+        "displayStyle": "minimal"
+      },
+      "widgets": {
+        "title": {
+          "type": "Type.Heading",
+          "parameters": { "text": "Team & Culture" }
+        },
+        "stat-1": {
+          "type": "Type.Body",
+          "parameters": { "text": "847\nTotal Employees (+18%)" }
+        },
+        "stat-2": {
+          "type": "Type.Body",
+          "parameters": { "text": "89%\neNPS Score" }
+        },
+        "stat-3": {
+          "type": "Type.Body",
+          "parameters": { "text": "92%\nDiversity Goals Met" }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "Acme Corporation • Q4 2024" }
+      }
+    },
+    {
+      "id": "slide_09_outlook",
+      "rank": 9,
+      "layout": "magazine",
+      "theme": "business",
+      "parameters": {
+        "vibe": "professional",
+        "variant": "left-feature"
+      },
+      "widgets": {
+        "feature": {
+          "type": "Type.Display",
+          "parameters": {
+            "text": "2025 Outlook"
+          }
+        },
+        "sidebar": {
+          "type": "Type.List",
+          "parameters": {
+            "items": [
+              "$210M revenue target (+22%)",
+              "3 new product launches",
+              "APAC market expansion",
+              "1,000+ employees by EOY",
+              "IPO readiness preparation"
+            ]
+          }
+        },
+        "caption": {
+          "type": "Type.Body",
+          "parameters": { "text": "Strategic priorities aligned with board direction" }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "Acme Corporation • Q4 2024" }
+      }
+    },
+    {
+      "id": "slide_10_close",
+      "rank": 10,
+      "layout": "spotlight",
+      "theme": "business",
+      "parameters": {
+        "vibe": "professional",
+        "intensity": "soft"
+      },
+      "widgets": {
+        "default": {
+          "type": "Type.Display",
+          "parameters": {
+            "text": "Thank You"
+          }
+        },
+        "subtitle": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "Questions & Discussion\n\nContact: exec-team@acmecorp.com"
+          }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "Acme Corporation • Q4 2024 Business Review" }
+      }
+    }
+  ]
+}

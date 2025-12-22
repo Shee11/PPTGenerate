@@ -7,7 +7,7 @@ class TestSingleSlideRendering:
     
     def test_render_smart_grid_slide_with_mixed_widgets(self):
         """Verify full JSON produces valid markdown with frontmatter and slots."""
-        from src.render.slidev.markdown_renderer import SlidevRenderer
+        from src.paged.render.slidev.markdown_renderer import SlidevRenderer
         
         renderer = SlidevRenderer()
         slide = {
@@ -40,7 +40,7 @@ class TestSingleSlideRendering:
     
     def test_render_hero_split_slide(self):
         """Verify hero-split layout renders with left/right slots."""
-        from src.render.slidev.markdown_renderer import SlidevRenderer
+        from src.paged.render.slidev.markdown_renderer import SlidevRenderer
         
         renderer = SlidevRenderer()
         slide = {
@@ -61,7 +61,7 @@ class TestSingleSlideRendering:
     
     def test_render_raises_error_for_missing_layout(self):
         """Verify ValueError raised if layout field missing."""
-        from src.render.slidev.markdown_renderer import SlidevRenderer
+        from src.paged.render.slidev.markdown_renderer import SlidevRenderer
         
         renderer = SlidevRenderer()
         slide = {"widgets": {}}
@@ -71,7 +71,7 @@ class TestSingleSlideRendering:
     
     def test_render_raises_error_for_missing_widgets(self):
         """Verify ValueError raised if widgets field missing."""
-        from src.render.slidev.markdown_renderer import SlidevRenderer
+        from src.paged.render.slidev.markdown_renderer import SlidevRenderer
         
         renderer = SlidevRenderer()
         slide = {"layout": "smart-grid"}

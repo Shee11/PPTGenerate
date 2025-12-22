@@ -7,7 +7,7 @@ class TestWidgetToMarkdownMapping:
     
     def test_type_display_renders_as_plain_text(self):
         """Verify Type.Display renders as plain text."""
-        from src.render.slidev.markdown_renderer import SlidevRenderer
+        from src.paged.render.slidev.markdown_renderer import SlidevRenderer
         
         renderer = SlidevRenderer()
         widget = {"type": "Type.Display", "text": "Welcome to Slidev"}
@@ -18,7 +18,7 @@ class TestWidgetToMarkdownMapping:
     
     def test_type_heading_renders_as_markdown_heading(self):
         """Verify Type.Heading renders as # Heading."""
-        from src.render.slidev.markdown_renderer import SlidevRenderer
+        from src.paged.render.slidev.markdown_renderer import SlidevRenderer
         
         renderer = SlidevRenderer()
         widget = {"type": "Type.Heading", "text": "Section Title", "level": 1}
@@ -29,7 +29,7 @@ class TestWidgetToMarkdownMapping:
     
     def test_type_body_renders_as_paragraph(self):
         """Verify Type.Body renders as plain paragraph."""
-        from src.render.slidev.markdown_renderer import SlidevRenderer
+        from src.paged.render.slidev.markdown_renderer import SlidevRenderer
         
         renderer = SlidevRenderer()
         widget = {"type": "Type.Body", "text": "This is body text with **bold** formatting."}
@@ -40,7 +40,7 @@ class TestWidgetToMarkdownMapping:
     
     def test_type_list_renders_as_markdown_bullets(self):
         """Verify Type.List renders as bullet list."""
-        from src.render.slidev.markdown_renderer import SlidevRenderer
+        from src.paged.render.slidev.markdown_renderer import SlidevRenderer
         
         renderer = SlidevRenderer()
         widget = {"type": "Type.List", "items": ["Item 1", "Item 2", "Item 3"]}
@@ -52,7 +52,7 @@ class TestWidgetToMarkdownMapping:
     
     def test_type_code_renders_as_code_block(self):
         """Verify Type.Code renders as code block."""
-        from src.render.slidev.markdown_renderer import SlidevRenderer
+        from src.paged.render.slidev.markdown_renderer import SlidevRenderer
         
         renderer = SlidevRenderer()
         widget = {"type": "Type.Code", "code": "print('hello')", "language": "python"}
@@ -68,7 +68,7 @@ class TestWidgetToComponentMapping:
     
     def test_data_bignum_renders_as_metric_card(self):
         """Verify Data.BigNum renders as <MetricCard />."""
-        from src.render.slidev.markdown_renderer import SlidevRenderer
+        from src.paged.render.slidev.markdown_renderer import SlidevRenderer
         
         renderer = SlidevRenderer()
         widget = {"type": "Data.BigNum", "label": "Revenue", "value": "$1.2M", "variant": "primary"}
@@ -82,7 +82,7 @@ class TestWidgetToComponentMapping:
     
     def test_data_progress_renders_as_progress_bar(self):
         """Verify Data.Progress renders as <ProgressBar />."""
-        from src.render.slidev.markdown_renderer import SlidevRenderer
+        from src.paged.render.slidev.markdown_renderer import SlidevRenderer
         
         renderer = SlidevRenderer()
         widget = {"type": "Data.Progress", "label": "Completion", "value": 75, "status": "success"}

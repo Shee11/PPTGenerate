@@ -20,6 +20,17 @@ Auto-generated from all feature plans. Last updated: 2025-12-18
   - Programmatic: `LayoutEngineRegistry.set_active_engine("engine_name")`
   - Default: First registered engine
 
+### Layout-Specific Validation Rules
+- **CRITICAL**: Layout validation rules (widget-layout compatibility, slot constraints) MUST come from the LayoutEngine via `get_layout_constrain()`
+- **DO NOT add layout validation prompts to `src/generation/content/prompts.py`** - this is the COMMON prompt file for content generation only
+- Layout-specific validation logic belongs in:
+  - LayoutEngine's `get_layout_constrain()` method (returns formatted constraints for LLM guidance)
+  - LayoutEngine's `get_layout_documentation()` method (returns layout/widget/preset documentation)
+  - Dedicated validator modules (e.g., `src/layout/slidev/layout_validator.py`) for runtime validation
+  - Layout engine-specific prompt builders if needed (use `get_layout_constrain()` to inject constraints)
+- Example: Widget-layout compatibility rules for Slidev belong in `SlidevLayoutEngine.get_layout_constrain()`, NOT in common content prompts
+- Prompts should call `active_engine.get_layout_constrain()` to dynamically inject layout-specific constraints
+
 ## Active Technologies
 - Python 3.11 + Pydantic 2.x (for data models), Jinja2 (for templates) (001-uce-render)
 - N/A (stateless rendering) (001-uce-render)
@@ -86,9 +97,6 @@ python -m cli --list-strategies
 # List all widget types
 python -m cli --list-widgets
 
-# List all preset variants (Surface, Shape, Fill, Effect)
-python -m cli --list-presets
-
 # List all themes
 python -m cli --list-themes
 
@@ -96,8 +104,8 @@ python -m cli --list-themes
 python -m cli --list-styles
 
 # Get JSON format for programmatic use
-python -m cli --list-presets --format json
 python -m cli --list-widgets --format json
+python -m cli --list-themes --format json
 ```
 
 ### Output Formats

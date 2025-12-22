@@ -5,8 +5,8 @@ from src.common.bounds import Bounds
 from src.common.size_class import SizeClass
 from src.common.slot import Slot
 from src.common.measurement import MeasuredSize
-from src.layout.layout_protocol import LayoutContext, WidgetLayoutInput
-from src.layout.strategies.data import DataKPIRowStrategy
+from src.paged.layout.layout_protocol import LayoutContext, WidgetLayoutInput
+from src.paged.layout.strategies.data import DataKPIRowStrategy
 
 
 class TestDataKPIRowLayout:

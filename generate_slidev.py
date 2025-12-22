@@ -10,7 +10,7 @@ import json
 from pathlib import Path
 
 from src.generation.orchestrator import GenerationOrchestrator
-from src.render.slidev.markdown_renderer import SlidevRenderer
+from src.paged.render.slidev.markdown_renderer import SlidevRenderer
 
 
 def generate_slidev_presentation(

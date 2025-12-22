@@ -1,0 +1,620 @@
+{
+  "total_slides": 9,
+  "width": 1920,
+  "height": 1080,
+  "themes": [
+    {
+      "id": "career_dev_pro_theme",
+      "description": "A professional and modern theme designed to engage engineers and professionals, providing clear and actionable career development insights.",
+      "margin_x": "40px",
+      "margin_y": "30px",
+      "gutter": "20px",
+      "header_footer": {
+        "header_height": "15%",
+        "footer_height": "10%",
+        "header_position": "fixed_top_left",
+        "footer_position": "fixed_bottom_left",
+        "header_decoration": "underline_accent",
+        "footer_decoration": "none"
+      },
+      "sequence_pattern": "uniform",
+      "typography": {
+        "h1": {
+          "size": 72,
+          "weight": "bold",
+          "line_height": 1.1
+        },
+        "h2": {
+          "size": 48,
+          "weight": "medium",
+          "line_height": 1.2
+        },
+        "h3": {
+          "size": 36,
+          "weight": "medium",
+          "line_height": 1.3
+        },
+        "body": {
+          "size": 28,
+          "weight": "regular",
+          "line_height": 1.5
+        },
+        "caption": {
+          "size": 20,
+          "weight": "regular",
+          "line_height": 1.4
+        }
+      },
+      "primary_color": "#3b82f6",
+      "secondary_color": "#8b5cf6",
+      "accent_color": "#f59e0b",
+      "background_color": "#0f172a",
+      "text_color": "#ffffff",
+      "primary_background": null,
+      "secondary_background": null,
+      "font_family": "Roboto",
+      "heading_font": null,
+      "base_font_size": "16px",
+      "line_height": "1.5"
+    }
+  ],
+  "slides": [
+    {
+      "id": "slide_1",
+      "rank": 1,
+      "state": "active",
+      "story": "Open by framing the talk as a guide to building an AI career that evolves with the technology, using Chao\u2019s journey as context, not the main focus.",
+      "atoms": [
+        "timeline_001"
+      ],
+      "density": "minimal",
+      "visual_design": "full-canvas hero slide with a bold title on the left and a simple horizontal timeline ribbon on the bottom showing 2011 \u2192 2021 milestones as subtle context; large whitespace to keep focus on the core promise of the talk.",
+      "layout": "full-bleed",
+      "widgets": {
+        "default": {
+          "type": "Type.Display",
+          "parameters": {
+            "text": "# Designing an AI Career That Evolves\n\n*Lessons from Chao Wang\u2019s journey*\n\n---\n**2011** \u00b7 Face API beginnings \u2003\u2192\u2003**2021** \u00b7 Teams vision & AI"
+          }
+        }
+      },
+      "header": {
+        "type": "Type.Caption",
+        "parameters": {
+          "text": "AI Career Playbook \u00b7 Story\u2011driven, takeaway\u2011focused"
+        }
+      },
+      "footer": {
+        "type": "Type.Caption",
+        "parameters": {
+          "text": "Chao Wang \u00b7 2011\u21922021 journey as context, not destination"
+        }
+      },
+      "theme": "career_dev_pro_theme",
+      "style_override": {},
+      "parameters": {
+        "align": "center"
+      }
+    },
+    {
+      "id": "slide_2",
+      "rank": 2,
+      "state": "active",
+      "story": "Contrast the traditional AI development model with the emerging large-model paradigm to show why career strategies must change.",
+      "atoms": [
+        "stmt_001",
+        "stmt_002",
+        "proc_001",
+        "comp_001"
+      ],
+      "density": "dense",
+      "visual_design": "split layout: left side a simple 4-step vertical flow diagram for the traditional pipeline; right side a compact comparison table highlighting shifts in focus, workflow, and skills; key differences called out with accent color to guide the eye.",
+      "layout": "hero-split",
+      "widgets": {
+        "left": {
+          "type": "Type.Display",
+          "parameters": {
+            "text": "## Traditional AI: Linear Pipeline\n\n1. **Data** \u2192 collect & curate\n2. **Model** \u2192 select / design\n3. **Train** \u2192 tune for accuracy\n4. **Deploy** \u2192 latency & throughput"
+          }
+        },
+        "right": {
+          "type": "TableWidget",
+          "parameters": {
+            "title": "Traditional \u2192 Large\u2011Model Shift",
+            "variant": "striped",
+            "columns": [
+              {
+                "key": "dimension",
+                "label": "Dimension",
+                "align": "left",
+                "format": "text"
+              },
+              {
+                "key": "traditional",
+                "label": "Traditional AI",
+                "align": "left",
+                "format": "text"
+              },
+              {
+                "key": "llm",
+                "label": "LLM / Large Model",
+                "align": "left",
+                "format": "badge"
+              }
+            ],
+            "rows": [
+              {
+                "dimension": "Primary focus",
+                "traditional": "Standalone models, **accuracy**",
+                "llm": "Apps, **reliability & UX**"
+              },
+              {
+                "dimension": "Workflow",
+                "traditional": "Linear pipeline",
+                "llm": "Orchestrated **prompts & tools**"
+              },
+              {
+                "dimension": "Roles",
+                "traditional": "Clear boundaries",
+                "llm": "**Blurry**, shared outcomes"
+              },
+              {
+                "dimension": "Key skills",
+                "traditional": "Algorithm depth, tuning",
+                "llm": "**Problem framing**, agents, telemetry"
+              }
+            ]
+          }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": {
+          "text": "Why Career Strategies Must Shift"
+        }
+      },
+      "footer": {
+        "type": "Type.Caption",
+        "parameters": {
+          "text": "From linear model-building to large\u2011model orchestration"
+        }
+      },
+      "theme": "career_dev_pro_theme",
+      "style_override": {},
+      "parameters": {
+        "ratio": "50-50"
+      }
+    },
+    {
+      "id": "slide_3",
+      "rank": 3,
+      "state": "active",
+      "story": "Explain how large models change what we optimize for and how roles are blending, setting up why engineers must rethink where they add value.",
+      "atoms": [
+        "stmt_003",
+        "stmt_004",
+        "stmt_005",
+        "stmt_006"
+      ],
+      "density": "moderate",
+      "visual_design": "hierarchical layout with a central headline box describing large models as a \u2018knowledge + reasoning\u2019 platform, surrounded by three smaller boxes for optimization focus, evolving roles, and blurred boundaries; arrows show the shift from model-centric to product-centric work.",
+      "layout": "smart-grid",
+      "widgets": {
+        "header": {
+          "type": "Type.Subhead",
+          "parameters": {
+            "text": "From bespoke models \u2192 **orchestrated LLM platform**"
+          }
+        },
+        "col1": {
+          "type": "Type.List",
+          "parameters": {
+            "items": [
+              "**Optimization focus**",
+              "From **accuracy tweaks**",
+              "To UX, speed, workflows",
+              "Prompts, tools, multimodal"
+            ]
+          }
+        },
+        "col2": {
+          "type": "Type.List",
+          "parameters": {
+            "items": [
+              "**Evolving roles**",
+              "Design prompts, agents",
+              "Runtime workflows",
+              "Feedback + reliability loops"
+            ]
+          }
+        },
+        "col3": {
+          "type": "Type.List",
+          "parameters": {
+            "items": [
+              "**Blurred boundaries**",
+              "Applied sci \u2194 engineer",
+              "Shared product outcomes",
+              "Model + system co\u2011design"
+            ]
+          }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": {
+          "text": "Large models: **knowledge + reasoning** platform"
+        }
+      },
+      "footer": {
+        "type": "Type.Caption",
+        "parameters": {
+          "text": "Shift: model\u2011centric \u2192 **product\u2011centric** value"
+        }
+      },
+      "theme": "career_dev_pro_theme",
+      "style_override": {},
+      "parameters": {
+        "cols": 3
+      }
+    },
+    {
+      "id": "slide_4",
+      "rank": 4,
+      "state": "active",
+      "story": "Introduce the core high-ROI career focus areas in the LLM era and emphasize that cross-domain problem framing now matters more than narrow depth.",
+      "atoms": [
+        "stmt_007",
+        "stmt_008",
+        "stmt_009",
+        "quote_002"
+      ],
+      "density": "moderate",
+      "visual_design": "hierarchical layout with a bold pull-quote banner at the top, followed by three icon-backed bullets for problem definition, evaluation/tuning, and cross-domain combination; use subtle color blocks to separate each focus area visually.",
+      "layout": "smart-grid",
+      "widgets": {
+        "header": {
+          "type": "Type.Quote",
+          "parameters": {
+            "text": "\u201cWe could get the maximum return on the effort from precise problem definition, robust evaluation and tuning mechanisms, and thoughtful cross-domain combination.\u201d\n\n\u2014 **Chao Wang**, Applied Scientist"
+          },
+          "preset": {
+            "surface": "Elevated",
+            "shape": "Curve",
+            "fill": "Gradient_Linear",
+            "effect": "Glow"
+          }
+        },
+        "col1": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "**Precise problem definition**  \nClarify goals, constraints, success signals."
+          },
+          "preset": {
+            "surface": "Flat",
+            "shape": "Rounded",
+            "fill": "Subtle",
+            "effect": "Shadow"
+          }
+        },
+        "col2": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "**Robust evaluation & tuning**  \nTelemetry, feedback loops, adaptive systems."
+          },
+          "preset": {
+            "surface": "Flat",
+            "shape": "Rounded",
+            "fill": "Subtle",
+            "effect": "Shadow"
+          }
+        },
+        "col3": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "**Cross-domain combination**  \nBlend tools, domains to solve complexity."
+          },
+          "preset": {
+            "surface": "Flat",
+            "shape": "Rounded",
+            "fill": "Subtle",
+            "effect": "Shadow"
+          }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": {
+          "text": "High\u2011ROI Focus in the LLM Era"
+        }
+      },
+      "footer": {
+        "type": "Type.Caption",
+        "parameters": {
+          "text": "Depth still matters\u2014but cross\u2011domain problem framing now matters more."
+        }
+      },
+      "theme": "career_dev_pro_theme",
+      "style_override": {},
+      "parameters": {
+        "cols": 3
+      }
+    },
+    {
+      "id": "slide_5",
+      "rank": 5,
+      "state": "active",
+      "story": "Show concrete workflows\u2014prompt tuning and planner\u2013executor architectures\u2014that embody these principles of high-ROI iteration and error-limiting design.",
+      "atoms": [
+        "proc_002",
+        "proc_003",
+        "quote_004"
+      ],
+      "density": "dense",
+      "visual_design": "timeline / process layout with two horizontal swimlanes: top for the 4-step prompt tuning loop, bottom for the 5-step planner\u2013executor loop; a small quote callout on the right reinforces the need to limit error accumulation; arrows emphasize iteration.",
+      "layout": "timeline",
+      "widgets": {
+        "title": {
+          "type": "Type.Subhead",
+          "parameters": {
+            "text": "High-ROI iteration in two concrete loops"
+          }
+        },
+        "step1": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "**Prompt loop**: 90% path prompt \u2192 log failures\n**Planner loop**: LLM planner outlines steps"
+          }
+        },
+        "step2": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "**Prompt loop**: capture edge cases, failure modes\n**Planner loop**: store steps as structured state"
+          }
+        },
+        "step3": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "**Prompt loop**: refine constraints, encode fixes\n**Planner loop**: non-LLM executor runs steps"
+          }
+        },
+        "step4": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "**Prompt loop**: test until edges pass\n**Planner loop**: verify, replan on divergence"
+          }
+        },
+        "step5": {
+          "type": "Type.Quote",
+          "parameters": {
+            "text": "LLMs will not resolve all the issues; they will not work for all cases, so we need architectures that limit error accumulation.\n\n\u2014 Chao Wang, Applied Scientist"
+          }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": {
+          "text": "Workflows that Limit Error Accumulation"
+        }
+      },
+      "footer": {
+        "type": "Type.Caption",
+        "parameters": {
+          "text": "Prompt tuning loop (top) \u00b7 Planner\u2013executor loop (bottom)"
+        }
+      },
+      "theme": "career_dev_pro_theme",
+      "style_override": {},
+      "parameters": {}
+    },
+    {
+      "id": "slide_6",
+      "rank": 6,
+      "state": "active",
+      "story": "Clarify where humans still have an edge today\u2014system-level thinking, scoping, and optimization\u2014while warning that these advantages will shift, requiring continual evolution.",
+      "atoms": [
+        "stmt_010",
+        "stmt_011",
+        "stmt_012",
+        "stmt_013"
+      ],
+      "density": "moderate",
+      "visual_design": "asymmetrical layout with a left column listing current human strengths and a right column titled \u2018Will Erode Over Time?\u2019 with a simple arrow chart; use a subtle warning color for the future section to signal urgency without alarmism.",
+      "layout": "hero-split",
+      "widgets": {
+        "left": {
+          "type": "Type.Display",
+          "parameters": {
+            "text": "## Where Humans Still Win\n\n- **System-level thinking**\n- **Correct problem scoping**\n- **Real-world usefulness sense**\n- **Low-level optimization judgment**"
+          }
+        },
+        "right": {
+          "type": "ChartWidget",
+          "parameters": {
+            "chartType": "line",
+            "title": "Will Erode Over Time?",
+            "unit": "",
+            "color": "#f59e0b",
+            "data": [
+              {
+                "label": "Now",
+                "value": 10,
+                "color": "#f59e0b"
+              },
+              {
+                "label": "3 yrs",
+                "value": 60,
+                "color": "#f59e0b"
+              },
+              {
+                "label": "5+ yrs",
+                "value": 85,
+                "color": "#f97316"
+              }
+            ]
+          }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": {
+          "text": "Human Edge: Strong but Shrinking"
+        }
+      },
+      "footer": {
+        "type": "Type.Caption",
+        "parameters": {
+          "text": "*AI gaps today are real\u2014but temporary. Evolve your skills.*"
+        }
+      },
+      "theme": "career_dev_pro_theme",
+      "style_override": {},
+      "parameters": {
+        "ratio": "60-40"
+      }
+    },
+    {
+      "id": "slide_7",
+      "rank": 7,
+      "state": "active",
+      "story": "Translate the need to evolve into concrete learning habits: staying a beginner, tracking trends efficiently, and co-creating with AI in daily work.",
+      "atoms": [
+        "stmt_014",
+        "stmt_015",
+        "stmt_016",
+        "quote_005"
+      ],
+      "density": "moderate",
+      "visual_design": "grid layout with three equal cards labeled \u2018Mindset\u2019, \u2018Signals\u2019, and \u2018Practice\u2019; each card holds one short actionable bullet; a footer strip contains the leader\u2019s quote as a reinforcing message tying mindset to industry movement.",
+      "layout": "smart-grid",
+      "widgets": {
+        "header": {
+          "type": "Type.Heading",
+          "parameters": {
+            "text": "Evolve Through Daily Learning Habits"
+          }
+        },
+        "col1": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "**Mindset**\n- Stay a beginner; keep evolving"
+          }
+        },
+        "col2": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "**Signals**\n- Track a few key AI paper streams"
+          }
+        },
+        "col3": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "**Practice**\n- Use new AI tools on real tasks"
+          }
+        }
+      },
+      "header": {
+        "type": "Type.Subhead",
+        "parameters": {
+          "text": "Mindset \u00b7 Signals \u00b7 Practice"
+        }
+      },
+      "footer": {
+        "type": "QuoteWidget",
+        "parameters": {
+          "text": "In order to have a successful career, you need to evolve yourself based on how the industry is moving and what is important.",
+          "author": "Ramesh R",
+          "attribution": "Engineering Leader",
+          "variant": "minimal",
+          "showIcon": true
+        }
+      },
+      "theme": "career_dev_pro_theme",
+      "style_override": {},
+      "parameters": {
+        "cols": 3
+      }
+    },
+    {
+      "id": "slide_8",
+      "rank": 8,
+      "state": "active",
+      "story": "Present a concrete, high-leverage workflow\u2014single-spec, multi-output co-creation with LLMs\u2014as an example of how to integrate AI into everyday engineering work.",
+      "atoms": [
+        "stmt_017",
+        "stmt_018"
+      ],
+      "density": "moderate",
+      "visual_design": "split layout with a simple left-to-right diagram: \u2018Single Spec\u2019 \u2192 \u2018AI Transforms\u2019 \u2192 \u2018Slides / Docs / Diagrams / Code Skeleton\u2019; minimal text, strong icons, and a short caption under the diagram explaining the co-creation loop.",
+      "layout": "hero-split",
+      "widgets": {
+        "left": {
+          "type": "Type.Display",
+          "parameters": {
+            "text": "## Single-spec, multi-output workflow\n\n- **Single spec** as truth\n- LLM **translates**, you edit\n- Outputs: slides, docs, code\n- Repeat: refine spec + outputs"
+          }
+        },
+        "right": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "Single Spec \u2192 **AI transforms** \u2192 Slides / Docs / Diagrams / Code skeleton\n\n*Human\u2013AI co-creation: multi-round loop, not one-off design.*"
+          }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": {
+          "text": "High-leverage co-creation workflow"
+        }
+      },
+      "footer": {
+        "type": "Type.Caption",
+        "parameters": {
+          "text": "Use one well-written spec; let AI fan it out, then iterate together."
+        }
+      },
+      "theme": "career_dev_pro_theme",
+      "style_override": {},
+      "parameters": {
+        "ratio": "60-40"
+      }
+    },
+    {
+      "id": "slide_9",
+      "rank": 9,
+      "state": "active",
+      "story": "Close with a concise career checklist that ties back to the talk\u2019s themes and leaves the audience with 3\u20134 concrete next steps.",
+      "atoms": [
+        "stmt_018",
+        "quote_001",
+        "quote_003"
+      ],
+      "density": "minimal",
+      "visual_design": "hierarchical closing slide with a large central checklist of 3\u20134 ultra-short action items, a small inspirational quote band at the bottom, and \u2018Make every step solid\u2019 emphasized near the top as the final memorable phrase.",
+      "layout": "default",
+      "widgets": {
+        "default": {
+          "type": "Type.Display",
+          "parameters": {
+            "text": "## Make every step solid\n\n- **Ship solid work**\n- **Iterate with AI**\n- **Combine domains & tools**\n- **Turn work into knowledge**\n\n<QuoteWidget\n  text=\"The ability to combine domains and tools to define complex problems is raising in value.\"\n  author=\"Chao Wang\"\n  attribution=\"Applied Scientist\"\n  variant=\"minimal\"\n  :showIcon=\"false\"\n/>"
+          }
+        }
+      },
+      "header": {
+        "type": "Type.Caption",
+        "parameters": {
+          "text": "*Career checklist*"
+        }
+      },
+      "footer": {
+        "type": "Type.Caption",
+        "parameters": {
+          "text": "\"Make every step solid.\" \u2014 Chao Wang"
+        }
+      },
+      "theme": "career_dev_pro_theme",
+      "style_override": {},
+      "parameters": {}
+    }
+  ]
+}

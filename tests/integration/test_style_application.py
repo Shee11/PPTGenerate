@@ -1,10 +1,10 @@
 """Integration tests for style application through LayoutEngine."""
 import pytest
-from src.layout.dummy.layout_engine import LayoutEngine
-from src.layout.dummy.theme import Theme
-from src.layout.dummy.style import Style
-from src.widgets.typography import TypeDisplayWidget
-from src.widgets.data import DataBigNumWidget
+from src.paged.layout.dummy.layout_engine import LayoutEngine
+from src.paged.layout.dummy.theme import Theme
+from src.paged.layout.dummy.style import Style
+from src.paged.widgets.typography import TypeDisplayWidget
+from src.paged.widgets.data import DataBigNumWidget
 
 
 class TestStyleApplication:

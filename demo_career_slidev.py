@@ -4,7 +4,7 @@ This demonstrates the Slidev renderer with realistic slide content
 based on the career_talk.txt transcript.
 """
 from pathlib import Path
-from src.render.slidev.markdown_renderer import SlidevRenderer
+from src.paged.render.slidev.markdown_renderer import SlidevRenderer
 
 # Create renderer
 renderer = SlidevRenderer()

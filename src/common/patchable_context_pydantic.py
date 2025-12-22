@@ -216,18 +216,27 @@ class PatchableCollection:
         del self._contexts[context_id]
 
     def _patch_replace(self, context_data: Dict[str, Any]):
-        """Execute replace operation"""
-        # Validate with model class (supports both dict and Pydantic model input)
+        """Execute replace operation - merges new data with existing context"""
+        context_id = context_data.get("id") if isinstance(context_data, dict) else context_data.id
+        
+        if context_id not in self._contexts:
+            raise PatchError(f"Cannot replace: context '{context_id}' not found")
+        
+        # Get existing context
+        existing = self._contexts[context_id]
+        
+        # Merge: start with existing data, then overlay new data
         if isinstance(context_data, dict):
-            context = self._model_class.model_validate(context_data)
+            merged_data = existing.model_dump()
+            merged_data.update(context_data)
+            context = self._model_class.model_validate(merged_data)
         else:
             # Already a Pydantic model (from Python code, not JSON)
-            context = self._model_class.model_validate(context_data.model_dump())
+            merged_data = existing.model_dump()
+            merged_data.update(context_data.model_dump())
+            context = self._model_class.model_validate(merged_data)
 
-        if context.id not in self._contexts:
-            raise PatchError(f"Cannot replace: context '{context.id}' not found")
-
-        self._contexts[context.id] = context
+        self._contexts[context_id] = context
 
     def get(self, context_id: str) -> Optional[PatchableContextBase]:
         """Get a context by id"""

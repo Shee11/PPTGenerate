@@ -1,24 +1,31 @@
-"""Integration tests verifying atoms can feed into layout generation."""
+"""Integration tests verifying atoms can feed into layout generation.
+
+Tests the new narrative atom types integration with layout:
+- FactAtom → Anchor slides
+- TensionAtom → Friction slides
+- ConceptAtom → Insight slides
+- VisualAtom → Visual concepts for slide design
+"""
 import pytest
 import json
 from src.common.source import Source, SourceReference
 from src.common.patchable_context_pydantic import AddOperation, Patch
-from src.generation.atom.models import StatementAtom, ProcessAtom, ComparisonAtom, ProcessStep
+from src.generation.atom.models import FactAtom, TensionAtom, ConceptAtom, VisualAtom
 from src.generation.atom.collection import AtomCollection
 
 
 @pytest.fixture
 def sample_atom_collection():
-    """Create a sample AtomCollection with mixed atom types."""
+    """Create a sample AtomCollection with all four atom types."""
     collection = AtomCollection(id="test_atoms")
     
     atoms = [
-        StatementAtom(
-            id="stmt_001",
+        FactAtom(
+            id="fact_001",
             rank=1,
-            text="Machine learning requires large datasets.",
-            related_to=[],
-            contradicts=[],
+            text="System processes 1M requests per second",
+            category="data",
+            visual="chart",
             source_ref=SourceReference(
                 source_id="src_001",
                 file_path="/path/to/source.txt",
@@ -26,44 +33,46 @@ def sample_atom_collection():
                 length=42
             )
         ),
-        ProcessAtom(
-            id="proc_001",
+        TensionAtom(
+            id="tension_001",
             rank=2,
-            title="ML Training Pipeline",
-            steps=[
-                ProcessStep(order=1, text="Collect data", dependencies=[]),
-                ProcessStep(order=2, text="Clean data", dependencies=[1]),
-                ProcessStep(order=3, text="Train model", dependencies=[2]),
-                ProcessStep(order=4, text="Evaluate", dependencies=[3])
-            ],
+            text="Legacy systems couldn't scale to meet demand",
+            tension_type="problem",
+            visual="before-after",
+            resolution_hint="Microservices solved the issue",
             source_ref=SourceReference(
                 source_id="src_001",
                 file_path="/path/to/source.txt",
                 offset=50,
-                length=100
+                length=50
             )
         ),
-        ComparisonAtom(
-            id="comp_001",
+        ConceptAtom(
+            id="concept_001",
             rank=3,
-            dimensions=["accuracy", "speed", "complexity"],
-            entities={
-                "Linear Regression": {
-                    "accuracy": "moderate",
-                    "speed": "fast",
-                    "complexity": "low"
-                },
-                "Neural Network": {
-                    "accuracy": "high",
-                    "speed": "slow",
-                    "complexity": "high"
-                }
-            },
+            text="Microservices enabled independent scaling",
+            concept_type="solution",
+            visual="architecture",
+            supporting_facts=["fact_001"],
+            source_ref=SourceReference(
+                source_id="src_001",
+                file_path="/path/to/source.txt",
+                offset=110,
+                length=45
+            )
+        ),
+        VisualAtom(
+            id="visual_001",
+            rank=4,
+            description="Dashboard showing green health checks",
+            visual_category="screenshot",
+            visual="screenshot",
+            related_atom="concept_001",
             source_ref=SourceReference(
                 source_id="src_001",
                 file_path="/path/to/source.txt",
                 offset=160,
-                length=150
+                length=40
             )
         )
     ]
@@ -86,7 +95,7 @@ class TestAtomCollectionSerialization:
         assert "contexts" in data
         assert data["id"] == "test_atoms"
         assert isinstance(data["contexts"], list)
-        assert len(data["contexts"]) == 3
+        assert len(data["contexts"]) == 4
     
     def test_to_json_produces_valid_json(self, sample_atom_collection):
         """Verify to_json produces parseable JSON string."""
@@ -97,243 +106,172 @@ class TestAtomCollectionSerialization:
         
         assert "id" in parsed
         assert "contexts" in parsed
-        assert len(parsed["contexts"]) == 3
+        assert len(parsed["contexts"]) == 4
     
-    def test_serialized_atoms_preserve_type_info(self, sample_atom_collection):
-        """Verify serialized atoms include type information."""
+    def test_atom_types_preserved_in_serialization(self, sample_atom_collection):
+        """Verify atom types are distinguishable in serialized output."""
         data = sample_atom_collection.to_dict()
         
-        types_found = set()
-        for context in data["contexts"]:
-            # Type info should be preserved via class name or discriminator
-            if "text" in context and "related_to" in context:
-                types_found.add("StatementAtom")
-            elif "title" in context and "steps" in context:
-                types_found.add("ProcessAtom")
-            elif "dimensions" in context and "entities" in context:
-                types_found.add("ComparisonAtom")
-        
-        assert len(types_found) == 3
-    
-    def test_serialized_format_matches_layout_input_expectations(self, sample_atom_collection):
-        """Verify serialized format has all fields layout generation needs."""
-        data = sample_atom_collection.to_dict()
-        
-        for context in data["contexts"]:
-            # All atoms should have these base fields
-            assert "id" in context
-            assert "rank" in context
-            assert "source_ref" in context
-            
-            # Source ref should have location info
-            source_ref = context["source_ref"]
-            assert "source_id" in source_ref
-            assert "file_path" in source_ref
-            assert "offset" in source_ref
-            assert "length" in source_ref
+        # Each atom should have identifying fields
+        atom_ids = {ctx["id"] for ctx in data["contexts"]}
+        assert "fact_001" in atom_ids
+        assert "tension_001" in atom_ids
+        assert "concept_001" in atom_ids
+        assert "visual_001" in atom_ids
 
 
-class TestAtomRelationshipPreservation:
-    """Test that atom relationships are preserved in serialization."""
+class TestAtomTypesForLayoutPrompt:
+    """Test that atom types contain fields needed for layout generation."""
     
-    def test_statement_relationships_preserved(self):
-        """Verify statement relationships survive serialization."""
-        collection = AtomCollection(id="related_atoms")
+    def test_fact_atom_has_layout_fields(self, sample_atom_collection):
+        """Verify FactAtom has fields needed for Anchor slides."""
+        fact = sample_atom_collection.get("fact_001")
         
-        stmt1 = StatementAtom(
-            id="stmt_001",
-            rank=1,
-            text="Statement 1",
-            source_ref=SourceReference(
-                source_id="s", file_path="p", offset=0, length=1
-            )
-        )
-        
-        stmt2 = StatementAtom(
-            id="stmt_002",
-            rank=2,
-            text="Statement 2 supports stmt_001",
-            related_to=["stmt_001"],
-            contradicts=[],
-            source_ref=SourceReference(
-                source_id="s", file_path="p", offset=10, length=1
-            )
-        )
-        
-        stmt3 = StatementAtom(
-            id="stmt_003",
-            rank=3,
-            text="Statement 3 contradicts stmt_001",
-            related_to=[],
-            contradicts=["stmt_001"],
-            source_ref=SourceReference(
-                source_id="s", file_path="p", offset=20, length=1
-            )
-        )
-        
-        collection.patch(Patch(operations=[
-            AddOperation(add=stmt1),
-            AddOperation(add=stmt2),
-            AddOperation(add=stmt3)
-        ]))
-        
-        data = collection.to_dict()
-        
-        # Find stmt_002 and verify related_to
-        stmt2_data = next(c for c in data["contexts"] if c["id"] == "stmt_002")
-        assert "related_to" in stmt2_data
-        assert "stmt_001" in stmt2_data["related_to"]
-        
-        # Find stmt_003 and verify contradicts
-        stmt3_data = next(c for c in data["contexts"] if c["id"] == "stmt_003")
-        assert "contradicts" in stmt3_data
-        assert "stmt_001" in stmt3_data["contradicts"]
+        assert hasattr(fact, "text")
+        assert hasattr(fact, "category")
+        assert hasattr(fact, "visual")
+        assert fact.text is not None
+        assert fact.category in ["data", "definition", "architecture", "status", "other"]
     
-    def test_process_dependencies_preserved(self):
-        """Verify process step dependencies survive serialization."""
-        collection = AtomCollection(id="process_atoms")
+    def test_tension_atom_has_layout_fields(self, sample_atom_collection):
+        """Verify TensionAtom has fields needed for Friction slides."""
+        tension = sample_atom_collection.get("tension_001")
         
-        process = ProcessAtom(
-            id="proc_001",
-            rank=1,
-            title="Complex Process",
-            steps=[
-                ProcessStep(order=1, text="Init", dependencies=[]),
-                ProcessStep(order=2, text="Task A", dependencies=[1]),
-                ProcessStep(order=3, text="Task B", dependencies=[1]),
-                ProcessStep(order=4, text="Merge", dependencies=[2, 3])
-            ],
-            source_ref=SourceReference(
-                source_id="s", file_path="p", offset=0, length=100
-            )
-        )
-        
-        collection.patch(Patch(operations=[AddOperation(add=process)]))
-        
-        data = collection.to_dict()
-        proc_data = data["contexts"][0]
-        
-        # Verify all step dependencies preserved
-        assert len(proc_data["steps"]) == 4
-        assert proc_data["steps"][0]["dependencies"] == []
-        assert proc_data["steps"][1]["dependencies"] == [1]
-        assert proc_data["steps"][2]["dependencies"] == [1]
-        assert proc_data["steps"][3]["dependencies"] == [2, 3]
+        assert hasattr(tension, "text")
+        assert hasattr(tension, "tension_type")
+        assert hasattr(tension, "visual")
+        assert hasattr(tension, "resolution_hint")
+        assert tension.tension_type in ["problem", "contradiction", "trade-off", "surprise", "mistake", "other"]
     
-    def test_comparison_structure_preserved(self):
-        """Verify comparison entity-dimension mapping survives serialization."""
-        collection = AtomCollection(id="comparison_atoms")
+    def test_concept_atom_has_layout_fields(self, sample_atom_collection):
+        """Verify ConceptAtom has fields needed for Insight slides."""
+        concept = sample_atom_collection.get("concept_001")
         
-        comparison = ComparisonAtom(
-            id="comp_001",
-            rank=1,
-            dimensions=["cost", "quality", "speed"],
-            entities={
-                "Option A": {"cost": "low", "quality": "high", "speed": "fast"},
-                "Option B": {"cost": "high", "quality": "high", "speed": "slow"},
-                "Option C": {"cost": "medium", "quality": "medium", "speed": "medium"}
-            },
-            source_ref=SourceReference(
-                source_id="s", file_path="p", offset=0, length=100
-            )
-        )
+        assert hasattr(concept, "text")
+        assert hasattr(concept, "concept_type")
+        assert hasattr(concept, "visual")
+        assert hasattr(concept, "supporting_facts")
+        assert concept.concept_type in ["solution", "insight", "method", "principle", "takeaway", "other"]
+    
+    def test_visual_atom_has_layout_fields(self, sample_atom_collection):
+        """Verify VisualAtom has fields for slide visual concepts."""
+        visual = sample_atom_collection.get("visual_001")
         
-        collection.patch(Patch(operations=[AddOperation(add=comparison)]))
-        
-        data = collection.to_dict()
-        comp_data = data["contexts"][0]
-        
-        # Verify dimensions preserved
-        assert set(comp_data["dimensions"]) == {"cost", "quality", "speed"}
-        
-        # Verify entity mappings preserved
-        assert "Option A" in comp_data["entities"]
-        assert comp_data["entities"]["Option A"]["cost"] == "low"
-        assert comp_data["entities"]["Option B"]["quality"] == "high"
-        assert comp_data["entities"]["Option C"]["speed"] == "medium"
+        assert hasattr(visual, "description")
+        assert hasattr(visual, "visual_category")
+        assert hasattr(visual, "visual")
+        assert hasattr(visual, "related_atom")
 
 
-class TestLayoutGenerationCompatibility:
-    """Test that atom data format is compatible with layout generation."""
+class TestNarrativeArcConstruction:
+    """Test that atoms can construct a narrative arc for presentation."""
     
-    def test_atoms_can_be_converted_to_layout_prompt_context(self, sample_atom_collection):
-        """Verify atoms can be formatted as context for layout prompts."""
-        json_str = sample_atom_collection.to_json()
-        data = json.loads(json_str)
+    def test_atoms_ordered_by_rank(self, sample_atom_collection):
+        """Verify atoms maintain narrative order via rank."""
+        atoms = sample_atom_collection.list_contexts()
         
-        # Simulate what layout generation would do: extract content for prompt
-        content_summary = []
-        for atom in data["contexts"]:
-            if "text" in atom:
-                content_summary.append(f"Statement: {atom['text']}")
-            elif "title" in atom:
-                content_summary.append(f"Process: {atom['title']} ({len(atom['steps'])} steps)")
-            elif "dimensions" in atom:
-                content_summary.append(f"Comparison: {len(atom['entities'])} entities across {len(atom['dimensions'])} dimensions")
-        
-        # Should have extracted meaningful content from all atoms
-        assert len(content_summary) == 3
-        assert any("Statement" in s for s in content_summary)
-        assert any("Process" in s for s in content_summary)
-        assert any("Comparison" in s for s in content_summary)
+        ranks = [atom.rank for atom in atoms]
+        assert ranks == [1, 2, 3, 4]  # Fact → Tension → Concept → Visual
     
-    def test_atom_metadata_available_for_layout_decisions(self, sample_atom_collection):
-        """Verify atom metadata can inform layout generation decisions."""
-        data = sample_atom_collection.to_dict()
+    def test_narrative_progression(self, sample_atom_collection):
+        """Verify atom types follow narrative progression."""
+        atoms = sample_atom_collection.list_contexts()
         
-        # Layout generation might use metadata for decisions
-        for atom in data["contexts"]:
-            # All atoms have rank for ordering
-            assert "rank" in atom
-            assert isinstance(atom["rank"], int)
-            
-            # All atoms have source_ref for traceability
-            assert "source_ref" in atom
-            
-            # Metadata field available for LLM confidence, categories, etc.
-            # (may be empty but should be accessible)
-            if "metadata" in atom:
-                assert isinstance(atom["metadata"], dict)
+        # First: establish facts (anchor)
+        assert atoms[0].id.startswith("fact_")
+        
+        # Then: introduce tension (friction)
+        assert atoms[1].id.startswith("tension_")
+        
+        # Then: present solution (insight)
+        assert atoms[2].id.startswith("concept_")
+        
+        # Finally: visual reinforcement
+        assert atoms[3].id.startswith("visual_")
     
-    def test_empty_collection_serializes_safely(self):
-        """Verify empty collections don't break layout generation."""
-        collection = AtomCollection(id="empty")
+    def test_tension_has_resolution_hint(self, sample_atom_collection):
+        """Verify tension atoms can have resolution hints linking to concepts."""
+        tension = sample_atom_collection.get("tension_001")
         
-        data = collection.to_dict()
-        json_str = collection.to_json()
-        
-        assert data["contexts"] == []
-        parsed = json.loads(json_str)
-        assert parsed["contexts"] == []
+        assert tension.resolution_hint == "Microservices solved the issue"
     
-    def test_large_collection_serialization_performance(self):
-        """Verify serialization works efficiently with many atoms."""
-        collection = AtomCollection(id="large")
+    def test_concept_references_fact(self, sample_atom_collection):
+        """Verify concept atoms can reference supporting facts."""
+        concept = sample_atom_collection.get("concept_001")
         
-        # Create 100 atoms
-        operations = []
-        for i in range(100):
-            atom = StatementAtom(
-                id=f"stmt_{i:03d}",
-                rank=i + 1,
-                text=f"Statement number {i}",
-                source_ref=SourceReference(
-                    source_id="src", file_path="path", offset=i * 100, length=20
-                )
-            )
-            operations.append(AddOperation(add=atom))
+        assert "fact_001" in concept.supporting_facts
+    
+    def test_visual_references_related_atom(self, sample_atom_collection):
+        """Verify visual atoms can reference what they illustrate."""
+        visual = sample_atom_collection.get("visual_001")
         
-        collection.patch(Patch(operations=operations))
+        assert visual.related_atom == "concept_001"
+
+
+class TestAtomVisualHints:
+    """Test that visual hints are available for layout decisions."""
+    
+    def test_all_atoms_have_visual_field(self, sample_atom_collection):
+        """Verify all atoms have visual hint field."""
+        atoms = sample_atom_collection.list_contexts()
         
-        # Should serialize without errors
-        import time
-        start = time.time()
-        json_str = collection.to_json()
-        elapsed = time.time() - start
+        for atom in atoms:
+            assert hasattr(atom, "visual")
+            assert atom.visual is not None
+    
+    def test_visual_hints_for_slide_type_mapping(self, sample_atom_collection):
+        """Verify visual hints can guide slide type selection."""
+        fact = sample_atom_collection.get("fact_001")
+        tension = sample_atom_collection.get("tension_001")
+        concept = sample_atom_collection.get("concept_001")
+        visual = sample_atom_collection.get("visual_001")
         
-        # Should be fast (< 1 second for 100 atoms)
-        assert elapsed < 1.0
+        # Data facts suggest charts
+        assert fact.visual == "chart"
         
-        # Should produce valid JSON
-        data = json.loads(json_str)
-        assert len(data["contexts"]) == 100
+        # Problems suggest before-after comparisons
+        assert tension.visual == "before-after"
+        
+        # Architecture solutions suggest diagrams
+        assert concept.visual == "architecture"
+        
+        # Screenshots for visual demonstrations
+        assert visual.visual == "screenshot"
+
+
+class TestAtomCollectionFiltering:
+    """Test filtering atoms for specific layout needs."""
+    
+    def test_get_by_type_for_facts(self, sample_atom_collection):
+        """Verify filtering to get only FactAtoms."""
+        facts = sample_atom_collection.get_by_type("FactAtom")
+        
+        assert len(facts) == 1
+        assert all(atom.id.startswith("fact_") for atom in facts)
+    
+    def test_get_by_type_for_tensions(self, sample_atom_collection):
+        """Verify filtering to get only TensionAtoms."""
+        tensions = sample_atom_collection.get_by_type("TensionAtom")
+        
+        assert len(tensions) == 1
+        assert all(atom.id.startswith("tension_") for atom in tensions)
+    
+    def test_get_by_type_for_concepts(self, sample_atom_collection):
+        """Verify filtering to get only ConceptAtoms."""
+        concepts = sample_atom_collection.get_by_type("ConceptAtom")
+        
+        assert len(concepts) == 1
+        assert all(atom.id.startswith("concept_") for atom in concepts)
+    
+    def test_get_by_type_for_visuals(self, sample_atom_collection):
+        """Verify filtering to get only VisualAtoms."""
+        visuals = sample_atom_collection.get_by_type("VisualAtom")
+        
+        assert len(visuals) == 1
+        assert all(atom.id.startswith("visual_") for atom in visuals)
+    
+    def test_get_by_source(self, sample_atom_collection):
+        """Verify filtering atoms by source."""
+        atoms = sample_atom_collection.get_by_source("src_001")
+        
+        assert len(atoms) == 4

@@ -19,9 +19,11 @@ class TestAtomExtractionSystemPrompt:
     def test_system_prompt_mentions_atom_types(self):
         """Verify system prompt describes all atom types."""
         prompt = ATOM_EXTRACTION_SYSTEM_PROMPT
-        assert "StatementAtom" in prompt or "statement" in prompt.lower()
-        assert "ProcessAtom" in prompt or "process" in prompt.lower()
-        assert "ComparisonAtom" in prompt or "comparison" in prompt.lower()
+        # New atom types: FACT, TENSION, CONCEPT, VISUAL
+        assert "FACT" in prompt or "fact" in prompt.lower()
+        assert "TENSION" in prompt or "tension" in prompt.lower()
+        assert "CONCEPT" in prompt or "concept" in prompt.lower()
+        assert "VISUAL" in prompt or "visual" in prompt.lower()
     
     def test_system_prompt_mentions_json_output(self):
         """Verify system prompt requests JSON format."""

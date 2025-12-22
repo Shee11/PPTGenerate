@@ -1,0 +1,426 @@
+{
+  "id": "startup_pitch",
+  "title": "AI Startup Pitch Deck",
+  "description": "A compelling startup pitch presentation showcasing product, market, and team",
+  "slides": [
+    {
+      "id": "slide_01_cover",
+      "rank": 1,
+      "layout": "spotlight",
+      "theme": "cyber",
+      "parameters": {
+        "vibe": "dramatic",
+        "intensity": "strong"
+      },
+      "widgets": {
+        "default": {
+          "type": "Type.Display",
+          "parameters": {
+            "text": "NeuralFlow AI"
+          }
+        },
+        "subtitle": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "Transforming Enterprise Data into Actionable Intelligence"
+          }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "Series A Pitch • Q4 2025" }
+      }
+    },
+    {
+      "id": "slide_02_problem",
+      "rank": 2,
+      "layout": "hero-split",
+      "theme": "cyber",
+      "parameters": {
+        "vibe": "dynamic",
+        "ratio": "40-60"
+      },
+      "widgets": {
+        "left": {
+          "type": "Data.BigNum",
+          "parameters": {
+            "value": "73%",
+            "label": "Data Unused",
+            "sublabel": "Enterprise data goes unanalyzed"
+          }
+        },
+        "right": {
+          "type": "Type.List",
+          "parameters": {
+            "items": [
+              "Data silos prevent unified insights",
+              "Manual analysis takes weeks, not minutes",
+              "Traditional BI tools can't handle unstructured data",
+              "AI expertise is scarce and expensive"
+            ]
+          }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "The Problem" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "NeuralFlow AI" }
+      }
+    },
+    {
+      "id": "slide_03_solution",
+      "rank": 3,
+      "layout": "magazine",
+      "theme": "cyber",
+      "parameters": {
+        "vibe": "professional",
+        "variant": "left-feature"
+      },
+      "widgets": {
+        "feature": {
+          "type": "Type.Display",
+          "parameters": {
+            "text": "One Platform.\nAll Your Data.\nInstant Insights."
+          }
+        },
+        "sidebar": {
+          "type": "Type.List",
+          "parameters": {
+            "items": [
+              "Unified data connectors",
+              "Auto-ML pipelines",
+              "Natural language queries",
+              "Real-time dashboards"
+            ]
+          }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "Our Solution" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "NeuralFlow AI" }
+      }
+    },
+    {
+      "id": "slide_04_market",
+      "rank": 4,
+      "layout": "stats-showcase",
+      "theme": "cyber",
+      "parameters": {
+        "vibe": "dynamic",
+        "columns": 3,
+        "displayStyle": "gradient"
+      },
+      "widgets": {
+        "title": {
+          "type": "Type.Heading",
+          "parameters": { "text": "Market Opportunity" }
+        },
+        "stat-1": {
+          "type": "Type.Body",
+          "parameters": { "text": "$180B\nTotal Addressable Market" }
+        },
+        "stat-2": {
+          "type": "Type.Body",
+          "parameters": { "text": "24%\nYoY Growth Rate" }
+        },
+        "stat-3": {
+          "type": "Type.Body",
+          "parameters": { "text": "$12B\nServiceable Market by 2027" }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "Source: Gartner, IDC 2024" }
+      }
+    },
+    {
+      "id": "slide_05_product",
+      "rank": 5,
+      "layout": "cards-grid",
+      "theme": "cyber",
+      "parameters": {
+        "vibe": "playful",
+        "columns": 3,
+        "cardStyle": "glass"
+      },
+      "widgets": {
+        "title": {
+          "type": "Type.Heading",
+          "parameters": { "text": "Platform Features" }
+        },
+        "card-1": {
+          "type": "Type.Body",
+          "parameters": { "text": "🔗 Data Connectors\n\n200+ pre-built integrations for databases, APIs, and cloud services" }
+        },
+        "card-2": {
+          "type": "Type.Body",
+          "parameters": { "text": "🤖 Auto-ML Engine\n\nAutomated model training with explainable AI results" }
+        },
+        "card-3": {
+          "type": "Type.Body",
+          "parameters": { "text": "💬 Natural Language\n\nAsk questions in plain English, get instant visualizations" }
+        },
+        "card-4": {
+          "type": "Type.Body",
+          "parameters": { "text": "📊 Real-time Dashboards\n\nLive monitoring with customizable alerts" }
+        },
+        "card-5": {
+          "type": "Type.Body",
+          "parameters": { "text": "🔒 Enterprise Security\n\nSOC2, HIPAA, GDPR compliant infrastructure" }
+        },
+        "card-6": {
+          "type": "Type.Body",
+          "parameters": { "text": "🚀 Scalable Architecture\n\nProcess billions of records in seconds" }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "NeuralFlow AI" }
+      }
+    },
+    {
+      "id": "slide_06_traction",
+      "rank": 6,
+      "layout": "dashboard",
+      "theme": "cyber",
+      "parameters": {
+        "vibe": "professional"
+      },
+      "widgets": {
+        "title": {
+          "type": "Type.Heading",
+          "parameters": { "text": "Traction & Growth" }
+        },
+        "metric1": {
+          "type": "MetricWidget",
+          "parameters": {
+            "value": "$2.4M",
+            "label": "ARR",
+            "change": "+180%"
+          }
+        },
+        "metric2": {
+          "type": "MetricWidget",
+          "parameters": {
+            "value": "47",
+            "label": "Enterprise Customers",
+            "change": "+85%"
+          }
+        },
+        "metric3": {
+          "type": "MetricWidget",
+          "parameters": {
+            "value": "98%",
+            "label": "Retention Rate",
+            "change": "+5%"
+          }
+        },
+        "metric4": {
+          "type": "MetricWidget",
+          "parameters": {
+            "value": "4.8",
+            "label": "G2 Rating",
+            "change": "★"
+          }
+        },
+        "chart": {
+          "type": "ChartWidget",
+          "parameters": {
+            "chartType": "line",
+            "title": "Monthly Revenue Growth",
+            "data": [120, 180, 250, 380, 520, 720, 980, 1400, 1850, 2400]
+          }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "NeuralFlow AI" }
+      }
+    },
+    {
+      "id": "slide_07_customers",
+      "rank": 7,
+      "layout": "quote-hero",
+      "theme": "cyber",
+      "parameters": {
+        "vibe": "calm",
+        "quoteStyle": "modern"
+      },
+      "widgets": {
+        "default": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "NeuralFlow reduced our data analysis time from weeks to minutes. We've uncovered insights that directly contributed to a 40% increase in customer retention."
+          }
+        },
+        "author": {
+          "type": "Type.Body",
+          "parameters": { "text": "Sarah Chen" }
+        },
+        "context": {
+          "type": "Type.Body",
+          "parameters": { "text": "VP of Data Science, Fortune 500 Retailer" }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "Customer Love" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "NeuralFlow AI" }
+      }
+    },
+    {
+      "id": "slide_08_team",
+      "rank": 8,
+      "layout": "feature-grid",
+      "theme": "cyber",
+      "parameters": {
+        "vibe": "professional",
+        "columns": 3
+      },
+      "widgets": {
+        "title": {
+          "type": "Type.Heading",
+          "parameters": { "text": "Leadership Team" }
+        },
+        "feature1": {
+          "type": "Type.Body",
+          "parameters": { "text": "👤 Alex Rivera\nCEO & Co-founder\n\nEx-Google AI Lead, Stanford PhD" }
+        },
+        "feature2": {
+          "type": "Type.Body",
+          "parameters": { "text": "👤 Dr. Maya Patel\nCTO & Co-founder\n\nEx-Meta ML Research, MIT PhD" }
+        },
+        "feature3": {
+          "type": "Type.Body",
+          "parameters": { "text": "👤 James Wu\nCOO\n\nEx-Snowflake VP Ops, Harvard MBA" }
+        },
+        "feature4": {
+          "type": "Type.Body",
+          "parameters": { "text": "👤 Lisa Thompson\nCRO\n\nEx-Salesforce Enterprise Sales" }
+        },
+        "feature5": {
+          "type": "Type.Body",
+          "parameters": { "text": "👤 David Kim\nVP Engineering\n\nEx-AWS Principal Engineer" }
+        },
+        "feature6": {
+          "type": "Type.Body",
+          "parameters": { "text": "👤 Emily Zhang\nVP Product\n\nEx-Tableau Product Lead" }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "NeuralFlow AI" }
+      }
+    },
+    {
+      "id": "slide_09_financials",
+      "rank": 9,
+      "layout": "two-cols-header",
+      "theme": "cyber",
+      "parameters": {
+        "vibe": "professional",
+        "ratio": "50-50"
+      },
+      "widgets": {
+        "header": {
+          "type": "Type.Display",
+          "parameters": { "text": "Financial Projections" }
+        },
+        "left": {
+          "type": "Type.List",
+          "parameters": {
+            "title": "Revenue Milestones",
+            "items": [
+              "2024: $2.4M ARR (achieved)",
+              "2025: $8M ARR target",
+              "2026: $24M ARR projection",
+              "2027: $60M ARR goal"
+            ]
+          }
+        },
+        "right": {
+          "type": "Type.List",
+          "parameters": {
+            "title": "Use of Funds",
+            "items": [
+              "50% - Engineering & Product",
+              "30% - Sales & Marketing",
+              "15% - Operations",
+              "5% - G&A"
+            ]
+          }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "NeuralFlow AI" }
+      }
+    },
+    {
+      "id": "slide_10_ask",
+      "rank": 10,
+      "layout": "spotlight",
+      "theme": "cyber",
+      "parameters": {
+        "vibe": "dramatic",
+        "intensity": "strong"
+      },
+      "widgets": {
+        "default": {
+          "type": "Type.Display",
+          "parameters": {
+            "text": "$15M Series A"
+          }
+        },
+        "subtitle": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "Join us in transforming enterprise intelligence\n\nalex@neuralflow.ai • neuralflow.ai"
+          }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "The Ask" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "NeuralFlow AI • Series A 2025" }
+      }
+    }
+  ]
+}

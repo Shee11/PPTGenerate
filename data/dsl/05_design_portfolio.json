@@ -1,0 +1,385 @@
+{
+  "id": "design_portfolio",
+  "title": "Creative Design Portfolio",
+  "description": "A designer's portfolio presentation with creative visual style",
+  "slides": [
+    {
+      "id": "slide_01_intro",
+      "rank": 1,
+      "layout": "full-bleed",
+      "theme": "minimal",
+      "parameters": {
+        "vibe": "playful",
+        "align": "center"
+      },
+      "widgets": {
+        "default": {
+          "type": "Type.Display",
+          "parameters": {
+            "text": "Maya Park\nDesign Portfolio"
+          }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "Product Designer • Visual Storyteller" }
+      }
+    },
+    {
+      "id": "slide_02_philosophy",
+      "rank": 2,
+      "layout": "quote-hero",
+      "theme": "minimal",
+      "parameters": {
+        "vibe": "calm",
+        "quoteStyle": "editorial"
+      },
+      "widgets": {
+        "default": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "Design is not just what it looks like and feels like. Design is how it works."
+          }
+        },
+        "author": {
+          "type": "Type.Body",
+          "parameters": { "text": "Steve Jobs" }
+        },
+        "context": {
+          "type": "Type.Body",
+          "parameters": { "text": "A philosophy that guides every pixel I push" }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "Maya Park" }
+      }
+    },
+    {
+      "id": "slide_03_services",
+      "rank": 3,
+      "layout": "cards-grid",
+      "theme": "minimal",
+      "parameters": {
+        "vibe": "playful",
+        "columns": 3,
+        "cardStyle": "glass"
+      },
+      "widgets": {
+        "title": {
+          "type": "Type.Heading",
+          "parameters": { "text": "What I Do" }
+        },
+        "card-1": {
+          "type": "Type.Body",
+          "parameters": { "text": "📱 Product Design\n\nEnd-to-end mobile and web experiences from research to final UI" }
+        },
+        "card-2": {
+          "type": "Type.Body",
+          "parameters": { "text": "🎨 Brand Identity\n\nLogos, visual systems, and guidelines that tell your story" }
+        },
+        "card-3": {
+          "type": "Type.Body",
+          "parameters": { "text": "✨ Motion Design\n\nMicro-interactions and animations that delight users" }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "Maya Park" }
+      }
+    },
+    {
+      "id": "slide_04_project1",
+      "rank": 4,
+      "layout": "image-text",
+      "theme": "minimal",
+      "parameters": {
+        "vibe": "dynamic",
+        "imagePosition": "left",
+        "imageSize": "large",
+        "imageStyle": "rounded"
+      },
+      "widgets": {
+        "image": {
+          "type": "Type.Body",
+          "parameters": { "text": "🌿\nBreathe App" }
+        },
+        "content": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "## Breathe - Meditation App\n\n**Challenge:** Create a calming meditation app that doesn't overwhelm new users\n\n**Solution:** Minimalist interface with gentle onboarding, adaptive color themes, and haptic feedback\n\n**Results:**\n- 4.9★ App Store rating\n- 2M+ downloads\n- 78% user retention at 30 days"
+          }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "Case Study 01" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "Maya Park" }
+      }
+    },
+    {
+      "id": "slide_05_project1_process",
+      "rank": 5,
+      "layout": "timeline",
+      "theme": "minimal",
+      "parameters": {
+        "vibe": "calm"
+      },
+      "widgets": {
+        "title": {
+          "type": "Type.Heading",
+          "parameters": { "text": "Breathe - Design Process" }
+        },
+        "step1": {
+          "type": "Type.Body",
+          "parameters": {
+            "title": "Research",
+            "text": "20 user interviews, competitive analysis, wellness trend mapping"
+          }
+        },
+        "step2": {
+          "type": "Type.Body",
+          "parameters": {
+            "title": "Ideation",
+            "text": "100+ sketches, 3 concept directions, stakeholder workshops"
+          }
+        },
+        "step3": {
+          "type": "Type.Body",
+          "parameters": {
+            "title": "Prototyping",
+            "text": "High-fidelity Figma prototypes with micro-interactions"
+          }
+        },
+        "step4": {
+          "type": "Type.Body",
+          "parameters": {
+            "title": "Testing",
+            "text": "5 rounds of usability testing, A/B tested 12 variations"
+          }
+        },
+        "step5": {
+          "type": "Type.Body",
+          "parameters": {
+            "title": "Launch",
+            "text": "Phased rollout, iterated based on analytics and feedback"
+          }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "Maya Park" }
+      }
+    },
+    {
+      "id": "slide_06_project2",
+      "rank": 6,
+      "layout": "image-text",
+      "theme": "minimal",
+      "parameters": {
+        "vibe": "dynamic",
+        "imagePosition": "right",
+        "imageSize": "large",
+        "imageStyle": "rounded"
+      },
+      "widgets": {
+        "image": {
+          "type": "Type.Body",
+          "parameters": { "text": "🏠\nNest Home" }
+        },
+        "content": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "## Nest Home - Smart Living\n\n**Challenge:** Unify 8 different smart home products under one coherent app experience\n\n**Solution:** Hub-and-spoke architecture with room-based organization and scene automation\n\n**Results:**\n- 45% reduction in support tickets\n- 3x increase in device pairing completion\n- Featured in Google I/O 2024"
+          }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "Case Study 02" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "Maya Park" }
+      }
+    },
+    {
+      "id": "slide_07_project3",
+      "rank": 7,
+      "layout": "magazine",
+      "theme": "minimal",
+      "parameters": {
+        "vibe": "playful",
+        "variant": "left-feature"
+      },
+      "widgets": {
+        "feature": {
+          "type": "Type.Display",
+          "parameters": {
+            "text": "Lunar\nBrand Identity"
+          }
+        },
+        "sidebar": {
+          "type": "Type.List",
+          "parameters": {
+            "items": [
+              "Logo & wordmark design",
+              "Color system & typography",
+              "Icon library (200+ icons)",
+              "Brand guidelines (80 pages)",
+              "Social media templates"
+            ]
+          }
+        },
+        "caption": {
+          "type": "Type.Body",
+          "parameters": { "text": "A fintech startup redefining financial wellness" }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "Case Study 03" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "Maya Park" }
+      }
+    },
+    {
+      "id": "slide_08_stats",
+      "rank": 8,
+      "layout": "stats-showcase",
+      "theme": "minimal",
+      "parameters": {
+        "vibe": "playful",
+        "columns": 4,
+        "displayStyle": "gradient"
+      },
+      "widgets": {
+        "title": {
+          "type": "Type.Heading",
+          "parameters": { "text": "By The Numbers" }
+        },
+        "stat-1": {
+          "type": "Type.Body",
+          "parameters": { "text": "8+\nYears Experience" }
+        },
+        "stat-2": {
+          "type": "Type.Body",
+          "parameters": { "text": "50+\nProjects Shipped" }
+        },
+        "stat-3": {
+          "type": "Type.Body",
+          "parameters": { "text": "12\nAwards Won" }
+        },
+        "stat-4": {
+          "type": "Type.Body",
+          "parameters": { "text": "100M+\nUsers Impacted" }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "Maya Park" }
+      }
+    },
+    {
+      "id": "slide_09_clients",
+      "rank": 9,
+      "layout": "smart-grid",
+      "theme": "minimal",
+      "parameters": {
+        "vibe": "minimal",
+        "cols": 3
+      },
+      "widgets": {
+        "cell1": {
+          "type": "Type.Body",
+          "parameters": { "text": "🔵 Google" }
+        },
+        "cell2": {
+          "type": "Type.Body",
+          "parameters": { "text": "⚫ Apple" }
+        },
+        "cell3": {
+          "type": "Type.Body",
+          "parameters": { "text": "🟢 Spotify" }
+        },
+        "cell4": {
+          "type": "Type.Body",
+          "parameters": { "text": "🔴 Airbnb" }
+        },
+        "cell5": {
+          "type": "Type.Body",
+          "parameters": { "text": "🟣 Stripe" }
+        },
+        "cell6": {
+          "type": "Type.Body",
+          "parameters": { "text": "🟠 Figma" }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "Clients & Collaborators" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "Maya Park" }
+      }
+    },
+    {
+      "id": "slide_10_contact",
+      "rank": 10,
+      "layout": "spotlight",
+      "theme": "minimal",
+      "parameters": {
+        "vibe": "calm",
+        "intensity": "soft"
+      },
+      "widgets": {
+        "default": {
+          "type": "Type.Display",
+          "parameters": {
+            "text": "Let's Create\nSomething Beautiful"
+          }
+        },
+        "subtitle": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "maya@parkdesign.co\nmayapark.design\n\n@mayapark • dribbble.com/maya"
+          }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "Maya Park • Design Portfolio 2025" }
+      }
+    }
+  ]
+}

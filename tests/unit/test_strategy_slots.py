@@ -1,28 +1,28 @@
 """Unit tests for layout strategy slot definitions."""
 import pytest
-from src.layout.strategies.bento import (
+from src.paged.layout.strategies.bento import (
     BentoStandardStrategy,
     BentoHeroLeftStrategy,
     BentoHeroTopStrategy,
     BentoQuarterStrategy
 )
-from src.layout.strategies.swiss import (
+from src.paged.layout.strategies.swiss import (
     SwissPosterStrategy,
     SwissAsymmetryStrategy,
     SwissSplitTypoStrategy
 )
-from src.layout.strategies.cinematic import (
+from src.paged.layout.strategies.cinematic import (
     CinematicSplit5050Strategy,
     CinematicFullBleedStrategy,
     CinematicSplit3070Strategy
 )
-from src.layout.strategies.edit import (
+from src.paged.layout.strategies.edit import (
     EditOverlapLeftStrategy,
     EditMagazineCollageStrategy,
     EditStaggeredStrategy
 )
-from src.layout.strategies.data import DataKPIRowStrategy
-from src.layout.strategies.focus import (
+from src.paged.layout.strategies.data import DataKPIRowStrategy
+from src.paged.layout.strategies.focus import (
     FocusSolarSystemStrategy,
     FocusOffsetTitleStrategy
 )

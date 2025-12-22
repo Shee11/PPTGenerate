@@ -1,7 +1,7 @@
 """Unit tests for Data widget parameter validation."""
 import pytest
 from pydantic_core import ValidationError
-from src.widgets.data import DataBigNumWidget, DataTrendWidget, DataProgressWidget
+from src.paged.widgets.data import DataBigNumWidget, DataTrendWidget, DataProgressWidget
 from src.common.size_class import SizeClass
 
 

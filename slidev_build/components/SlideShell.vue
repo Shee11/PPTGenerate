@@ -1,402 +1,350 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+/**
+ * SlideShell - Base wrapper component for all Slidev layouts
+ * 
+ * Provides:
+ * - Consistent header/footer rendering
+ * - Theme CSS variable application
+ * - Vibe class propagation for layout density control
+ * 
+ * Usage in layouts:
+ * <SlideShell v-bind="$props">
+ *   <YourLayoutContent />
+ * </SlideShell>
+ */
+import { computed, provide } from 'vue'
 
-// Props from frontmatter
 const props = defineProps<{
-  theme?: 'business' | 'cyber'
-  vibe?: 'none' | 'particles' | 'waves' | 'noise' | 'bokeh' | 'mesh'
+  // Header text (from frontmatter)
+  header?: string
+  // Footer text (from frontmatter)
+  footer?: string
+  // Theme preset name
+  theme?: 'dark-professional' | 'light-minimal' | 'cyber-neon' | 'warm-corporate' | string
+  // Vibe controls layout density/complexity
+  vibe?: 'minimal' | 'clean' | 'balanced' | 'decorative' | 'expressive'
+  // Background override (backwards compatibility)
+  background?: string
 }>()
 
-// Theme CSS variable mappings
-const themeVariables = computed(() => {
-  const theme = props.theme || 'business'
+// Provide vibe to child components
+provide('vibe', computed(() => props.vibe || 'balanced'))
+provide('theme', computed(() => props.theme || 'dark-professional'))
+
+// Theme presets - CSS variables
+const themePresets: Record<string, Record<string, string>> = {
+  'dark-professional': {
+    '--theme-bg-base': '#0f172a',
+    '--theme-bg-surface': '#1e293b',
+    '--theme-bg-elevated': '#334155',
+    '--theme-primary': '#3b82f6',
+    '--theme-accent': '#8b5cf6',
+    '--theme-text': '#f8fafc',
+    '--theme-text-muted': '#94a3b8',
+    '--theme-text-dim': '#64748b',
+    '--theme-success': '#10b981',
+    '--theme-warning': '#f59e0b',
+    '--theme-danger': '#ef4444',
+    '--theme-border': '#334155',
+    '--theme-border-subtle': '#1e293b',
+    '--font-body': "'Inter', system-ui, sans-serif",
+    '--font-heading': "'Inter', system-ui, sans-serif",
+    '--font-mono': "'JetBrains Mono', 'Fira Code', monospace",
+    '--shadow-sm': '0 1px 2px rgba(0,0,0,0.2)',
+    '--shadow-md': '0 4px 12px rgba(0,0,0,0.3)',
+    '--shadow-lg': '0 8px 24px rgba(0,0,0,0.4)',
+    '--shadow-glow': '0 0 20px rgba(59,130,246,0.3)',
+    '--radius-sm': '4px',
+    '--radius-md': '8px',
+    '--radius-lg': '16px',
+    '--radius-xl': '24px',
+  },
+  'light-minimal': {
+    '--theme-bg-base': '#ffffff',
+    '--theme-bg-surface': '#f8fafc',
+    '--theme-bg-elevated': '#f1f5f9',
+    '--theme-primary': '#2563eb',
+    '--theme-accent': '#7c3aed',
+    '--theme-text': '#0f172a',
+    '--theme-text-muted': '#475569',
+    '--theme-text-dim': '#94a3b8',
+    '--theme-success': '#059669',
+    '--theme-warning': '#d97706',
+    '--theme-danger': '#dc2626',
+    '--theme-border': '#e2e8f0',
+    '--theme-border-subtle': '#f1f5f9',
+    '--font-body': "'Inter', system-ui, sans-serif",
+    '--font-heading': "'Inter', system-ui, sans-serif",
+    '--font-mono': "'JetBrains Mono', 'Fira Code', monospace",
+    '--shadow-sm': '0 1px 2px rgba(0,0,0,0.05)',
+    '--shadow-md': '0 4px 12px rgba(0,0,0,0.08)',
+    '--shadow-lg': '0 8px 24px rgba(0,0,0,0.12)',
+    '--shadow-glow': '0 0 20px rgba(37,99,235,0.15)',
+    '--radius-sm': '4px',
+    '--radius-md': '8px',
+    '--radius-lg': '16px',
+    '--radius-xl': '24px',
+  },
+  'cyber-neon': {
+    '--theme-bg-base': '#050505',
+    '--theme-bg-surface': '#0a0a0a',
+    '--theme-bg-elevated': '#141414',
+    '--theme-primary': '#00ffa3',
+    '--theme-accent': '#ff00ff',
+    '--theme-text': '#e2e8f0',
+    '--theme-text-muted': '#94a3b8',
+    '--theme-text-dim': '#64748b',
+    '--theme-success': '#00ff6e',
+    '--theme-warning': '#ffff00',
+    '--theme-danger': '#ff006e',
+    '--theme-border': '#1e293b',
+    '--theme-border-subtle': '#0f172a',
+    '--font-body': "'Orbitron', 'Inter', sans-serif",
+    '--font-heading': "'Orbitron', 'Inter', sans-serif",
+    '--font-mono': "'JetBrains Mono', monospace",
+    '--shadow-sm': '0 0 4px rgba(0,255,163,0.3)',
+    '--shadow-md': '0 0 12px rgba(0,255,163,0.4)',
+    '--shadow-lg': '0 0 24px rgba(0,255,163,0.5)',
+    '--shadow-glow': '0 0 30px rgba(0,255,163,0.6)',
+    '--radius-sm': '2px',
+    '--radius-md': '4px',
+    '--radius-lg': '8px',
+    '--radius-xl': '12px',
+  },
+  'warm-corporate': {
+    '--theme-bg-base': '#fffbeb',
+    '--theme-bg-surface': '#fef3c7',
+    '--theme-bg-elevated': '#fde68a',
+    '--theme-primary': '#d97706',
+    '--theme-accent': '#ea580c',
+    '--theme-text': '#1c1917',
+    '--theme-text-muted': '#57534e',
+    '--theme-text-dim': '#a8a29e',
+    '--theme-success': '#16a34a',
+    '--theme-warning': '#ca8a04',
+    '--theme-danger': '#dc2626',
+    '--theme-border': '#fde68a',
+    '--theme-border-subtle': '#fef3c7',
+    '--font-body': "'Georgia', 'Times New Roman', serif",
+    '--font-heading': "'Georgia', 'Times New Roman', serif",
+    '--font-mono': "'Courier New', monospace",
+    '--shadow-sm': '0 1px 2px rgba(0,0,0,0.05)',
+    '--shadow-md': '0 4px 12px rgba(0,0,0,0.08)',
+    '--shadow-lg': '0 8px 24px rgba(0,0,0,0.1)',
+    '--shadow-glow': '0 0 20px rgba(217,119,6,0.2)',
+    '--radius-sm': '6px',
+    '--radius-md': '12px',
+    '--radius-lg': '20px',
+    '--radius-xl': '32px',
+  },
+}
+
+// Compute theme CSS variables
+const themeVars = computed(() => {
+  const themeName = props.theme || 'dark-professional'
+  const preset = themePresets[themeName] || themePresets['dark-professional']
   
-  if (theme === 'business') {
-    return {
-      '--c-bg-base': '#ffffff',
-      '--c-bg-surface': '#f8fafc',
-      '--c-primary': '#2563eb',
-      '--c-accent': '#3b82f6',
-      '--c-text-main': '#0f172a',
-      '--c-text-muted': '#64748b',
-      '--font-family': 'Inter, sans-serif',
-      '--shadow-theme': '0 1px 3px rgba(0, 0, 0, 0.1)',
-      '--c-success': '#10b981',
-      '--c-danger': '#ef4444',
-      '--border-theme': '#e2e8f0',
-    }
-  } else if (theme === 'cyber') {
-    return {
-      '--c-bg-base': '#050505',
-      '--c-bg-surface': '#0a0a0a',
-      '--c-primary': '#00ffa3',
-      '--c-accent': '#00ff6e',
-      '--c-text-main': '#e2e8f0',
-      '--c-text-muted': '#94a3b8',
-      '--font-family': 'Orbitron, monospace',
-      '--shadow-theme': '0 0 20px var(--c-primary)',
-      '--c-success': '#00ff6e',
-      '--c-danger': '#ff006e',
-      '--border-theme': '#1e293b',
-    }
+  // Allow background override
+  if (props.background) {
+    return { ...preset, '--theme-bg-base': props.background }
   }
   
-  return {}
+  return preset
 })
 
-// Apply grid pattern for cyber theme
-const backgroundStyle = computed(() => {
-  if (props.theme === 'cyber') {
-    return {
-      backgroundImage: `
-        linear-gradient(rgba(0, 255, 163, 0.1) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 255, 163, 0.1) 1px, transparent 1px)
-      `,
-      backgroundSize: '50px 50px',
-    }
-  }
-  return {}
-})
-
-// Vibe effect classes
+// Compute vibe class
 const vibeClass = computed(() => {
-  const vibe = props.vibe || 'none'
-  return vibe !== 'none' ? `vibe-${vibe}` : ''
+  const vibe = props.vibe || 'balanced'
+  return `vibe-${vibe}`
+})
+
+// Compute theme class for styling hooks
+const themeClass = computed(() => {
+  const theme = props.theme || 'dark-professional'
+  // Normalize theme name to CSS-safe class
+  return `theme-${theme.replace(/[^a-zA-Z0-9-]/g, '-')}`
 })
 </script>
 
 <template>
   <div 
-    class="slidev-slide-shell" 
-    :class="vibeClass"
-    :style="{ ...themeVariables, ...backgroundStyle }"
+    class="slide-shell" 
+    :class="[themeClass, vibeClass]"
+    :style="themeVars"
   >
-    <!-- Floating particles effect -->
-    <div v-if="vibe === 'particles'" class="vibe-particles">
-      <div class="particle" v-for="i in 20" :key="i"></div>
-    </div>
+    <!-- Header bar -->
+    <header v-if="header" class="slide-header">
+      <span class="header-text">{{ header }}</span>
+    </header>
     
-    <!-- Waves effect -->
-    <div v-if="vibe === 'waves'" class="vibe-waves">
-      <div class="wave wave-1"></div>
-      <div class="wave wave-2"></div>
-      <div class="wave wave-3"></div>
-    </div>
+    <!-- Main content area -->
+    <main class="slide-content">
+      <slot />
+    </main>
     
-    <!-- Noise texture -->
-    <div v-if="vibe === 'noise'" class="vibe-noise"></div>
-    
-    <!-- Bokeh lights -->
-    <div v-if="vibe === 'bokeh'" class="vibe-bokeh">
-      <div class="bokeh-light" v-for="i in 12" :key="i"></div>
-    </div>
-    
-    <!-- Mesh gradient -->
-    <div v-if="vibe === 'mesh'" class="vibe-mesh"></div>
-    
-    <slot />
+    <!-- Footer bar -->
+    <footer v-if="footer" class="slide-footer">
+      <span class="footer-text">{{ footer }}</span>
+    </footer>
   </div>
 </template>
 
 <style scoped>
-.slidev-slide-shell {
+.slide-shell {
   width: 100%;
   height: 100%;
-  background-color: var(--c-bg-base);
-  color: var(--c-text-main);
-  font-family: var(--font-family);
-  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--theme-bg-base);
+  color: var(--theme-text);
+  font-family: var(--font-body);
   position: relative;
   overflow: hidden;
 }
 
-/* === VIBE: PARTICLES === */
-.vibe-particles {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  pointer-events: none;
-}
-
-.particle {
-  position: absolute;
-  width: 4px;
-  height: 4px;
-  background: radial-gradient(circle, var(--c-primary), transparent);
-  border-radius: 50%;
-  opacity: 0.6;
-  animation: float-particle 20s infinite ease-in-out;
-}
-
-.particle:nth-child(1) { left: 10%; animation-delay: 0s; animation-duration: 18s; }
-.particle:nth-child(2) { left: 20%; animation-delay: 2s; animation-duration: 22s; }
-.particle:nth-child(3) { left: 30%; animation-delay: 4s; animation-duration: 20s; }
-.particle:nth-child(4) { left: 40%; animation-delay: 1s; animation-duration: 24s; }
-.particle:nth-child(5) { left: 50%; animation-delay: 3s; animation-duration: 19s; }
-.particle:nth-child(6) { left: 60%; animation-delay: 5s; animation-duration: 21s; }
-.particle:nth-child(7) { left: 70%; animation-delay: 2s; animation-duration: 23s; }
-.particle:nth-child(8) { left: 80%; animation-delay: 4s; animation-duration: 18s; }
-.particle:nth-child(9) { left: 90%; animation-delay: 1s; animation-duration: 20s; }
-.particle:nth-child(10) { left: 15%; animation-delay: 3s; animation-duration: 22s; }
-.particle:nth-child(11) { left: 25%; animation-delay: 5s; animation-duration: 19s; }
-.particle:nth-child(12) { left: 35%; animation-delay: 0s; animation-duration: 21s; }
-.particle:nth-child(13) { left: 45%; animation-delay: 2s; animation-duration: 24s; }
-.particle:nth-child(14) { left: 55%; animation-delay: 4s; animation-duration: 18s; }
-.particle:nth-child(15) { left: 65%; animation-delay: 1s; animation-duration: 20s; }
-.particle:nth-child(16) { left: 75%; animation-delay: 3s; animation-duration: 22s; }
-.particle:nth-child(17) { left: 85%; animation-delay: 5s; animation-duration: 19s; }
-.particle:nth-child(18) { left: 95%; animation-delay: 2s; animation-duration: 21s; }
-.particle:nth-child(19) { left: 12%; animation-delay: 0s; animation-duration: 23s; }
-.particle:nth-child(20) { left: 88%; animation-delay: 4s; animation-duration: 20s; }
-
-@keyframes float-particle {
-  0% {
-    transform: translateY(100vh) scale(0);
-    opacity: 0;
-  }
-  10% {
-    opacity: 0.6;
-  }
-  90% {
-    opacity: 0.6;
-  }
-  100% {
-    transform: translateY(-100px) scale(1.5);
-    opacity: 0;
-  }
-}
-
-/* === VIBE: WAVES === */
-.vibe-waves {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  pointer-events: none;
-}
-
-.wave {
-  position: absolute;
-  bottom: -10%;
-  left: -10%;
-  width: 120%;
-  height: 120%;
-  background: radial-gradient(
-    ellipse at bottom,
-    var(--c-primary) 0%,
-    transparent 70%
+/* Header styles */
+.slide-header {
+  flex-shrink: 0;
+  padding: 0.5rem 1.5rem;
+  font-size: 0.75rem;
+  color: var(--theme-text-muted);
+  border-bottom: 1px solid var(--theme-border-subtle);
+  display: flex;
+  align-items: center;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--theme-bg-surface) 50%, transparent),
+    transparent
   );
-  opacity: 0.1;
-  animation: wave-motion 15s ease-in-out infinite;
 }
 
-.wave-1 {
-  animation-delay: 0s;
+.header-text {
+  opacity: 0.8;
+  font-weight: 500;
+  letter-spacing: 0.02em;
 }
 
-.wave-2 {
-  animation-delay: 5s;
-  opacity: 0.07;
-}
-
-.wave-3 {
-  animation-delay: 10s;
-  opacity: 0.05;
-}
-
-@keyframes wave-motion {
-  0%, 100% {
-    transform: translateY(0) scale(1);
-  }
-  50% {
-    transform: translateY(-20%) scale(1.1);
-  }
-}
-
-/* === VIBE: NOISE === */
-.vibe-noise {
-  position: absolute;
-  inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.5'/%3E%3C/svg%3E");
-  opacity: 0.15;
-  pointer-events: none;
-  mix-blend-mode: overlay;
-}
-
-/* === VIBE: BOKEH === */
-.vibe-bokeh {
-  position: absolute;
-  inset: 0;
+/* Content area */
+.slide-content {
+  flex: 1;
+  min-height: 0;
   overflow: hidden;
-  pointer-events: none;
+  position: relative;
 }
 
-.bokeh-light {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(40px);
-  opacity: 0.3;
-  animation: bokeh-float 25s infinite ease-in-out;
+/* Footer styles */
+.slide-footer {
+  flex-shrink: 0;
+  padding: 0.5rem 1.5rem;
+  font-size: 0.75rem;
+  color: var(--theme-text-dim);
+  border-top: 1px solid var(--theme-border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(
+    0deg,
+    color-mix(in srgb, var(--theme-bg-surface) 50%, transparent),
+    transparent
+  );
 }
 
-.bokeh-light:nth-child(1) {
-  width: 200px;
-  height: 200px;
-  background: radial-gradient(circle, var(--c-primary), transparent);
-  top: 10%;
-  left: 10%;
-  animation-delay: 0s;
+.footer-text {
+  opacity: 0.6;
+  font-style: italic;
 }
 
-.bokeh-light:nth-child(2) {
-  width: 300px;
-  height: 300px;
-  background: radial-gradient(circle, var(--c-accent), transparent);
-  top: 20%;
-  right: 15%;
-  animation-delay: 3s;
+/* === VIBE MODIFIERS === */
+
+/* Minimal: Tight, no frills */
+.vibe-minimal .slide-header,
+.vibe-minimal .slide-footer {
+  padding: 0.25rem 1rem;
+  font-size: 0.65rem;
+  border: none;
+  background: none;
 }
 
-.bokeh-light:nth-child(3) {
-  width: 250px;
-  height: 250px;
-  background: radial-gradient(circle, var(--c-success), transparent);
-  bottom: 15%;
-  left: 20%;
-  animation-delay: 6s;
+/* Clean: Subtle, professional */
+.vibe-clean .slide-header,
+.vibe-clean .slide-footer {
+  padding: 0.375rem 1.25rem;
+  font-size: 0.7rem;
 }
 
-.bokeh-light:nth-child(4) {
-  width: 180px;
-  height: 180px;
-  background: radial-gradient(circle, var(--c-primary), transparent);
-  bottom: 25%;
-  right: 25%;
-  animation-delay: 9s;
+/* Balanced: Default, comfortable */
+/* (base styles above) */
+
+/* Decorative: More presence */
+.vibe-decorative .slide-header {
+  padding: 0.75rem 2rem;
+  font-size: 0.8rem;
+  border-bottom-width: 2px;
+  border-image: linear-gradient(90deg, transparent, var(--theme-primary), transparent) 1;
 }
 
-.bokeh-light:nth-child(5) {
-  width: 220px;
-  height: 220px;
-  background: radial-gradient(circle, var(--c-accent), transparent);
-  top: 40%;
-  left: 5%;
-  animation-delay: 2s;
+.vibe-decorative .slide-footer {
+  padding: 0.75rem 2rem;
+  font-size: 0.8rem;
+  border-top-width: 2px;
+  border-image: linear-gradient(90deg, transparent, var(--theme-primary), transparent) 1;
 }
 
-.bokeh-light:nth-child(6) {
-  width: 280px;
-  height: 280px;
-  background: radial-gradient(circle, var(--c-primary), transparent);
-  top: 50%;
-  right: 10%;
-  animation-delay: 5s;
+/* Expressive: Maximum impact */
+.vibe-expressive .slide-header {
+  padding: 1rem 2.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--theme-primary) 10%, var(--theme-bg-base)),
+    var(--theme-bg-base),
+    color-mix(in srgb, var(--theme-accent) 10%, var(--theme-bg-base))
+  );
+  border-bottom: 2px solid var(--theme-primary);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
-.bokeh-light:nth-child(7) {
-  width: 160px;
-  height: 160px;
-  background: radial-gradient(circle, var(--c-success), transparent);
-  top: 70%;
-  left: 40%;
-  animation-delay: 8s;
+.vibe-expressive .slide-footer {
+  padding: 1rem 2.5rem;
+  font-size: 0.875rem;
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--theme-accent) 10%, var(--theme-bg-base)),
+    var(--theme-bg-base),
+    color-mix(in srgb, var(--theme-primary) 10%, var(--theme-bg-base))
+  );
+  border-top: 2px solid var(--theme-accent);
+  box-shadow: 0 -2px 8px rgba(0,0,0,0.1);
 }
 
-.bokeh-light:nth-child(8) {
-  width: 240px;
-  height: 240px;
-  background: radial-gradient(circle, var(--c-accent), transparent);
-  bottom: 10%;
-  right: 40%;
-  animation-delay: 1s;
+.vibe-expressive .header-text,
+.vibe-expressive .footer-text {
+  opacity: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
 }
 
-.bokeh-light:nth-child(9) {
-  width: 190px;
-  height: 190px;
-  background: radial-gradient(circle, var(--c-primary), transparent);
-  top: 5%;
-  left: 50%;
-  animation-delay: 4s;
-}
+/* === THEME-SPECIFIC ADJUSTMENTS === */
 
-.bokeh-light:nth-child(10) {
-  width: 270px;
-  height: 270px;
-  background: radial-gradient(circle, var(--c-success), transparent);
-  bottom: 5%;
-  left: 60%;
-  animation-delay: 7s;
-}
-
-.bokeh-light:nth-child(11) {
-  width: 210px;
-  height: 210px;
-  background: radial-gradient(circle, var(--c-accent), transparent);
-  top: 30%;
-  right: 30%;
-  animation-delay: 10s;
-}
-
-.bokeh-light:nth-child(12) {
-  width: 260px;
-  height: 260px;
-  background: radial-gradient(circle, var(--c-primary), transparent);
-  bottom: 40%;
-  left: 30%;
-  animation-delay: 3s;
-}
-
-@keyframes bokeh-float {
-  0%, 100% {
-    transform: translate(0, 0) scale(1);
-    opacity: 0.2;
-  }
-  33% {
-    transform: translate(30px, -30px) scale(1.1);
-    opacity: 0.35;
-  }
-  66% {
-    transform: translate(-20px, 20px) scale(0.9);
-    opacity: 0.25;
-  }
-}
-
-/* === VIBE: MESH === */
-.vibe-mesh {
+/* Cyber theme: Add scan line effect */
+.theme-cyber-neon::after {
+  content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(
-      circle at 20% 30%,
-      var(--c-primary) 0%,
-      transparent 50%
-    ),
-    radial-gradient(
-      circle at 80% 20%,
-      var(--c-accent) 0%,
-      transparent 50%
-    ),
-    radial-gradient(
-      circle at 40% 80%,
-      var(--c-success) 0%,
-      transparent 50%
-    ),
-    radial-gradient(
-      circle at 90% 70%,
-      var(--c-primary) 0%,
-      transparent 50%
-    );
-  opacity: 0.08;
-  filter: blur(60px);
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 255, 163, 0.02) 2px,
+    rgba(0, 255, 163, 0.02) 4px
+  );
   pointer-events: none;
-  animation: mesh-shift 20s ease-in-out infinite;
+  z-index: 100;
 }
 
-@keyframes mesh-shift {
-  0%, 100% {
-    transform: scale(1) rotate(0deg);
-  }
-  50% {
-    transform: scale(1.1) rotate(5deg);
-  }
+.theme-cyber-neon .slide-header,
+.theme-cyber-neon .slide-footer {
+  text-shadow: 0 0 10px var(--theme-primary);
 }
 </style>

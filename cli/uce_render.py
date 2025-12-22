@@ -12,12 +12,14 @@ from src.common.exceptions import UCERenderError
 from src.common.patchable_context_pydantic import Patch
 from src.common.slide import Slide
 from src.common.slides import Slides
-from src.generation.orchestrator import GenerationOrchestrator
-from src.layout.engine_registry import LayoutEngineRegistry
-from src.layout.dummy.style import Style
-from src.layout.dummy.theme import Theme
-from src.render.dummy.html_renderer import HTMLRenderer
-from src.render.slidev.markdown_renderer import SlidevRenderer
+from src.paged.layout.engine_registry import LayoutEngineRegistry
+from src.paged.layout.dummy.style import Style
+from src.paged.layout.dummy.theme import Theme
+from src.paged.render.dummy.html_renderer import HTMLRenderer
+from src.paged.render.slidev.markdown_renderer import SlidevRenderer
+
+# Default instruction when --user-instruction is not provided
+DEFAULT_INSTRUCTION = "create slides, 10 page, professional, corp_modern_v1 theme"
 
 
 @click.command()
@@ -36,8 +38,8 @@ from src.render.slidev.markdown_renderer import SlidevRenderer
 @click.option(
     '--layout-engine',
     type=click.Choice(['dummy', 'slidev'], case_sensitive=False),
-    default='dummy',
-    help='Layout engine to use (default: dummy, slidev for Slidev layouts)'
+    default='slidev',
+    help='Layout engine to use (default: slidev)'
 )
 @click.option(
     '--validate-only', '--validate',
@@ -82,11 +84,6 @@ from src.render.slidev.markdown_renderer import SlidevRenderer
     help='List all available layout strategies'
 )
 @click.option(
-    '--list-presets',
-    is_flag=True,
-    help='List all available widget preset variants'
-)
-@click.option(
     '--source',
     type=click.Path(exists=True, path_type=Path),
     help='Source content file (.txt or .vtt) for LLM-based generation'
@@ -113,6 +110,28 @@ from src.render.slidev.markdown_renderer import SlidevRenderer
     is_flag=True,
     help='Interactive mode: prompt for source and instructions'
 )
+@click.option(
+    '--render',
+    type=click.Path(exists=True, path_type=Path),
+    help='Render from JSON file (skip LLM generation). Only works with --format html.'
+)
+@click.option(
+    '--stage',
+    type=click.Choice(['intent', 'visual', 'atoms', 'content', 'render'], case_sensitive=False),
+    default=None,
+    help='Stop after this pipeline stage (intent|visual|atoms|content|render). Requires --source.'
+)
+@click.option(
+    '--state',
+    type=click.Path(path_type=Path),
+    default=None,
+    help='Path to state.json for stage-based pipeline. Created if not exists.'
+)
+@click.option(
+    '--force-rerun',
+    is_flag=True,
+    help='Force re-run all stages even if completed in state'
+)
 def cli(
     config_file: Optional[Path],
     output: Optional[Path],
@@ -126,12 +145,15 @@ def cli(
     list_styles: bool,
     list_widgets: bool,
     list_strategies: bool,
-    list_presets: bool,
     source: Optional[Path],
     user_instruction: Optional[str],
     use_cache: str,
     maxiter: int,
     interactive: bool,
+    render: Optional[Path],
+    stage: Optional[str],
+    state: Optional[Path],
+    force_rerun: bool,
 ) -> None:
     """Render layouts using the Universal Content Engine.
     
@@ -144,6 +166,9 @@ def cli(
         
         # Render to file
         uce-render config.json --output result.html
+        
+        # Render from previous JSON output (skip LLM generation)
+        uce-render --render intermediate.json --output slides.html --layout-engine slidev
         
         # Interactive mode (prompts for input)
         uce-render --interactive --output presentation.html
@@ -173,10 +198,83 @@ def cli(
         uce-render --list-styles
         uce-render --list-widgets
         uce-render --list-strategies
-        uce-render --list-presets
         uce-render --list-themes --format json
+        
+        # Stage-based pipeline (with state.json for testability)
+        # Run intent detection only
+        uce-render --source input.txt --user-instruction "tech pitch" --stage intent --output career_talk
+        
+        # Run up to visual generation (depends on intent)
+        uce-render --source input.txt --user-instruction "tech pitch" --stage visual --output career_talk
+        
+        # Run up to atom extraction
+        uce-render --source input.txt --user-instruction "tech pitch" --stage atoms --output career_talk
+        
+        # Run up to content generation
+        uce-render --source input.txt --user-instruction "tech pitch" --stage content --output career_talk
+        
+        # Run full pipeline including render
+        uce-render --source input.txt --user-instruction "tech pitch" --stage render --output career_talk
+        
+        # Custom state file location
+        uce-render --source input.txt --stage content --state myproject/state.json --output myproject
+        
+        # Force re-run all stages
+        uce-render --source input.txt --stage render --output career_talk --force-rerun
     """
     try:
+        # Handle stage-based pipeline
+        if stage:
+            if not source:
+                click.echo("Error: --stage requires --source to be specified", err=True)
+                sys.exit(1)
+            if not output:
+                click.echo("Error: --stage requires --output directory to be specified", err=True)
+                sys.exit(1)
+            
+            # Run todo-based pipeline
+            from src.generation.todo.runner import PipelineRunner
+            
+            output_dir = Path(output)
+            instruction = user_instruction or DEFAULT_INSTRUCTION
+            
+            # Set layout engine if specified
+            if layout_engine:
+                from src.paged.layout.engine_registry import LayoutEngineRegistry
+                try:
+                    LayoutEngineRegistry.set_active_engine(layout_engine.lower())
+                    if verbose:
+                        click.echo(f"Set active layout engine: {layout_engine.lower()}", err=True)
+                except KeyError as e:
+                    click.echo(f"Warning: Unknown layout engine '{layout_engine}', using default", err=True)
+            
+            runner = PipelineRunner(
+                use_cache=(use_cache.lower() == 'true'),
+                verbose=verbose,
+                output_dir=output_dir
+            )
+            
+            result_state = runner.run(
+                source_path=source,
+                user_instruction=instruction,
+            )
+            
+            click.echo(f"\n{'='*50}")
+            click.echo(result_state.summary())
+            click.echo(f"{'='*50}")
+            click.echo(f"\n✓ Pipeline completed")
+            click.echo(f"  Output: {output_dir}")
+            return
+        
+        # Validate --render option
+        if render:
+            if format != 'html':
+                click.echo("Error: --render only works with --format html", err=True)
+                sys.exit(1)
+            if not output:
+                click.echo("Error: --render requires --output to be specified", err=True)
+                sys.exit(1)
+        
         # Handle list commands
         if list_themes:
             result = AssetManager.list_themes()
@@ -286,106 +384,6 @@ def cli(
                 click.echo(f"Total: {len(widgets)} widgets\n")
             sys.exit(0)
         
-        if list_presets:
-            presets = {
-                "categories": [
-                    {
-                        "name": "Surface",
-                        "description": "Visual depth and layering effects",
-                        "variants": [
-                            {"name": "Flat", "description": "No elevation, flat appearance"},
-                            {"name": "Elevated", "description": "Subtle shadow, raised appearance"},
-                            {"name": "Outline", "description": "Transparent with border"},
-                            {"name": "Glass", "description": "Frosted glass effect with blur"},
-                            {"name": "Sunken", "description": "Inset appearance, pressed look"},
-                            {"name": "NeoBrutal", "description": "Bold border with offset shadow"}
-                        ]
-                    },
-                    {
-                        "name": "Shape",
-                        "description": "Border radius and corner styles",
-                        "variants": [
-                            {"name": "Sharp", "description": "No border radius, 90° corners"},
-                            {"name": "Rounded", "description": "8px border radius"},
-                            {"name": "Curve", "description": "16px border radius"},
-                            {"name": "Pill", "description": "Fully rounded ends"},
-                            {"name": "Squircle", "description": "Smooth squircle shape"},
-                            {"name": "Organic", "description": "Irregular organic shape"}
-                        ]
-                    },
-                    {
-                        "name": "Fill",
-                        "description": "Background patterns and fills",
-                        "variants": [
-                            {"name": "Solid_Brand", "description": "Solid brand color background"},
-                            {"name": "Solid_Surface", "description": "Solid surface/background color"},
-                            {"name": "Subtle", "description": "Light neutral background"},
-                            {"name": "Gradient_Linear", "description": "Linear gradient (primary to secondary)"},
-                            {"name": "Gradient_Mesh", "description": "Radial mesh gradient"},
-                            {"name": "Pattern_Dot", "description": "Dotted pattern background"},
-                            {"name": "Noise", "description": "Subtle noise texture overlay"}
-                        ]
-                    },
-                    {
-                        "name": "Effect",
-                        "description": "Visual treatments and filters",
-                        "variants": [
-                            {"name": "Duotone", "description": "Two-tone color filter"},
-                            {"name": "Glitch", "description": "Digital glitch animation effect"},
-                            {"name": "Glow", "description": "Colored glow/halo effect"},
-                            {"name": "Tape", "description": "Washi tape decoration on top"}
-                        ]
-                    }
-                ],
-                "usage": {
-                    "example": {
-                        "type": "Type.Display",
-                        "parameters": {"text": "Hello World"},
-                        "preset": {
-                            "surface": "Elevated",
-                            "shape": "Rounded",
-                            "fill": "Gradient_Linear",
-                            "effect": "Glow"
-                        }
-                    },
-                    "notes": [
-                        "All preset fields are optional",
-                        "Presets are applied via CSS classes",
-                        "Multiple categories can be combined",
-                        "Presets work with all widget types"
-                    ]
-                },
-                "total_variants": 22
-            }
-            
-            if format == 'json':
-                click.echo(json.dumps(presets, indent=2))
-            else:
-                click.echo("\nAvailable Widget Presets:")
-                click.echo("=" * 80)
-                
-                for category in presets['categories']:
-                    click.echo(f"\n{category['name']} Presets ({len(category['variants'])} variants)")
-                    click.echo(f"  {category['description']}")
-                    click.echo("  " + "-" * 76)
-                    for variant in category['variants']:
-                        click.echo(f"    • {variant['name']:<20} - {variant['description']}")
-                
-                click.echo("\n" + "=" * 80)
-                click.echo(f"Total: {presets['total_variants']} preset variants across 4 categories\n")
-                
-                click.echo("\nUsage Example:")
-                click.echo("=" * 80)
-                example = presets['usage']['example']
-                click.echo(json.dumps(example, indent=2))
-                
-                click.echo("\n" + "=" * 80)
-                click.echo("\nNotes:")
-                for note in presets['usage']['notes']:
-                    click.echo(f"  • {note}")
-                click.echo("\n" + "=" * 80 + "\n")
-            sys.exit(0)
-        
         if list_strategies:
             strategies = AssetManager.list_strategies()
             if format == 'json':
@@ -406,8 +404,78 @@ def cli(
         # Convert use_cache string to boolean
         use_cache_bool = use_cache.lower() == 'true'
         
+        # Handle render-only mode (skip LLM generation)
+        if render:
+            if verbose:
+                click.echo(f"Render-only mode: loading from {render}", err=True)
+            
+            # Load JSON file
+            try:
+                with open(render, 'r', encoding='utf-8') as f:
+                    render_data = json.load(f)
+            except json.JSONDecodeError as e:
+                click.echo(f"Error: Invalid JSON in render file: {e}", err=True)
+                sys.exit(1)
+            except Exception as e:
+                click.echo(f"Error: Could not read render file: {e}", err=True)
+                sys.exit(1)
+            
+            # Extract slides, theme, and style from JSON
+            if 'slides' not in render_data:
+                click.echo("Error: Render JSON must contain 'slides' array", err=True)
+                sys.exit(1)
+            
+            slides_data = render_data.get('slides', [])
+            
+            # Support both 'themes' (array) and legacy 'theme' (single object)
+            themes_data = render_data.get('themes', [])
+            if not themes_data and 'theme' in render_data:
+                themes_data = [render_data['theme']]
+            
+            # Use first theme as default, slides can override
+            theme_data = themes_data[0] if themes_data else {}
+            
+            style_data = render_data.get('style', {})
+            layout_width = width if width is not None else render_data.get('width', 1920)
+            layout_height = height if height is not None else render_data.get('height', 1080)
+            
+            # Create Slides collection
+            slides = Slides()
+            operations = []
+            for slide_data in slides_data:
+                if 'id' not in slide_data:
+                    slide_data['id'] = f"slide-{slide_data.get('rank', len(operations) + 1)}"
+                if 'rank' not in slide_data:
+                    slide_data['rank'] = len(operations)
+                if 'state' not in slide_data:
+                    slide_data['state'] = 'active'
+                
+                try:
+                    slide = Slide(**slide_data)
+                    operations.append({"add": slide})
+                except Exception as e:
+                    click.echo(f"Error: Invalid slide in render JSON: {e}", err=True)
+                    sys.exit(1)
+            
+            if operations:
+                patch = Patch(operations=operations)
+                slides.patch(patch)
+            
+            # Create theme and style
+            theme = Theme(**theme_data) if theme_data else Theme()
+            
+            # Note: style is not used by Slidev, only kept for legacy engines
+            # For Slidev, we only need theme
+            
+            if verbose:
+                click.echo(f"Loaded {slides.count()} slides from render JSON", err=True)
+            
+            # For render-only mode, skip to rendering by setting continue_generation = False
+            # But ensure we have theme and slides set up
+            # The rendering happens after the while loop
+        
         # Handle interactive mode - setup phase
-        if interactive:
+        elif interactive:
             click.echo("\n" + "=" * 80)
             click.echo("Interactive Mode - UCE Render")
             click.echo("=" * 80 + "\n")
@@ -457,17 +525,23 @@ def cli(
                 output = Path(output_input)
         
         # Validate that we have a source for LLM generation or config file
-        if not source and not config_file:
-            click.echo("Error: Either CONFIG_FILE or --source is required when not using --list-* options", err=True)
+        if not source and not config_file and not render:
+            click.echo("Error: Either CONFIG_FILE, --source, or --render is required when not using --list-* options", err=True)
             sys.exit(1)
         
         # Interactive loop for iterative refinement
         continue_generation = True
         iteration_count = 0
         
+        # Skip generation loop if in render-only mode
+        # But allow one iteration to reach rendering code
+        if render:
+            continue_generation = True  # Allow one iteration to render
+            max_iterations = 1  # Limit to single pass
+        
         # Set active layout engine for content generation
         if layout_engine:
-            from src.layout.engine_registry import LayoutEngineRegistry
+            from src.paged.layout.engine_registry import LayoutEngineRegistry
             try:
                 LayoutEngineRegistry.set_active_engine(layout_engine.lower())
                 if verbose:
@@ -476,12 +550,18 @@ def cli(
                 click.echo(f"Warning: {e}", err=True)
         
         # Create orchestrator for all LLM generation (both interactive and non-interactive)
-        orchestrator = GenerationOrchestrator(use_cache=use_cache_bool) if source else None
+        # Skip if in render-only mode
+        orchestrator = GenerationOrchestrator(use_cache=use_cache_bool) if (source and not render) else None
         
         while continue_generation:
             iteration_count += 1
             
-            if interactive and iteration_count > 1:
+            # Skip generation if in render-only mode
+            if render:
+                # Slides and theme already loaded from render JSON
+                # Skip directly to rendering section
+                pass
+            elif interactive and iteration_count > 1:
                 click.echo("\n" + "=" * 80)
                 click.echo(f"Iteration {iteration_count} - Refine Generation")
                 click.echo("=" * 80 + "\n")
@@ -513,8 +593,8 @@ def cli(
                 user_instruction = new_instruction
                 click.echo(f"\n✓ New instructions: {user_instruction}\n")
             
-            # Handle LLM-based generation workflow
-            if source:
+            # Handle LLM-based generation workflow (skip if render-only mode)
+            if source and not render:
                 if verbose:
                     click.echo(f"LLM-based generation from source: {source}", err=True)
                 
@@ -537,43 +617,21 @@ def cli(
                     # Run intent detection
                     click.echo("🔍 Detecting intent...")
                     try:
-                        from src.generation.intent.detector import detect_intent
-                        
-                        with open(source, 'r', encoding='utf-8') as f:
-                            source_content = f.read()
+                        from src.generation.todo.planner import parse_intent
                         
                         # Provide minimal user instruction for standalone intent detection
-                        user_instruction = user_instruction if user_instruction else "Generate slides from this content"
+                        user_instruction_text = user_instruction if user_instruction else DEFAULT_INSTRUCTION
                         
-                        # Create basic preview (abstract will be set after atom extraction)
-                        content_lines = source_content.split('\n')
-                        title_line = content_lines[0] if content_lines else source.name
-                        source_preview = f"{title_line}\n\nContent preview: {source_content[:200]}..."
-                        
-                        intent_result = detect_intent(
-                            user_instruction=user_instruction,
-                            source_preview=source_preview,
-                            source_refs=[{
-                                'ref': f'source_{source.stem}',
-                                'summary': f'{source.name}: {title_line[:100]}'
-                            }],
-                            existing_slides_summary=None,  # No existing slides on first generation
-                            use_cache=use_cache_bool
-                        )
+                        intent_result = parse_intent(user_instruction_text)
                         
                         click.echo("\n✓ Intent Detection Results:")
                         click.echo("-" * 80)
-                        click.echo(f"Audience: {intent_result.audience}")
-                        click.echo(f"Pattern: {intent_result.pattern}")
-                        click.echo(f"Tone: {intent_result.tone}")
-                        click.echo(f"Visual Density: {intent_result.visual_density}")
-                        if intent_result.reasoning:
-                            click.echo(f"\nReasoning: {intent_result.reasoning}")
-                        if intent_result.visual_change:
-                            click.echo(f"\nVisual Guidance:")
-                            click.echo(f"  Should Generate: {intent_result.visual_change.should_generate}")
-                            if intent_result.visual_change.visual_guidance:
-                                click.echo(f"  Guidance: {intent_result.visual_change.visual_guidance[:200]}...")
+                        click.echo(f"Action: {intent_result.action.value}")
+                        click.echo(f"Tone: {intent_result.tone_style.value if intent_result.tone_style else 'default'}")
+                        click.echo(f"Density: {intent_result.density}")
+                        click.echo(f"Slide Count: {intent_result.slide_count or 'auto'}")
+                        if intent_result.color_keywords:
+                            click.echo(f"Colors: {', '.join(intent_result.color_keywords)}")
                         click.echo("-" * 80 + "\n")
                         
                     except Exception as e:
@@ -607,6 +665,9 @@ def cli(
                     
                     if verbose:
                         click.echo(f"Generated {slides.count()} slides", err=True)
+                        # Print debug output paths
+                        output_dir = Path("output").absolute()
+                        click.echo(f"Debug output: {output_dir / 'debug_content.json'}", err=True)
                     
                 except FileNotFoundError as e:
                     click.echo(f"Error: {e}", err=True)
@@ -637,65 +698,21 @@ def cli(
                         click.echo(f"Using default theme (no visual generated by LLM)", err=True)
                     theme = Theme()
                 
-                # Use generated style if available, otherwise build from theme/preset
+                # Use generated style if available, otherwise default style
                 if visual and visual.style:
                     if verbose:
                         click.echo(f"Using generated style from Visual object", err=True)
                     style = Style(**visual.style)
-                elif visual and (visual.preset or visual.theme):
-                    # Build style from generated components (legacy fallback)
-                    if verbose:
-                        click.echo(f"Building style from visual theme/preset (no style generated)", err=True)
-                    
-                    style_data = {
-                        'theme_name': theme.id if hasattr(theme, 'id') else 'generated',
-                        'widgets': {}
-                    }
-                    
-                    # If preset is provided, apply it as global widget defaults (WRONG but kept for compatibility)
-                    if visual.preset:
-                        if verbose:
-                            click.echo(f"Warning: Using preset as widget style defaults (incorrect schema)", err=True)
-                        
-                        # Get all widget types from AssetManager
-                        widget_list = AssetManager.list_widgets()
-                        
-                        # Apply preset to all widget types (this is incorrect - preset != widget style)
-                        for widget in widget_list:
-                            widget_type = widget['type']
-                            style_data['widgets'][widget_type] = dict(visual.preset)
-                        
-                        if verbose:
-                            click.echo(f"Created style with preset for {len(widget_list)} widget types", err=True)
-                    
-                    style = Style(**style_data)
                 else:
-                    # Fallback: load default style only if nothing generated
                     if verbose:
-                        click.echo(f"No visual generated, loading default style", err=True)
-                        
-                    default_style_path = Path(__file__).parent.parent / "examples" / "style_example.json"
-                    try:
-                        with open(default_style_path, 'r', encoding='utf-8') as f:
-                            style_data = json.load(f)
-                        style = Style(**style_data)
-                        if verbose:
-                            click.echo(f"Loaded default style from {default_style_path}", err=True)
-                    except Exception as e:
-                        click.echo(f"Warning: Could not load default style: {e}", err=True)
-                        # Fallback to minimal style
-                        style = Style(theme_name="default", widgets={})
+                        click.echo(f"Using default style", err=True)
+                    style = Style()
                 
                 layout_width = width if width is not None else 1920
                 layout_height = height if height is not None else 1080
             
-            else:
+            elif config_file and not render:
                 # Original config file workflow
-                # Require config_file if not listing assets and no source
-                if not config_file:
-                    click.echo("Error: Either CONFIG_FILE or --source is required when not using --list-* options", err=True)
-                    sys.exit(1)
-                
                 # Load configuration
                 if verbose:
                     click.echo(f"Loading configuration from {config_file}", err=True)
@@ -727,7 +744,7 @@ def cli(
 
                 # Ensure style has default widget styles if not provided
                 if 'widgets' not in style_data or not style_data['widgets']:
-                    from src.layout.dummy.style import WidgetStyle
+                    from src.paged.layout.dummy.style import WidgetStyle
                     
                     # Create default widget styles for all widget types
                     default_widget_styles = {
@@ -842,7 +859,7 @@ def cli(
                     iteration += 1
                     
                     # Validate current renderables
-                    from src.layout.dummy.validation import LayoutValidator, format_issues_for_llm
+                    from src.paged.layout.dummy.validation import LayoutValidator, format_issues_for_llm
                     all_issues = []
                     for renderable in renderables:
                         issues = LayoutValidator.validate(renderable)
@@ -934,6 +951,12 @@ def cli(
                             "widgets": {}
                         }
                         
+                        # Add header and footer if present
+                        if slide_obj.header:
+                            slide_json["header"] = slide_obj.header
+                        if slide_obj.footer:
+                            slide_json["footer"] = slide_obj.footer
+                        
                         # Flatten widget structure - renderer expects flat params, not nested
                         if slide_obj.widgets:
                             for slot_name, widget_dict in slide_obj.widgets.items():
@@ -955,6 +978,9 @@ def cli(
                     
                     if verbose:
                         click.echo(f"Rendered HTML with embedded Slidev: {len(html_output) if html_output else 0} chars", err=True)
+                        # Print markdown debug path
+                        output_dir = Path("output").absolute()
+                        click.echo(f"  Markdown: {output_dir / 'debug_markdown.md'}", err=True)
                 else:
                     # Use dummy HTMLRenderer
                     # Load presets from config if available (config file workflow)
@@ -993,31 +1019,30 @@ def cli(
                     click.echo(html_output)
 
             elif format.lower() == 'json':
+                # Skip rendering, write full JSON output
+                # Collect all unique themes from slides
+                themes_dict = {}
+                if theme:
+                    themes_dict[theme.id if hasattr(theme, 'id') else 'default'] = theme.model_dump()
+                
+                # Note: slide.theme is now a string (theme ID reference), not a theme object
+                # The actual theme objects are in the themes_dict above
+                
                 json_output = {
-                    "total_slides": len(renderables),
+                    "total_slides": slides.count(),
                     "width": layout_width,
                     "height": layout_height,
-                    "slides": [
-                        {
-                            "slide_number": r.slide_number,
-                            "slide_id": r.slide_id,
-                            "strategy": r.strategy_name,
-                            "widgets": [
-                                {
-                                    "role": assignment.role,
-                                    "type": assignment.widget.get_widget_type(),
-                                    "size": str(assignment.slot.size),
-                                }
-                                for assignment in r.widget_assignments
-                            ],
-                        }
-                        for r in renderables
-                    ],
+                    "themes": list(themes_dict.values()),
+                    "slides": [slide.model_dump() for slide in slides.get_active_slides()],
                 }
 
                 if output:
                     if verbose:
-                        click.echo(f"Writing JSON to {output}", err=True)
+                        click.echo(f"Writing full JSON to {output}", err=True)
+                    
+                    # Create output directory if it doesn't exist
+                    output.parent.mkdir(parents=True, exist_ok=True)
+                    
                     output.write_text(json.dumps(json_output, indent=2), encoding='utf-8')
                 else:
                     click.echo(json.dumps(json_output, indent=2))

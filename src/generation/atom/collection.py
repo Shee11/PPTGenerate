@@ -5,19 +5,25 @@ from datetime import datetime
 from src.common.patchable_context_pydantic import PatchableCollection, PatchableContextBase, PatchError
 from src.generation.atom.models import (
     Atom,
-    StatementAtom,
-    ProcessAtom,
-    ComparisonAtom,
-    QuoteAtom,
-    ActionItemAtom,
-    TimelineAtom
+    FactAtom,
+    TensionAtom,
+    ConceptAtom,
+    VisualAtom,
 )
+
+# Map atom type names to classes
+ATOM_TYPE_MAP = {
+    'FactAtom': FactAtom,
+    'TensionAtom': TensionAtom,
+    'ConceptAtom': ConceptAtom,
+    'VisualAtom': VisualAtom,
+}
 
 
 class AtomCollection(PatchableCollection):
     """Collection of extracted atoms from source content.
     
-    Manages Atom instances (StatementAtom, ProcessAtom, ComparisonAtom)
+    Manages Atom instances (FactAtom, TensionAtom, ConceptAtom, VisualAtom)
     with support for filtering by source, type, and state.
     """
     
@@ -27,7 +33,48 @@ class AtomCollection(PatchableCollection):
         Args:
             id: Unique identifier for the collection
         """
-        super().__init__(id=id, model_class=StatementAtom)
+        super().__init__(id=id, model_class=FactAtom)
+    
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> "AtomCollection":
+        """Create AtomCollection from dictionary.
+        
+        Args:
+            data: Dictionary with id, model, and contexts keys
+            
+        Returns:
+            AtomCollection populated with atoms
+        """
+        collection = cls(id=data.get("id", "atoms"))
+        
+        for ctx_data in data.get("contexts", []):
+            # Determine atom type from the data
+            # Try to infer from id prefix or type field
+            atom_id = ctx_data.get("id", "")
+            atom_type = None
+            
+            if atom_id.startswith("fact_"):
+                atom_type = FactAtom
+            elif atom_id.startswith("tension_"):
+                atom_type = TensionAtom
+            elif atom_id.startswith("concept_"):
+                atom_type = ConceptAtom
+            elif atom_id.startswith("visual_"):
+                atom_type = VisualAtom
+            else:
+                # Default to FactAtom
+                atom_type = FactAtom
+            
+            # Create atom and add to collection
+            try:
+                atom = atom_type.model_validate(ctx_data)
+                collection._contexts[atom.id] = atom
+            except Exception as e:
+                # Skip malformed atoms
+                print(f"Warning: Could not load atom {atom_id}: {e}")
+                continue
+        
+        return collection
     
     def _patch_add(self, context: PatchableContextBase):
         """Override to handle multiple atom types without re-validation.
@@ -95,7 +142,7 @@ class AtomCollection(PatchableCollection):
         """Get all atoms of a specific type.
         
         Args:
-            atom_type: Atom class name ("StatementAtom", "ProcessAtom", "ComparisonAtom")
+            atom_type: Atom class name ("FactAtom", "TensionAtom", "ConceptAtom", "VisualAtom")
             
         Returns:
             List of atoms matching the type, sorted by rank

@@ -1,7 +1,7 @@
 """Unit tests for Typography widget parameter validation."""
 import pytest
 from pydantic_core import ValidationError
-from src.widgets.typography import (
+from src.paged.widgets.typography import (
     TypeDisplayWidget, 
     TypeHeadingWidget, 
     TypeBodyWidget,

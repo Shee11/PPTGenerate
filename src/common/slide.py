@@ -1,7 +1,7 @@
 """Slide model for multi-slide layout configurations."""
 from typing import Any, Dict, List
 
-from pydantic import Field
+from pydantic import Field, field_validator
 
 from src.common.patchable_context_pydantic import PatchableContextBase
 
@@ -48,6 +48,64 @@ class Slide(PatchableContextBase):
         default_factory=dict,
         description="Widget assignments mapping slot roles to widget configs"
     )
+    
+    @field_validator('widgets', mode='before')
+    @classmethod
+    def normalize_widgets(cls, v):
+        """Convert various LLM output formats to expected dict format.
+        
+        Expected: {"slot": {"type": "...", "parameters": {...}}}
+        
+        LLM may output:
+        1. List at top level: [{...}, {...}] → {"slot_0": {...}, ...}
+        2. List per slot: {"default": [{...}, {...}]} → {"default": {...}} (first item)
+        3. Wrong param name: {"content": "..."} → {"parameters": {"text": "..."}}
+        """
+        if isinstance(v, list):
+            # Case 1: Top-level list
+            if len(v) == 1:
+                return {"default": cls._normalize_widget(v[0])}
+            return {f"slot_{i}": cls._normalize_widget(w) for i, w in enumerate(v)}
+        
+        if isinstance(v, dict):
+            normalized = {}
+            for slot, widget in v.items():
+                # Skip None values (LLM sometimes outputs null for optional slots)
+                if widget is None:
+                    continue
+                if isinstance(widget, list):
+                    # Case 2: List per slot - take first item only
+                    if widget:
+                        normalized[slot] = cls._normalize_widget(widget[0])
+                elif isinstance(widget, dict):
+                    normalized[slot] = cls._normalize_widget(widget)
+                else:
+                    normalized[slot] = widget
+            return normalized
+        
+        return v
+    
+    @staticmethod
+    def _normalize_widget(w: dict) -> dict:
+        """Normalize a single widget dict."""
+        if not isinstance(w, dict):
+            return w
+        
+        result = dict(w)
+        
+        # Case 3: Convert "content" to "parameters.text"
+        if "content" in result and "parameters" not in result:
+            content = result.pop("content")
+            if isinstance(content, str):
+                result["parameters"] = {"text": content}
+            elif isinstance(content, dict):
+                # QuoteWidget: {text, author, attribution}
+                result["parameters"] = content
+            elif isinstance(content, list):
+                # List widget: items
+                result["parameters"] = {"items": content}
+        
+        return result
     header: Dict[str, Any] | None = Field(
         default=None,
         description="Optional header widget (rendered in reserved header area)"
@@ -55,6 +113,10 @@ class Slide(PatchableContextBase):
     footer: Dict[str, Any] | None = Field(
         default=None,
         description="Optional footer widget (rendered in reserved footer area)"
+    )
+    theme: str | None = Field(
+        default=None,
+        description="Theme name/ID for this slide (references entry in themes array)"
     )
     style_override: Dict[str, Any] = Field(
         default_factory=dict,
@@ -86,6 +148,8 @@ class Slide(PatchableContextBase):
             lines.append(f"Visual Design: {self.visual_design}")
         if self.layout:
             lines.append(f"Layout: {self.layout}")
+        if self.theme:
+            lines.append(f"Theme: {self.theme}")
         if self.widgets:
             lines.append(f"Widgets: {', '.join(self.widgets.keys())}")
         if self.style_override:

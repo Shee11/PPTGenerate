@@ -1,5 +1,5 @@
 """Generation configuration model."""
-from typing import Literal
+from typing import Literal, Any
 from pydantic import BaseModel, Field
 
 
@@ -13,7 +13,8 @@ class GenerationConfig(BaseModel):
         max_tokens: Maximum tokens in response
         system_prompt: System message defining LLM behavior
         user_prompt_template: Template for user messages (may contain placeholders)
-        response_format: Expected response format ("json" or "text")
+        response_format: Expected response format ("json", "json_schema", or "text")
+        json_schema: JSON schema definition for structured output (used when response_format="json_schema")
         max_reasoning_tokens: Maximum reasoning tokens for reasoning models (None to disable)
     """
     
@@ -38,9 +39,13 @@ class GenerationConfig(BaseModel):
         ...,
         description="User prompt template (may contain {placeholders})"
     )
-    response_format: Literal["json", "text"] = Field(
+    response_format: Literal["json", "json_schema", "text"] = Field(
         default="json",
         description="Expected response format"
+    )
+    json_schema: dict[str, Any] | None = Field(
+        default=None,
+        description="JSON schema for structured output (required when response_format='json_schema')"
     )
     
     class Config:

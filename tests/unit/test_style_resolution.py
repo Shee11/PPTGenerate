@@ -1,7 +1,7 @@
 """Unit tests for Theme/Style to CSS conversion."""
 import pytest
-from src.layout.dummy.theme import Theme
-from src.layout.dummy.style import Style
+from src.paged.layout.dummy.theme import Theme
+from src.paged.layout.dummy.style import Style
 
 
 class TestThemeToCSSConversion:

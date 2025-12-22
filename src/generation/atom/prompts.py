@@ -4,83 +4,208 @@ from src.common.source import Source
 from src.utils.generation_config import GenerationConfig
 
 
-ATOM_EXTRACTION_SYSTEM_PROMPT = """You are an expert content analyzer. Your task is to extract structured knowledge atoms from source content.
+# JSON Schema for structured output - defines exact atom structure
+ATOM_EXTRACTION_SCHEMA = {
+    "name": "atom_extraction_response",
+    "strict": True,
+    "schema": {
+        "type": "object",
+        "properties": {
+            "abstract": {
+                "type": "string",
+                "description": "2-3 sentence summary of the source content"
+            },
+            "atoms": {
+                "type": "array",
+                "description": "Array of extracted atoms",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "id": {
+                            "type": "string",
+                            "description": "Unique identifier (e.g., 'fact_001', 'stat_001', 'quote_001')"
+                        },
+                        "type": {
+                            "type": "string",
+                            "enum": ["BIO", "FACT", "STAT", "QUOTE", "TENSION", "CONCEPT", "VISUAL"],
+                            "description": "Atom type tag"
+                        },
+                        "rank": {
+                            "type": "integer",
+                            "description": "Importance rank (1=most important)"
+                        },
+                        "text": {
+                            "type": "string",
+                            "description": "Main text content (for FACT, TENSION, CONCEPT). Use empty string for others."
+                        },
+                        "name": {
+                            "type": "string",
+                            "description": "Person/entity name for BIO atoms. Use empty string for non-BIO."
+                        },
+                        "role": {
+                            "type": "string",
+                            "description": "Role/title for BIO atoms. Use empty string for non-BIO."
+                        },
+                        "credentials": {
+                            "type": "string",
+                            "description": "Background/achievements for BIO atoms. Use empty string for non-BIO."
+                        },
+                        "affiliation": {
+                            "type": "string",
+                            "description": "Company/organization for BIO atoms. Use empty string for non-BIO."
+                        },
+                        "description": {
+                            "type": "string",
+                            "description": "Visual description (for VISUAL type). Use empty string for non-VISUAL."
+                        },
+                        "category": {
+                            "type": "string",
+                            "description": "Category for FACT atoms (e.g., definition, architecture, status, context). Use empty string for non-FACT."
+                        },
+                        "value": {
+                            "type": "string",
+                            "description": "Numeric value for STAT atoms (e.g., '50%', '200ms', '3x'). Use empty string for non-STAT."
+                        },
+                        "label": {
+                            "type": "string",
+                            "description": "Label for STAT atoms (e.g., 'Latency Reduction'). Use empty string for non-STAT."
+                        },
+                        "quote": {
+                            "type": "string",
+                            "description": "Verbatim quote for QUOTE atoms. Use empty string for non-QUOTE."
+                        },
+                        "attribution": {
+                            "type": "string",
+                            "description": "Attribution for QUOTE atoms (who said it). Use empty string if not applicable."
+                        },
+                        "context": {
+                            "type": "string",
+                            "description": "Context for STAT or QUOTE atoms. Use empty string if not applicable."
+                        },
+                        "tension_type": {
+                            "type": "string",
+                            "description": "Type for TENSION atoms (e.g., problem, contradiction, trade-off). Use empty string for non-TENSION."
+                        },
+                        "resolution_hint": {
+                            "type": "string",
+                            "description": "Optional resolution hint for TENSION atoms. Use empty string if not applicable."
+                        },
+                        "concept_type": {
+                            "type": "string",
+                            "description": "Type for CONCEPT atoms (e.g., solution, insight, method). Use empty string for non-CONCEPT."
+                        },
+                        "supporting_facts": {
+                            "type": "array",
+                            "items": {"type": "string"},
+                            "description": "IDs of supporting FACT atoms for CONCEPT atoms. Use empty array for non-CONCEPT."
+                        },
+                        "visual_category": {
+                            "type": "string",
+                            "description": "Category for VISUAL atoms (e.g., metaphor, demo, screenshot). Use empty string for non-VISUAL."
+                        },
+                        "related_atom": {
+                            "type": "string",
+                            "description": "ID of related atom for VISUAL atoms. Use empty string if not applicable."
+                        },
+                        "visual": {
+                            "type": "string",
+                            "description": "Suggested visual representation (e.g., chart, diagram, big-number, quote-card, code, screenshot, photo, icon, timeline, comparison-table, flow, architecture, before-after, list, table, graph, none)"
+                        },
+                        "source_ref": {
+                            "type": "object",
+                            "description": "Reference to source location",
+                            "properties": {
+                                "source_id": {"type": "string"},
+                                "file_path": {"type": "string"},
+                                "offset": {"type": "integer"},
+                                "length": {"type": "integer"}
+                            },
+                            "required": ["source_id", "file_path", "offset", "length"],
+                            "additionalProperties": False
+                        }
+                    },
+                    "required": ["id", "type", "rank", "text", "name", "role", "credentials", "affiliation", "description", "category", "value", "label", "quote", "attribution", "context", "tension_type", "resolution_hint", "concept_type", "supporting_facts", "visual_category", "related_atom", "visual", "source_ref"],
+                    "additionalProperties": False
+                }
+            }
+        },
+        "required": ["abstract", "atoms"],
+        "additionalProperties": False
+    }
+}
 
-Extract six types of atoms:
 
-1. **StatementAtom**: Individual claims, facts, or assertions
-   - text: The statement text
-   - related_to: IDs of atoms this supports or connects to (optional)
-   - contradicts: IDs of atoms this contradicts (optional)
+ATOM_EXTRACTION_SYSTEM_PROMPT = """You are an expert editor deconstructing content into "Narrative Atoms" for slide decks.
 
-2. **ProcessAtom**: Step-by-step procedures or workflows
-   - title: Name of the process
-   - steps: Ordered list of steps
-     - order: Step number (1-indexed)
-     - text: Step description
-     - dependencies: Step numbers that must complete first (optional)
+**Goal**: Extract atomic units that can be rearranged to build a compelling presentation.
 
-3. **ComparisonAtom**: Comparisons across multiple dimensions
-   - dimensions: List of comparison criteria
-   - entities: Dict mapping entity names to dimension values
+**Atom Types** (use exact type values: BIO, FACT, STAT, QUOTE, TENSION, CONCEPT, VISUAL):
 
-4. **QuoteAtom**: Quotes with attribution
-   - quote_text: The exact quoted text
-   - speaker: Name/title of person (e.g., "John Smith, CEO")
-   - source: Document/context (e.g., "Q3 Review Meeting", "strategy.pdf")
-   - context: Optional explanation of significance (default: "")
-   
-   **Use for**: Hard decisions, conclusions, meaningful comments, executive statements
+1. **BIO** - Identity/credentials (→ Title/Intro slides)
+   - Who the speaker/subject is, credentials, history, background
+   - Builds the "Who", establishes credibility
+   - Fill: name (person/entity), role (title/position), credentials (background/achievements), affiliation (company/org)
+   - Example: name="John Smith" role="Principal Engineer" credentials="15 years experience" affiliation="Google"
 
-5. **ActionItemAtom**: Action items with tracking
-   - title: Action items category (e.g., "Q4 Launch Actions")
-   - items: List of action items
-     - description: What needs to be done
-     - assignee: Person/team responsible (empty "" if unassigned)
-     - state: "New" | "Update" | "Resolved" (default: "New")
-     - due_date: Optional deadline in ISO format YYYY-MM-DD (default: "")
-   
-   **Use for**: Tasks, decisions needing follow-up, next steps from meetings
+2. **FACT** - Objective context (→ Anchor slides)
+   - Background context, definitions, architecture, status quo
+   - NOT for specific numbers (use STAT) or memorable phrases (use QUOTE)
+   - Fill: text (content), category (definition/architecture/status/context/other)
+   - Example: "Architecture uses microservices pattern"
 
-6. **TimelineAtom**: Chronological sequence of events (NEW - for journey/evolution narratives)
-   - title: Timeline category (e.g., "Career Journey", "Product Evolution", "Company History")
-   - events: Ordered list of timeline events (minimum 2)
-     - time_marker: Year, date, or period (e.g., "2011", "Q4 2023", "Early 2020s", "2016-2018")
-     - description: What happened at this point
-     - details: Optional additional context (default: "")
-   
-   **Use for**: Career progressions, product roadmaps, historical narratives, speaker journeys
-   **CRITICAL**: Look for chronological markers (years, dates, "from X to Y", "then", "later", "starting from")
-   **Example**: "Starting from 2011... 2016... 2021..." → Extract as TimelineAtom, NOT multiple StatementAtoms
+3. **STAT** - Quantitative data (→ Charts/Big Number slides)
+   - Specific numbers, metrics, KPIs, percentages
+   - Triggers data visualization (charts, big numbers)
+   - Fill: value (the number, e.g., "50%", "200ms"), label (what it represents), context (optional)
+   - Example: value="50%" label="Latency Reduction"
 
-**Output Format**: Return a JSON object with:
-- "abstract": Brief 2-3 sentence summary of the source content (for intent detection context)
-- "atoms": Array of extracted atoms
+4. **QUOTE** - Verbatim impact (→ Impact slides with big typography)
+   - Memorable phrases that should NOT be summarized or rewritten
+   - Perfect for "punchline" slides with large text
+   - Fill: quote (exact verbatim text), attribution (who said it), context (optional)
+   - Example: quote="Speed is not a feature. It is a requirement."
 
-Each atom must have:
-- id: Unique identifier (e.g., "stmt_001", "proc_001", "comp_001", "quote_001", "action_001", "timeline_001")
-- type: "StatementAtom" | "ProcessAtom" | "ComparisonAtom" | "QuoteAtom" | "ActionItemAtom" | "TimelineAtom"
-- rank: Integer for ordering (start at 1)
-- source_ref: Object with source_id, file_path, offset, length
-- Additional fields per atom type
+5. **TENSION** - Conflict/problem (→ Friction slides)
+   - Problems, contradictions, trade-offs, mistakes, surprises
+   - Fill: text (content), tension_type (problem/contradiction/trade-off/surprise/mistake/other), resolution_hint
+   - Example: "But latency spiked to 2 seconds under load"
 
-**Guidelines**:
-- Extract HIGH-LEVEL atoms suitable for PRESENTATION slides (not documentation)
-- Focus on MAIN TOPICS only - skip implementation details, background context, and minutiae
-- Each atom should represent a KEY CONCEPT that deserves slide real estate
-- Aim for 5-12 atoms total for typical talks (NOT 20-30+)
-- **COMPRESS AGGRESSIVELY**: Merge related sub-points into single atoms (e.g., "3 benefits" → 1 StatementAtom with list)
-- Synthesize multiple related ideas into rich, compound atoms rather than fragmenting
-- **TIMELINE PRIORITY**: If you detect 3+ chronological references (years, dates), create ONE TimelineAtom instead of multiple StatementAtoms
-- For quotes: Preserve exact wording and proper attribution
-- For action items: Extract assignee if mentioned, infer state from context
-- Preserve relationships between statements (related_to, contradicts)
-- Identify process dependencies accurately
-- Use consistent dimension names in comparisons
-- Set source_ref offset/length to approximate character positions
-- Assign sequential IDs within each type (stmt_001, quote_001, action_001, timeline_001, etc.)
+6. **CONCEPT** - Solution/insight (→ Insight slides)
+   - Key takeaways, methods, mental models, aha moments
+   - Fill: text (content), concept_type (solution/insight/method/principle/takeaway/other), supporting_facts (array of fact IDs)
+   - Example: "Solution: Cache at the edge"
 
-Return ONLY valid JSON. No markdown code blocks or explanations."""
+7. **VISUAL** - Concrete imagery (→ Visual instruction)
+   - Specific visuals mentioned: screenshots, metaphors, demos
+   - Fill: description (NOT text!), visual_category (metaphor/demo/screenshot/diagram/comparison/other), related_atom
+   - Example: "Screen filled with red error messages"
+
+**Required for ALL atoms**:
+- id: unique identifier (e.g., "bio_001", "fact_001", "stat_001", "quote_001", "tension_001", "concept_001", "visual_001")
+- type: exactly one of BIO, FACT, STAT, QUOTE, TENSION, CONCEPT, VISUAL
+- rank: importance (1=most important)
+- visual: suggested representation (chart/big-number/quote-card/diagram/code/screenshot/photo/icon/timeline/comparison-table/flow/architecture/before-after/list/table/graph/none)
+- source_ref: {source_id, file_path, offset, length}
+
+**IMPORTANT - Fill ALL fields**:
+For non-applicable fields, use empty string "" or empty array []:
+- BIO: Fill name, role, credentials, affiliation. Empty: text, description, category, value, label, quote, attribution, context, tension_type, resolution_hint, concept_type, supporting_facts=[], visual_category, related_atom
+- FACT: Fill text, category. Empty: name, role, credentials, affiliation, description, value, label, quote, attribution, context, tension_type, resolution_hint, concept_type, supporting_facts=[], visual_category, related_atom
+- STAT: Fill value, label, context. Empty: text, name, role, credentials, affiliation, description, category, quote, attribution, tension_type, resolution_hint, concept_type, supporting_facts=[], visual_category, related_atom. visual should be "chart" or "big-number"
+- QUOTE: Fill quote, attribution, context. Empty: text, name, role, credentials, affiliation, description, category, value, label, tension_type, resolution_hint, concept_type, supporting_facts=[], visual_category, related_atom. visual should be "quote-card"
+- TENSION: Fill text, tension_type, resolution_hint. Empty: name, role, credentials, affiliation, description, category, value, label, quote, attribution, context, concept_type, supporting_facts=[], visual_category, related_atom
+- CONCEPT: Fill text, concept_type, supporting_facts. Empty: name, role, credentials, affiliation, description, category, value, label, quote, attribution, context, tension_type, resolution_hint, visual_category, related_atom
+- VISUAL: Fill description, visual_category, related_atom. Empty: text, name, role, credentials, affiliation, category, value, label, quote, attribution, context, tension_type, resolution_hint, concept_type, supporting_facts=[]
+
+**Rules**:
+- Ignore fluff: filler words, pleasantries, repetition
+- Extract 5-20 atoms
+- Use BIO for speaker/subject identity and credentials
+- Use STAT for any specific numbers/metrics (not FACT)
+- Use QUOTE for memorable phrases that shouldn't be changed (not CONCEPT)
+- FACT = context/definitions, TENSION = negative/conflict, CONCEPT = conclusion/solution
+- For BIO, use 'name'+'role'+'credentials'+'affiliation'. For VISUAL, use 'description'. For STAT use 'value'+'label'. For QUOTE use 'quote'. For others, use 'text' field.
+"""
 
 
 def render_atom_extraction_prompt(source: Source, intent_guidance: str = "") -> str:
@@ -136,14 +261,14 @@ def get_atom_extraction_config(
     temperature: float = 0.2,
     max_tokens: int = 64000  # Increased for models with reasoning tokens (e.g., gpt-5.1)
 ) -> GenerationConfig:
-    """Get GenerationConfig for atom extraction.
+    """Get GenerationConfig for atom extraction with structured output.
     
     Args:
         temperature: Sampling temperature (default 0.2 for consistent extraction)
-        max_tokens: Maximum tokens in response (default 16000 to account for reasoning tokens)
+        max_tokens: Maximum tokens in response (default 64000 to account for reasoning tokens)
         
     Returns:
-        GenerationConfig configured for atom extraction
+        GenerationConfig configured for atom extraction with JSON schema
     """
     deployment = os.getenv('AZURE_OPENAI_DEPLOYMENT', 'gpt-4-turbo')
     return GenerationConfig(
@@ -152,5 +277,6 @@ def get_atom_extraction_config(
         max_tokens=max_tokens,
         system_prompt=ATOM_EXTRACTION_SYSTEM_PROMPT,
         user_prompt_template="{content}",  # Will be replaced with rendered prompt
-        response_format="json"
+        response_format="json_schema",
+        json_schema=ATOM_EXTRACTION_SCHEMA
     )

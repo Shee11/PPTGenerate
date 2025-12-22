@@ -52,6 +52,7 @@ def call_llm(
     temperature: float = 0.7,
     max_tokens: int = 4000,
     response_format: Optional[str] = None,
+    json_schema: Optional[dict] = None,
     max_retries: int = 3,
     initial_retry_delay: float = 1.0,
     max_reasoning_tokens: Optional[int] = None
@@ -65,7 +66,8 @@ def call_llm(
         deployment: Azure OpenAI deployment name
         temperature: Sampling temperature (0-2)
         max_tokens: Maximum tokens in response (total for reasoning + output)
-        response_format: Optional response format ("json" for JSON mode)
+        response_format: Optional response format ("json" for JSON mode, "json_schema" for structured output)
+        json_schema: JSON schema dict for structured output (required when response_format="json_schema")
         max_retries: Maximum number of retry attempts
         initial_retry_delay: Initial delay in seconds before first retry
         max_reasoning_tokens: Maximum reasoning tokens for reasoning models (default: None/disabled)
@@ -97,7 +99,12 @@ def call_llm(
         params["max_reasoning_tokens"] = max_reasoning_tokens
     
     # Add JSON response format if requested
-    if response_format == "json":
+    if response_format == "json_schema" and json_schema is not None:
+        params["response_format"] = {
+            "type": "json_schema",
+            "json_schema": json_schema
+        }
+    elif response_format == "json":
         params["response_format"] = {"type": "json_object"}
     
     # Retry loop with exponential backoff

@@ -2,184 +2,46 @@
   [
     {
       "replace": {
-        "id": "slide_4",
-        "rank": 4,
-        "state": "active",
-        "layout": "smart-grid",
-        "widgets": {
-          "header": {
-            "type": "Type.Heading",
-            "parameters": {
-              "text": "Pillar 2: High-ROI Technical Work"
-            }
-          },
-          "col1": {
-            "type": "Type.Body",
-            "parameters": {
-              "text": "**1. Define the right problems**\nPrecise problem definition now drives most of your career leverage."
-            }
-          },
-          "col2": {
-            "type": "Type.Body",
-            "parameters": {
-              "text": "**2. Build feedback loops**\nTelemetry, evaluation, and tuning prevent error accumulation across steps."
-            }
-          },
-          "col3": {
-            "type": "Type.Body",
-            "parameters": {
-              "text": "**3. Combine domains thoughtfully**\nCross-domain skills + tools beat depth in a single technical domain."
-            }
-          },
-          "col4": {
-            "type": "Type.Body",
-            "parameters": {
-              "text": "**Shift in high-ROI work**\nFrom tiny accuracy gains to integrated systems that adapt to customers."
-            }
-          }
-        },
-        "header": {
-          "type": "Type.Caption",
-          "parameters": {
-            "text": "*Focus your effort where leverage and visibility are highest in the LLM era.*"
-          }
-        },
-        "footer": {
-          "type": "Type.Caption",
-          "parameters": {
-            "text": "Career growth guide \u00b7 Pillar 2: High-ROI work"
-          }
-        },
-        "parameters": {
-          "cols": 4
-        }
-      }
-    }
-  ],
-  [
-    {
-      "replace": {
         "id": "slide_1",
         "rank": 1,
         "state": "active",
-        "layout": "timeline",
-        "parameters": {},
+        "layout": "full-bleed",
+        "widgets": {
+          "default": {
+            "type": "Type.Display",
+            "parameters": {
+              "text": "Building a Resilient\nAI\u2011Era Career",
+              "wrapper": "<GlassCard variant=\"light\">"
+            }
+          }
+        },
         "header": {
           "type": "Type.Heading",
           "parameters": {
-            "text": "Career Growth in the AI/LLM Era"
+            "text": "Chao Wang \u00b7 Applied Scientist, Microsoft Teams",
+            "preset": {
+              "surface": "Subtle",
+              "shape": "Rounded",
+              "fill": "Subtle",
+              "effect": "Shadow"
+            }
           }
         },
         "footer": {
-          "type": "Type.Caption",
+          "type": "Type.Body",
           "parameters": {
-            "text": "The real risk is **standing still**, not moving."
+            "text": "Over a decade in **vision**, **edge inference**, **AI products**",
+            "preset": {
+              "surface": "Subtle",
+              "shape": "Rounded",
+              "fill": "Subtle",
+              "effect": "Shadow"
+            }
           }
         },
-        "widgets": {
-          "title": {
-            "type": "Type.Subhead",
-            "parameters": {
-              "text": "Chao\u2019s journey: how roles and skills can shift in one career"
-            }
-          },
-          "step1": {
-            "type": "Type.Body",
-            "parameters": {
-              "text": "**2011** \u2013 Vision algorithms & service-side pipeline (early Face API)."
-            }
-          },
-          "step2": {
-            "type": "Type.Body",
-            "parameters": {
-              "text": "**~2016** \u2013 Edge inference: running AI models directly on mobile devices."
-            }
-          },
-          "step3": {
-            "type": "Type.Body",
-            "parameters": {
-              "text": "**~2018** \u2013 Cross-platform inference & vision **generation** (e.g., video)."
-            }
-          },
-          "step4": {
-            "type": "Type.Body",
-            "parameters": {
-              "text": "**2021** \u2013 Bringing vision & inference into Microsoft Teams product features."
-            }
-          },
-          "step5": {
-            "type": "Type.Body",
-            "parameters": {
-              "text": "**Lesson** \u2013 As AI/LLMs race ahead, careers grow by **evolving skills**, not defending today\u2019s advantage."
-            }
-          }
-        }
-      }
-    }
-  ],
-  [
-    {
-      "replace": {
-        "id": "slide_2",
-        "rank": 2,
-        "state": "active",
-        "layout": "comparison",
-        "parameters": {},
-        "header": {
-          "type": "Type.Subhead",
-          "parameters": {
-            "text": "Why old career playbooks are breaking in the LLM era"
-          }
-        },
-        "footer": {
-          "type": "Type.Caption",
-          "parameters": {
-            "text": "Adaptability: shift from linear pipelines to LLM-centric, orchestration-driven work."
-          }
-        },
-        "widgets": {
-          "title": {
-            "type": "Type.Heading",
-            "parameters": {
-              "text": "From Linear AI Pipelines to LLM-Centric Work"
-            }
-          },
-          "beforeLabel": {
-            "type": "Type.Body",
-            "parameters": {
-              "text": "**Traditional AI Development**"
-            }
-          },
-          "before": {
-            "type": "Type.List",
-            "parameters": {
-              "items": [
-                "**Primary focus**: standalone models, max **accuracy**",
-                "**Workflow**: linear pipeline, handoffs between teams",
-                "**Key skills**: data engineering, model design, infra",
-                "**Evaluation**: offline metrics, small accuracy gains",
-                "**Roles**: clear boundaries across AI/product teams"
-              ]
-            }
-          },
-          "afterLabel": {
-            "type": "Type.Body",
-            "parameters": {
-              "text": "**LLM-Centric Development**"
-            }
-          },
-          "after": {
-            "type": "Type.List",
-            "parameters": {
-              "items": [
-                "**Primary focus**: composing **large models** into apps",
-                "**Workflow**: iterative, orchestration + feedback loops",
-                "**Key skills**: prompt/agent design, tool orchestration",
-                "**Evaluation**: end-to-end behavior, user impact",
-                "**Roles**: blurry boundaries, shared responsibilities"
-              ]
-            }
-          }
+        "parameters": {
+          "align": "center",
+          "vibe": "mesh"
         }
       }
     }
@@ -190,65 +52,41 @@
         "id": "slide_3",
         "rank": 3,
         "state": "active",
-        "layout": "smart-grid",
+        "layout": "hero-split",
         "widgets": {
-          "header": {
+          "left": {
             "type": "Type.Heading",
             "parameters": {
-              "text": "Pillar 1: Evolve With the AI Industry"
+              "content": "From pipelines to **foundations**"
             }
           },
-          "col1": {
+          "right": {
             "type": "Type.List",
             "parameters": {
               "items": [
-                "**From models \u2192 orchestration**",
-                "Compose existing models via prompting",
-                "Prioritize **UX, iteration speed, workflows**"
+                "Old: months of data, tuning",
+                "Old: reinvent infra, eval **every time**",
+                "New: **large models** as knowledge base",
+                "New: shared orchestration, eval patterns"
               ]
-            }
-          },
-          "col2": {
-            "type": "Type.List",
-            "parameters": {
-              "items": [
-                "**From accuracy \u2192 reliability**",
-                "Focus on app-level robustness, failures",
-                "Own prompts, agents, tools, context"
-              ]
-            }
-          },
-          "col3": {
-            "type": "Type.List",
-            "parameters": {
-              "items": [
-                "**Blurred AI role boundaries**",
-                "Scientists + engineers ship products",
-                "Leave comfort zone, be a beginner"
-              ]
-            }
-          },
-          "col4": {
-            "type": "Type.Body",
-            "parameters": {
-              "text": "**Career takeaway:** grow by aligning your skills with these shifts, not with legacy workflows or rigid titles."
             }
           }
         },
         "header": {
-          "type": "Type.Caption",
+          "type": "Type.Body",
           "parameters": {
-            "text": "Modern Career Growth \u2022 Pillar 1 \u2013 Evolve with the Industry"
+            "content": "Why our AI workflows must change"
           }
         },
         "footer": {
-          "type": "Type.Caption",
+          "type": "Type.Body",
           "parameters": {
-            "text": "Embrace orchestration, UX, reliability, and blurred role boundaries."
+            "content": "Mindset shift: build on reusable large models"
           }
         },
         "parameters": {
-          "cols": 4
+          "ratio": "60-40",
+          "vibe": "none"
         }
       }
     }
@@ -260,56 +98,59 @@
         "rank": 5,
         "state": "active",
         "layout": "timeline",
-        "parameters": {},
-        "header": {
-          "type": "Type.Subhead",
-          "parameters": {
-            "text": "Career growth in the LLM era: from ideas to robust systems"
-          }
-        },
-        "footer": {
-          "type": "Type.Caption",
-          "parameters": {
-            "text": "Focus on problem definition, pragmatic prompts, and **planner\u2013executor** systems."
-          }
-        },
         "widgets": {
           "title": {
             "type": "Type.Heading",
             "parameters": {
-              "text": "Practices for High-Value LLM Work"
+              "text": "Modern AI app flow",
+              "level": 2
             }
           },
           "step1": {
             "type": "Type.Body",
             "parameters": {
-              "text": "**1. Define problems from real life**\nImagine a product that is truly useful in daily work, not just what the current model can already do."
+              "text": "Design **prompts** & **agent architectures**"
             }
           },
           "step2": {
             "type": "Type.Body",
             "parameters": {
-              "text": "**2. Treat problems as evolving systems**\nFrame work broadly: include data feedback, iterative improvement, and clear success criteria."
+              "text": "Orchestrate existing **models**, tools, data"
             }
           },
           "step3": {
             "type": "Type.Body",
             "parameters": {
-              "text": "**3. Tune prompts for the 90% path**\nStart with a general prompt, test widely, encode critical edge cases, and refine to reduce bad cases."
+              "text": "Add runtime **automated feedback loops**"
             }
           },
           "step4": {
             "type": "Type.Body",
             "parameters": {
-              "text": "**4. Stay realistic about prompt limits**\nPrompt tuning can reduce some errors, but it is not a silver bullet for hallucinations or full correctness."
+              "text": "Build **validation** & **evaluation pipelines**"
             }
           },
           "step5": {
             "type": "Type.Body",
             "parameters": {
-              "text": "**5. Use planner\u2013executor to cap errors**\nLet an LLM planner propose steps; a non-LLM executor enforces constraints, validates actions, and prevents error accumulation."
+              "text": "Iterate behavior fast, skip retraining cycles"
             }
           }
+        },
+        "header": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "From model code to orchestration flows"
+          }
+        },
+        "footer": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "Focus: prompts, feedback, evaluation, iteration"
+          }
+        },
+        "parameters": {
+          "vibe": "waves"
         }
       }
     }
@@ -317,32 +158,197 @@
   [
     {
       "replace": {
-        "id": "slide_8",
-        "rank": 8,
+        "id": "slide_4",
+        "rank": 4,
         "state": "active",
-        "layout": "full-bleed",
-        "parameters": {
-          "align": "center"
-        },
+        "layout": "comparison",
         "widgets": {
-          "default": {
-            "type": "Type.Display",
+          "title": {
+            "type": "Type.Heading",
             "parameters": {
-              "text": "# Make every step solid\n\nTurn each task into **durable skill** and **future opportunity**."
+              "text": "Model-Centric \u2192 System-Centric",
+              "level": 2
+            }
+          },
+          "beforeLabel": {
+            "type": "Type.Heading",
+            "parameters": {
+              "text": "Before: Standalone Models",
+              "level": 4
+            }
+          },
+          "before": {
+            "type": "Type.List",
+            "parameters": {
+              "items": [
+                "Build custom **models**",
+                "Optimize **accuracy** above all",
+                "Tune **algorithms**, low-level tweaks",
+                "Slow **release cycles**"
+              ]
+            }
+          },
+          "afterLabel": {
+            "type": "Type.Heading",
+            "parameters": {
+              "text": "Now: Composed Systems",
+              "level": 4
+            }
+          },
+          "after": {
+            "type": "Type.List",
+            "parameters": {
+              "items": [
+                "Compose **apps** from large models",
+                "Optimize **UX** and iteration speed",
+                "Design **prompts** and workflows",
+                "Orchestrate **tools** and context"
+              ]
             }
           }
         },
         "header": {
-          "type": "Type.Heading",
+          "type": "Type.Body",
           "parameters": {
-            "text": "Your Career Operating System"
+            "text": "Large-model era: shift what you optimize for."
           }
         },
         "footer": {
-          "type": "Type.Caption",
+          "type": "Type.Body",
           "parameters": {
-            "text": "\"Make every step solid.\" \u2014 **Chao Wang, Applied Scientist**"
+            "text": "Takeaway: design systems, not just models."
           }
+        },
+        "parameters": {
+          "vibe": "none"
+        }
+      }
+    }
+  ],
+  [
+    {
+      "replace": {
+        "id": "slide_2",
+        "rank": 2,
+        "state": "active",
+        "layout": "timeline",
+        "widgets": {
+          "title": {
+            "type": "Type.Heading",
+            "parameters": {
+              "text": "Traditional AI Workflow",
+              "level": 2
+            }
+          },
+          "step1": {
+            "type": "Type.Body",
+            "parameters": {
+              "text": "**Data engineers** \u2192 coverage, quality gatekeepers"
+            }
+          },
+          "step2": {
+            "type": "Type.Body",
+            "parameters": {
+              "text": "**ML scientists** \u2192 architecture, **accuracy** ownership"
+            }
+          },
+          "step3": {
+            "type": "Type.Body",
+            "parameters": {
+              "text": "**Developers** \u2192 **latency**, throughput, deployment"
+            }
+          },
+          "step4": {
+            "type": "Type.Body",
+            "parameters": {
+              "text": "**PMs** \u2192 user impact, product outcomes"
+            }
+          },
+          "step5": {
+            "type": "Type.Body",
+            "parameters": {
+              "text": "Linear **data \u2192 model \u2192 train \u2192 deploy**"
+            }
+          }
+        },
+        "header": {
+          "type": "Type.Display",
+          "parameters": {
+            "text": "Before the Shift"
+          }
+        },
+        "footer": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "Clear handoffs, rigid role boundaries"
+          }
+        },
+        "parameters": {
+          "vibe": "none"
+        }
+      }
+    }
+  ],
+  [
+    {
+      "replace": {
+        "id": "slide_7",
+        "rank": 7,
+        "state": "active",
+        "layout": "smart-grid",
+        "widgets": {
+          "header": {
+            "type": "Type.Heading",
+            "parameters": {
+              "text": "From systems to skills"
+            }
+          },
+          "col1": {
+            "type": "Type.Heading",
+            "parameters": {
+              "text": "Broader problem framing"
+            }
+          },
+          "col2": {
+            "type": "Type.Body",
+            "parameters": {
+              "text": "Include **data feedback** and **model possibilities**"
+            }
+          },
+          "col3": {
+            "type": "Type.Heading",
+            "parameters": {
+              "text": "Cross\u2011domain synthesis"
+            }
+          },
+          "col4": {
+            "type": "Type.Body",
+            "parameters": {
+              "text": "Combine **multiple domains** to solve complexity"
+            }
+          },
+          "footer": {
+            "type": "Type.Body",
+            "parameters": {
+              "text": "New craft: **human\u2013AI co\u2011creation**, iterative interfaces"
+            }
+          }
+        },
+        "header": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "High\u2011value skills in the AI era"
+          }
+        },
+        "footer": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "Focus on framing, synthesis, and iterative co\u2011design"
+          }
+        },
+        "parameters": {
+          "cols": 4,
+          "vibe": "none"
         }
       }
     }
@@ -354,34 +360,39 @@
         "rank": 6,
         "state": "active",
         "layout": "hero-split",
-        "parameters": {
-          "ratio": "60-40"
-        },
         "widgets": {
           "left": {
-            "type": "Type.Display",
+            "type": "Type.Heading",
             "parameters": {
-              "text": "## Human edges in the AI era\n\n- **System-level scope** beats function-level tweaks\n- **Low-level performance** skills stay highly valuable\n- LLMs still struggle with **C++ / cache** fine-tuning\n- Your job: choose the **right problem boundary**, then optimize"
+              "content": "Planner\u2013executor architecture",
+              "wrap": "<GlassCard variant=\"light\">"
             }
           },
           "right": {
             "type": "Type.Body",
             "parameters": {
-              "text": "**Chao\u2019s optimization lesson**\n\nAn intrinsic-heavy function was sped up in isolation, but called **38\u00d7/sec** instead of once per lifecycle. The result: a **net harmful** \u201coptimization\u201d because the broader system behavior and call patterns weren\u2019t considered."
+              "content": "- Multi-step AI: **error drift \u2192 garbage**\n- Planner: high-level **plan generation**\n- Executors: **verify, guard, persist** state\n- Feedback loop: **fail \u2192 replan**",
+              "wrap": "<GlassCard variant=\"light\">"
             }
           }
         },
         "header": {
-          "type": "Type.Heading",
+          "type": "Type.Body",
           "parameters": {
-            "text": "Play where AI is still weak"
+            "content": "Designing resilient multi-step AI systems",
+            "wrap": "<GlassCard variant=\"tinted\">"
           }
         },
         "footer": {
-          "type": "Type.Caption",
+          "type": "Type.Body",
           "parameters": {
-            "text": "*System thinking + low-level performance = durable career advantage*"
+            "content": "Pattern: planner plans, executors guard each step",
+            "wrap": "<GlassCard variant=\"dark\">"
           }
+        },
+        "parameters": {
+          "ratio": "60-40",
+          "vibe": "mesh"
         }
       }
     }
@@ -389,54 +400,177 @@
   [
     {
       "replace": {
-        "id": "slide_7",
-        "rank": 7,
+        "id": "slide_8",
+        "rank": 8,
         "state": "active",
         "layout": "timeline",
-        "parameters": {},
         "widgets": {
           "title": {
             "type": "Type.Heading",
             "parameters": {
-              "text": "From Merging Roles to Sustainable AI Habits"
+              "content": "Turn skills into habits"
             }
           },
           "step1": {
             "type": "Type.Body",
             "parameters": {
-              "text": "**Roles merge, skills broaden**\nManual tester jobs faded; engineers now **build + test**. Expect similar AI-era consolidation."
+              "content": "Define problems from **daily life** needs"
             }
           },
           "step2": {
             "type": "Type.Body",
             "parameters": {
-              "text": "**Stay aware, not overwhelmed**\nSubscribe to a **few curated AI feeds** and skim for high-level trends."
+              "content": "Draft a **general prompt** for most cases"
             }
           },
           "step3": {
             "type": "Type.Body",
             "parameters": {
-              "text": "**Learn by doing real work**\nAdopt a **task-driven** approach: try new AI tools when you have concrete tasks."
+              "content": "Iterate for **edge cases** and failures"
             }
           },
           "step4": {
             "type": "Type.Body",
             "parameters": {
-              "text": "**Turn experiments into workflows**\nUse LLMs as **translators**: one good spec \u2192 slides, design docs, diagrams, even code structure."
+              "content": "Keep a **single spec** as source of truth"
+            }
+          },
+          "step5": {
+            "type": "Type.Body",
+            "parameters": {
+              "content": "Let AI **translate** spec to slides, docs, code"
             }
           }
         },
         "header": {
-          "type": "Type.Subhead",
+          "type": "Type.Body",
           "parameters": {
-            "text": "Avoid Being Left Behind in the AI Era"
+            "content": "Concrete AI workflows you can practice"
           }
         },
         "footer": {
-          "type": "Type.Caption",
+          "type": "Type.Body",
           "parameters": {
-            "text": "*Lightweight, repeatable habits keep your skills aligned with merged AI-era roles.*"
+            "content": "Habits: define \u2192 prompt \u2192 iterate \u2192 translate"
           }
+        },
+        "parameters": {
+          "vibe": "waves"
+        }
+      }
+    }
+  ],
+  [
+    {
+      "replace": {
+        "id": "slide_9",
+        "rank": 9,
+        "state": "active",
+        "layout": "comparison",
+        "widgets": {
+          "title": {
+            "type": "Type.Heading",
+            "parameters": {
+              "text": "AI Limits, Human Edge"
+            }
+          },
+          "beforeLabel": {
+            "type": "Type.Heading",
+            "parameters": {
+              "text": "What AI Misses"
+            }
+          },
+          "before": {
+            "type": "Type.List",
+            "parameters": {
+              "items": [
+                "Low-level **C++ intrinsics**",
+                "Subtle **cache behavior**",
+                "True **problem scope**",
+                "System-level **tradeoffs**"
+              ]
+            }
+          },
+          "afterLabel": {
+            "type": "Type.Heading",
+            "parameters": {
+              "text": "Where You Add Value"
+            }
+          },
+          "after": {
+            "type": "Type.List",
+            "parameters": {
+              "items": [
+                "Optimize **call frequency**, not loops",
+                "**38x/sec \u2192 once** per lifecycle",
+                "Start at **product/system** level",
+                "Question \"impressive\" micro-optimizations"
+              ]
+            }
+          }
+        },
+        "header": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "Aim optimizations at the right level"
+          }
+        },
+        "footer": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "Your judgment decides scope; AI just assists"
+          }
+        },
+        "parameters": {
+          "vibe": "none"
+        }
+      }
+    }
+  ],
+  [
+    {
+      "replace": {
+        "id": "slide_10",
+        "rank": 10,
+        "state": "active",
+        "layout": "hero-split",
+        "widgets": {
+          "left": {
+            "type": "Type.Display",
+            "parameters": {
+              "text": "Career Mindset\nin the AI Era"
+            }
+          },
+          "right": {
+            "type": "Type.List",
+            "parameters": {
+              "items": [
+                "**Evolve** with fast **AI** shifts",
+                "Leave **comfort zones**, re\u2011beginner",
+                "**Make every step solid**",
+                "Turn answers into **durable knowledge**",
+                "Treat **AI** as force **multiplier**"
+              ]
+            }
+          }
+        },
+        "header": {
+          "type": "Type.Heading",
+          "parameters": {
+            "text": "Closing Takeaways"
+          }
+        },
+        "footer": {
+          "type": "QuoteWidget",
+          "parameters": {
+            "text": "Make every step solid.",
+            "author": "Chao Wang",
+            "attribution": "Career advice to a junior engineer"
+          }
+        },
+        "parameters": {
+          "ratio": "60-40",
+          "vibe": "none"
         }
       }
     }

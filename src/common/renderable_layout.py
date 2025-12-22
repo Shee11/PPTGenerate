@@ -5,7 +5,7 @@ from pydantic import BaseModel, ConfigDict, Field
 
 from src.common.bounds import Bounds
 from src.common.slot import Slot
-from src.widgets.base import BaseWidget
+from src.paged.widgets.base import BaseWidget
 
 
 class WidgetAssignment(BaseModel):

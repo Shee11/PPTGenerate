@@ -1,5 +1,5 @@
 """Quick test of SlidevRenderer with sample slide JSON."""
-from src.render.slidev.markdown_renderer import SlidevRenderer
+from src.paged.render.slidev.markdown_renderer import SlidevRenderer
 
 # Create renderer
 renderer = SlidevRenderer()

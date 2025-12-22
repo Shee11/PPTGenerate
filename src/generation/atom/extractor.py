@@ -6,15 +6,13 @@ from typing import Optional, Dict, Any
 from src.common.source import Source, SourceReference
 from src.common.patchable_context_pydantic import AddOperation, Patch
 from src.generation.atom.models import (
-    StatementAtom,
-    ProcessAtom,
-    ComparisonAtom,
+    BioAtom,
+    FactAtom,
+    StatAtom,
     QuoteAtom,
-    ActionItemAtom,
-    TimelineAtom,
-    ProcessStep,
-    ActionItem,
-    TimelineEvent
+    TensionAtom,
+    ConceptAtom,
+    VisualAtom,
 )
 from src.generation.atom.collection import AtomCollection
 from src.generation.atom.prompts import render_atom_extraction_prompt, get_atom_extraction_config
@@ -79,6 +77,7 @@ def extract_atoms(
         temperature=config.temperature,
         max_tokens=config.max_tokens,
         response_format=config.response_format,
+        json_schema=config.json_schema,
         max_reasoning_tokens=config.max_reasoning_tokens
     )
     
@@ -124,24 +123,58 @@ def _build_collection_from_data(source: Source, data: Dict[str, Any]) -> AtomCol
     collection = AtomCollection(id=f"atoms_{source.source_id}")
     operations = []
     
+    # Map LLM type tags to parser functions
+    type_mapping = {
+        # Full class names
+        "BioAtom": _parse_bio_atom,
+        "FactAtom": _parse_fact_atom,
+        "StatAtom": _parse_stat_atom,
+        "QuoteAtom": _parse_quote_atom,
+        "TensionAtom": _parse_tension_atom,
+        "ConceptAtom": _parse_concept_atom,
+        "VisualAtom": _parse_visual_atom,
+        # Short tags from prompt (case-insensitive)
+        "BIO": _parse_bio_atom,
+        "bio": _parse_bio_atom,
+        "Bio": _parse_bio_atom,
+        "FACT": _parse_fact_atom,
+        "fact": _parse_fact_atom,
+        "Fact": _parse_fact_atom,
+        "STAT": _parse_stat_atom,
+        "stat": _parse_stat_atom,
+        "Stat": _parse_stat_atom,
+        "QUOTE": _parse_quote_atom,
+        "quote": _parse_quote_atom,
+        "Quote": _parse_quote_atom,
+        "TENSION": _parse_tension_atom,
+        "tension": _parse_tension_atom,
+        "Tension": _parse_tension_atom,
+        "CONCEPT": _parse_concept_atom,
+        "concept": _parse_concept_atom,
+        "Concept": _parse_concept_atom,
+        "VISUAL": _parse_visual_atom,
+        "visual": _parse_visual_atom,
+        "Visual": _parse_visual_atom,
+        # Bracket-wrapped versions
+        "[BIO]": _parse_bio_atom,
+        "[FACT]": _parse_fact_atom,
+        "[STAT]": _parse_stat_atom,
+        "[QUOTE]": _parse_quote_atom,
+        "[TENSION]": _parse_tension_atom,
+        "[CONCEPT]": _parse_concept_atom,
+        "[VISUAL]": _parse_visual_atom,
+    }
+    
     for atom_data in data["atoms"]:
-        atom_type = atom_data.get("type")
+        atom_type = atom_data.get("type", "")
         
-        if atom_type == "StatementAtom":
-            atom = _parse_statement_atom(atom_data)
-        elif atom_type == "ProcessAtom":
-            atom = _parse_process_atom(atom_data)
-        elif atom_type == "ComparisonAtom":
-            atom = _parse_comparison_atom(atom_data)
-        elif atom_type == "QuoteAtom":
-            atom = _parse_quote_atom(atom_data)
-        elif atom_type == "ActionItemAtom":
-            atom = _parse_action_item_atom(atom_data)
-        elif atom_type == "TimelineAtom":
-            atom = _parse_timeline_atom(atom_data)
-        else:
+        # Try to find the parser for this type
+        parser = type_mapping.get(atom_type)
+        
+        if parser is None:
             raise ValueError(f"Unknown atom type: {atom_type}")
         
+        atom = parser(atom_data)
         operations.append(AddOperation(add=atom))
     
     # Apply all operations in one patch
@@ -151,68 +184,64 @@ def _build_collection_from_data(source: Source, data: Dict[str, Any]) -> AtomCol
     return collection
 
 
-def _parse_statement_atom(data: Dict[str, Any]) -> StatementAtom:
-    """Parse StatementAtom from JSON data.
+def _parse_bio_atom(data: Dict[str, Any]) -> BioAtom:
+    """Parse BioAtom from JSON data.
     
     Args:
         data: Atom data dict
         
     Returns:
-        StatementAtom instance
+        BioAtom instance
     """
-    return StatementAtom(
+    return BioAtom(
+        id=data["id"],
+        rank=data["rank"],
+        name=data["name"],
+        role=data.get("role", ""),
+        credentials=data.get("credentials", ""),
+        affiliation=data.get("affiliation", ""),
+        visual=data.get("visual", "none"),
+        source_ref=SourceReference(**data["source_ref"]),
+        metadata=data.get("metadata", {})
+    )
+
+
+def _parse_fact_atom(data: Dict[str, Any]) -> FactAtom:
+    """Parse FactAtom from JSON data.
+    
+    Args:
+        data: Atom data dict
+        
+    Returns:
+        FactAtom instance
+    """
+    return FactAtom(
         id=data["id"],
         rank=data["rank"],
         text=data["text"],
-        related_to=data.get("related_to", []),
-        contradicts=data.get("contradicts", []),
+        category=data.get("category", "other"),
+        visual=data.get("visual", "none"),
         source_ref=SourceReference(**data["source_ref"]),
         metadata=data.get("metadata", {})
     )
 
 
-def _parse_process_atom(data: Dict[str, Any]) -> ProcessAtom:
-    """Parse ProcessAtom from JSON data.
+def _parse_stat_atom(data: Dict[str, Any]) -> StatAtom:
+    """Parse StatAtom from JSON data.
     
     Args:
         data: Atom data dict
         
     Returns:
-        ProcessAtom instance
+        StatAtom instance
     """
-    steps = [
-        ProcessStep(
-            order=step["order"],
-            text=step["text"],
-            dependencies=step.get("dependencies", [])
-        )
-        for step in data["steps"]
-    ]
-    
-    return ProcessAtom(
+    return StatAtom(
         id=data["id"],
         rank=data["rank"],
-        title=data["title"],
-        steps=steps,
-        source_ref=SourceReference(**data["source_ref"]),
-        metadata=data.get("metadata", {})
-    )
-
-
-def _parse_comparison_atom(data: Dict[str, Any]) -> ComparisonAtom:
-    """Parse ComparisonAtom from JSON data.
-    
-    Args:
-        data: Atom data dict
-        
-    Returns:
-        ComparisonAtom instance
-    """
-    return ComparisonAtom(
-        id=data["id"],
-        rank=data["rank"],
-        dimensions=data["dimensions"],
-        entities=data["entities"],
+        value=data["value"],
+        label=data["label"],
+        context=data.get("context", ""),
+        visual=data.get("visual", "chart"),
         source_ref=SourceReference(**data["source_ref"]),
         metadata=data.get("metadata", {})
     )
@@ -230,67 +259,73 @@ def _parse_quote_atom(data: Dict[str, Any]) -> QuoteAtom:
     return QuoteAtom(
         id=data["id"],
         rank=data["rank"],
-        quote_text=data["quote_text"],
-        speaker=data["speaker"],
-        source=data["source"],
+        quote=data["quote"],
+        attribution=data.get("attribution", ""),
         context=data.get("context", ""),
+        visual=data.get("visual", "quote-card"),
         source_ref=SourceReference(**data["source_ref"]),
         metadata=data.get("metadata", {})
     )
 
 
-def _parse_action_item_atom(data: Dict[str, Any]) -> ActionItemAtom:
-    """Parse ActionItemAtom from JSON data.
+def _parse_tension_atom(data: Dict[str, Any]) -> TensionAtom:
+    """Parse TensionAtom from JSON data.
     
     Args:
         data: Atom data dict
         
     Returns:
-        ActionItemAtom instance
+        TensionAtom instance
     """
-    items = [
-        ActionItem(
-            description=item["description"],
-            assignee=item.get("assignee", ""),
-            state=item.get("state", "New"),
-            due_date=item.get("due_date", "")
-        )
-        for item in data["items"]
-    ]
-    
-    return ActionItemAtom(
+    return TensionAtom(
         id=data["id"],
         rank=data["rank"],
-        title=data["title"],
-        items=items,
+        text=data["text"],
+        tension_type=data.get("tension_type", "problem"),
+        resolution_hint=data.get("resolution_hint", ""),
+        visual=data.get("visual", "none"),
         source_ref=SourceReference(**data["source_ref"]),
         metadata=data.get("metadata", {})
     )
 
 
-def _parse_timeline_atom(data: Dict[str, Any]) -> TimelineAtom:
-    """Parse TimelineAtom from JSON data.
+def _parse_concept_atom(data: Dict[str, Any]) -> ConceptAtom:
+    """Parse ConceptAtom from JSON data.
     
     Args:
         data: Atom data dict
         
     Returns:
-        TimelineAtom instance
+        ConceptAtom instance
     """
-    events = [
-        TimelineEvent(
-            time_marker=event["time_marker"],
-            description=event["description"],
-            details=event.get("details", "")
-        )
-        for event in data["events"]
-    ]
-    
-    return TimelineAtom(
+    return ConceptAtom(
         id=data["id"],
         rank=data["rank"],
-        title=data["title"],
-        events=events,
+        text=data["text"],
+        concept_type=data.get("concept_type", "insight"),
+        supporting_facts=data.get("supporting_facts", []),
+        visual=data.get("visual", "none"),
+        source_ref=SourceReference(**data["source_ref"]),
+        metadata=data.get("metadata", {})
+    )
+
+
+def _parse_visual_atom(data: Dict[str, Any]) -> VisualAtom:
+    """Parse VisualAtom from JSON data.
+    
+    Args:
+        data: Atom data dict
+        
+    Returns:
+        VisualAtom instance
+    """
+    return VisualAtom(
+        id=data["id"],
+        rank=data["rank"],
+        description=data["description"],
+        visual_category=data.get("visual_category", "other"),
+        related_atom=data.get("related_atom", ""),
+        visual=data.get("visual", "none"),
         source_ref=SourceReference(**data["source_ref"]),
         metadata=data.get("metadata", {})
     )

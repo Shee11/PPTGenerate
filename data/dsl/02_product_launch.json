@@ -1,0 +1,412 @@
+{
+  "id": "product_launch",
+  "title": "Product Launch Presentation",
+  "description": "A sleek product launch presentation for a new mobile app",
+  "slides": [
+    {
+      "id": "slide_01_intro",
+      "rank": 1,
+      "layout": "full-bleed",
+      "theme": "creative",
+      "parameters": {
+        "vibe": "playful",
+        "align": "center"
+      },
+      "widgets": {
+        "default": {
+          "type": "Type.Display",
+          "parameters": {
+            "text": "Introducing Zenith"
+          }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "The Future of Personal Wellness" }
+      }
+    },
+    {
+      "id": "slide_02_vision",
+      "rank": 2,
+      "layout": "quote-hero",
+      "theme": "creative",
+      "parameters": {
+        "vibe": "calm",
+        "quoteStyle": "editorial"
+      },
+      "widgets": {
+        "default": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "Your wellness journey should be as unique as you are. Zenith adapts to your life, not the other way around."
+          }
+        },
+        "author": {
+          "type": "Type.Body",
+          "parameters": { "text": "Our Philosophy" }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "Zenith" }
+      }
+    },
+    {
+      "id": "slide_03_problem",
+      "rank": 3,
+      "layout": "comparison",
+      "theme": "creative",
+      "parameters": {
+        "vibe": "dynamic"
+      },
+      "widgets": {
+        "title": {
+          "type": "Type.Heading",
+          "parameters": { "text": "The Old Way vs The New Way" }
+        },
+        "before": {
+          "type": "Type.List",
+          "parameters": {
+            "title": "Before Zenith",
+            "items": [
+              "Generic one-size-fits-all programs",
+              "Overwhelming with 50+ metrics",
+              "Guilt-driven notifications",
+              "No context awareness",
+              "Data silos across apps"
+            ]
+          }
+        },
+        "after": {
+          "type": "Type.List",
+          "parameters": {
+            "title": "With Zenith",
+            "items": [
+              "AI-personalized recommendations",
+              "Focus on 3 key metrics that matter",
+              "Encouraging, context-aware nudges",
+              "Adapts to your schedule & energy",
+              "Unified wellness dashboard"
+            ]
+          }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "Zenith" }
+      }
+    },
+    {
+      "id": "slide_04_features",
+      "rank": 4,
+      "layout": "cards-grid",
+      "theme": "creative",
+      "parameters": {
+        "vibe": "playful",
+        "columns": 3,
+        "cardStyle": "elevated"
+      },
+      "widgets": {
+        "title": {
+          "type": "Type.Heading",
+          "parameters": { "text": "Core Features" }
+        },
+        "card-1": {
+          "type": "Type.Body",
+          "parameters": { "text": "🧠 Smart Insights\n\nAI analyzes your patterns and provides personalized recommendations" }
+        },
+        "card-2": {
+          "type": "Type.Body",
+          "parameters": { "text": "😴 Sleep Optimization\n\nAdvanced sleep tracking with smart alarm that wakes you at the optimal time" }
+        },
+        "card-3": {
+          "type": "Type.Body",
+          "parameters": { "text": "🏃 Activity Coaching\n\nAdaptive workout suggestions based on your energy and schedule" }
+        },
+        "card-4": {
+          "type": "Type.Body",
+          "parameters": { "text": "🍎 Nutrition Guide\n\nMeal suggestions and tracking with photo recognition" }
+        },
+        "card-5": {
+          "type": "Type.Body",
+          "parameters": { "text": "🧘 Mindfulness\n\nGuided meditations and breathing exercises for stress relief" }
+        },
+        "card-6": {
+          "type": "Type.Body",
+          "parameters": { "text": "📊 Progress Dashboard\n\nBeautiful visualizations of your wellness journey" }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "Zenith" }
+      }
+    },
+    {
+      "id": "slide_05_ai",
+      "rank": 5,
+      "layout": "image-text",
+      "theme": "creative",
+      "parameters": {
+        "vibe": "dynamic",
+        "imagePosition": "left",
+        "imageSize": "medium"
+      },
+      "widgets": {
+        "image": {
+          "type": "Type.Body",
+          "parameters": { "text": "🤖\nZenith AI" }
+        },
+        "content": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "## Powered by Adaptive AI\n\nOur proprietary AI engine learns from:\n\n- Your daily patterns and preferences\n- Environmental factors (weather, location)\n- Biometric data from wearables\n- Your feedback and goals\n\nThe result? Recommendations that actually work for YOUR life."
+          }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "Intelligence Built In" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "Zenith" }
+      }
+    },
+    {
+      "id": "slide_06_stats",
+      "rank": 6,
+      "layout": "stats-showcase",
+      "theme": "creative",
+      "parameters": {
+        "vibe": "playful",
+        "columns": 4,
+        "displayStyle": "cards"
+      },
+      "widgets": {
+        "title": {
+          "type": "Type.Heading",
+          "parameters": { "text": "Beta Results" }
+        },
+        "stat-1": {
+          "type": "Type.Body",
+          "parameters": { "text": "92%\nDaily Active Users" }
+        },
+        "stat-2": {
+          "type": "Type.Body",
+          "parameters": { "text": "3.2x\nGoal Completion Rate" }
+        },
+        "stat-3": {
+          "type": "Type.Body",
+          "parameters": { "text": "45min\nAvg. Daily Usage" }
+        },
+        "stat-4": {
+          "type": "Type.Body",
+          "parameters": { "text": "4.9★\nApp Store Rating" }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "Based on 10,000+ beta users" }
+      }
+    },
+    {
+      "id": "slide_07_testimonials",
+      "rank": 7,
+      "layout": "smart-grid",
+      "theme": "creative",
+      "parameters": {
+        "vibe": "calm",
+        "cols": 2
+      },
+      "widgets": {
+        "cell1": {
+          "type": "QuoteWidget",
+          "parameters": {
+            "quote": "Finally an app that gets me. The morning recommendations are spot-on.",
+            "author": "Jessica M.",
+            "role": "Beta User"
+          }
+        },
+        "cell2": {
+          "type": "QuoteWidget",
+          "parameters": {
+            "quote": "Lost 15 pounds without feeling like I was on a diet. Zenith just made healthy choices easy.",
+            "author": "Marcus T.",
+            "role": "Beta User"
+          }
+        },
+        "cell3": {
+          "type": "QuoteWidget",
+          "parameters": {
+            "quote": "My sleep quality improved 40% in the first month. The smart alarm is a game-changer.",
+            "author": "Sarah K.",
+            "role": "Beta User"
+          }
+        },
+        "cell4": {
+          "type": "QuoteWidget",
+          "parameters": {
+            "quote": "As a busy mom, I love how Zenith adapts to my chaotic schedule.",
+            "author": "Amanda L.",
+            "role": "Beta User"
+          }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "What Our Users Say" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "Zenith" }
+      }
+    },
+    {
+      "id": "slide_08_pricing",
+      "rank": 8,
+      "layout": "cards-grid",
+      "theme": "creative",
+      "parameters": {
+        "vibe": "professional",
+        "columns": 3,
+        "cardStyle": "outlined"
+      },
+      "widgets": {
+        "title": {
+          "type": "Type.Heading",
+          "parameters": { "text": "Simple Pricing" }
+        },
+        "card-1": {
+          "type": "Type.Body",
+          "parameters": { "text": "✨ Free\n\n$0/month\n\n• Basic tracking\n• 3 guided sessions/week\n• Community access" }
+        },
+        "card-2": {
+          "type": "Type.Body",
+          "parameters": { "text": "⭐ Premium\n\n$9.99/month\n\n• Full AI features\n• Unlimited sessions\n• Wearable sync\n• Priority support" }
+        },
+        "card-3": {
+          "type": "Type.Body",
+          "parameters": { "text": "👨‍👩‍👧‍👦 Family\n\n$14.99/month\n\n• Up to 6 accounts\n• Family challenges\n• Shared goals\n• All Premium features" }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "14-day free trial for all plans" }
+      }
+    },
+    {
+      "id": "slide_09_timeline",
+      "rank": 9,
+      "layout": "timeline",
+      "theme": "creative",
+      "parameters": {
+        "vibe": "dynamic"
+      },
+      "widgets": {
+        "title": {
+          "type": "Type.Heading",
+          "parameters": { "text": "Launch Roadmap" }
+        },
+        "step1": {
+          "type": "Type.Body",
+          "parameters": {
+            "title": "January 2025",
+            "text": "iOS App Launch"
+          }
+        },
+        "step2": {
+          "type": "Type.Body",
+          "parameters": {
+            "title": "March 2025",
+            "text": "Android Release"
+          }
+        },
+        "step3": {
+          "type": "Type.Body",
+          "parameters": {
+            "title": "June 2025",
+            "text": "Apple Watch & Fitbit Integration"
+          }
+        },
+        "step4": {
+          "type": "Type.Body",
+          "parameters": {
+            "title": "September 2025",
+            "text": "Corporate Wellness Program"
+          }
+        },
+        "step5": {
+          "type": "Type.Body",
+          "parameters": {
+            "title": "December 2025",
+            "text": "International Expansion"
+          }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "Zenith" }
+      }
+    },
+    {
+      "id": "slide_10_cta",
+      "rank": 10,
+      "layout": "spotlight",
+      "theme": "creative",
+      "parameters": {
+        "vibe": "playful",
+        "intensity": "medium"
+      },
+      "widgets": {
+        "default": {
+          "type": "Type.Display",
+          "parameters": {
+            "text": "Start Your Journey"
+          }
+        },
+        "subtitle": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "Download Zenith today and get 30 days of Premium free\n\n📱 Available on iOS & Android"
+          }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "zenith.app • @zenithwellness" }
+      }
+    }
+  ]
+}

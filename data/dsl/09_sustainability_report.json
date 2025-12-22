@@ -1,0 +1,487 @@
+{
+  "id": "sustainability_report",
+  "title": "Sustainability Journey 2024",
+  "description": "Environmental and social responsibility report with green initiatives",
+  "slides": [
+    {
+      "id": "slide_01_title",
+      "rank": 1,
+      "layout": "full-bleed",
+      "theme": "minimal",
+      "parameters": {
+        "vibe": "calm",
+        "align": "center"
+      },
+      "widgets": {
+        "default": {
+          "type": "Type.Display",
+          "parameters": {
+            "text": "Our Sustainability\nJourney"
+          }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "EcoVenture • 2024 Report" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "Building a Better Tomorrow" }
+      }
+    },
+    {
+      "id": "slide_02_mission",
+      "rank": 2,
+      "layout": "quote-hero",
+      "theme": "minimal",
+      "parameters": {
+        "vibe": "calm",
+        "quoteStyle": "centered"
+      },
+      "widgets": {
+        "default": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "We believe that business success and environmental responsibility are not opposing forces — they are the foundation of a thriving future for all."
+          }
+        },
+        "author": {
+          "type": "Type.Body",
+          "parameters": { "text": "Our Sustainability Mission" }
+        },
+        "context": {
+          "type": "Type.Body",
+          "parameters": { "text": "🌍 🌱 💚" }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "EcoVenture • 2024 Report" }
+      }
+    },
+    {
+      "id": "slide_03_highlights",
+      "rank": 3,
+      "layout": "stats-showcase",
+      "theme": "minimal",
+      "parameters": {
+        "vibe": "dynamic",
+        "columns": 4,
+        "displayStyle": "nature"
+      },
+      "widgets": {
+        "title": {
+          "type": "Type.Heading",
+          "parameters": { "text": "2024 Impact at a Glance" }
+        },
+        "stat-1": {
+          "type": "Type.Body",
+          "parameters": { "text": "45%\nCarbon Reduction" }
+        },
+        "stat-2": {
+          "type": "Type.Body",
+          "parameters": { "text": "100%\nRenewable Energy" }
+        },
+        "stat-3": {
+          "type": "Type.Body",
+          "parameters": { "text": "2M\nTrees Planted" }
+        },
+        "stat-4": {
+          "type": "Type.Body",
+          "parameters": { "text": "Zero\nWaste to Landfill" }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "EcoVenture • 2024 Report" }
+      }
+    },
+    {
+      "id": "slide_04_journey",
+      "rank": 4,
+      "layout": "timeline",
+      "theme": "minimal",
+      "parameters": {
+        "vibe": "calm"
+      },
+      "widgets": {
+        "title": {
+          "type": "Type.Heading",
+          "parameters": { "text": "Our Sustainability Journey" }
+        },
+        "step1": {
+          "type": "Type.Body",
+          "parameters": {
+            "title": "2019",
+            "text": "Committed to carbon neutrality; launched first sustainability report"
+          }
+        },
+        "step2": {
+          "type": "Type.Body",
+          "parameters": {
+            "title": "2020",
+            "text": "Achieved 50% renewable energy; eliminated single-use plastics"
+          }
+        },
+        "step3": {
+          "type": "Type.Body",
+          "parameters": {
+            "title": "2021",
+            "text": "Joined RE100; launched supplier sustainability program"
+          }
+        },
+        "step4": {
+          "type": "Type.Body",
+          "parameters": {
+            "title": "2022",
+            "text": "Achieved carbon neutral operations; 1M trees planted"
+          }
+        },
+        "step5": {
+          "type": "Type.Body",
+          "parameters": {
+            "title": "2023",
+            "text": "100% renewable energy; zero waste to landfill achieved"
+          }
+        },
+        "step6": {
+          "type": "Type.Body",
+          "parameters": {
+            "title": "2024",
+            "text": "45% absolute carbon reduction; 2M cumulative trees; Science-based targets approved"
+          }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "EcoVenture • 2024 Report" }
+      }
+    },
+    {
+      "id": "slide_05_climate",
+      "rank": 5,
+      "layout": "hero-split",
+      "theme": "minimal",
+      "parameters": {
+        "vibe": "professional",
+        "split": "50-50"
+      },
+      "widgets": {
+        "left": {
+          "type": "Type.Display",
+          "parameters": {
+            "text": "Climate\nAction"
+          }
+        },
+        "right": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "## Net-Zero by 2030\n\nOur science-based targets align with the Paris Agreement's 1.5°C pathway.\n\n**2024 Progress:**\n- Scope 1 & 2: 45% reduction (vs 2019)\n- Scope 3: 25% reduction (vs 2019)\n- Renewable electricity: 100%\n- Electric vehicle fleet: 80%\n\n*Verified by CDP • A-List rating*"
+          }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "EcoVenture • 2024 Report" }
+      }
+    },
+    {
+      "id": "slide_06_circular",
+      "rank": 6,
+      "layout": "cards-grid",
+      "theme": "minimal",
+      "parameters": {
+        "vibe": "minimal",
+        "columns": 3,
+        "cardStyle": "outlined"
+      },
+      "widgets": {
+        "title": {
+          "type": "Type.Heading",
+          "parameters": { "text": "Circular Economy" }
+        },
+        "card-1": {
+          "type": "Type.Body",
+          "parameters": { "text": "♻️ **Product Design**\n\n100% recyclable packaging\n85% recycled materials\nDesign for disassembly" }
+        },
+        "card-2": {
+          "type": "Type.Body",
+          "parameters": { "text": "🔄 **Take-Back Program**\n\n250,000 products recycled\n92% material recovery rate\nRefurbishment program" }
+        },
+        "card-3": {
+          "type": "Type.Body",
+          "parameters": { "text": "🌊 **Zero Waste**\n\n0% waste to landfill\n95% recycling rate\nComposting program" }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "EcoVenture • 2024 Report" }
+      }
+    },
+    {
+      "id": "slide_07_nature",
+      "rank": 7,
+      "layout": "image-text",
+      "theme": "minimal",
+      "parameters": {
+        "vibe": "calm",
+        "imagePosition": "left",
+        "imageSize": "large"
+      },
+      "widgets": {
+        "image": {
+          "type": "Type.Body",
+          "parameters": { "text": "🌳🌲🌴\nReforestation\nProject" }
+        },
+        "content": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "## Nature & Biodiversity\n\n**Tree Planting Initiative**\n- 2 million trees planted (cumulative)\n- 15 countries across 4 continents\n- Partnership with One Tree Planted\n\n**Biodiversity Protection**\n- 50,000 hectares protected\n- Wildlife corridors restored\n- Native species programs\n\n**Water Stewardship**\n- 40% water usage reduction\n- Water-positive operations\n- Watershed restoration projects"
+          }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "EcoVenture • 2024 Report" }
+      }
+    },
+    {
+      "id": "slide_08_supply_chain",
+      "rank": 8,
+      "layout": "feature-grid",
+      "theme": "minimal",
+      "parameters": {
+        "vibe": "professional",
+        "cols": 2
+      },
+      "widgets": {
+        "title": {
+          "type": "Type.Heading",
+          "parameters": { "text": "Sustainable Supply Chain" }
+        },
+        "feature1": {
+          "type": "Type.Body",
+          "parameters": {
+            "title": "📋 Supplier Code",
+            "text": "100% suppliers signed sustainability code; annual audits for top 200 suppliers"
+          }
+        },
+        "feature2": {
+          "type": "Type.Body",
+          "parameters": {
+            "title": "🚛 Green Logistics",
+            "text": "60% reduction in shipping emissions; optimized routing and packaging"
+          }
+        },
+        "feature3": {
+          "type": "Type.Body",
+          "parameters": {
+            "title": "🏭 Responsible Sourcing",
+            "text": "100% conflict-free minerals; certified sustainable raw materials"
+          }
+        },
+        "feature4": {
+          "type": "Type.Body",
+          "parameters": {
+            "title": "📊 Transparency",
+            "text": "Full supply chain mapping; public supplier list; traceability platform"
+          }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "EcoVenture • 2024 Report" }
+      }
+    },
+    {
+      "id": "slide_09_social",
+      "rank": 9,
+      "layout": "comparison",
+      "theme": "minimal",
+      "parameters": {
+        "vibe": "calm"
+      },
+      "widgets": {
+        "title": {
+          "type": "Type.Heading",
+          "parameters": { "text": "Social Impact" }
+        },
+        "left-title": {
+          "type": "Type.Heading",
+          "parameters": { "text": "Our People" }
+        },
+        "left-content": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "**Diversity & Inclusion**\n- 48% women in leadership\n- Pay equity achieved globally\n- ERGs for 8 communities\n\n**Well-being**\n- Mental health support\n- Flexible work for all\n- $5,000 wellness benefit"
+          }
+        },
+        "right-title": {
+          "type": "Type.Heading",
+          "parameters": { "text": "Our Communities" }
+        },
+        "right-content": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "**Investment**\n- $15M community grants\n- 100,000 volunteer hours\n- STEM education programs\n\n**Impact**\n- 500,000 lives improved\n- 50 nonprofit partnerships\n- Disaster relief support"
+          }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "EcoVenture • 2024 Report" }
+      }
+    },
+    {
+      "id": "slide_10_governance",
+      "rank": 10,
+      "layout": "smart-grid",
+      "theme": "minimal",
+      "parameters": {
+        "vibe": "professional",
+        "cols": 2
+      },
+      "widgets": {
+        "cell1": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "**🏛️ Board Oversight**\n\nSustainability Committee\nQuarterly ESG reviews\nExecutive compensation linked to ESG"
+          }
+        },
+        "cell2": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "**📜 Policies**\n\nHuman Rights Policy\nEnvironmental Policy\nAnti-Corruption Policy"
+          }
+        },
+        "cell3": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "**🔍 Assurance**\n\nThird-party verification\nGRI Standards reporting\nTCFD aligned disclosure"
+          }
+        },
+        "cell4": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "**🏆 Recognition**\n\nCDP A-List (Climate)\nDJSI Industry Leader\nB Corp Certified"
+          }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "Governance & Transparency" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "EcoVenture • 2024 Report" }
+      }
+    },
+    {
+      "id": "slide_11_goals",
+      "rank": 11,
+      "layout": "magazine",
+      "theme": "minimal",
+      "parameters": {
+        "vibe": "dynamic",
+        "variant": "right-feature"
+      },
+      "widgets": {
+        "feature": {
+          "type": "Type.Display",
+          "parameters": {
+            "text": "2030\nGoals"
+          }
+        },
+        "sidebar": {
+          "type": "Type.List",
+          "parameters": {
+            "items": [
+              "Net-zero emissions (Scope 1, 2 & 3)",
+              "100% circular products",
+              "5 million trees planted",
+              "Water positive operations",
+              "$50M community investment",
+              "Top 10% diverse workforce"
+            ]
+          }
+        },
+        "caption": {
+          "type": "Type.Body",
+          "parameters": { "text": "Ambitious targets backed by science and accountability" }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "EcoVenture • 2024 Report" }
+      }
+    },
+    {
+      "id": "slide_12_closing",
+      "rank": 12,
+      "layout": "spotlight",
+      "theme": "minimal",
+      "parameters": {
+        "vibe": "calm",
+        "intensity": "soft"
+      },
+      "widgets": {
+        "default": {
+          "type": "Type.Display",
+          "parameters": {
+            "text": "Together for\na Better Tomorrow"
+          }
+        },
+        "subtitle": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "Read our full report: ecoventure.com/sustainability\n\nQuestions? sustainability@ecoventure.com\n\n#SustainableByDesign"
+          }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "EcoVenture • Sustainability Report 2024" }
+      }
+    }
+  ]
+}

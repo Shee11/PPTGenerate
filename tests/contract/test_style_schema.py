@@ -1,8 +1,8 @@
 """Contract tests for Theme and Style JSON schemas."""
 import pytest
 from pydantic import ValidationError
-from src.layout.dummy.theme import Theme
-from src.layout.dummy.style import Style
+from src.paged.layout.dummy.theme import Theme
+from src.paged.layout.dummy.style import Style
 
 
 class TestThemeSchema:

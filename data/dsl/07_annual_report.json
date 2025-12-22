@@ -1,0 +1,494 @@
+{
+  "id": "annual_report_2024",
+  "title": "Annual Report 2024",
+  "description": "Corporate annual report with financial and operational highlights",
+  "slides": [
+    {
+      "id": "slide_01_cover",
+      "rank": 1,
+      "layout": "full-bleed",
+      "theme": "dark",
+      "parameters": {
+        "vibe": "dramatic",
+        "align": "center"
+      },
+      "widgets": {
+        "default": {
+          "type": "Type.Display",
+          "parameters": {
+            "text": "Annual Report\n2024"
+          }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "Horizon Global Inc." }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "Building Tomorrow, Today" }
+      }
+    },
+    {
+      "id": "slide_02_ceo_letter",
+      "rank": 2,
+      "layout": "quote-hero",
+      "theme": "dark",
+      "parameters": {
+        "vibe": "calm",
+        "quoteStyle": "centered"
+      },
+      "widgets": {
+        "default": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "2024 was a transformative year for Horizon Global. Despite market headwinds, we achieved record revenue, expanded into three new markets, and delivered exceptional value to our shareholders."
+          }
+        },
+        "author": {
+          "type": "Type.Body",
+          "parameters": { "text": "Sarah Chen, CEO" }
+        },
+        "context": {
+          "type": "Type.Body",
+          "parameters": { "text": "Letter from the CEO" }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "Horizon Global Inc. • Annual Report 2024" }
+      }
+    },
+    {
+      "id": "slide_03_highlights",
+      "rank": 3,
+      "layout": "stats-showcase",
+      "theme": "dark",
+      "parameters": {
+        "vibe": "dramatic",
+        "columns": 4,
+        "displayStyle": "gradient"
+      },
+      "widgets": {
+        "title": {
+          "type": "Type.Heading",
+          "parameters": { "text": "Year at a Glance" }
+        },
+        "stat-1": {
+          "type": "Type.Body",
+          "parameters": { "text": "$4.2B\nRevenue (+23%)" }
+        },
+        "stat-2": {
+          "type": "Type.Body",
+          "parameters": { "text": "$890M\nNet Income" }
+        },
+        "stat-3": {
+          "type": "Type.Body",
+          "parameters": { "text": "12,500\nEmployees" }
+        },
+        "stat-4": {
+          "type": "Type.Body",
+          "parameters": { "text": "45\nCountries" }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "Horizon Global Inc. • Annual Report 2024" }
+      }
+    },
+    {
+      "id": "slide_04_revenue",
+      "rank": 4,
+      "layout": "dashboard",
+      "theme": "dark",
+      "parameters": {
+        "vibe": "professional",
+        "layout": "mixed"
+      },
+      "widgets": {
+        "title": {
+          "type": "Type.Heading",
+          "parameters": { "text": "Revenue Breakdown" }
+        },
+        "metric1": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "$2.1B\nNorth America\n50% of total"
+          }
+        },
+        "metric2": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "$1.3B\nEMEA\n31% of total"
+          }
+        },
+        "metric3": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "$800M\nAsia Pacific\n19% of total"
+          }
+        },
+        "chart": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "📊 **Revenue by Segment**\n\nCloud Services: $1.8B (43%)\nEnterprise Software: $1.4B (33%)\nProfessional Services: $600M (14%)\nHardware: $400M (10%)"
+          }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "Horizon Global Inc. • Annual Report 2024" }
+      }
+    },
+    {
+      "id": "slide_05_growth",
+      "rank": 5,
+      "layout": "comparison",
+      "theme": "dark",
+      "parameters": {
+        "vibe": "professional"
+      },
+      "widgets": {
+        "title": {
+          "type": "Type.Heading",
+          "parameters": { "text": "Year-over-Year Growth" }
+        },
+        "left-title": {
+          "type": "Type.Heading",
+          "parameters": { "text": "2023" }
+        },
+        "left-content": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "Revenue: $3.4B\nNet Income: $680M\nEPS: $4.25\nEmployees: 10,200\nMarkets: 38 countries"
+          }
+        },
+        "right-title": {
+          "type": "Type.Heading",
+          "parameters": { "text": "2024" }
+        },
+        "right-content": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "Revenue: $4.2B (+23%)\nNet Income: $890M (+31%)\nEPS: $5.56 (+31%)\nEmployees: 12,500 (+23%)\nMarkets: 45 countries (+18%)"
+          }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "Horizon Global Inc. • Annual Report 2024" }
+      }
+    },
+    {
+      "id": "slide_06_milestones",
+      "rank": 6,
+      "layout": "timeline",
+      "theme": "dark",
+      "parameters": {
+        "vibe": "dramatic"
+      },
+      "widgets": {
+        "title": {
+          "type": "Type.Heading",
+          "parameters": { "text": "2024 Key Milestones" }
+        },
+        "step1": {
+          "type": "Type.Body",
+          "parameters": {
+            "title": "Q1",
+            "text": "Launched Horizon Cloud 3.0, acquired DataSync Labs for $320M"
+          }
+        },
+        "step2": {
+          "type": "Type.Body",
+          "parameters": {
+            "title": "Q2",
+            "text": "Expanded to Brazil, Mexico, and UAE; reached 10M active users"
+          }
+        },
+        "step3": {
+          "type": "Type.Body",
+          "parameters": {
+            "title": "Q3",
+            "text": "Named to Fortune 500; opened new R&D center in Singapore"
+          }
+        },
+        "step4": {
+          "type": "Type.Body",
+          "parameters": {
+            "title": "Q4",
+            "text": "Released Horizon AI platform; strategic partnership with Azure"
+          }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "Horizon Global Inc. • Annual Report 2024" }
+      }
+    },
+    {
+      "id": "slide_07_products",
+      "rank": 7,
+      "layout": "cards-grid",
+      "theme": "dark",
+      "parameters": {
+        "vibe": "dynamic",
+        "columns": 3,
+        "cardStyle": "glow"
+      },
+      "widgets": {
+        "title": {
+          "type": "Type.Heading",
+          "parameters": { "text": "Product Portfolio" }
+        },
+        "card-1": {
+          "type": "Type.Body",
+          "parameters": { "text": "☁️ **Horizon Cloud**\n\nEnterprise cloud platform\n99.99% uptime SLA\n3,200+ enterprise clients" }
+        },
+        "card-2": {
+          "type": "Type.Body",
+          "parameters": { "text": "🤖 **Horizon AI**\n\nAI/ML platform\nAutoML capabilities\n500+ models deployed" }
+        },
+        "card-3": {
+          "type": "Type.Body",
+          "parameters": { "text": "🔐 **Horizon Security**\n\nZero-trust security suite\nSOC 2 Type II certified\nReal-time threat detection" }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "Horizon Global Inc. • Annual Report 2024" }
+      }
+    },
+    {
+      "id": "slide_08_esg",
+      "rank": 8,
+      "layout": "feature-grid",
+      "theme": "dark",
+      "parameters": {
+        "vibe": "calm",
+        "cols": 3
+      },
+      "widgets": {
+        "title": {
+          "type": "Type.Heading",
+          "parameters": { "text": "ESG Commitment" }
+        },
+        "feature1": {
+          "type": "Type.Body",
+          "parameters": {
+            "title": "🌍 Environment",
+            "text": "Carbon neutral operations\n100% renewable energy by 2025\n45% reduction in e-waste"
+          }
+        },
+        "feature2": {
+          "type": "Type.Body",
+          "parameters": {
+            "title": "👥 Social",
+            "text": "45% diverse leadership\n$12M in community investment\n100K hours volunteered"
+          }
+        },
+        "feature3": {
+          "type": "Type.Body",
+          "parameters": {
+            "title": "⚖️ Governance",
+            "text": "Independent board majority\nExecutive compensation linked to ESG\nTransparent lobbying disclosure"
+          }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "Horizon Global Inc. • Annual Report 2024" }
+      }
+    },
+    {
+      "id": "slide_09_leadership",
+      "rank": 9,
+      "layout": "smart-grid",
+      "theme": "dark",
+      "parameters": {
+        "vibe": "professional",
+        "cols": 3
+      },
+      "widgets": {
+        "cell1": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "**Sarah Chen**\nChief Executive Officer\n15 years in tech leadership"
+          }
+        },
+        "cell2": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "**Marcus Johnson**\nChief Financial Officer\nFormer Goldman Sachs"
+          }
+        },
+        "cell3": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "**Dr. Anika Patel**\nChief Technology Officer\nAI pioneer, 40+ patents"
+          }
+        },
+        "cell4": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "**Roberto Silva**\nChief Operating Officer\n20 years operations expertise"
+          }
+        },
+        "cell5": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "**Jennifer Kim**\nChief People Officer\nLeading our 12,500 team"
+          }
+        },
+        "cell6": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "**David Okonkwo**\nChief Revenue Officer\nDriving global expansion"
+          }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "Executive Leadership" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "Horizon Global Inc. • Annual Report 2024" }
+      }
+    },
+    {
+      "id": "slide_10_outlook",
+      "rank": 10,
+      "layout": "magazine",
+      "theme": "dark",
+      "parameters": {
+        "vibe": "dramatic",
+        "variant": "left-feature"
+      },
+      "widgets": {
+        "feature": {
+          "type": "Type.Display",
+          "parameters": {
+            "text": "2025\nOutlook"
+          }
+        },
+        "sidebar": {
+          "type": "Type.List",
+          "parameters": {
+            "items": [
+              "Revenue guidance: $5.0-5.2B",
+              "Expansion into 10 new markets",
+              "Launch of Horizon Edge platform",
+              "Target: Net-zero by 2030",
+              "R&D investment: $400M+"
+            ]
+          }
+        },
+        "caption": {
+          "type": "Type.Body",
+          "parameters": { "text": "Positioned for continued growth and innovation" }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "Horizon Global Inc. • Annual Report 2024" }
+      }
+    },
+    {
+      "id": "slide_11_shareholder",
+      "rank": 11,
+      "layout": "hero-split",
+      "theme": "dark",
+      "parameters": {
+        "vibe": "professional",
+        "split": "60-40"
+      },
+      "widgets": {
+        "left": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "## Shareholder Information\n\n**Stock Performance**\nHGI (NASDAQ): +47% YTD\n52-Week Range: $89 - $156\nMarket Cap: $25B\n\n**Dividends**\nQuarterly Dividend: $0.45/share\nAnnual Yield: 1.2%\n14th consecutive year of increases\n\n**Key Dates**\nQ1 Earnings: April 28, 2025\nAnnual Meeting: May 15, 2025"
+          }
+        },
+        "right": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "📈\n\n**+47%**\nStock Performance\nYTD 2024"
+          }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "Horizon Global Inc. • Annual Report 2024" }
+      }
+    },
+    {
+      "id": "slide_12_thank_you",
+      "rank": 12,
+      "layout": "spotlight",
+      "theme": "dark",
+      "parameters": {
+        "vibe": "dramatic",
+        "intensity": "high"
+      },
+      "widgets": {
+        "default": {
+          "type": "Type.Display",
+          "parameters": {
+            "text": "Thank You"
+          }
+        },
+        "subtitle": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "To our shareholders, employees, customers, and partners —\nthank you for an incredible year.\n\nir@horizonglobal.com\nhorizonglobal.com/investors"
+          }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "Horizon Global Inc. • Annual Report 2024" }
+      }
+    }
+  ]
+}

@@ -3,10 +3,10 @@ import json
 from pathlib import Path
 from src.common.slides import Slides
 from src.common.patchable_context_pydantic import Patch, AddOperation
-from src.layout.dummy.theme import Theme
-from src.layout.dummy.style import Style
-from src.layout.dummy.layout_engine import LayoutEngine
-from src.render.dummy.html_renderer import HTMLRenderer
+from src.paged.layout.dummy.theme import Theme
+from src.paged.layout.dummy.style import Style
+from src.paged.layout.dummy.layout_engine import LayoutEngine
+from src.paged.render.dummy.html_renderer import HTMLRenderer
 from src.common.asset_manager import AssetManager
 
 # Load test data
@@ -26,7 +26,7 @@ with open("data/corp_modern_theme.json", 'r', encoding='utf-8') as f:
 theme = Theme(**theme_data)
 
 # Create a simple style (use flat surface for all widgets)
-from src.layout.dummy.style import Style, WidgetStyle
+from src.paged.layout.dummy.style import Style, WidgetStyle
 style = Style(
     theme_name="corp_modern",
     widgets={
@@ -69,14 +69,14 @@ for slide in slides_collection.get_active_slides():
     
     # Add header/footer if present
     if slide.header:
-        from src.widgets.base import WidgetRegistry
+        from src.paged.widgets.base import WidgetRegistry
         header_type = slide.header.get('type') if isinstance(slide.header, dict) else slide.header.type
         header_params = slide.header.get('parameters') if isinstance(slide.header, dict) else slide.header.parameters
         header_class = WidgetRegistry.get(header_type)
         renderable.header_widget = header_class(**header_params)
     
     if slide.footer:
-        from src.widgets.base import WidgetRegistry
+        from src.paged.widgets.base import WidgetRegistry
         footer_type = slide.footer.get('type') if isinstance(slide.footer, dict) else slide.footer.type
         footer_params = slide.footer.get('parameters') if isinstance(slide.footer, dict) else slide.footer.parameters
         footer_class = WidgetRegistry.get(footer_type)

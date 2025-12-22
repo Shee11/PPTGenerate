@@ -1,0 +1,513 @@
+{
+  "id": "hackathon_kickoff",
+  "title": "AI Hackathon 2025",
+  "description": "Hackathon event kickoff with rules, themes, and prizes",
+  "slides": [
+    {
+      "id": "slide_01_welcome",
+      "rank": 1,
+      "layout": "full-bleed",
+      "theme": "cyber",
+      "parameters": {
+        "vibe": "dramatic",
+        "align": "center"
+      },
+      "widgets": {
+        "default": {
+          "type": "Type.Display",
+          "parameters": {
+            "text": "AI Hackathon\n2025"
+          }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "48 Hours • $100K Prizes • Unlimited Coffee" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "January 24-26, 2025 • San Francisco" }
+      }
+    },
+    {
+      "id": "slide_02_intro",
+      "rank": 2,
+      "layout": "quote-hero",
+      "theme": "cyber",
+      "parameters": {
+        "vibe": "dynamic",
+        "quoteStyle": "bold"
+      },
+      "widgets": {
+        "default": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "Build something incredible. Break the rules (the good kind). Ship it in 48 hours. Win glory, prizes, and maybe change the world."
+          }
+        },
+        "author": {
+          "type": "Type.Body",
+          "parameters": { "text": "Your Challenge Awaits" }
+        },
+        "context": {
+          "type": "Type.Body",
+          "parameters": { "text": "⚡ 🤖 🚀" }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "AI Hackathon 2025" }
+      }
+    },
+    {
+      "id": "slide_03_numbers",
+      "rank": 3,
+      "layout": "stats-showcase",
+      "theme": "cyber",
+      "parameters": {
+        "vibe": "dramatic",
+        "columns": 4,
+        "displayStyle": "neon"
+      },
+      "widgets": {
+        "title": {
+          "type": "Type.Heading",
+          "parameters": { "text": "This Year's Hackathon" }
+        },
+        "stat-1": {
+          "type": "Type.Body",
+          "parameters": { "text": "500+\nHackers" }
+        },
+        "stat-2": {
+          "type": "Type.Body",
+          "parameters": { "text": "$100K\nTotal Prizes" }
+        },
+        "stat-3": {
+          "type": "Type.Body",
+          "parameters": { "text": "48\nHours" }
+        },
+        "stat-4": {
+          "type": "Type.Body",
+          "parameters": { "text": "20+\nSponsors" }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "AI Hackathon 2025" }
+      }
+    },
+    {
+      "id": "slide_04_schedule",
+      "rank": 4,
+      "layout": "timeline",
+      "theme": "cyber",
+      "parameters": {
+        "vibe": "dynamic"
+      },
+      "widgets": {
+        "title": {
+          "type": "Type.Heading",
+          "parameters": { "text": "48-Hour Schedule" }
+        },
+        "step1": {
+          "type": "Type.Body",
+          "parameters": {
+            "title": "Friday 6PM",
+            "text": "Check-in, dinner, team formation & kickoff ceremony"
+          }
+        },
+        "step2": {
+          "type": "Type.Body",
+          "parameters": {
+            "title": "Friday 8PM",
+            "text": "🚀 HACKING BEGINS! Sponsor API workshops"
+          }
+        },
+        "step3": {
+          "type": "Type.Body",
+          "parameters": {
+            "title": "Saturday",
+            "text": "Hack all day! Mentor office hours, workshops, midnight snacks"
+          }
+        },
+        "step4": {
+          "type": "Type.Body",
+          "parameters": {
+            "title": "Sunday 12PM",
+            "text": "⏰ CODE FREEZE! Submit your projects"
+          }
+        },
+        "step5": {
+          "type": "Type.Body",
+          "parameters": {
+            "title": "Sunday 2PM",
+            "text": "Demos, judging, and award ceremony 🏆"
+          }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "AI Hackathon 2025" }
+      }
+    },
+    {
+      "id": "slide_05_themes",
+      "rank": 5,
+      "layout": "cards-grid",
+      "theme": "cyber",
+      "parameters": {
+        "vibe": "playful",
+        "columns": 3,
+        "cardStyle": "glow"
+      },
+      "widgets": {
+        "title": {
+          "type": "Type.Heading",
+          "parameters": { "text": "Challenge Tracks" }
+        },
+        "card-1": {
+          "type": "Type.Body",
+          "parameters": { "text": "🌍 **AI for Good**\n\nBuild AI that tackles real-world problems: climate, health, education, accessibility\n\n*$25K Prize Pool*" }
+        },
+        "card-2": {
+          "type": "Type.Body",
+          "parameters": { "text": "💬 **Agent Revolution**\n\nCreate autonomous AI agents that can reason, plan, and execute complex tasks\n\n*$25K Prize Pool*" }
+        },
+        "card-3": {
+          "type": "Type.Body",
+          "parameters": { "text": "🎨 **Creative AI**\n\nPush boundaries in generative art, music, storytelling, and creative tools\n\n*$25K Prize Pool*" }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "AI Hackathon 2025" }
+      }
+    },
+    {
+      "id": "slide_06_prizes",
+      "rank": 6,
+      "layout": "magazine",
+      "theme": "cyber",
+      "parameters": {
+        "vibe": "dramatic",
+        "variant": "left-feature"
+      },
+      "widgets": {
+        "feature": {
+          "type": "Type.Display",
+          "parameters": {
+            "text": "$100K\nPrizes"
+          }
+        },
+        "sidebar": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "**🥇 Grand Prize:** $30,000\n**🥈 2nd Place:** $15,000\n**🥉 3rd Place:** $10,000\n\n**Track Winners:** $25K each\n**Best Design:** $5,000\n**People's Choice:** $5,000\n**Sponsor Prizes:** $10K total\n\n*Plus: cloud credits, hardware, mentorship opportunities!*"
+          }
+        },
+        "caption": {
+          "type": "Type.Body",
+          "parameters": { "text": "The biggest AI hackathon prize pool yet" }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "AI Hackathon 2025" }
+      }
+    },
+    {
+      "id": "slide_07_tools",
+      "rank": 7,
+      "layout": "feature-grid",
+      "theme": "cyber",
+      "parameters": {
+        "vibe": "dynamic",
+        "cols": 3
+      },
+      "widgets": {
+        "title": {
+          "type": "Type.Heading",
+          "parameters": { "text": "Available APIs & Tools" }
+        },
+        "feature1": {
+          "type": "Type.Body",
+          "parameters": {
+            "title": "🤖 OpenAI",
+            "text": "GPT-4, DALL-E 3, Whisper\n$500 credits per team"
+          }
+        },
+        "feature2": {
+          "type": "Type.Body",
+          "parameters": {
+            "title": "🔷 Anthropic",
+            "text": "Claude 3 API access\n$500 credits per team"
+          }
+        },
+        "feature3": {
+          "type": "Type.Body",
+          "parameters": {
+            "title": "☁️ AWS",
+            "text": "Bedrock, SageMaker\n$1,000 credits per team"
+          }
+        },
+        "feature4": {
+          "type": "Type.Body",
+          "parameters": {
+            "title": "🌐 Vercel",
+            "text": "Pro hosting + AI SDK\nFree Pro tier"
+          }
+        },
+        "feature5": {
+          "type": "Type.Body",
+          "parameters": {
+            "title": "🗄️ Supabase",
+            "text": "Database + Auth\n$500 credits per team"
+          }
+        },
+        "feature6": {
+          "type": "Type.Body",
+          "parameters": {
+            "title": "📊 Pinecone",
+            "text": "Vector database\nFree tier + support"
+          }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "AI Hackathon 2025" }
+      }
+    },
+    {
+      "id": "slide_08_judging",
+      "rank": 8,
+      "layout": "comparison",
+      "theme": "cyber",
+      "parameters": {
+        "vibe": "professional"
+      },
+      "widgets": {
+        "title": {
+          "type": "Type.Heading",
+          "parameters": { "text": "Judging Criteria" }
+        },
+        "left-title": {
+          "type": "Type.Heading",
+          "parameters": { "text": "What We're Looking For" }
+        },
+        "left-content": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "**Innovation (25%)**\nHow creative and novel is your approach?\n\n**Technical Execution (25%)**\nDoes it work? Is the code quality good?\n\n**Impact (25%)**\nCan this actually help people?\n\n**Presentation (25%)**\nCan you pitch it effectively?"
+          }
+        },
+        "right-title": {
+          "type": "Type.Heading",
+          "parameters": { "text": "Our Judges" }
+        },
+        "right-content": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "**Sarah Chen**\nCTO, TechCorp\n\n**Dr. Alex Kim**\nAI Research Lead, Stanford\n\n**Maya Patel**\nPartner, Sequoia Capital\n\n**Jordan Lee**\nFounder, AI Startup Unicorn"
+          }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "AI Hackathon 2025" }
+      }
+    },
+    {
+      "id": "slide_09_rules",
+      "rank": 9,
+      "layout": "smart-grid",
+      "theme": "cyber",
+      "parameters": {
+        "vibe": "minimal",
+        "cols": 2
+      },
+      "widgets": {
+        "cell1": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "✅ **Do's**\n\n- Teams of 1-4 people\n- Start coding after kickoff\n- Use any language/framework\n- Build something new\n- Have fun & help others!"
+          }
+        },
+        "cell2": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "❌ **Don'ts**\n\n- No pre-written code\n- No existing projects\n- Don't work with > 4 people\n- Don't be a jerk\n- Don't forget to sleep (a little)"
+          }
+        },
+        "cell3": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "📝 **Submission Requirements**\n\n- GitHub repo (public)\n- 2-minute demo video\n- README with setup instructions\n- Deploy to public URL if possible"
+          }
+        },
+        "cell4": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "⚠️ **Code of Conduct**\n\n- Respect everyone\n- Inclusive environment\n- Report issues to organizers\n- MLH Code of Conduct applies"
+          }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "Rules & Guidelines" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "AI Hackathon 2025" }
+      }
+    },
+    {
+      "id": "slide_10_tips",
+      "rank": 10,
+      "layout": "cards-grid",
+      "theme": "cyber",
+      "parameters": {
+        "vibe": "playful",
+        "columns": 2,
+        "cardStyle": "outlined"
+      },
+      "widgets": {
+        "title": {
+          "type": "Type.Heading",
+          "parameters": { "text": "Pro Tips from Past Winners" }
+        },
+        "card-1": {
+          "type": "Type.Body",
+          "parameters": { "text": "🎯 **Start Simple**\n\n\"We scoped way down and built one thing really well. That's why we won.\" — 2024 Winner" }
+        },
+        "card-2": {
+          "type": "Type.Body",
+          "parameters": { "text": "🗣️ **Tell a Story**\n\n\"Your demo is 50% of your score. Practice your pitch!\" — Judge Favorite" }
+        },
+        "card-3": {
+          "type": "Type.Body",
+          "parameters": { "text": "🤝 **Use Mentors**\n\n\"I was stuck for 3 hours, then a mentor solved it in 5 minutes.\" — First-time Hacker" }
+        },
+        "card-4": {
+          "type": "Type.Body",
+          "parameters": { "text": "💤 **Actually Sleep**\n\n\"I pulled an all-nighter and crashed during demos. 0/10 recommend.\" — Lessons Learned" }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "AI Hackathon 2025" }
+      }
+    },
+    {
+      "id": "slide_11_resources",
+      "rank": 11,
+      "layout": "dashboard",
+      "theme": "cyber",
+      "parameters": {
+        "vibe": "dynamic",
+        "layout": "sidebar"
+      },
+      "widgets": {
+        "title": {
+          "type": "Type.Heading",
+          "parameters": { "text": "Quick Links & Resources" }
+        },
+        "metric1": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "📍 Venue\nTechHub SF\n123 Innovation Blvd"
+          }
+        },
+        "metric2": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "💬 Discord\ndiscord.gg/aihack25\nJoin for updates!"
+          }
+        },
+        "metric3": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "📧 Help\nhelp@aihackathon.dev\nWe're here for you"
+          }
+        },
+        "chart": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "**Useful Links**\n\n🔗 Devpost: devpost.com/aihack25\n🔗 GitHub Starter: github.com/aihack25\n🔗 API Docs: docs.aihackathon.dev\n🔗 Schedule: aihackathon.dev/schedule\n🔗 Mentors: aihackathon.dev/mentors"
+          }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "AI Hackathon 2025" }
+      }
+    },
+    {
+      "id": "slide_12_start",
+      "rank": 12,
+      "layout": "spotlight",
+      "theme": "cyber",
+      "parameters": {
+        "vibe": "dramatic",
+        "intensity": "high"
+      },
+      "widgets": {
+        "default": {
+          "type": "Type.Display",
+          "parameters": {
+            "text": "Ready?\nLet's Hack! 🚀"
+          }
+        },
+        "subtitle": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "The clock starts NOW!\n\nGood luck, have fun, and build something amazing.\n\n#AIHack25"
+          }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "AI Hackathon 2025 • May the best hack win!" }
+      }
+    }
+  ]
+}

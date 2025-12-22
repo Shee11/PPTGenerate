@@ -7,35 +7,35 @@ class TestThemeResolution:
     
     def test_business_theme_from_blue_primary(self):
         """Verify #2563eb maps to business theme."""
-        from src.render.slidev.markdown_renderer import resolve_theme
+        from src.paged.render.slidev.markdown_renderer import resolve_theme
         
         theme = resolve_theme("#2563eb")
         assert theme == "business"
     
     def test_cyber_theme_from_green_primary(self):
         """Verify #00ffa3 maps to cyber theme."""
-        from src.render.slidev.markdown_renderer import resolve_theme
+        from src.paged.render.slidev.markdown_renderer import resolve_theme
         
         theme = resolve_theme("#00ffa3")
         assert theme == "cyber"
     
     def test_default_theme_for_unknown_color(self):
         """Verify unknown colors default to business theme."""
-        from src.render.slidev.markdown_renderer import resolve_theme
+        from src.paged.render.slidev.markdown_renderer import resolve_theme
         
         theme = resolve_theme("#ff0000")
         assert theme == "business"
     
     def test_default_theme_for_none(self):
         """Verify None color defaults to business theme."""
-        from src.render.slidev.markdown_renderer import resolve_theme
+        from src.paged.render.slidev.markdown_renderer import resolve_theme
         
         theme = resolve_theme(None)
         assert theme == "business"
     
     def test_case_insensitive_color_matching(self):
         """Verify color matching is case-insensitive."""
-        from src.render.slidev.markdown_renderer import resolve_theme
+        from src.paged.render.slidev.markdown_renderer import resolve_theme
         
         assert resolve_theme("#2563EB") == "business"
         assert resolve_theme("#00FFA3") == "cyber"

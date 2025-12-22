@@ -1,9 +1,9 @@
 """Integration tests for Cinematic layout rendering."""
 import pytest
-from src.layout.dummy.layout_engine import LayoutEngine
-from src.layout.dummy.theme import Theme
-from src.layout.dummy.style import Style
-from src.render.dummy.html_renderer import HTMLRenderer
+from src.paged.layout.dummy.layout_engine import LayoutEngine
+from src.paged.layout.dummy.theme import Theme
+from src.paged.layout.dummy.style import Style
+from src.paged.render.dummy.html_renderer import HTMLRenderer
 
 
 class TestCinematicRendering:

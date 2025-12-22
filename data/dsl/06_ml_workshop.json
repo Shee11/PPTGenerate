@@ -1,0 +1,512 @@
+{
+  "id": "data_science_training",
+  "title": "Machine Learning Workshop",
+  "description": "An educational workshop presentation on machine learning fundamentals",
+  "slides": [
+    {
+      "id": "slide_01_title",
+      "rank": 1,
+      "layout": "full-bleed",
+      "theme": "academic",
+      "parameters": {
+        "vibe": "professional",
+        "align": "center"
+      },
+      "widgets": {
+        "default": {
+          "type": "Type.Display",
+          "parameters": {
+            "text": "Machine Learning\nFrom Zero to Hero"
+          }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "ML Workshop Series • Day 1" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "Data Science Academy • 2025" }
+      }
+    },
+    {
+      "id": "slide_02_agenda",
+      "rank": 2,
+      "layout": "smart-grid",
+      "theme": "academic",
+      "parameters": {
+        "vibe": "professional",
+        "cols": 2
+      },
+      "widgets": {
+        "cell1": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "**Morning Session**\n\n09:00 - Introduction to ML\n10:00 - Types of Learning\n11:00 - ☕ Coffee Break\n11:15 - Your First Model"
+          }
+        },
+        "cell2": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "**Afternoon Session**\n\n13:00 - Feature Engineering\n14:00 - Model Evaluation\n15:00 - ☕ Coffee Break\n15:15 - Hands-on Lab"
+          }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "Today's Agenda" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "Data Science Academy • 2025" }
+      }
+    },
+    {
+      "id": "slide_03_what_is_ml",
+      "rank": 3,
+      "layout": "hero-split",
+      "theme": "academic",
+      "parameters": {
+        "vibe": "calm",
+        "split": "50-50"
+      },
+      "widgets": {
+        "left": {
+          "type": "Type.Display",
+          "parameters": {
+            "text": "What is Machine Learning?"
+          }
+        },
+        "right": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "Machine Learning is a subset of AI that enables systems to **learn and improve from experience** without being explicitly programmed.\n\n> \"A computer program is said to learn from experience E with respect to some class of tasks T and performance measure P, if its performance at tasks in T improves with experience E.\"\n>\n> — Tom Mitchell, 1997"
+          }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "Data Science Academy • 2025" }
+      }
+    },
+    {
+      "id": "slide_04_types",
+      "rank": 4,
+      "layout": "comparison",
+      "theme": "academic",
+      "parameters": {
+        "vibe": "professional"
+      },
+      "widgets": {
+        "title": {
+          "type": "Type.Heading",
+          "parameters": { "text": "Types of Machine Learning" }
+        },
+        "left-title": {
+          "type": "Type.Heading",
+          "parameters": { "text": "Supervised" }
+        },
+        "left-content": {
+          "type": "Type.List",
+          "parameters": {
+            "items": [
+              "Learns from labeled data",
+              "Predicts outcomes for new data",
+              "Classification & Regression",
+              "Examples: spam detection, price prediction"
+            ]
+          }
+        },
+        "right-title": {
+          "type": "Type.Heading",
+          "parameters": { "text": "Unsupervised" }
+        },
+        "right-content": {
+          "type": "Type.List",
+          "parameters": {
+            "items": [
+              "No labeled data required",
+              "Finds hidden patterns",
+              "Clustering & Dimensionality Reduction",
+              "Examples: customer segmentation, anomaly detection"
+            ]
+          }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "Data Science Academy • 2025" }
+      }
+    },
+    {
+      "id": "slide_05_workflow",
+      "rank": 5,
+      "layout": "timeline",
+      "theme": "academic",
+      "parameters": {
+        "vibe": "minimal"
+      },
+      "widgets": {
+        "title": {
+          "type": "Type.Heading",
+          "parameters": { "text": "The ML Workflow" }
+        },
+        "step1": {
+          "type": "Type.Body",
+          "parameters": {
+            "title": "1. Problem Definition",
+            "text": "Clearly define what you're trying to predict or classify"
+          }
+        },
+        "step2": {
+          "type": "Type.Body",
+          "parameters": {
+            "title": "2. Data Collection",
+            "text": "Gather relevant, high-quality data from various sources"
+          }
+        },
+        "step3": {
+          "type": "Type.Body",
+          "parameters": {
+            "title": "3. Data Preprocessing",
+            "text": "Clean, transform, and prepare data for modeling"
+          }
+        },
+        "step4": {
+          "type": "Type.Body",
+          "parameters": {
+            "title": "4. Model Training",
+            "text": "Choose and train algorithms on your prepared data"
+          }
+        },
+        "step5": {
+          "type": "Type.Body",
+          "parameters": {
+            "title": "5. Evaluation",
+            "text": "Test model performance and iterate to improve"
+          }
+        },
+        "step6": {
+          "type": "Type.Body",
+          "parameters": {
+            "title": "6. Deployment",
+            "text": "Put your model into production and monitor"
+          }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "Data Science Academy • 2025" }
+      }
+    },
+    {
+      "id": "slide_06_algorithms",
+      "rank": 6,
+      "layout": "cards-grid",
+      "theme": "academic",
+      "parameters": {
+        "vibe": "minimal",
+        "columns": 3,
+        "cardStyle": "bordered"
+      },
+      "widgets": {
+        "title": {
+          "type": "Type.Heading",
+          "parameters": { "text": "Common Algorithms" }
+        },
+        "card-1": {
+          "type": "Type.Body",
+          "parameters": { "text": "📈 **Linear Regression**\n\nPredict continuous values\nSimple, interpretable\nBaseline for many tasks" }
+        },
+        "card-2": {
+          "type": "Type.Body",
+          "parameters": { "text": "🌳 **Decision Trees**\n\nTree-like decision rules\nEasy to visualize\nProne to overfitting" }
+        },
+        "card-3": {
+          "type": "Type.Body",
+          "parameters": { "text": "🎯 **Random Forest**\n\nEnsemble of trees\nRobust performance\nHandles missing data" }
+        },
+        "card-4": {
+          "type": "Type.Body",
+          "parameters": { "text": "🧠 **Neural Networks**\n\nDeep learning foundation\nComplex patterns\nRequires lots of data" }
+        },
+        "card-5": {
+          "type": "Type.Body",
+          "parameters": { "text": "📊 **SVM**\n\nMaximum margin classifier\nEffective in high dimensions\nKernel tricks available" }
+        },
+        "card-6": {
+          "type": "Type.Body",
+          "parameters": { "text": "🔮 **K-Nearest Neighbors**\n\nInstance-based learning\nNo training phase\nSensitive to distance metric" }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "Data Science Academy • 2025" }
+      }
+    },
+    {
+      "id": "slide_07_feature",
+      "rank": 7,
+      "layout": "magazine",
+      "theme": "academic",
+      "parameters": {
+        "vibe": "professional",
+        "variant": "left-feature"
+      },
+      "widgets": {
+        "feature": {
+          "type": "Type.Display",
+          "parameters": {
+            "text": "Feature Engineering"
+          }
+        },
+        "sidebar": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "The secret sauce of ML! Good features can make or break your model.\n\n**Common Techniques:**\n- Normalization/Scaling\n- One-Hot Encoding\n- Polynomial Features\n- Feature Selection\n- Domain-specific transforms"
+          }
+        },
+        "caption": {
+          "type": "Type.Body",
+          "parameters": { "text": "\"Coming up with features is difficult, time-consuming, requires expert knowledge.\" — Andrew Ng" }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "Data Science Academy • 2025" }
+      }
+    },
+    {
+      "id": "slide_08_metrics",
+      "rank": 8,
+      "layout": "stats-showcase",
+      "theme": "academic",
+      "parameters": {
+        "vibe": "minimal",
+        "columns": 4,
+        "displayStyle": "metric"
+      },
+      "widgets": {
+        "title": {
+          "type": "Type.Heading",
+          "parameters": { "text": "Evaluation Metrics" }
+        },
+        "stat-1": {
+          "type": "Type.Body",
+          "parameters": { "text": "Accuracy\nCorrect / Total" }
+        },
+        "stat-2": {
+          "type": "Type.Body",
+          "parameters": { "text": "Precision\nTP / (TP + FP)" }
+        },
+        "stat-3": {
+          "type": "Type.Body",
+          "parameters": { "text": "Recall\nTP / (TP + FN)" }
+        },
+        "stat-4": {
+          "type": "Type.Body",
+          "parameters": { "text": "F1 Score\n2×P×R / (P+R)" }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "Data Science Academy • 2025" }
+      }
+    },
+    {
+      "id": "slide_09_overfitting",
+      "rank": 9,
+      "layout": "comparison",
+      "theme": "academic",
+      "parameters": {
+        "vibe": "professional"
+      },
+      "widgets": {
+        "title": {
+          "type": "Type.Heading",
+          "parameters": { "text": "The Bias-Variance Tradeoff" }
+        },
+        "left-title": {
+          "type": "Type.Heading",
+          "parameters": { "text": "Underfitting (High Bias)" }
+        },
+        "left-content": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "Model is too simple\n\n❌ Poor training performance\n❌ Poor test performance\n\n**Solutions:**\n- Add more features\n- Increase model complexity\n- Train longer"
+          }
+        },
+        "right-title": {
+          "type": "Type.Heading",
+          "parameters": { "text": "Overfitting (High Variance)" }
+        },
+        "right-content": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "Model memorizes training data\n\n✅ Great training performance\n❌ Poor test performance\n\n**Solutions:**\n- Get more data\n- Regularization\n- Cross-validation"
+          }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "Data Science Academy • 2025" }
+      }
+    },
+    {
+      "id": "slide_10_hands_on",
+      "rank": 10,
+      "layout": "feature-grid",
+      "theme": "academic",
+      "parameters": {
+        "vibe": "dynamic",
+        "cols": 2
+      },
+      "widgets": {
+        "title": {
+          "type": "Type.Heading",
+          "parameters": { "text": "Hands-On Lab" }
+        },
+        "feature1": {
+          "type": "Type.Body",
+          "parameters": {
+            "title": "📂 Dataset",
+            "text": "Iris flower classification\n150 samples, 4 features, 3 classes"
+          }
+        },
+        "feature2": {
+          "type": "Type.Body",
+          "parameters": {
+            "title": "🔧 Tools",
+            "text": "Python + scikit-learn\nJupyter notebooks provided"
+          }
+        },
+        "feature3": {
+          "type": "Type.Body",
+          "parameters": {
+            "title": "🎯 Goal",
+            "text": "Build a classifier achieving >95% accuracy"
+          }
+        },
+        "feature4": {
+          "type": "Type.Body",
+          "parameters": {
+            "title": "⏱️ Time",
+            "text": "45 minutes\nAsk for help anytime!"
+          }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "Data Science Academy • 2025" }
+      }
+    },
+    {
+      "id": "slide_11_resources",
+      "rank": 11,
+      "layout": "smart-grid",
+      "theme": "academic",
+      "parameters": {
+        "vibe": "calm",
+        "cols": 2
+      },
+      "widgets": {
+        "cell1": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "**📚 Books**\n\n- Hands-On ML (Géron)\n- The Hundred-Page ML Book\n- Deep Learning (Goodfellow)"
+          }
+        },
+        "cell2": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "**🎓 Courses**\n\n- Andrew Ng's ML Course\n- fast.ai\n- Kaggle Learn"
+          }
+        },
+        "cell3": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "**🔧 Practice**\n\n- Kaggle competitions\n- UCI ML Repository\n- Papers with Code"
+          }
+        },
+        "cell4": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "**👥 Community**\n\n- r/MachineLearning\n- Stack Overflow\n- Local ML meetups"
+          }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "Learning Resources" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "Data Science Academy • 2025" }
+      }
+    },
+    {
+      "id": "slide_12_qa",
+      "rank": 12,
+      "layout": "spotlight",
+      "theme": "academic",
+      "parameters": {
+        "vibe": "calm",
+        "intensity": "medium"
+      },
+      "widgets": {
+        "default": {
+          "type": "Type.Display",
+          "parameters": {
+            "text": "Questions?\nLet's Discuss!"
+          }
+        },
+        "subtitle": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "instructor@dsacademy.edu\nSlack: #ml-workshop\n\nNext session: Day 2 - Deep Learning Fundamentals"
+          }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "Data Science Academy • 2025" }
+      }
+    }
+  ]
+}

@@ -4,7 +4,7 @@ from datetime import datetime
 from pydantic import ValidationError
 from src.common.patchable_context_pydantic import PatchableContextState
 from src.common.source import SourceReference
-from src.generation.atom.models import Atom, StatementAtom, ProcessAtom, ComparisonAtom, ProcessStep
+from src.generation.atom.models import Atom, FactAtom, TensionAtom, ConceptAtom, VisualAtom
 
 
 class TestAtomBase:
@@ -12,7 +12,7 @@ class TestAtomBase:
     
     def test_atom_has_required_patchable_fields(self):
         """Verify Atom includes id, rank, state from PatchableContextBase."""
-        atom = StatementAtom(
+        atom = FactAtom(
             id="atom_001",
             rank=1,
             state=PatchableContextState.DRAFT,
@@ -32,7 +32,7 @@ class TestAtomBase:
     def test_atom_requires_source_reference(self):
         """Verify all atoms must have source_ref."""
         # Valid with source_ref
-        StatementAtom(
+        FactAtom(
             id="atom_001",
             rank=1,
             text="Test",
@@ -43,7 +43,7 @@ class TestAtomBase:
         
         # Invalid without source_ref
         with pytest.raises(ValidationError):
-            StatementAtom(
+            FactAtom(
                 id="atom_001",
                 rank=1,
                 text="Test"
@@ -53,7 +53,7 @@ class TestAtomBase:
         """Verify created_at is automatically set."""
         before = datetime.utcnow()
         
-        atom = StatementAtom(
+        atom = FactAtom(
             id="atom_001",
             rank=1,
             text="Test",
@@ -67,7 +67,7 @@ class TestAtomBase:
     
     def test_atom_metadata_optional(self):
         """Verify metadata is optional with default empty dict."""
-        atom = StatementAtom(
+        atom = FactAtom(
             id="atom_001",
             rank=1,
             text="Test",
@@ -86,7 +86,7 @@ class TestAtomBase:
             "prompt_version": "v1.0"
         }
         
-        atom = StatementAtom(
+        atom = FactAtom(
             id="atom_001",
             rank=1,
             text="Test",
@@ -97,37 +97,64 @@ class TestAtomBase:
         )
         
         assert atom.metadata == metadata
-
-
-class TestStatementAtom:
-    """Test StatementAtom for pure text statements."""
     
-    def test_valid_statement_atom(self):
-        """Verify valid StatementAtom with all fields."""
-        atom = StatementAtom(
-            id="stmt_001",
+    def test_atom_visual_field(self):
+        """Verify visual field exists with default 'none'."""
+        atom = FactAtom(
+            id="atom_001",
+            rank=1,
+            text="Test",
+            source_ref=SourceReference(
+                source_id="src", file_path="path", offset=0, length=1
+            )
+        )
+        
+        assert atom.visual == "none"
+    
+    def test_atom_visual_field_with_value(self):
+        """Verify visual field can be set."""
+        atom = FactAtom(
+            id="atom_001",
+            rank=1,
+            text="Test",
+            visual="chart",
+            source_ref=SourceReference(
+                source_id="src", file_path="path", offset=0, length=1
+            )
+        )
+        
+        assert atom.visual == "chart"
+
+
+class TestFactAtom:
+    """Test FactAtom for objective information."""
+    
+    def test_valid_fact_atom(self):
+        """Verify valid FactAtom with all fields."""
+        atom = FactAtom(
+            id="fact_001",
             rank=1,
             state=PatchableContextState.ACTIVE,
-            text="Machine learning improves with more data.",
+            text="System handles 1M requests per second.",
+            category="data",
+            visual="chart",
             source_ref=SourceReference(
                 source_id="src_001",
-                file_path="/docs/ml.txt",
+                file_path="/docs/metrics.txt",
                 offset=150,
                 length=45,
                 line_number=10
-            ),
-            related_to=["stmt_002", "stmt_003"],
-            contradicts=["stmt_004"]
+            )
         )
         
-        assert atom.text == "Machine learning improves with more data."
-        assert atom.related_to == ["stmt_002", "stmt_003"]
-        assert atom.contradicts == ["stmt_004"]
+        assert atom.text == "System handles 1M requests per second."
+        assert atom.category == "data"
+        assert atom.visual == "chart"
     
-    def test_statement_requires_text(self):
+    def test_fact_requires_text(self):
         """Verify text field is required and non-empty."""
         # Valid with text
-        StatementAtom(
+        FactAtom(
             id="atom_001",
             rank=1,
             text="Valid text",
@@ -138,7 +165,7 @@ class TestStatementAtom:
         
         # Invalid without text
         with pytest.raises(ValidationError):
-            StatementAtom(
+            FactAtom(
                 id="atom_001",
                 rank=1,
                 source_ref=SourceReference(
@@ -148,7 +175,7 @@ class TestStatementAtom:
         
         # Invalid with empty text
         with pytest.raises(ValidationError):
-            StatementAtom(
+            FactAtom(
                 id="atom_001",
                 rank=1,
                 text="",
@@ -157,9 +184,9 @@ class TestStatementAtom:
                 )
             )
     
-    def test_statement_relationships_default_empty(self):
-        """Verify related_to and contradicts default to empty lists."""
-        atom = StatementAtom(
+    def test_fact_category_default(self):
+        """Verify category defaults to 'other'."""
+        atom = FactAtom(
             id="atom_001",
             rank=1,
             text="Test",
@@ -168,219 +195,213 @@ class TestStatementAtom:
             )
         )
         
-        assert atom.related_to == []
-        assert atom.contradicts == []
+        assert atom.category == "other"
+    
+    def test_fact_category_values(self):
+        """Verify category accepts valid values."""
+        for category in ["data", "definition", "architecture", "status", "other"]:
+            atom = FactAtom(
+                id="atom_001",
+                rank=1,
+                text="Test",
+                category=category,
+                source_ref=SourceReference(
+                    source_id="src", file_path="path", offset=0, length=1
+                )
+            )
+            assert atom.category == category
 
 
-class TestProcessStep:
-    """Test ProcessStep nested model."""
+class TestTensionAtom:
+    """Test TensionAtom for conflicts and problems."""
     
-    def test_valid_process_step(self):
-        """Verify valid ProcessStep with all fields."""
-        step = ProcessStep(
-            order=1,
-            text="Initialize the system",
-            dependencies=[]
-        )
-        
-        assert step.order == 1
-        assert step.text == "Initialize the system"
-        assert step.dependencies == []
-    
-    def test_process_step_with_dependencies(self):
-        """Verify ProcessStep can reference dependent steps."""
-        step = ProcessStep(
-            order=3,
-            text="Execute main process",
-            dependencies=[1, 2]
-        )
-        
-        assert step.dependencies == [1, 2]
-    
-    def test_process_step_order_positive(self):
-        """Verify order must be positive (1-indexed)."""
-        # Valid order
-        ProcessStep(order=1, text="Step 1")
-        
-        # Invalid order (zero)
-        with pytest.raises(ValidationError):
-            ProcessStep(order=0, text="Step 0")
-        
-        # Invalid order (negative)
-        with pytest.raises(ValidationError):
-            ProcessStep(order=-1, text="Step -1")
-    
-    def test_process_step_dependencies_default_empty(self):
-        """Verify dependencies defaults to empty list."""
-        step = ProcessStep(order=1, text="Step 1")
-        assert step.dependencies == []
-
-
-class TestProcessAtom:
-    """Test ProcessAtom for process descriptions."""
-    
-    def test_valid_process_atom(self):
-        """Verify valid ProcessAtom with steps and dependencies."""
-        atom = ProcessAtom(
-            id="proc_001",
+    def test_valid_tension_atom(self):
+        """Verify valid TensionAtom with all fields."""
+        atom = TensionAtom(
+            id="tension_001",
             rank=1,
-            title="Software Installation Process",
-            steps=[
-                ProcessStep(order=1, text="Download installer", dependencies=[]),
-                ProcessStep(order=2, text="Run installer", dependencies=[1]),
-                ProcessStep(order=3, text="Configure settings", dependencies=[2]),
-                ProcessStep(order=4, text="Verify installation", dependencies=[3])
-            ],
+            text="But latency spiked to 2 seconds under load.",
+            tension_type="problem",
+            resolution_hint="Solved by caching",
+            visual="before-after",
             source_ref=SourceReference(
                 source_id="src_001",
-                file_path="/docs/install.txt",
+                file_path="/docs/issues.txt",
                 offset=200,
-                length=150
+                length=50
             )
         )
         
-        assert atom.title == "Software Installation Process"
-        assert len(atom.steps) == 4
-        assert atom.steps[1].dependencies == [1]
-        assert atom.steps[3].dependencies == [3]
+        assert atom.text == "But latency spiked to 2 seconds under load."
+        assert atom.tension_type == "problem"
+        assert atom.resolution_hint == "Solved by caching"
     
-    def test_process_requires_title_and_steps(self):
-        """Verify title and steps are required."""
-        source_ref = SourceReference(
-            source_id="src", file_path="path", offset=0, length=1
-        )
-        
-        # Invalid without title
-        with pytest.raises(ValidationError):
-            ProcessAtom(
-                id="proc_001",
-                rank=1,
-                steps=[ProcessStep(order=1, text="Step 1")],
-                source_ref=source_ref
-            )
-        
-        # Invalid without steps
-        with pytest.raises(ValidationError):
-            ProcessAtom(
-                id="proc_001",
-                rank=1,
-                title="Process",
-                source_ref=source_ref
-            )
-        
-        # Invalid with empty steps
-        with pytest.raises(ValidationError):
-            ProcessAtom(
-                id="proc_001",
-                rank=1,
-                title="Process",
-                steps=[],
-                source_ref=source_ref
-            )
-    
-    def test_process_steps_ordered_sequence(self):
-        """Verify steps maintain their order."""
-        atom = ProcessAtom(
-            id="proc_001",
+    def test_tension_type_default(self):
+        """Verify tension_type defaults to 'problem'."""
+        atom = TensionAtom(
+            id="atom_001",
             rank=1,
-            title="Test Process",
-            steps=[
-                ProcessStep(order=1, text="First"),
-                ProcessStep(order=2, text="Second"),
-                ProcessStep(order=3, text="Third")
-            ],
+            text="Test tension",
             source_ref=SourceReference(
                 source_id="src", file_path="path", offset=0, length=1
             )
         )
         
-        assert atom.steps[0].order == 1
-        assert atom.steps[1].order == 2
-        assert atom.steps[2].order == 3
-
-
-class TestComparisonAtom:
-    """Test ComparisonAtom for comparison tables."""
+        assert atom.tension_type == "problem"
     
-    def test_valid_comparison_atom(self):
-        """Verify valid ComparisonAtom with dimensions and entities."""
-        atom = ComparisonAtom(
-            id="comp_001",
+    def test_tension_type_values(self):
+        """Verify tension_type accepts valid values."""
+        for tension_type in ["problem", "contradiction", "trade-off", "surprise", "mistake", "other"]:
+            atom = TensionAtom(
+                id="atom_001",
+                rank=1,
+                text="Test",
+                tension_type=tension_type,
+                source_ref=SourceReference(
+                    source_id="src", file_path="path", offset=0, length=1
+                )
+            )
+            assert atom.tension_type == tension_type
+    
+    def test_tension_resolution_hint_default(self):
+        """Verify resolution_hint defaults to empty string."""
+        atom = TensionAtom(
+            id="atom_001",
             rank=1,
-            dimensions=["speed", "accuracy", "cost"],
-            entities={
-                "Method A": {
-                    "speed": "fast",
-                    "accuracy": "high",
-                    "cost": "expensive"
-                },
-                "Method B": {
-                    "speed": "slow",
-                    "accuracy": "very high",
-                    "cost": "cheap"
-                }
-            },
+            text="Test",
+            source_ref=SourceReference(
+                source_id="src", file_path="path", offset=0, length=1
+            )
+        )
+        
+        assert atom.resolution_hint == ""
+
+
+class TestConceptAtom:
+    """Test ConceptAtom for solutions and insights."""
+    
+    def test_valid_concept_atom(self):
+        """Verify valid ConceptAtom with all fields."""
+        atom = ConceptAtom(
+            id="concept_001",
+            rank=1,
+            text="Solution: Cache at the edge for sub-100ms latency.",
+            concept_type="solution",
+            supporting_facts=["fact_001", "fact_002"],
+            visual="diagram",
             source_ref=SourceReference(
                 source_id="src_001",
-                file_path="/docs/comparison.txt",
+                file_path="/docs/solution.txt",
                 offset=300,
-                length=200
+                length=60
             )
         )
         
-        assert atom.dimensions == ["speed", "accuracy", "cost"]
-        assert "Method A" in atom.entities
-        assert atom.entities["Method A"]["speed"] == "fast"
+        assert atom.text == "Solution: Cache at the edge for sub-100ms latency."
+        assert atom.concept_type == "solution"
+        assert atom.supporting_facts == ["fact_001", "fact_002"]
     
-    def test_comparison_requires_dimensions_and_entities(self):
-        """Verify dimensions and entities are required."""
-        source_ref = SourceReference(
-            source_id="src", file_path="path", offset=0, length=1
-        )
-        
-        # Invalid without dimensions
-        with pytest.raises(ValidationError):
-            ComparisonAtom(
-                id="comp_001",
-                rank=1,
-                entities={"A": {"dim": "val"}},
-                source_ref=source_ref
-            )
-        
-        # Invalid without entities
-        with pytest.raises(ValidationError):
-            ComparisonAtom(
-                id="comp_001",
-                rank=1,
-                dimensions=["dim"],
-                source_ref=source_ref
-            )
-        
-        # Invalid with empty dimensions
-        with pytest.raises(ValidationError):
-            ComparisonAtom(
-                id="comp_001",
-                rank=1,
-                dimensions=[],
-                entities={"A": {"dim": "val"}},
-                source_ref=source_ref
-            )
-    
-    def test_comparison_entities_structure(self):
-        """Verify entities use dict[str, dict[str, str]] structure."""
-        atom = ComparisonAtom(
-            id="comp_001",
+    def test_concept_type_default(self):
+        """Verify concept_type defaults to 'insight'."""
+        atom = ConceptAtom(
+            id="atom_001",
             rank=1,
-            dimensions=["feature1", "feature2"],
-            entities={
-                "Product X": {"feature1": "excellent", "feature2": "good"},
-                "Product Y": {"feature1": "good", "feature2": "excellent"}
-            },
+            text="Test concept",
             source_ref=SourceReference(
                 source_id="src", file_path="path", offset=0, length=1
             )
         )
         
-        assert isinstance(atom.entities, dict)
-        assert isinstance(atom.entities["Product X"], dict)
-        assert isinstance(atom.entities["Product X"]["feature1"], str)
+        assert atom.concept_type == "insight"
+    
+    def test_concept_type_values(self):
+        """Verify concept_type accepts valid values."""
+        for concept_type in ["solution", "insight", "method", "principle", "takeaway", "other"]:
+            atom = ConceptAtom(
+                id="atom_001",
+                rank=1,
+                text="Test",
+                concept_type=concept_type,
+                source_ref=SourceReference(
+                    source_id="src", file_path="path", offset=0, length=1
+                )
+            )
+            assert atom.concept_type == concept_type
+    
+    def test_concept_supporting_facts_default(self):
+        """Verify supporting_facts defaults to empty list."""
+        atom = ConceptAtom(
+            id="atom_001",
+            rank=1,
+            text="Test",
+            source_ref=SourceReference(
+                source_id="src", file_path="path", offset=0, length=1
+            )
+        )
+        
+        assert atom.supporting_facts == []
+
+
+class TestVisualAtom:
+    """Test VisualAtom for concrete imagery."""
+    
+    def test_valid_visual_atom(self):
+        """Verify valid VisualAtom with all fields."""
+        atom = VisualAtom(
+            id="visual_001",
+            rank=1,
+            description="Screen filled with red error messages",
+            visual_category="screenshot",
+            related_atom="tension_001",
+            visual="screenshot",
+            source_ref=SourceReference(
+                source_id="src_001",
+                file_path="/docs/story.txt",
+                offset=400,
+                length=40
+            )
+        )
+        
+        assert atom.description == "Screen filled with red error messages"
+        assert atom.visual_category == "screenshot"
+        assert atom.related_atom == "tension_001"
+    
+    def test_visual_category_default(self):
+        """Verify visual_category defaults to 'other'."""
+        atom = VisualAtom(
+            id="atom_001",
+            rank=1,
+            description="Test visual",
+            source_ref=SourceReference(
+                source_id="src", file_path="path", offset=0, length=1
+            )
+        )
+        
+        assert atom.visual_category == "other"
+    
+    def test_visual_category_values(self):
+        """Verify visual_category accepts valid values."""
+        for category in ["metaphor", "demo", "screenshot", "diagram", "comparison", "other"]:
+            atom = VisualAtom(
+                id="atom_001",
+                rank=1,
+                description="Test",
+                visual_category=category,
+                source_ref=SourceReference(
+                    source_id="src", file_path="path", offset=0, length=1
+                )
+            )
+            assert atom.visual_category == category
+    
+    def test_visual_related_atom_default(self):
+        """Verify related_atom defaults to empty string."""
+        atom = VisualAtom(
+            id="atom_001",
+            rank=1,
+            description="Test",
+            source_ref=SourceReference(
+                source_id="src", file_path="path", offset=0, length=1
+            )
+        )
+        
+        assert atom.related_atom == ""

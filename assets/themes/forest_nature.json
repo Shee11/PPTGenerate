@@ -1,0 +1,53 @@
+{
+  "id": "forest_nature",
+  "name": "Forest Nature",
+  "description": "Organic and earthy green theme, perfect for sustainability, health, and nature topics",
+  "margin_x": "55px",
+  "margin_y": "45px",
+  "gutter": "26px",
+  "header_footer": {
+    "header_height": "14%",
+    "footer_height": "10%",
+    "header_position": "fixed_top_left",
+    "footer_position": "fixed_bottom_right",
+    "header_decoration": "none",
+    "footer_decoration": "leaf_accent"
+  },
+  "sequence_pattern": "alternating_background",
+  "typography": {
+    "h1": {
+      "size": 60,
+      "weight": "bold",
+      "line_height": 1.1
+    },
+    "h2": {
+      "size": 42,
+      "weight": "semibold",
+      "line_height": 1.2
+    },
+    "h3": {
+      "size": 28,
+      "weight": "medium",
+      "line_height": 1.3
+    },
+    "body": {
+      "size": 18,
+      "weight": "regular",
+      "line_height": 1.65
+    },
+    "caption": {
+      "size": 14,
+      "weight": "regular",
+      "line_height": 1.5
+    }
+  },
+  "primary_color": "#22c55e",
+  "secondary_color": "#16a34a",
+  "accent_color": "#84cc16",
+  "background_color": "#f0fdf4",
+  "text_color": "#14532d",
+  "primary_background": "#dcfce7",
+  "secondary_background": "#f0fdf4",
+  "font_family": "Lato, sans-serif",
+  "heading_font": "Merriweather, serif"
+}

@@ -1,6 +1,6 @@
 """Contract tests for SlidevLayoutEngine protocol compliance."""
 import pytest
-from src.layout.slidev.layout_engine import SlidevLayoutEngine
+from src.paged.layout.slidev.layout_engine import SlidevLayoutEngine
 
 
 class TestSlidevLayoutEngineProtocol:

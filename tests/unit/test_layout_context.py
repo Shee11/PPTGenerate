@@ -1,6 +1,6 @@
 """Unit tests for LayoutContext calculation."""
 import pytest
-from src.layout.layout_protocol import LayoutContext
+from src.paged.layout.layout_protocol import LayoutContext
 
 
 class TestLayoutContext:

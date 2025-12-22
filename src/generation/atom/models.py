@@ -1,4 +1,16 @@
-"""Atom models for extracted content units."""
+"""Atom models for extracted content units.
+
+Narrative Atoms: A story-driven atom system for presentations.
+
+The system extracts seven types of atoms that map to narrative structure:
+- BioAtom → Title/Intro slides (identity, history, credentials)
+- FactAtom → Anchor slides (objective foundation, context)
+- StatAtom → Data visualization slides (metrics, KPIs, numbers)
+- QuoteAtom → Impact slides (verbatim memorable phrases)
+- TensionAtom → Friction slides (conflict/problem)  
+- ConceptAtom → Insight slides (solution/takeaway)
+- VisualAtom → Visual instruction for slide design
+"""
 from datetime import datetime
 from typing import Any
 from pydantic import BaseModel, Field
@@ -10,19 +22,21 @@ class Atom(PatchableContextBase):
     """
     Base class for all atom types.
     
-    Inherits from PatchableContextBase to get id, rank, and state fields.
-    All atoms must link back to their source via SourceReference.
-    
     Attributes:
-        id: Unique identifier (inherited from PatchableContextBase)
-        rank: Ordering indicator (inherited from PatchableContextBase)
-        state: Current state (inherited from PatchableContextBase)
+        id: Unique identifier (inherited)
+        rank: Ordering indicator (inherited)
+        state: Current state (inherited)
         source_ref: Link to source location
+        visual: Visual representation suggestion
         created_at: When atom was extracted
-        metadata: LLM generation metadata (model, temperature, etc.)
+        metadata: LLM generation metadata
     """
     
     source_ref: SourceReference = Field(..., description="Link to source location")
+    visual: str = Field(
+        default="none",
+        description="Suggested visual representation (e.g., chart, diagram, code, screenshot, photo, icon, quote-card, timeline, comparison-table, flow, architecture, before-after, list, table, graph, infographic, illustration, none)"
+    )
     created_at: datetime = Field(
         default_factory=datetime.utcnow,
         description="When atom was extracted"
@@ -33,230 +47,207 @@ class Atom(PatchableContextBase):
     )
 
 
-class StatementAtom(Atom):
+class BioAtom(Atom):
     """
-    Atom representing a pure text statement.
+    Identity information: who the speaker/subject is, credentials, history.
     
-    Used for key facts, quotes, or important declarations
-    that don't fit process or comparison patterns.
+    Maps to → Title/Intro slides
+    Characteristics: Builds the "Who", establishes credibility
+    Use for: Speaker intros, company backgrounds, team credentials
+    
+    Examples:
+    - "John Smith, Principal Engineer at Google with 15 years experience"
+    - "Founded in 2010, the company has grown to 500 employees"
+    - "PhD in Computer Science from MIT, author of 3 books"
     
     Attributes:
-        text: The extracted statement
-        related_to: List of atom IDs this relates to
-        contradicts: List of atom IDs this contradicts
+        name: The person/entity name
+        role: Role, title, or position
+        credentials: Background, history, achievements
+        affiliation: Company, organization, or institution
     """
     
-    text: str = Field(..., min_length=1, description="The extracted statement")
-    related_to: list[str] = Field(
-        default_factory=list,
-        description="Atom IDs this statement relates to"
+    name: str = Field(..., min_length=1, description="The person or entity name")
+    role: str = Field(
+        default="",
+        description="Role, title, or position"
     )
-    contradicts: list[str] = Field(
-        default_factory=list,
-        description="Atom IDs this statement contradicts"
+    credentials: str = Field(
+        default="",
+        description="Background, history, achievements"
+    )
+    affiliation: str = Field(
+        default="",
+        description="Company, organization, or institution"
     )
 
 
-class ProcessStep(BaseModel):
+class FactAtom(Atom):
     """
-    Single step in a process.
+    Objective information: context, status quo, definitions, architecture.
+    
+    Maps to → Anchor slides
+    Characteristics: Objective, no emotion, foundational
+    Use for: Background context, definitions, architecture descriptions
+    NOT for: Specific numbers/metrics (use StatAtom), memorable quotes (use QuoteAtom)
+    
+    Examples:
+    - "Architecture uses microservices pattern"
+    - "Team size: 12 engineers"
+    - "The system was built in 2020"
     
     Attributes:
-        order: 1-indexed step number
-        text: Step description
-        dependencies: List of step orders this depends on
+        text: The factual statement
+        category: Type of fact (definition, architecture, status, context)
     """
     
-    order: int = Field(..., gt=0, description="1-indexed step number")
-    text: str = Field(..., min_length=1, description="Step description")
-    dependencies: list[int] = Field(
-        default_factory=list,
-        description="Step orders this depends on"
+    text: str = Field(..., min_length=1, description="The factual statement")
+    category: str = Field(
+        default="other",
+        description="Type of fact (e.g., definition, architecture, status, context)"
     )
 
 
-class ProcessAtom(Atom):
+class StatAtom(Atom):
     """
-    Atom representing a process with sequential steps.
+    Quantitative data: specific numbers, metrics, KPIs, percentages.
     
-    Used for procedures, workflows, or any sequential operations
-    where order and dependencies matter.
+    Maps to → Data visualization slides (charts, big numbers)
+    Characteristics: Numeric, measurable, impactful
+    Use for: Metrics, KPIs, percentages, comparisons with numbers
+    
+    Examples:
+    - "Latency reduced by 50%"
+    - "200ms response time"
+    - "3x battery drain improvement"
+    - "95% accuracy rate"
     
     Attributes:
-        title: Process name
-        steps: Ordered list of process steps with dependencies
+        value: The numeric value (e.g., "50%", "200ms", "3x")
+        label: What the value represents (e.g., "Latency Reduction")
+        context: Optional additional context
     """
     
-    title: str = Field(..., min_length=1, description="Process name")
-    steps: list[ProcessStep] = Field(
-        ...,
-        min_length=1,
-        description="Ordered steps with dependencies"
-    )
-
-
-class ComparisonAtom(Atom):
-    """
-    Atom representing a comparison table.
-    
-    Used for comparing multiple entities across common dimensions.
-    Structure preserves comparison relationships.
-    
-    Attributes:
-        dimensions: List of comparison aspects (e.g., ["cost", "speed"])
-        entities: Dict mapping entity name to dimension values
-                  e.g., {"Option A": {"cost": "high", "speed": "fast"}}
-    """
-    
-    dimensions: list[str] = Field(
-        ...,
-        min_length=1,
-        description="Comparison aspects"
-    )
-    entities: dict[str, dict[str, str]] = Field(
-        ...,
-        description="Entity name -> dimension -> value mapping"
+    value: str = Field(..., min_length=1, description="The numeric value (e.g., '50%', '200ms', '3x')")
+    label: str = Field(..., min_length=1, description="What the value represents (e.g., 'Latency Reduction')")
+    context: str = Field(
+        default="",
+        description="Optional additional context for the statistic"
     )
 
 
 class QuoteAtom(Atom):
     """
-    Atom representing a quote from source material.
+    Memorable verbatim phrase: punchlines, impactful statements, quotable moments.
     
-    Used for hard decisions, conclusions, meaningful comments, or
-    significant statements from speakers or documents. Preserves
-    attribution to maintain credibility.
+    Maps to → Impact slides (big typography, high contrast)
+    Characteristics: Verbatim, memorable, should NOT be summarized
+    Use for: Perfect phrasing that should be preserved exactly
+    
+    Examples:
+    - "Speed is not a feature. It is a requirement."
+    - "We don't ship features. We ship outcomes."
+    - "The best code is no code at all."
     
     Attributes:
-        quote_text: The exact quoted text
-        speaker: Name of person who said it (e.g., "John Smith, CEO")
-        source: Document or context where quote appears (e.g., "Q3 Review Meeting", "Strategic Plan.pdf")
-        context: Optional surrounding context explaining the quote's significance
+        quote: The exact verbatim text (do not summarize or paraphrase)
+        attribution: Who said it (speaker name, role, or empty if self)
+        context: Optional context for when/why it was said
     """
     
-    quote_text: str = Field(
-        ...,
-        min_length=1,
-        description="The exact quoted text"
-    )
-    speaker: str = Field(
-        ...,
-        min_length=1,
-        description="Name/title of person who said it (e.g., 'John Smith, CEO')"
-    )
-    source: str = Field(
-        ...,
-        min_length=1,
-        description="Document or context where quote appears (e.g., 'Q3 Review', 'strategy.pdf')"
+    quote: str = Field(..., min_length=1, description="The exact verbatim quote (do not summarize)")
+    attribution: str = Field(
+        default="",
+        description="Who said it (speaker name, role, or empty if self)"
     )
     context: str = Field(
         default="",
-        description="Optional context explaining significance"
+        description="Optional context for when/why it was said"
     )
 
 
-class ActionItem(BaseModel):
+class TensionAtom(Atom):
     """
-    Single action item with assignee and state.
+    Conflict/problem: errors, contradictions, broken assumptions, trade-offs.
+    
+    Maps to → Friction slides  
+    Characteristics: Negative/conflicting, story turning point
+    
+    Examples:
+    - "But latency spiked to 2 seconds under load"
+    - "The assumption that users prefer X was wrong"
+    - "Trade-off: speed vs accuracy"
     
     Attributes:
-        description: What needs to be done
-        assignee: Person/team responsible (empty if unassigned)
-        state: Current status (New, Update, Resolved)
-        due_date: Optional deadline (ISO format string)
+        text: The tension/problem statement
+        tension_type: Type of tension
+        resolution_hint: Optional hint about how it was resolved
     """
     
-    description: str = Field(
-        ...,
-        min_length=1,
-        description="What needs to be done"
+    text: str = Field(..., min_length=1, description="The tension/problem statement")
+    tension_type: str = Field(
+        default="problem",
+        description="Type of tension (e.g., problem, contradiction, trade-off, surprise, mistake)"
     )
-    assignee: str = Field(
+    resolution_hint: str = Field(
         default="",
-        description="Person/team responsible (empty if unassigned)"
+        description="Optional hint about resolution (links to ConceptAtom)"
     )
-    state: str = Field(
-        default="New",
-        pattern="^(New|Update|Resolved)$",
-        description="Current status: New, Update, or Resolved"
+
+
+class ConceptAtom(Atom):
+    """
+    Solution/insight: key takeaways, methods, mental models, aha moments.
+    
+    Maps to → Insight slides
+    Characteristics: Conclusive, subjective, actionable
+    
+    Examples:
+    - "Solution: Cache at the edge"
+    - "Key insight: Users value speed over features"
+    - "Mental model: Think of it as a pipeline"
+    
+    Attributes:
+        text: The concept/insight statement
+        concept_type: Type of concept
+        supporting_facts: IDs of FactAtoms that support this
+    """
+    
+    text: str = Field(..., min_length=1, description="The concept/insight statement")
+    concept_type: str = Field(
+        default="insight",
+        description="Type of concept (e.g., solution, insight, method, principle, takeaway)"
     )
-    due_date: str = Field(
+    supporting_facts: list[str] = Field(
+        default_factory=list,
+        description="IDs of FactAtoms that support this concept"
+    )
+
+
+class VisualAtom(Atom):
+    """
+    Concrete visual mentioned in source: specific imagery, metaphors, demos.
+    
+    Used for → Slide visual concepts
+    Characteristics: Vivid, concrete, memorable
+    
+    Examples:
+    - "Screen filled with red error messages"
+    - "Like a thousand-layer cake structure"
+    - "The before/after comparison was striking"
+    
+    Attributes:
+        description: The visual description
+        visual_category: Type of visual
+        related_atom: ID of atom this visual illustrates
+    """
+    
+    description: str = Field(..., min_length=1, description="The visual description")
+    visual_category: str = Field(
+        default="other",
+        description="Type of visual reference (e.g., metaphor, demo, screenshot, diagram, comparison)"
+    )
+    related_atom: str = Field(
         default="",
-        description="Optional deadline in ISO format (YYYY-MM-DD)"
-    )
-
-
-class ActionItemAtom(Atom):
-    """
-    Atom representing a collection of action items.
-    
-    Used for tracking tasks, decisions that need follow-up, or
-    next steps from meetings/documents. Each action item includes
-    assignee and state tracking.
-    
-    Attributes:
-        title: Action items category/context (e.g., "Q4 Launch Actions")
-        items: List of action items with assignees and states
-    """
-    
-    title: str = Field(
-        ...,
-        min_length=1,
-        description="Action items category/context"
-    )
-    items: list[ActionItem] = Field(
-        ...,
-        min_length=1,
-        description="List of action items with assignees and states"
-    )
-
-
-class TimelineEvent(BaseModel):
-    """
-    Single event in a timeline.
-    
-    Attributes:
-        time_marker: Year, date, or time period (e.g., "2011", "Q4 2023", "Early 2020s")
-        description: What happened at this point
-        details: Optional additional context or specifics
-    """
-    
-    time_marker: str = Field(
-        ...,
-        min_length=1,
-        description="Year, date, or time period (e.g., '2011', 'Q4 2023', 'Early 2020s')"
-    )
-    description: str = Field(
-        ...,
-        min_length=1,
-        description="What happened at this point"
-    )
-    details: str = Field(
-        default="",
-        description="Optional additional context or specifics"
-    )
-
-
-class TimelineAtom(Atom):
-    """
-    Atom representing a chronological sequence of events.
-    
-    Used for career journeys, product evolution, historical progression,
-    or any narrative with clear temporal markers. Preserves chronological
-    order and relationships between events.
-    
-    Attributes:
-        title: Timeline category (e.g., "Career Journey", "Product Evolution")
-        events: Ordered list of timeline events with time markers
-    """
-    
-    title: str = Field(
-        ...,
-        min_length=1,
-        description="Timeline category (e.g., 'Career Journey', 'Product Evolution')"
-    )
-    events: list[TimelineEvent] = Field(
-        ...,
-        min_length=2,
-        description="Ordered list of timeline events (minimum 2 events for a meaningful timeline)"
+        description="ID of atom this visual illustrates"
     )

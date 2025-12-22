@@ -1,0 +1,519 @@
+{
+  "id": "team_introduction",
+  "title": "Meet the Team",
+  "description": "Company team introduction with diverse team members and department structure",
+  "slides": [
+    {
+      "id": "slide_01_welcome",
+      "rank": 1,
+      "layout": "full-bleed",
+      "theme": "creative",
+      "parameters": {
+        "vibe": "playful",
+        "align": "center"
+      },
+      "widgets": {
+        "default": {
+          "type": "Type.Display",
+          "parameters": {
+            "text": "Meet the Team\nBehind the Magic"
+          }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "Pixelworks Studio" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "Where Creativity Meets Technology" }
+      }
+    },
+    {
+      "id": "slide_02_culture",
+      "rank": 2,
+      "layout": "quote-hero",
+      "theme": "creative",
+      "parameters": {
+        "vibe": "playful",
+        "quoteStyle": "highlighted"
+      },
+      "widgets": {
+        "default": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "We're not just colleagues — we're a family of dreamers, builders, and occasional coffee addicts who believe that the best work comes from collaboration, curiosity, and a healthy amount of GIF warfare."
+          }
+        },
+        "author": {
+          "type": "Type.Body",
+          "parameters": { "text": "Our Culture Philosophy" }
+        },
+        "context": {
+          "type": "Type.Body",
+          "parameters": { "text": "🎨 ✨ 🚀" }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "Pixelworks Studio" }
+      }
+    },
+    {
+      "id": "slide_03_stats",
+      "rank": 3,
+      "layout": "stats-showcase",
+      "theme": "creative",
+      "parameters": {
+        "vibe": "dynamic",
+        "columns": 4,
+        "displayStyle": "fun"
+      },
+      "widgets": {
+        "title": {
+          "type": "Type.Heading",
+          "parameters": { "text": "Our Numbers" }
+        },
+        "stat-1": {
+          "type": "Type.Body",
+          "parameters": { "text": "48\nTeam Members" }
+        },
+        "stat-2": {
+          "type": "Type.Body",
+          "parameters": { "text": "12\nCountries" }
+        },
+        "stat-3": {
+          "type": "Type.Body",
+          "parameters": { "text": "5,847\nCups of Coffee/Year" }
+        },
+        "stat-4": {
+          "type": "Type.Body",
+          "parameters": { "text": "∞\nCreative Ideas" }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "Pixelworks Studio" }
+      }
+    },
+    {
+      "id": "slide_04_leadership",
+      "rank": 4,
+      "layout": "cards-grid",
+      "theme": "creative",
+      "parameters": {
+        "vibe": "playful",
+        "columns": 3,
+        "cardStyle": "polaroid"
+      },
+      "widgets": {
+        "title": {
+          "type": "Type.Heading",
+          "parameters": { "text": "Leadership Team" }
+        },
+        "card-1": {
+          "type": "Type.Body",
+          "parameters": { "text": "👩‍💼 **Alex Rivera**\nCEO & Founder\n\n\"Leading with heart\"\nPreviously: Disney, Pixar\n🎸 Secret talent: Blues guitar" }
+        },
+        "card-2": {
+          "type": "Type.Body",
+          "parameters": { "text": "👨‍💻 **James Wu**\nCTO\n\n\"Code is poetry\"\nPreviously: Apple, SpaceX\n🏔️ Hobby: Mountain climbing" }
+        },
+        "card-3": {
+          "type": "Type.Body",
+          "parameters": { "text": "👩‍🎨 **Sofia Andersson**\nCreative Director\n\n\"Design everything\"\nPreviously: IDEO, Pentagram\n🌱 Obsession: Houseplants" }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "Pixelworks Studio" }
+      }
+    },
+    {
+      "id": "slide_05_design",
+      "rank": 5,
+      "layout": "magazine",
+      "theme": "creative",
+      "parameters": {
+        "vibe": "playful",
+        "variant": "left-feature"
+      },
+      "widgets": {
+        "feature": {
+          "type": "Type.Display",
+          "parameters": {
+            "text": "Design\nTeam"
+          }
+        },
+        "sidebar": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "**12 Creative Minds**\n\n🎨 UI/UX Design\n📱 Mobile Design\n🖼️ Brand & Identity\n🎬 Motion Design\n\n*\"Making pixels dance since 2018\"*"
+          }
+        },
+        "caption": {
+          "type": "Type.Body",
+          "parameters": { "text": "Led by Sofia Andersson, Creative Director" }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "Pixelworks Studio" }
+      }
+    },
+    {
+      "id": "slide_06_design_team",
+      "rank": 6,
+      "layout": "smart-grid",
+      "theme": "creative",
+      "parameters": {
+        "vibe": "playful",
+        "cols": 4
+      },
+      "widgets": {
+        "cell1": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "🧑‍🎨 **Maya Chen**\nSenior Designer\nUI perfectionist"
+          }
+        },
+        "cell2": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "👩‍🎨 **Elena Volkov**\nUX Designer\nResearch nerd"
+          }
+        },
+        "cell3": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "👨‍🎨 **Kai Tanaka**\nMotion Designer\nAnimation wizard"
+          }
+        },
+        "cell4": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "🧑‍🎨 **Priya Sharma**\nBrand Designer\nColor theory lover"
+          }
+        },
+        "cell5": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "👨‍🎨 **Lucas Müller**\nProduct Designer\nPrototype king"
+          }
+        },
+        "cell6": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "👩‍🎨 **Ava Johnson**\nJunior Designer\nRising star"
+          }
+        },
+        "cell7": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "🧑‍🎨 **Omar Hassan**\nIllustrator\nVector master"
+          }
+        },
+        "cell8": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "👩‍🎨 **Lily Park**\n3D Designer\nDepth creator"
+          }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "Design Team Members" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "Pixelworks Studio" }
+      }
+    },
+    {
+      "id": "slide_07_engineering",
+      "rank": 7,
+      "layout": "hero-split",
+      "theme": "creative",
+      "parameters": {
+        "vibe": "dynamic",
+        "split": "40-60"
+      },
+      "widgets": {
+        "left": {
+          "type": "Type.Display",
+          "parameters": {
+            "text": "Engineering"
+          }
+        },
+        "right": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "## 18 Code Wizards\n\n**Frontend:** React, Vue, Next.js\n**Backend:** Node.js, Python, Go\n**Mobile:** Swift, Kotlin, Flutter\n**DevOps:** AWS, K8s, Terraform\n\n*\"We don't just write code, we craft experiences\"*\n\n🔥 Fun fact: Our deploy automation has a 99.9% success rate"
+          }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "Pixelworks Studio" }
+      }
+    },
+    {
+      "id": "slide_08_product",
+      "rank": 8,
+      "layout": "feature-grid",
+      "theme": "creative",
+      "parameters": {
+        "vibe": "minimal",
+        "cols": 2
+      },
+      "widgets": {
+        "title": {
+          "type": "Type.Heading",
+          "parameters": { "text": "Product & Strategy" }
+        },
+        "feature1": {
+          "type": "Type.Body",
+          "parameters": {
+            "title": "🎯 Product Managers",
+            "text": "4 strategic thinkers turning vision into reality"
+          }
+        },
+        "feature2": {
+          "type": "Type.Body",
+          "parameters": {
+            "title": "📊 Data Analysts",
+            "text": "3 insight hunters making sense of the numbers"
+          }
+        },
+        "feature3": {
+          "type": "Type.Body",
+          "parameters": {
+            "title": "🔍 QA Engineers",
+            "text": "4 quality guardians keeping bugs at bay"
+          }
+        },
+        "feature4": {
+          "type": "Type.Body",
+          "parameters": {
+            "title": "📝 Technical Writers",
+            "text": "2 storytellers documenting our journey"
+          }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "Pixelworks Studio" }
+      }
+    },
+    {
+      "id": "slide_09_operations",
+      "rank": 9,
+      "layout": "cards-grid",
+      "theme": "creative",
+      "parameters": {
+        "vibe": "calm",
+        "columns": 2,
+        "cardStyle": "simple"
+      },
+      "widgets": {
+        "title": {
+          "type": "Type.Heading",
+          "parameters": { "text": "Operations & Support" }
+        },
+        "card-1": {
+          "type": "Type.Body",
+          "parameters": { "text": "💼 **People & Culture**\n\nEmily Foster (Head of People)\nDavid Kim (Recruiter)\n\nKeeping our team happy, engaged, and growing" }
+        },
+        "card-2": {
+          "type": "Type.Body",
+          "parameters": { "text": "💰 **Finance**\n\nRachel Green (Finance Lead)\nTom Baker (Accountant)\n\nManaging the business side so creatives can create" }
+        },
+        "card-3": {
+          "type": "Type.Body",
+          "parameters": { "text": "📢 **Marketing**\n\nChris Martinez (Marketing Lead)\nSara Ali (Content Creator)\n\nTelling our story to the world" }
+        },
+        "card-4": {
+          "type": "Type.Body",
+          "parameters": { "text": "🎧 **Customer Success**\n\nJen Cooper (CS Lead)\n+ 3 Support Heroes\n\nMaking customers smile, one ticket at a time" }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "Pixelworks Studio" }
+      }
+    },
+    {
+      "id": "slide_10_culture_perks",
+      "rank": 10,
+      "layout": "timeline",
+      "theme": "creative",
+      "parameters": {
+        "vibe": "playful"
+      },
+      "widgets": {
+        "title": {
+          "type": "Type.Heading",
+          "parameters": { "text": "Life at Pixelworks" }
+        },
+        "step1": {
+          "type": "Type.Body",
+          "parameters": {
+            "title": "🏠 Remote-First",
+            "text": "Work from anywhere, anytime (we've got folks in 12 countries!)"
+          }
+        },
+        "step2": {
+          "type": "Type.Body",
+          "parameters": {
+            "title": "📚 Learning Budget",
+            "text": "$2,000/year for courses, conferences, or book clubs"
+          }
+        },
+        "step3": {
+          "type": "Type.Body",
+          "parameters": {
+            "title": "🏖️ Unlimited PTO",
+            "text": "Take the time you need (seriously, we mean it)"
+          }
+        },
+        "step4": {
+          "type": "Type.Body",
+          "parameters": {
+            "title": "🎉 Team Retreats",
+            "text": "Annual all-hands: Bali 2023, Portugal 2024, Japan 2025!"
+          }
+        },
+        "step5": {
+          "type": "Type.Body",
+          "parameters": {
+            "title": "🎮 Fun Committee",
+            "text": "Game nights, movie clubs, and way too many Slack channels"
+          }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "Pixelworks Studio" }
+      }
+    },
+    {
+      "id": "slide_11_hiring",
+      "rank": 11,
+      "layout": "comparison",
+      "theme": "creative",
+      "parameters": {
+        "vibe": "dynamic"
+      },
+      "widgets": {
+        "title": {
+          "type": "Type.Heading",
+          "parameters": { "text": "We're Hiring!" }
+        },
+        "left-title": {
+          "type": "Type.Heading",
+          "parameters": { "text": "Open Roles" }
+        },
+        "left-content": {
+          "type": "Type.List",
+          "parameters": {
+            "items": [
+              "Senior Product Designer",
+              "Full-Stack Engineer",
+              "DevOps Engineer",
+              "Product Manager",
+              "Technical Writer"
+            ]
+          }
+        },
+        "right-title": {
+          "type": "Type.Heading",
+          "parameters": { "text": "What We Look For" }
+        },
+        "right-content": {
+          "type": "Type.List",
+          "parameters": {
+            "items": [
+              "Passion for craft",
+              "Collaborative spirit",
+              "Growth mindset",
+              "Excellent communication",
+              "Sense of humor (required!)"
+            ]
+          }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "Pixelworks Studio" }
+      }
+    },
+    {
+      "id": "slide_12_join_us",
+      "rank": 12,
+      "layout": "spotlight",
+      "theme": "creative",
+      "parameters": {
+        "vibe": "playful",
+        "intensity": "high"
+      },
+      "widgets": {
+        "default": {
+          "type": "Type.Display",
+          "parameters": {
+            "text": "Come Build\nWith Us!"
+          }
+        },
+        "subtitle": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "careers@pixelworks.studio\npixelworks.studio/careers\n\n@pixelworkshq • LinkedIn: Pixelworks Studio"
+          }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "Pixelworks Studio • Meet the Team" }
+      }
+    }
+  ]
+}

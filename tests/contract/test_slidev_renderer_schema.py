@@ -7,7 +7,7 @@ class TestSlidevRendererProtocol:
     
     def test_renderer_has_render_method(self):
         """Verify SlidevRenderer has render() method."""
-        from src.render.slidev.markdown_renderer import SlidevRenderer
+        from src.paged.render.slidev.markdown_renderer import SlidevRenderer
         
         renderer = SlidevRenderer()
         assert hasattr(renderer, 'render')
@@ -15,7 +15,7 @@ class TestSlidevRendererProtocol:
     
     def test_renderer_has_render_single_slide_method(self):
         """Verify SlidevRenderer has render_single_slide() method."""
-        from src.render.slidev.markdown_renderer import SlidevRenderer
+        from src.paged.render.slidev.markdown_renderer import SlidevRenderer
         
         renderer = SlidevRenderer()
         assert hasattr(renderer, 'render_single_slide')
@@ -23,7 +23,7 @@ class TestSlidevRendererProtocol:
     
     def test_renderer_has_render_multi_slide_method(self):
         """Verify SlidevRenderer has render_multi_slide() method."""
-        from src.render.slidev.markdown_renderer import SlidevRenderer
+        from src.paged.render.slidev.markdown_renderer import SlidevRenderer
         
         renderer = SlidevRenderer()
         assert hasattr(renderer, 'render_multi_slide')
@@ -31,7 +31,7 @@ class TestSlidevRendererProtocol:
     
     def test_renderer_initializes_successfully(self):
         """Verify SlidevRenderer can be instantiated."""
-        from src.render.slidev.markdown_renderer import SlidevRenderer
+        from src.paged.render.slidev.markdown_renderer import SlidevRenderer
         
         renderer = SlidevRenderer()
         assert renderer is not None

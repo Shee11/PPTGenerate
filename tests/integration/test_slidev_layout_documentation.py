@@ -1,6 +1,6 @@
 """Integration tests for Slidev layout documentation with LLM prompts."""
 import pytest
-from src.layout.slidev.layout_engine import SlidevLayoutEngine
+from src.paged.layout.slidev.layout_engine import SlidevLayoutEngine
 
 
 class TestLayoutDocumentationIntegration:

@@ -6,146 +6,10 @@
       "id": "slide_1",
       "rank": 1,
       "state": "draft",
-      "story": "Open by reframing career growth in the AI/LLM era: the ground is shifting fast, so the real risk is standing still, not moving. Use Chao\u2019s journey as a quick proof that roles and required skills can change dramatically within a single career.",
+      "story": "Introduce Chao Wang and frame the talk as a practical guide to building a resilient, high-impact career in the AI era.",
       "atoms": [
-        "timeline_001",
-        "stmt_014"
-      ],
-      "density": "moderate",
-      "visual_design": "timeline",
-      "layout": "",
-      "widgets": {},
-      "header": null,
-      "footer": null,
-      "style_override": {},
-      "parameters": {}
-    },
-    {
-      "id": "slide_2",
-      "rank": 2,
-      "state": "draft",
-      "story": "Contrast the old, linear model of AI/product work with today\u2019s LLM-centric reality to show why traditional career playbooks are no longer enough and why adaptability is now a core career skill.",
-      "atoms": [
-        "stmt_001",
-        "stmt_002",
-        "comp_001"
-      ],
-      "density": "dense",
-      "visual_design": "split",
-      "layout": "",
-      "widgets": {},
-      "header": null,
-      "footer": null,
-      "style_override": {},
-      "parameters": {}
-    },
-    {
-      "id": "slide_3",
-      "rank": 3,
-      "state": "draft",
-      "story": "Introduce the first pillar of modern career growth: evolve with the industry by embracing new ways of working (like orchestration and UX focus) and accepting that role boundaries will blur.",
-      "atoms": [
-        "stmt_003",
-        "stmt_004",
-        "stmt_005",
-        "stmt_015"
-      ],
-      "density": "dense",
-      "visual_design": "hierarchical",
-      "layout": "",
-      "widgets": {},
-      "header": null,
-      "footer": null,
-      "style_override": {},
-      "parameters": {}
-    },
-    {
-      "id": "slide_4",
-      "rank": 4,
-      "state": "draft",
-      "story": "Shift to the second pillar: focus on high-ROI work\u2014defining the right problems, building feedback loops, and combining domains\u2014because that\u2019s where leverage and visibility now come from.",
-      "atoms": [
-        "stmt_006",
-        "stmt_007",
-        "stmt_008",
-        "stmt_010"
-      ],
-      "density": "moderate",
-      "visual_design": "grid",
-      "layout": "",
-      "widgets": {},
-      "header": null,
-      "footer": null,
-      "style_override": {},
-      "parameters": {}
-    },
-    {
-      "id": "slide_5",
-      "rank": 5,
-      "state": "draft",
-      "story": "Offer concrete, step-by-step practices for doing high-value work in the LLM era: define problems well, tune prompts pragmatically, and design systems that limit error accumulation.",
-      "atoms": [
-        "proc_001",
-        "proc_002",
-        "stmt_009",
-        "stmt_010",
-        "proc_003"
-      ],
-      "density": "dense",
-      "visual_design": "timeline",
-      "layout": "",
-      "widgets": {},
-      "header": null,
-      "footer": null,
-      "style_override": {},
-      "parameters": {}
-    },
-    {
-      "id": "slide_6",
-      "rank": 6,
-      "state": "draft",
-      "story": "Highlight enduring human advantages\u2014system-level thinking and low-level performance skills\u2014and use Chao\u2019s optimization anecdote to show how local brilliance can still fail without the right scope.",
-      "atoms": [
-        "stmt_011",
-        "stmt_012",
-        "stmt_013"
-      ],
-      "density": "moderate",
-      "visual_design": "asymmetrical",
-      "layout": "",
-      "widgets": {},
-      "header": null,
-      "footer": null,
-      "style_override": {},
-      "parameters": {}
-    },
-    {
-      "id": "slide_7",
-      "rank": 7,
-      "state": "draft",
-      "story": "Address the fear of being left behind by showing how roles historically merged (like manual testers) and how you can stay current with AI through lightweight, sustainable habits.",
-      "atoms": [
-        "stmt_016",
-        "proc_004",
-        "stmt_017"
-      ],
-      "density": "moderate",
-      "visual_design": "hierarchical",
-      "layout": "",
-      "widgets": {},
-      "header": null,
-      "footer": null,
-      "style_override": {},
-      "parameters": {}
-    },
-    {
-      "id": "slide_8",
-      "rank": 8,
-      "state": "draft",
-      "story": "Close with a simple career operating system: make every step solid and keep moving with the industry, turning daily tasks into compounding skill and opportunity.",
-      "atoms": [
-        "quote_001",
-        "stmt_018"
+        "bio_001",
+        "fact_003"
       ],
       "density": "minimal",
       "visual_design": "full-canvas",
@@ -153,6 +17,187 @@
       "widgets": {},
       "header": null,
       "footer": null,
+      "theme": "professional_career_theme",
+      "style_override": {},
+      "parameters": {}
+    },
+    {
+      "id": "slide_2",
+      "rank": 2,
+      "state": "draft",
+      "story": "Set up how traditional AI workflows and role boundaries used to look, so the audience can see how much the ground has shifted.",
+      "atoms": [
+        "fact_001",
+        "fact_002"
+      ],
+      "density": "moderate",
+      "visual_design": "timeline",
+      "layout": "",
+      "widgets": {},
+      "header": null,
+      "footer": null,
+      "theme": "professional_career_theme",
+      "style_override": {},
+      "parameters": {}
+    },
+    {
+      "id": "slide_3",
+      "rank": 3,
+      "state": "draft",
+      "story": "Highlight the pain of old workflows and the rise of large models as a new foundation, creating urgency to change how we work.",
+      "atoms": [
+        "tension_001",
+        "fact_004"
+      ],
+      "density": "moderate",
+      "visual_design": "split",
+      "layout": "",
+      "widgets": {},
+      "header": null,
+      "footer": null,
+      "theme": "professional_career_theme",
+      "style_override": {},
+      "parameters": {}
+    },
+    {
+      "id": "slide_4",
+      "rank": 4,
+      "state": "draft",
+      "story": "Explain the core shift in the large-model era: from training standalone models to composing systems that optimize for user experience and iteration speed.",
+      "atoms": [
+        "concept_001",
+        "concept_002",
+        "concept_003"
+      ],
+      "density": "moderate",
+      "visual_design": "before-after",
+      "layout": "",
+      "widgets": {},
+      "header": null,
+      "footer": null,
+      "theme": "professional_career_theme",
+      "style_override": {},
+      "parameters": {}
+    },
+    {
+      "id": "slide_5",
+      "rank": 5,
+      "state": "draft",
+      "story": "Show what modern AI application development looks like in practice: orchestration, feedback loops, and evaluation pipelines instead of just model code.",
+      "atoms": [
+        "concept_004",
+        "concept_005",
+        "concept_011"
+      ],
+      "density": "moderate",
+      "visual_design": "flow",
+      "layout": "",
+      "widgets": {},
+      "header": null,
+      "footer": null,
+      "theme": "professional_career_theme",
+      "style_override": {},
+      "parameters": {}
+    },
+    {
+      "id": "slide_6",
+      "rank": 6,
+      "state": "draft",
+      "story": "Address a key technical challenge\u2014error accumulation in multi-step AI systems\u2014and introduce the planner\u2013executor pattern as a robust design response.",
+      "atoms": [
+        "tension_002",
+        "concept_015",
+        "visual_001"
+      ],
+      "density": "moderate",
+      "visual_design": "architecture",
+      "layout": "",
+      "widgets": {},
+      "header": null,
+      "footer": null,
+      "theme": "professional_career_theme",
+      "style_override": {},
+      "parameters": {}
+    },
+    {
+      "id": "slide_7",
+      "rank": 7,
+      "state": "draft",
+      "story": "Shift from systems to personal skills: define the new high-value abilities\u2014problem framing, cross-domain thinking, and human\u2013AI co-creation.",
+      "atoms": [
+        "concept_006",
+        "concept_007",
+        "concept_009"
+      ],
+      "density": "moderate",
+      "visual_design": "grid",
+      "layout": "",
+      "widgets": {},
+      "header": null,
+      "footer": null,
+      "theme": "professional_career_theme",
+      "style_override": {},
+      "parameters": {}
+    },
+    {
+      "id": "slide_8",
+      "rank": 8,
+      "state": "draft",
+      "story": "Translate those skills into concrete habits: how to define better problems, tune prompts, and use AI as a translator from a single source of truth.",
+      "atoms": [
+        "concept_013",
+        "concept_014",
+        "concept_021"
+      ],
+      "density": "moderate",
+      "visual_design": "flow",
+      "layout": "",
+      "widgets": {},
+      "header": null,
+      "footer": null,
+      "theme": "professional_career_theme",
+      "style_override": {},
+      "parameters": {}
+    },
+    {
+      "id": "slide_9",
+      "rank": 9,
+      "state": "draft",
+      "story": "Connect AI\u2019s limits with your enduring value: where human judgment still matters and how to focus optimization at the right level.",
+      "atoms": [
+        "concept_016",
+        "concept_017",
+        "fact_006"
+      ],
+      "density": "moderate",
+      "visual_design": "comparison-table",
+      "layout": "",
+      "widgets": {},
+      "header": null,
+      "footer": null,
+      "theme": "professional_career_theme",
+      "style_override": {},
+      "parameters": {}
+    },
+    {
+      "id": "slide_10",
+      "rank": 10,
+      "state": "draft",
+      "story": "Close with career mindset and actionable takeaways: evolve with the field, make each step solid, and treat AI as a force multiplier, not a threat.",
+      "atoms": [
+        "quote_001",
+        "concept_018",
+        "concept_022",
+        "concept_023",
+        "concept_008"
+      ],
+      "density": "dense",
+      "visual_design": "hierarchical",
+      "layout": "",
+      "widgets": {},
+      "header": null,
+      "footer": null,
+      "theme": "professional_career_theme",
       "style_override": {},
       "parameters": {}
     }

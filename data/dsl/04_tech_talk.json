@@ -1,0 +1,438 @@
+{
+  "id": "tech_talk",
+  "title": "Microservices Architecture Deep Dive",
+  "description": "Technical conference talk on microservices best practices",
+  "slides": [
+    {
+      "id": "slide_01_title",
+      "rank": 1,
+      "layout": "spotlight",
+      "theme": "dark",
+      "parameters": {
+        "vibe": "dramatic",
+        "intensity": "strong"
+      },
+      "widgets": {
+        "default": {
+          "type": "Type.Display",
+          "parameters": {
+            "text": "Microservices\nAt Scale"
+          }
+        },
+        "subtitle": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "Lessons from running 500+ services in production"
+          }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "TechConf 2025" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "Alex Chen • Principal Architect @ CloudScale" }
+      }
+    },
+    {
+      "id": "slide_02_about",
+      "rank": 2,
+      "layout": "image-text",
+      "theme": "dark",
+      "parameters": {
+        "vibe": "minimal",
+        "imagePosition": "left",
+        "imageSize": "small"
+      },
+      "widgets": {
+        "image": {
+          "type": "Type.Body",
+          "parameters": { "text": "👨‍💻" }
+        },
+        "content": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "## Alex Chen\n\n**Principal Architect @ CloudScale**\n\n- 15 years in distributed systems\n- Led migration from monolith to microservices\n- Author of \"Practical Microservices\"\n- AWS Hero, CNCF Ambassador\n\n@alexchen • github.com/alexchen"
+          }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "About Me" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "TechConf 2025" }
+      }
+    },
+    {
+      "id": "slide_03_agenda",
+      "rank": 3,
+      "layout": "feature-grid",
+      "theme": "dark",
+      "parameters": {
+        "vibe": "calm",
+        "columns": 3
+      },
+      "widgets": {
+        "title": {
+          "type": "Type.Heading",
+          "parameters": { "text": "Today's Journey" }
+        },
+        "feature1": {
+          "type": "Type.Body",
+          "parameters": { "text": "1️⃣ The Why\n\nWhen microservices make sense (and when they don't)" }
+        },
+        "feature2": {
+          "type": "Type.Body",
+          "parameters": { "text": "2️⃣ Architecture\n\nPatterns that work at scale" }
+        },
+        "feature3": {
+          "type": "Type.Body",
+          "parameters": { "text": "3️⃣ Data\n\nManaging state across services" }
+        },
+        "feature4": {
+          "type": "Type.Body",
+          "parameters": { "text": "4️⃣ Operations\n\nObservability & deployment" }
+        },
+        "feature5": {
+          "type": "Type.Body",
+          "parameters": { "text": "5️⃣ Pitfalls\n\nMistakes we made so you don't have to" }
+        },
+        "feature6": {
+          "type": "Type.Body",
+          "parameters": { "text": "6️⃣ Future\n\nWhat's next in the ecosystem" }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "TechConf 2025" }
+      }
+    },
+    {
+      "id": "slide_04_scale",
+      "rank": 4,
+      "layout": "stats-showcase",
+      "theme": "dark",
+      "parameters": {
+        "vibe": "dynamic",
+        "columns": 4,
+        "displayStyle": "neon"
+      },
+      "widgets": {
+        "title": {
+          "type": "Type.Heading",
+          "parameters": { "text": "Our Scale" }
+        },
+        "stat-1": {
+          "type": "Type.Body",
+          "parameters": { "text": "500+\nMicroservices" }
+        },
+        "stat-2": {
+          "type": "Type.Body",
+          "parameters": { "text": "2M+\nRequests/sec" }
+        },
+        "stat-3": {
+          "type": "Type.Body",
+          "parameters": { "text": "99.99%\nUptime SLA" }
+        },
+        "stat-4": {
+          "type": "Type.Body",
+          "parameters": { "text": "150+\nEngineers" }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "TechConf 2025" }
+      }
+    },
+    {
+      "id": "slide_05_patterns",
+      "rank": 5,
+      "layout": "cards-grid",
+      "theme": "dark",
+      "parameters": {
+        "vibe": "professional",
+        "columns": 3,
+        "cardStyle": "outlined"
+      },
+      "widgets": {
+        "title": {
+          "type": "Type.Heading",
+          "parameters": { "text": "Key Patterns" }
+        },
+        "card-1": {
+          "type": "Type.Body",
+          "parameters": { "text": "🚪 API Gateway\n\nSingle entry point for all clients, handles auth, rate limiting, routing" }
+        },
+        "card-2": {
+          "type": "Type.Body",
+          "parameters": { "text": "💔 Circuit Breaker\n\nPrevent cascade failures, fail fast, provide fallbacks" }
+        },
+        "card-3": {
+          "type": "Type.Body",
+          "parameters": { "text": "📨 Event Sourcing\n\nStore events, derive state, enable replay and audit" }
+        },
+        "card-4": {
+          "type": "Type.Body",
+          "parameters": { "text": "🔄 CQRS\n\nSeparate read/write models for optimization" }
+        },
+        "card-5": {
+          "type": "Type.Body",
+          "parameters": { "text": "📦 Saga Pattern\n\nDistributed transactions via choreography or orchestration" }
+        },
+        "card-6": {
+          "type": "Type.Body",
+          "parameters": { "text": "🎭 Sidecar\n\nOffload cross-cutting concerns to companion containers" }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "TechConf 2025" }
+      }
+    },
+    {
+      "id": "slide_06_data",
+      "rank": 6,
+      "layout": "comparison",
+      "theme": "dark",
+      "parameters": {
+        "vibe": "dynamic"
+      },
+      "widgets": {
+        "title": {
+          "type": "Type.Heading",
+          "parameters": { "text": "Data Strategy" }
+        },
+        "before": {
+          "type": "Type.List",
+          "parameters": {
+            "title": "❌ Anti-Patterns",
+            "items": [
+              "Shared database across services",
+              "Synchronous data replication",
+              "Distributed transactions everywhere",
+              "Tight coupling via database"
+            ]
+          }
+        },
+        "after": {
+          "type": "Type.List",
+          "parameters": {
+            "title": "✅ Best Practices",
+            "items": [
+              "Database per service",
+              "Event-driven data sync",
+              "Eventual consistency where possible",
+              "API-first communication"
+            ]
+          }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "TechConf 2025" }
+      }
+    },
+    {
+      "id": "slide_07_observability",
+      "rank": 7,
+      "layout": "smart-grid",
+      "theme": "dark",
+      "parameters": {
+        "vibe": "professional",
+        "cols": 3
+      },
+      "widgets": {
+        "cell1": {
+          "type": "Type.Body",
+          "parameters": { "text": "📊 Metrics\n\nPrometheus + Grafana\n\n- Golden signals (latency, traffic, errors, saturation)\n- Business metrics\n- SLO dashboards" }
+        },
+        "cell2": {
+          "type": "Type.Body",
+          "parameters": { "text": "📝 Logging\n\nELK Stack\n\n- Structured JSON logs\n- Correlation IDs\n- Log aggregation\n- Alert on patterns" }
+        },
+        "cell3": {
+          "type": "Type.Body",
+          "parameters": { "text": "🔍 Tracing\n\nJaeger + OpenTelemetry\n\n- Distributed traces\n- Span context propagation\n- Service dependency maps" }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "The Three Pillars of Observability" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "TechConf 2025" }
+      }
+    },
+    {
+      "id": "slide_08_pitfalls",
+      "rank": 8,
+      "layout": "timeline",
+      "theme": "dark",
+      "parameters": {
+        "vibe": "dramatic"
+      },
+      "widgets": {
+        "title": {
+          "type": "Type.Heading",
+          "parameters": { "text": "Mistakes We Made" }
+        },
+        "step1": {
+          "type": "Type.Body",
+          "parameters": {
+            "title": "Too Many Services",
+            "text": "Started with 200 services for 20 engineers → 10:1 ratio is too high"
+          }
+        },
+        "step2": {
+          "type": "Type.Body",
+          "parameters": {
+            "title": "Shared Libraries",
+            "text": "Common lib became a monolith → Extract interfaces, version carefully"
+          }
+        },
+        "step3": {
+          "type": "Type.Body",
+          "parameters": {
+            "title": "No Service Ownership",
+            "text": "Nobody owned services → Implement team topology mapping"
+          }
+        },
+        "step4": {
+          "type": "Type.Body",
+          "parameters": {
+            "title": "Network as Afterthought",
+            "text": "Ignored network failures → Design for failure from day one"
+          }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "TechConf 2025" }
+      }
+    },
+    {
+      "id": "slide_09_future",
+      "rank": 9,
+      "layout": "magazine",
+      "theme": "dark",
+      "parameters": {
+        "vibe": "dynamic",
+        "variant": "right-feature"
+      },
+      "widgets": {
+        "feature": {
+          "type": "Type.Display",
+          "parameters": {
+            "text": "What's Next?"
+          }
+        },
+        "sidebar": {
+          "type": "Type.List",
+          "parameters": {
+            "items": [
+              "Service Mesh (Istio, Linkerd)",
+              "WebAssembly at the edge",
+              "Platform Engineering",
+              "AI-assisted operations",
+              "eBPF observability"
+            ]
+          }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "TechConf 2025" }
+      }
+    },
+    {
+      "id": "slide_10_takeaways",
+      "rank": 10,
+      "layout": "quote-hero",
+      "theme": "dark",
+      "parameters": {
+        "vibe": "calm",
+        "quoteStyle": "bold"
+      },
+      "widgets": {
+        "default": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "Start with a modular monolith. Earn your microservices."
+          }
+        },
+        "author": {
+          "type": "Type.Body",
+          "parameters": { "text": "Key Takeaway" }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "TechConf 2025" }
+      }
+    },
+    {
+      "id": "slide_11_qa",
+      "rank": 11,
+      "layout": "spotlight",
+      "theme": "dark",
+      "parameters": {
+        "vibe": "professional",
+        "intensity": "soft"
+      },
+      "widgets": {
+        "default": {
+          "type": "Type.Display",
+          "parameters": {
+            "text": "Questions?"
+          }
+        },
+        "subtitle": {
+          "type": "Type.Body",
+          "parameters": {
+            "text": "@alexchen • github.com/alexchen\n\nSlides: alexchen.dev/techconf2025"
+          }
+        }
+      },
+      "header": {
+        "type": "Type.Heading",
+        "parameters": { "text": "" }
+      },
+      "footer": {
+        "type": "Type.Body",
+        "parameters": { "text": "TechConf 2025 • Microservices at Scale" }
+      }
+    }
+  ]
+}

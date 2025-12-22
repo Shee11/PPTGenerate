@@ -1,4 +1,8 @@
-"""Prompt templates for layout generation with LLM."""
+"""Prompt templates for unified slide generation with LLM.
+
+This module provides prompt templates for the single-step slide generation system.
+The generation creates a complete presentation from atoms in one LLM call.
+"""
 import os
 import json
 from typing import Any, List, Dict
@@ -6,98 +10,10 @@ from typing import Any, List, Dict
 from src.generation.atom.collection import AtomCollection
 from src.common.slides import Slides
 from src.utils.generation_config import GenerationConfig
-from src.layout.engine_registry import LayoutEngineRegistry
+from src.paged.layout.engine_registry import LayoutEngineRegistry
 
 
-# ========== Helper Functions for Dynamic Prompt Generation ==========
-
-
-def _get_theme_schema() -> str:
-    """Get JSON schema for theme configuration.
-    
-    Returns:
-        JSON schema string for theme
-    """
-    return """{
-  "type": "object",
-  "description": "Theme configuration for presentation styling",
-  "properties": {
-    "id": {"type": "string", "description": "Unique theme identifier"},
-    "primary_color": {"type": "string", "description": "Primary brand color (hex)"},
-    "secondary_color": {"type": "string", "description": "Secondary brand color (hex)"},
-    "accent_color": {"type": "string", "description": "Accent/highlight color (hex)"},
-    "background_color": {"type": "string", "description": "Default background color (hex)"},
-    "text_color": {"type": "string", "description": "Default text color (hex)"},
-    "font_family": {"type": "string", "description": "Primary font family"},
-    "margin_x": {"type": "string", "description": "Horizontal margin (e.g., '40px')"},
-    "margin_y": {"type": "string", "description": "Vertical margin (e.g., '30px')"},
-    "gutter": {"type": "string", "description": "Spacing between widgets (e.g., '20px')"}
-  }
-}"""
-
-
-def _get_preset_schema() -> str:
-    """Get JSON schema for preset configuration (per-widget).
-    
-    Returns:
-        JSON schema string for preset
-    """
-    return """{
-  "type": "object",
-  "description": "Visual preset for widget styling",
-  "properties": {
-    "surface": {
-      "type": "string",
-      "enum": ["Flat", "Elevated", "Outline", "Glass", "Sunken", "NeoBrutal", "Subtle"],
-      "description": "Visual depth effect"
-    },
-    "shape": {
-      "type": "string",
-      "enum": ["Sharp", "Rounded", "Curve", "Pill", "Squircle", "Organic"],
-      "description": "Border radius style"
-    },
-    "fill": {
-      "type": "string",
-      "enum": ["Solid_Brand", "Solid_Surface", "Subtle", "Gradient_Linear", "Gradient_Mesh", "Pattern_Dot", "Noise"],
-      "description": "Background fill pattern"
-    },
-    "effect": {
-      "type": "string",
-      "enum": ["Duotone", "Glitch", "Glow", "Tape", "Shadow"],
-      "description": "Visual effect/filter"
-    }
-  }
-}"""
-
-
-def _get_style_schema() -> str:
-    """Get JSON schema for style configuration (widget-type defaults).
-    
-    Returns:
-        JSON schema string for style
-    """
-    return """{
-  "type": "object",
-  "description": "Widget-type styling defaults that map widget types to theme tokens",
-  "properties": {
-    "theme_name": {"type": "string", "description": "Reference to theme ID"},
-    "widgets": {
-      "type": "object",
-      "description": "Per widget-type styling (e.g., 'Type.Display', 'Data.BigNum')",
-      "additionalProperties": {
-        "type": "object",
-        "properties": {
-          "font": {"type": "string", "description": "Theme typography token (h1, h2, h3, body, caption)"},
-          "align": {"type": "string", "enum": ["left", "center", "right", "justify"], "description": "Text alignment"},
-          "vertical_align": {"type": "string", "enum": ["top", "center", "bottom"], "description": "Vertical alignment"},
-          "foreground": {"type": "string", "description": "Theme color token for text (primary_color, text_color, etc.)"},
-          "background": {"type": "string", "description": "Theme color token for background"},
-          "border_radius": {"type": "string", "description": "Border radius (e.g., '8px', '12px')"}
-        }
-      }
-    }
-  }
-}"""
+# ========== JSON Schema Helpers ==========
 
 
 def _get_patch_schema_for_add() -> str:
@@ -142,320 +58,53 @@ def _get_patch_schema_for_replace() -> str:
     """Get JSON schema for patch 'replace' operations.
     
     Returns:
-        JSON schema string for replace operations including slides, theme, and presets
+        JSON schema string for replace operations (without presets)
     """
-    theme_schema = _get_theme_schema()
-    preset_schema = _get_preset_schema()
-    
-    # Build widgets schema separately to avoid f-string nesting issues
-    widgets_schema = f"""{{
+    # Build widgets schema (simplified, no preset)
+    widgets_schema = """{
                 "type": "object",
-                "description": "Widget assignments mapping slot roles to widget configs. DO NOT include 'atom_id' field - only include 'type', 'parameters', and optionally 'preset'.",
-                "patternProperties": {{
-                  ".*": {{
+                "description": "Widget assignments mapping slot roles to widget configs. DO NOT include 'atom_id' field - only include 'type' and 'parameters'.",
+                "patternProperties": {
+                  ".*": {
                     "type": "object",
-                    "properties": {{
-                      "type": {{"type": "string", "description": "Widget type (e.g., 'Type.Display')"}},
-                      "parameters": {{"type": "object", "description": "Widget-specific parameters"}},
-                      "preset": {preset_schema}
-                    }},
+                    "properties": {
+                      "type": {"type": "string", "description": "Widget type (e.g., 'Type.Display')"},
+                      "parameters": {"type": "object", "description": "Widget-specific parameters"}
+                    },
                     "required": ["type", "parameters"]
-                  }}
-                }}
-              }}"""
+                  }
+                }
+              }"""
     
     return f"""{{
   "type": "array",
-  "description": "Array of patch operations to replace/update slides, theme, or presets",
+  "description": "Array of patch operations to replace/update slides",
   "items": {{
-    "oneOf": [
-      {{
+    "type": "object",
+    "description": "Replace slide operation",
+    "properties": {{
+      "replace": {{
         "type": "object",
-        "description": "Replace slide operation",
+        "description": "Replace operation to update an existing slide",
         "properties": {{
-          "replace": {{
-            "type": "object",
-            "description": "Replace operation to update an existing slide",
-            "properties": {{
-              "id": {{"type": "string", "description": "Existing slide identifier to replace"}},
-              "rank": {{"type": "integer", "description": "Slide order position"}},
-              "state": {{"type": "string", "enum": ["draft", "active"], "description": "Updated slide state"}},
-              "layout": {{"type": "string", "description": "Layout name"}},
-              "widgets": {widgets_schema},
-              "header": {{"type": "object", "description": "Optional header widget"}},
-              "footer": {{"type": "object", "description": "Optional footer widget"}},
-              "parameters": {{"type": "object", "description": "Layout-specific parameters"}}
-            }},
-            "required": ["id", "rank", "state", "layout", "widgets", "parameters"]
-          }}
+          "id": {{"type": "string", "description": "Existing slide identifier to replace"}},
+          "rank": {{"type": "integer", "description": "Slide order position"}},
+          "state": {{"type": "string", "enum": ["draft", "active"], "description": "Updated slide state"}},
+          "layout": {{"type": "string", "description": "Layout name"}},
+          "widgets": {widgets_schema},
+          "header": {{"type": "object", "description": "Optional header widget"}},
+          "footer": {{"type": "object", "description": "Optional footer widget"}},
+          "parameters": {{"type": "object", "description": "Layout-specific parameters"}}
         }},
-        "required": ["replace"]
-      }},
-      {{
-        "type": "object",
-        "description": "Set theme operation",
-        "properties": {{
-          "set_theme": {theme_schema}
-        }},
-        "required": ["set_theme"]
-      }},
-      {{
-        "type": "object",
-        "description": "Set global preset (applied to all widgets by default)",
-        "properties": {{
-          "set_preset": {preset_schema}
-        }},
-        "required": ["set_preset"]
+        "required": ["id", "rank", "state", "layout", "widgets", "parameters"]
       }}
-    ]
+    }},
+    "required": ["replace"]
   }}
 }}"""
 
 
-# ========== System Prompts ==========
-
-def _build_state_transition_system_prompt() -> str:
-    """Build state transition system prompt dynamically from layout engine.
-    
-    Returns:
-        Complete system prompt for state transition step
-    """
-    # Get complete layout system documentation from active engine
-    active_engine = LayoutEngineRegistry.get_active_engine()
-    layout_system_docs = active_engine.get_layout_documentation()
-    patch_schema = _get_patch_schema_for_add()
-    
-    return f"""You are a presentation structure designer specializing in layout strategy selection.
-
-Your task: Analyze atoms and user instructions to determine:
-1. Theme and preset configuration (generate FIRST)
-2. Number of slides needed (7-15 MAXIMUM, target 8-12)
-3. Layout strategy for each slide
-4. Logical slide ordering
-
-{layout_system_docs}
-
-IMPORTANT RULES:
-1. **START with theme/preset operations**: Generate "set_theme" and "set_preset" operations FIRST (before any slide operations)
-2. Create slide entries with strategy assignments
-3. Set ALL slides to "draft" state
-4. Do NOT populate widget content yet (widgets should be empty dict)
-5. Include: id, rank, state="draft", strategy, widgets=(empty dict), parameters=(empty dict)
-6. **CRITICAL**: Do NOT create slides with strategies "Theme.Set" or "Preset.Set" - use patch operations instead
-7. **ONLY use strategies from the Available Layout Strategies list above** for actual content slides
-8. **SLIDE COUNT LIMIT**: Create 7-15 slides MAXIMUM. If you have more atoms, merge them into fewer slides with richer layouts.
-
-**Theme/Preset Configuration** (Required):
-- Generate "set_theme" operation with theme colors, typography, spacing
-- Generate "set_preset" operation with visual style keywords
-- These operations apply to the entire presentation, not individual slides
-
-**Example Patch Output**:
-[
-  {{"set_theme": {{"id": "tech_blue", "primary_color": "#0066ff", "accent_color": "#00ccff", "background_color": "#ffffff", "text_color": "#1a1a1a"}}}},
-  {{"set_preset": {{"surface": "Elevated", "shape": "Rounded", "fill": "Solid_Brand", "effect": "Shadow"}}}},
-  {{"add": {{"id": "slide_001", "rank": 1, "state": "draft", "layout": "<layout_from_docs>", "widgets": {{}}, "parameters": {{}}}}}},
-  {{"add": {{"id": "slide_002", "rank": 2, "state": "draft", "layout": "<layout_from_docs>", "widgets": {{}}, "parameters": {{}}}}}}
-]
-
-**Output Format**: Return a JSON array where each element is an object with an 'add' key.
-
-**Output JSON Schema**:
-{patch_schema}
-
-**Example Output**:
-[{{"add": {{"id": "slide_001", "rank": 1, "state": "draft", "layout": "Bento.Standard", "widgets": {{}}, "parameters": {{}}}}}}]"""
-
-
-def _build_content_generation_system_prompt() -> str:
-    """Build content generation system prompt dynamically from layout engine and assets.
-    
-    Returns:
-        Complete system prompt for content generation step
-    """
-    # Get complete layout system documentation from active engine
-    active_engine = LayoutEngineRegistry.get_active_engine()
-    layout_system_docs = active_engine.get_layout_documentation()
-    patch_schema = _get_patch_schema_for_replace()
-    
-    return f"""You are a presentation content designer transforming atoms into slides.
-
-**CORE RULES**:
-1. **Preserve specifics**: Keep numbers ("38x/sec"), tech terms ("C++", "intrinsics"), years ("2011→2021")
-2. **Use provided atoms only** - synthesize, don't hallucinate
-3. **Merge atoms**: 3-6 atoms per slide, group by theme
-4. **Slide limit**: 7-15 slides maximum (target 8-12)
-5. **No duplication**: Each atom used exactly once
-6. **Extreme brevity**: Display (1-6 words), Body (10-15 words), List bullets (3-7 words each, max 5)
-
-**MARKDOWN FORMATTING**:
-Use markdown syntax in widget text for emphasis:
-- **bold** for strong emphasis, important concepts, key terms
-- Examples: "Scale to **1M requests/sec** with zero downtime"
-
-**ABSTRACTION EXAMPLES**:
-- ❌ "This architecture provides better performance" → ✅ "Better Performance"
-- ❌ "Significant Performance Improvement" → ✅ "**10x Faster**"
-- ❌ "increased by" → ✅ "↑"
-
-**NARRATIVE ARC** (structure slides as):
-1. **Hook** (1-2 slides): Bold opener, problem statement
-2. **Body** (5-8 slides): Evidence, concepts, how-to
-3. **Climax** (1-2 slides): Results, vision, call-to-action
-
-**SPECIAL ATOMS**:
-- QuoteAtom: Use quote widget with quote_text → text, speaker → attribution
-- ActionItemAtom: Use list widget with items formatted as "[State] Task - Assignee (Due)"
-- TimelineAtom: Use timeline layout with events as stage titles/details
-
-{layout_system_docs}
-
-**OUTPUT**: JSON array with add operations for draft slides (visual styling handled separately).
-
-Example:
-[
-  {{"add": {{"id": "slide_001", "rank": 1, "state": "draft", "story": "Bold opener introducing the problem", "atoms": ["stmt_001", "stmt_002"], "density": "minimal", "layout": "", "widgets": {{}}, "parameters": {{}}}}}},
-  {{"add": {{"id": "slide_002", "rank": 2, "state": "draft", "story": "Key evidence with data points", "atoms": ["metric_001", "stmt_003"], "density": "moderate", "layout": "", "widgets": {{}}, "parameters": {{}}}}}}
-]
-
-{patch_schema}"""
-
-
-# Cache the built prompts (they're expensive to build with AssetManager calls)
-STATE_TRANSITION_SYSTEM_PROMPT = _build_state_transition_system_prompt()
-CONTENT_GENERATION_SYSTEM_PROMPT = _build_content_generation_system_prompt()
-
-
-def render_state_transition_prompt(
-    atoms: AtomCollection,
-    user_instruction: str,
-    intent_guidance: str = ""
-) -> str:
-    """Render user prompt for state transition step.
-    
-    Args:
-        atoms: AtomCollection with extracted content
-        user_instruction: User's generation instructions (e.g., "Create 5 slides")
-        intent_guidance: Optional guidance from intent detection
-        
-    Returns:
-        Formatted user prompt string
-        
-    Raises:
-        ValueError: If atoms is empty or instruction is empty
-    """
-    if len(atoms) == 0:
-        raise ValueError("Cannot render prompt with empty atom collection")
-    
-    if not user_instruction or not user_instruction.strip():
-        raise ValueError("User instruction cannot be empty")
-    
-    # Serialize atoms to JSON for LLM context (use to_json() for datetime handling)
-    atoms_json = atoms.to_json(indent=2)
-    
-    user_prompt = f"""Create slides based on these atoms and instructions:
-
-Atoms:
-{atoms_json}
-
-Instructions:
-{user_instruction}
-"""
-    
-    # Add intent guidance if provided
-    if intent_guidance:
-        user_prompt += f"""
-Presentation Guidance (for context only):
-{intent_guidance}
-
-"""
-    
-    user_prompt += """
-Output JSON Patch operations to initialize slides in "draft" state.
-"""
-    
-    return user_prompt
-
-
-def render_content_generation_prompt(
-    draft_slides: Slides,
-    atoms: AtomCollection,
-    user_instruction: str,
-    intent_guidance: str = ""
-) -> str:
-    """Render user prompt for content generation step.
-    
-    Args:
-        draft_slides: Slides collection with slides in draft state
-        atoms: AtomCollection with extracted content
-        user_instruction: User's generation instructions
-        intent_guidance: Optional guidance from intent detection
-        
-    Returns:
-        Formatted user prompt string
-        
-    Raises:
-        ValueError: If slides is empty, slides not in draft state, or instruction empty
-    """
-    if len(draft_slides) == 0:
-        raise ValueError("Cannot render prompt with empty slide collection")
-    
-    # Verify all slides are in draft state
-    for slide in draft_slides.get_by_rank():
-        if slide.state != "draft":
-            raise ValueError(f"All slides must be in 'draft' state, but slide {slide.id} is in '{slide.state}' state")
-    
-    if not user_instruction or not user_instruction.strip():
-        raise ValueError("User instruction cannot be empty")
-    
-    # Serialize draft slides and atoms to JSON (use to_json() for datetime handling)
-    slides_json = json.dumps(draft_slides.to_dict(), indent=2)  # Slides doesn't have to_json() method
-    atoms_json = atoms.to_json(indent=2)  # AtomCollection has custom to_json() with datetime support
-    
-    user_prompt = f"""Populate content for these draft slides using atoms:
-
-Current Slides (Draft State):
-{slides_json}
-
-Atoms:
-{atoms_json}
-
-Instructions:
-{user_instruction}
-"""
-    
-    # Add intent guidance if provided
-    if intent_guidance:
-        user_prompt += f"""
-Content Generation Guidance:
-{intent_guidance}
-
-Ensure the content aligns with the recommended tone, audience, and presentation style.
-
-"""
-    
-    user_prompt += """
-Output JSON Patch operations to:
-1. Populate all widget content (use "replace" on "/contexts/<slide_id>/widgets")
-2. Add header/footer if appropriate (use "replace" to include "header" and "footer" fields)
-3. Set state to "active" (use "replace" on "/contexts/<slide_id>/state")
-
-Example with header/footer:
-{
-  "replace": {
-    "id": "slide_001",
-    "rank": 0,
-    "state": "active",
-    "strategy": "Bento.Standard",
-    "widgets": {...},
-    "header": {"type": "Type.Heading", "parameters": {"text": "Career Growth Guide"}, "preset": {"surface": "Flat"}},
-    "footer": {"type": "Type.Caption", "parameters": {"text": "© 2025"}, "preset": {"surface": "Flat"}},
-    "parameters": {}
-  }
-}
-"""
-    
-    return user_prompt
+# ========== Refinement Prompts ==========
 
 
 def render_refinement_prompt(
@@ -612,8 +261,7 @@ Example (replacing slide_01 with modified version):
         "widgets": {
           "<slot_from_layout_docs>": {
             "type": "<widget_type_from_docs>",
-            "parameters": {"text": "Updated Title"},
-            "preset": {"surface": "Flat", "shape": "Sharp", "fill": "Solid_Brand"}
+            "parameters": {"text": "Updated Title"}
           }
         },
         "header": {},
@@ -624,7 +272,7 @@ Example (replacing slide_01 with modified version):
   ]
 }
 
-CRITICAL: Widget objects should ONLY contain "type", "parameters", and optionally "preset".
+CRITICAL: Widget objects should ONLY contain "type" and "parameters".
 DO NOT include "atom_id" or any other fields in widget definitions.
 
 Example (removing slide_04):
@@ -647,267 +295,288 @@ Make incremental, focused changes."""
     return user_prompt
 
 
-def get_state_transition_config() -> GenerationConfig:
-    """Get GenerationConfig for state transition step.
-    
-    Returns:
-        GenerationConfig with appropriate parameters for structure generation
-    """
-    deployment = os.getenv('AZURE_OPENAI_DEPLOYMENT', 'gpt-4-turbo')
-    return GenerationConfig(
-        model=deployment,
-        temperature=0.2,  # Low temperature for deterministic structure
-        max_tokens=16000,  # High limit for reasoning models (gpt-5.1 uses ~2000 reasoning + output)
-        system_prompt=STATE_TRANSITION_SYSTEM_PROMPT,
-        user_prompt_template=""  # Will be rendered by render_state_transition_prompt
-    )
-
-
-def get_content_generation_config() -> GenerationConfig:
-    """Get GenerationConfig for content generation step.
-    
-    Returns:
-        GenerationConfig with appropriate parameters for content generation
-    """
-    deployment = os.getenv('AZURE_OPENAI_DEPLOYMENT', 'gpt-4-turbo')
-    return GenerationConfig(
-        model=deployment,
-        temperature=0.7,  # Higher temperature for creative content
-        max_tokens=32000,  # High limit for reasoning models + widget content + headers/footers
-        system_prompt=CONTENT_GENERATION_SYSTEM_PROMPT,
-        user_prompt_template=""  # Will be rendered by render_content_generation_prompt
-    )
-
-
-# ========== New Three-Phase Generation System ==========
-
-def get_storyline_config() -> GenerationConfig:
-    """Get GenerationConfig for storyline generation step.
-    
-    Returns:
-        GenerationConfig with appropriate parameters for storyline creation
-    """
-    deployment = os.getenv('AZURE_OPENAI_DEPLOYMENT', 'gpt-4-turbo')
-    return GenerationConfig(
-        model=deployment,
-        temperature=0.3,  # Low-medium temperature for coherent narrative structure
-        max_tokens=16000,  # Enough for theme/preset + draft slides with stories
-        system_prompt=_build_storyline_system_prompt(),
-        user_prompt_template=""  # Will be rendered by render_storyline_prompt
-    )
-
+# ========== Unified Slide Generation System ==========
 
 def get_slide_generation_config() -> GenerationConfig:
-    """Get GenerationConfig for individual slide generation step.
+    """Get GenerationConfig for unified slide generation.
     
     Returns:
-        GenerationConfig with appropriate parameters for single slide content
+        GenerationConfig with appropriate parameters for complete slide generation
     """
     deployment = os.getenv('AZURE_OPENAI_DEPLOYMENT', 'gpt-4-turbo')
     return GenerationConfig(
         model=deployment,
-        temperature=0.7,  # Higher temperature for creative widget content
-        max_tokens=8000,  # Per-slide generation, smaller context
+        temperature=0.5,  # Balanced for structure + creativity
+        max_tokens=16000,  # Full deck generation
         system_prompt=_build_slide_generation_system_prompt(),
         user_prompt_template=""  # Will be rendered by render_slide_generation_prompt
     )
 
 
-def _build_storyline_system_prompt() -> str:
-    """Build storyline generation system prompt.
+# Keep for backward compatibility
+def get_storyline_config() -> GenerationConfig:
+    """Deprecated: Use get_slide_generation_config instead.
     
     Returns:
-        Complete system prompt for storyline step
+        GenerationConfig for unified slide generation
     """
-    # Custom patch schema for storyline (add operations only for draft slides with visual_design)
-    storyline_patch_schema = """{
-  "type": "array",
-  "description": "Array of add operations for draft slides with story, atoms, density, and visual design",
-  "items": {
-    "type": "object",
-    "properties": {
-      "add": {
-        "type": "object",
-        "description": "Add draft slide with story, atoms, density, and visual design intent",
-        "properties": {
-          "id": {"type": "string", "description": "Unique slide identifier"},
-          "rank": {"type": "integer", "description": "Slide order position (1-based)"},
-          "state": {"type": "string", "enum": ["draft"], "description": "Must be 'draft'"},
-          "story": {"type": "string", "description": "1-2 sentence narrative description"},
-          "atoms": {"type": "array", "items": {"type": "string"}, "description": "List of atom IDs"},
-          "density": {"type": "string", "enum": ["minimal", "moderate", "dense"]},
-          "visual_design": {"type": "string", "description": "Visual presentation approach: hierarchical/symmetrical/asymmetrical/split/grid/timeline/full-canvas"}
-        },
-        "required": ["id", "rank", "state", "story", "atoms", "density", "visual_design"]
-      }
-    },
-    "required": ["add"]
-  }
-}"""
-    
-    return f"""You are a presentation storyteller specializing in narrative structure, content flow, and visual design.
-
-**YOUR TASK**: Create a compelling storyline with 7-12 draft slides, including visual design intent for each slide.
-
-**STORYTELLING FIRST**:
-- Focus on narrative arc: opening hook → body progression → closing synthesis
-- Each slide should advance the story, not just dump information
-- Use atoms selectively to support the narrative—NOT every atom needs a slide
-- It's better to leave atoms unused than to force weak slide connections
-
-**CRITICAL RULES**:
-1. **NO DUPLICATE ATOMS**: Each atom can only appear in ONE slide's atoms array (scan and verify before submitting)
-2. **Story quality over atom coverage**: Skip atoms that don't fit the narrative flow
-3. **Plan visual presentation**: Describe how content should be visually presented (structure, arrangement, emphasis)
-4. Draft slides need: id, rank, state="draft", story (1-2 sentences), atoms (2-5 atom IDs), density ("minimal"/"moderate"/"dense"), visual_design (hierarchical/symmetrical/asymmetrical/split/grid/timeline/full-canvas)
-
-**VISUAL DESIGN PLANNING**:
-- Describe visual approach for each slide using abstract design principles:
-  - **hierarchical**: Clear top-down information flow, emphasize priority
-  - **symmetrical**: Balanced, stable, formal presentation
-  - **asymmetrical**: Dynamic, modern, creative tension
-  - **split**: Compare/contrast, before/after, dual concepts
-  - **grid**: Organized data, multiple equal items, structured overview
-  - **timeline**: Sequential progression, chronological flow, process steps
-  - **full-canvas**: Immersive, emotional impact, single bold statement
-- Vary visual approaches across slides for engagement
-- Match design to content type and narrative purpose
-
-**DENSITY ASSIGNMENT** (affects widget count within chosen layout):
-- **minimal**: 1-2 key points (opening/closing slides, transitions)
-- **moderate**: 3-4 points (most content slides - DEFAULT)
-- **dense**: 5-6 points (technical deep-dives - USE SPARINGLY, max 2-3 per presentation)
-- NEVER use consecutive dense slides
-
-**NARRATIVE ARC REQUIREMENT**:
-Structure slides following classic storytelling patterns:
-- **Setup** (1-2 slides): Context, historical background, problem statement
-- **Development** (3-5 slides): Key concepts, transitions, tensions
-- **Resolution** (2-4 slides): Solutions, actionable takeaways, future outlook
-
-Each slide should answer: "Why does this come NOW in the story?"
-Avoid: Random topic jumping, encyclopedic coverage without through-line
-
-**AUDIENCE ANCHORING**:
-For each slide, connect content to target audience level:
-- Entry-level: Focus on "what" and "why", avoid assuming prior context
-- Mid-level: Emphasize "how" and system thinking
-- Senior: Strategic implications, trade-offs, organizational impact
-Add footer callouts that translate slide content to audience-specific action.
-
-**ATOM ALLOCATION**:
-- Assign each atom to its MOST impactful slide only
-- If a concept spans slides, write it in story text—don't reuse atoms
-- TimelineAtom: Use once in opening for chronological context
-- Typical: 2-5 atoms per slide, grouped thematically
-
-**SLIDE SEQUENCING**:
-Each slide should build on previous context. Check:
-1. Does this slide assume knowledge from prior slides?
-2. Does it introduce new concepts that later slides reference?
-3. Could I reorder without breaking narrative logic?
-If slide N can be removed or moved without breaking flow → reconsider inclusion.
-
-**NARRATIVE QUALITY CHECKLIST**:
-Before finalizing storyline, verify:
-1. ✓ Clear story arc: Setup → Development → Resolution
-2. ✓ Each slide has narrative purpose (not just topic coverage)
-3. ✓ Audience-appropriate depth and examples
-4. ✓ Smooth transitions between slides (no jarring topic jumps)
-5. ✓ Footer callouts connect slides to audience actions
-6. ✓ Technical specifics preserved (numbers, terms, tools)
-7. ✓ Visual design choices will reinforce narrative structure
-
-**NO DUPLICATE ATOMS - FINAL VALIDATION**:
-Scan all "atoms" arrays—is any ID repeated? If yes, REVISE IMMEDIATELY.
-
-**OUTPUT FORMAT**: JSON array of add operations with visual_design field: 
-[{{"add": {{"id", "rank", "state", "story", "atoms", "density", "visual_design"}}}}]
-
-Example:
-[{{"add": {{"id": "slide_1", "rank": 1, "state": "draft", "story": "Open with dramatic statement showing the problem scale", "atoms": ["metric_001"], "density": "minimal", "visual_design": "full-canvas"}}}}]
-
-{storyline_patch_schema}
-"""
+    return get_slide_generation_config()
 
 
 def _build_slide_generation_system_prompt() -> str:
-    """Build individual slide generation system prompt.
+    """Build unified slide generation system prompt.
     
     Returns:
-        Complete system prompt for slide generation step
+        Complete system prompt for single-step slide generation
     """
-    # Get layout documentation for matching visual design to actual layouts
-    from src.layout.engine_registry import LayoutEngineRegistry
+    # Get layout documentation
+    from src.paged.layout.engine_registry import LayoutEngineRegistry
     active_engine = LayoutEngineRegistry.get_active_engine()
     layout_docs = active_engine.get_layout_documentation()
+    layout_constraints = active_engine.get_layout_constrain()
     
-    patch_schema = _get_patch_schema_for_replace()
-    
-    return f"""You are a slide content designer specializing in transforming narrative intent into structured slide content.
+    return f"""You are a STORYTELLER who designs presentations. Your job is to create emotional journeys, not information dumps.
 
-Your task: Transform a draft slide into an active slide by selecting the best matching layout and populating it with widgets.
+# THE GOLDEN RULE: LESS IS MORE
+
+⚠️ **CRITICAL**: You do NOT need to use all atoms. A 10-15 slide deck using 30-40% of atoms is BETTER than a 25-slide deck using everything.
+
+## Atom Selection Strategy
+1. **Identify the ONE big idea** - What's the single takeaway?
+2. **Pick 5-8 atoms max** that directly support that idea
+3. **Ruthlessly cut** atoms that are:
+   - Interesting but tangential
+   - Detailed but not essential to the arc
+   - Repetitive (pick the best example, skip the rest)
+4. **Leave the audience wanting more** - Mystery is good
+
+## What to CUT (even if interesting)
+- Technical details that don't serve the emotional arc
+- Multiple examples when one powerful example suffices
+- Background context the audience can infer
+- "Complete coverage" thinking - this isn't a textbook
+
+## Ideal Slide Count
+| Source Length | Target Slides | Atoms to Use |
+|---------------|---------------|--------------|
+| 10-15 atoms | 8-10 slides | 5-8 atoms |
+| 20-30 atoms | 10-14 slides | 8-12 atoms |
+| 30+ atoms | 12-16 slides | 10-15 atoms |
+
+**If you're making more than 16 slides, you're probably covering too much.**
+
+# STORYTELLING STRUCTURE
+
+## The Presentation Arc
+Every great presentation follows this emotional structure:
+
+1. **HOOK** (1-2 slides): Grab attention with something unexpected
+   - A surprising number ("14 years → 3 pivots")
+   - A provocative question ("What if everything you learned is obsolete?")
+   - A bold claim that demands proof
+   
+2. **TENSION** (1-2 slides): Create stakes and conflict
+   - "The old way is dying"
+   - "Here's what most people get wrong"
+   - Show the gap between expectation and reality
+   
+3. **JOURNEY** (4-8 slides): Build understanding through progression
+   - Pick 2-3 KEY moments, not every detail
+   - Each slide should answer: "And then what happened?"
+   - Show transformation: Before → Struggle → After
+   
+4. **REVELATION** (1-2 slides): The "aha moment"
+   - Connect the dots
+   - Reveal the pattern they couldn't see
+   
+5. **CALL TO ACTION** (1-2 slides): What should they DO?
+   - Clear, actionable takeaway
+   - Memorable closing phrase
+
+## Tension Techniques
+❌ BAD (boring summary): "Phase 1: Vision, Phase 2: Edge AI, Phase 3: LLMs"
+✅ GOOD (creates tension): 
+   - "2015: Everything I knew became obsolete"
+   - "The skill that saved me → The skill that almost killed me"
+   - "What they don't tell you about the AI pivot"
+
+## Pacing Rules
+- **Breathe**: After dense content, give a minimal "pause" slide
+- **Punch**: Big claims need big typography (hero-split, center)
+- **Cut**: If a slide doesn't advance the STORY, delete it
+- **Trust**: The audience doesn't need every detail
+
+## Emotional Beats Per Slide
+Each slide should evoke ONE feeling:
+- Curiosity: "Wait, what?"
+- Recognition: "Yes, I've seen that!"
+- Surprise: "I didn't expect that"
+- Tension: "Uh oh, what happens next?"
+- Relief: "Ah, that makes sense"
+- Inspiration: "I want to do that"
+
+# CONTENT TRANSFORMATION
+
+## From Atoms to Story
+Don't just present atoms—DRAMATIZE the BEST ones:
+
+| Atom Content | ❌ Summary Style | ✅ Story Style |
+|--------------|------------------|----------------|
+| "Joined Microsoft 2011" | "Joined Microsoft in 2011" | "2011: Fresh PhD, no idea what's coming" |
+| "Built Face API" | "Built Face API service" | "500M faces processed → one humbling lesson" |
+| "Shifted to LLMs" | "Transitioned to LLM work" | "The pivot that changed everything" |
+| "3 major career phases" | "Career had 3 phases" | "3 deaths, 3 rebirths" |
+
+## Headlines That Hook
+- Use contrast: "Old vs New", "Expected vs Reality"
+- Use numbers with context: "14 years → 3 pivots"
+- Use action verbs: "Killed", "Built", "Pivoted", "Survived"
+- Create curiosity gaps: "The skill nobody talks about"
+
+## Brevity WITH Punch
+- ❌ "I have worked in artificial intelligence for fourteen years"
+- ✅ "**14 years** in AI trenches"
+- ❌ "The transition from traditional ML to LLMs was challenging"
+- ✅ "ML → LLM: **Everything changed**"
 
 {layout_docs}
 
-**LAYOUT SELECTION PROCESS**:
-1. Read the visual_design field from the draft slide
-2. Review layout documentation above and match visual_design characteristics to available layouts
-3. Select the layout whose design characteristics best align with the visual_design intent
-4. Populate that layout's slots with appropriate widgets
+{layout_constraints}
 
-**CORE RULES**:
-1. **Select layout by matching visual_design to documentation** - read design characteristics and choose best match
-2. Follow the story (your guide to what this slide should communicate)
-3. Use ONLY provided atoms (don't hallucinate content)
-4. Preserve technical specifics: numbers ("38x/sec"), tech terms ("C++", "intrinsics"), years ("2011→2021"), jargon
-5. Extreme brevity: Display (1-6 words), Body (10-15 words), List bullets (3-7 words)
-6. **RESPECT DENSITY LEVEL**: Follow target density specified in draft slide
+# LAYOUT FOR EMOTION
 
-**DENSITY-AWARE CONTENT GENERATION**:
-- **minimal**: 1-2 key points, 2-3 widgets max, simple layouts
-- **moderate**: 3-4 points, 3-5 widgets, standard layouts (DEFAULT)
-- **dense**: 5-6 points max, 5-7 widgets, complex layouts (USE SPARINGLY)
-- **NEVER create lists with >6 items** regardless of density
+⚠️ **CRITICAL**: Use ONLY these exact layout names. NEVER invent names like "Cinematic.Split_50_50".
 
-**CONTENT SYNTHESIS**:
-- Read story → extract key points from atoms → distribute across slots
-- ✓ PRESERVE: "38x/sec", "C++", "2011→2021", "**planner-executor**"
-- ✗ AVOID: "Frequently invoked", "over time", "optimized"
-- Use **bold** for emphasis on metrics, tech terms, years, key concepts
+## Layout → Emotional Purpose
+| Layout | Emotion | When to Use |
+|--------|---------|-------------|
+| `hero-split` | Impact, contrast | Opening hooks, key reveals, comparisons |
+| `center` | Focus, importance | Single powerful statements, closings |
+| `comparison` | Tension, choice | Before/after, old/new, problem/solution |
+| `timeline` | Progress, journey | Evolution, process, transformation |
+| `smart-grid` | Framework, clarity | Multiple related points, categories |
+| `dashboard` | Evidence, proof | Data-heavy validation slides |
+| `spotlight` | Drama, emphasis | Big reveals, emotional peaks |
+| `quote-hero` | Wisdom, reflection | Memorable quotes, lessons |
 
-**CRITICAL SLOT VALIDATION**:
-- ONLY use slot roles that exist in the chosen layout strategy
-- Check the layout documentation above for available slot names
-- DO NOT invent slot names - use only what's documented
-- Mismatch = immediate render failure
+✅ VALID layout names: hero-split, center, comparison, timeline, smart-grid, dashboard, spotlight, quote-hero, full-bleed, two-cols-header
+❌ INVALID (will break): Cinematic.Split_50_50, Bento.Standard, Matrix.Timeline, etc.
 
-**OUTPUT**: Single replace operation: [{{"replace": {{"id", "rank", "state": "active", "layout", "widgets", "header", "footer", "parameters"}}}}]
+## Slot Names (MANDATORY)
+- `hero-split`: `left`, `right`
+- `smart-grid`: `header`, `col1`, `col2`, `col3`, `col4`
+- `timeline`: `title`, `step1`, `step2`, `step3`, `step4`, `step5`
+- `comparison`: `title`, `beforeLabel`, `before`, `afterLabel`, `after`
+- `dashboard`: `title`, `metric1`, `metric2`, `metric3`, `metric4`, `chart`
+- `center`: `default` (single slot)
+- `spotlight`: `title`, `subtitle`, `description`
 
-{patch_schema}
+# VARIETY & RHYTHM
+
+## Visual Rhythm
+- **Max 2** consecutive slides with same layout
+- **Alternate** between dense and minimal
+- **Punctuate** with single-point impact slides
+
+## Widget Variety (Required)
+- At least **1 Data.BigNum** (anchor number)
+- At least **1 Type.Quote** or provocative statement
+- At least **1 comparison** or timeline slide
+- **No more than 40%** list-dominant slides
+
+## Density Flow
+```
+Opening:  ▓░░░░░░░░░  (minimal - big impact)
+Build:    ▓▓▓░░░░░░░  (moderate - context)
+Middle:   ▓▓▓▓▓░░░░░  (can be dense - details)
+Reveal:   ▓▓▓░░░░░░░  (moderate - connect)
+Close:    ▓░░░░░░░░░  (minimal - memorable)
+```
+
+# OUTPUT FORMAT
+
+Return a JSON array. Each slide needs a `story` field explaining its NARRATIVE PURPOSE:
+
+```json
+[
+  {{
+    "add": {{
+      "id": "slide_01_hook",
+      "rank": 1,
+      "state": "active",
+      "story": "HOOK: Surprise with career span + hint at transformation",
+      "atoms": ["bio_001"],
+      "density": "minimal",
+      "layout": "hero-split",
+      "widgets": {{
+        "left": {{
+          "type": "Data.BigNum",
+          "parameters": {{ "value": "14", "label": "Years in AI", "sublabel": "3 pivots, 1 constant" }}
+        }},
+        "right": {{
+          "type": "Type.Body",
+          "parameters": {{ "text": "The skill that saved me **3 times**" }}
+        }}
+      }},
+      "parameters": {{ "ratio": "40-60", "vibe": "aurora" }}
+    }}
+  }},
+  {{
+    "add": {{
+      "id": "slide_02_tension",
+      "rank": 2,
+      "state": "active", 
+      "story": "TENSION: Set up the conflict - skills become obsolete",
+      "atoms": [],
+      "density": "minimal",
+      "layout": "center",
+      "widgets": {{
+        "default": {{
+          "type": "Type.Display",
+          "parameters": {{ "text": "Every 5 years,\\neverything I knew\\nbecame **obsolete**" }}
+        }}
+      }},
+      "parameters": {{ "vibe": "waves" }}
+    }}
+  }}
+]
+```
+
+# QUALITY CHECKLIST
+
+Before outputting, verify:
+✓ **Slide count**: 10-16 slides max (if more, you're covering too much)
+✓ **Atom usage**: Using <50% of available atoms (be selective!)
+✓ **Hook**: Does slide 1 create genuine curiosity?
+✓ **Tension**: Is there real conflict in slides 2-3?
+✓ **Focus**: Does every slide advance ONE story (not multiple threads)?
+✓ **Cut test**: Could you remove any slide without hurting the story? If yes, remove it.
+✓ **Ending**: Is it memorable and actionable?
 """
 
 
-def render_storyline_prompt(
+def render_slide_generation_prompt(
     atoms: AtomCollection,
     user_instruction: str,
-    intent_guidance: str = ""
+    intent_guidance: str = "",
+    themes: List[Dict[str, Any]] = None
 ) -> str:
-    """Render user prompt for storyline generation step.
+    """Render user prompt for unified slide generation.
     
     Args:
         atoms: AtomCollection with extracted content
         user_instruction: User's generation instructions
         intent_guidance: Optional guidance from intent detection
+        themes: List of available theme objects with id field
         
     Returns:
         Formatted user prompt string
     """
     atoms_json = atoms.to_json(indent=2)
     
-    user_prompt = f"""Create a storyline for the presentation based on these atoms:
+    user_prompt = f"""Generate a complete presentation from these atoms:
 
-**All Available Atoms**:
+**Available Atoms**:
 {atoms_json}
 
 **User Instructions**:
@@ -920,84 +589,75 @@ def render_storyline_prompt(
 {intent_guidance}
 """
     
+    # Add themes information
+    if themes and len(themes) > 0:
+        themes_info = []
+        for t in themes:
+            theme_id = t.get("id", "default")
+            theme_desc = t.get("description", "No description")
+            themes_info.append(f'  - "{theme_id}": {theme_desc}')
+        themes_list = "\n".join(themes_info)
+        
+        default_theme = themes[0].get("id", "default")
+        user_prompt += f"""
+**Available Themes**:
+{themes_list}
+
+Assign theme "{default_theme}" to all slides unless varying for emphasis.
+"""
+    
     user_prompt += """
-Create 7-12 slides focusing on narrative flow. Not every atom needs to be used—prioritize story over coverage.
-Each atom can only appear in ONE slide. Verify no duplicates before submitting.
+**YOUR MISSION**:
+Create a STORY, not a summary. The audience should feel:
+1. **Hooked** in the first slide (surprise, intrigue)
+2. **Tension** early (conflict, stakes, "what went wrong")
+3. **Journey** through the middle (transformation, lessons)
+4. **Revelation** near the end (the insight that ties it together)
+5. **Inspired** at the close (clear takeaway, call to action)
+
+**CRITICAL - BE SELECTIVE**:
+- Use only 30-50% of atoms (pick the BEST ones for your story)
+- Target 10-14 slides max (fewer is better)
+- Cut anything that doesn't directly serve the main narrative
+- Leave the audience wanting more, not exhausted
+
+**AVOID**:
+- Trying to cover ALL the atoms (this is the #1 mistake)
+- Boring "overview" slides listing topics
+- Every slide being a bullet list
+- Chronological summary without drama
+
+**TECHNICAL REQUIREMENTS**:
+- Use ONLY layout names from the protocol (hero-split, smart-grid, timeline, comparison, etc.)
+- Use ONLY exact slot names (left/right, col1/col2, step1/step2, etc.)
+- Include at least 1 Data.BigNum, 1 comparison or quote
+- Max 2 consecutive slides with same layout
+
+Generate the complete JSON array of add operations.
 """
     
     return user_prompt
 
 
-def render_slide_generation_prompt(
-    draft_slide,
-    related_atoms: dict,
+# Backward compatibility alias
+def render_storyline_prompt(
+    atoms: AtomCollection,
     user_instruction: str,
-    intent_guidance: str = ""
+    intent_guidance: str = "",
+    themes: List[Dict[str, Any]] = None
 ) -> str:
-    """Render user prompt for individual slide generation step.
+    """Deprecated: Use render_slide_generation_prompt instead.
     
     Args:
-        draft_slide: Draft slide with story and atoms defined
-        related_atoms: Dict of {atom_id: Atom} for atoms referenced by this slide
+        atoms: AtomCollection with extracted content
         user_instruction: User's generation instructions
         intent_guidance: Optional guidance from intent detection
+        themes: List of available theme objects with id field
         
     Returns:
         Formatted user prompt string
     """
-    from datetime import datetime
-    
-    # Format atoms for prompt with datetime handling
-    def datetime_encoder(obj):
-        if isinstance(obj, datetime):
-            return obj.isoformat()
-        raise TypeError(f"Object of type {type(obj).__name__} is not JSON serializable")
-    
-    atoms_text = json.dumps(
-        [atom.model_dump() for atom in related_atoms.values()],
-        indent=2,
-        default=datetime_encoder
-    )
-    
-    user_prompt = f"""Transform this draft slide into an active slide by creating appropriate content:
-
-**Draft Slide**:
-- ID: {draft_slide.id}
-- Rank: {draft_slide.rank}
-- Story: {draft_slide.story}
-- Density: {draft_slide.density} ({_get_density_description(draft_slide.density)})
-- Visual Design: {draft_slide.visual_design}
-- Atoms: {', '.join(draft_slide.atoms)}
-
-**Related Atoms** (use ONLY these for content):
-{atoms_text}
-
-**Overall Presentation Context**:
-{user_instruction}
-"""
-    
-    if intent_guidance:
-        user_prompt += f"""
-**Presentation Guidance**:
-{intent_guidance}
-"""
-    
-    user_prompt += f"""
-Generate a "replace" operation that:
-1. **MUST use the exact slide ID from above**
-2. **Select layout** by matching visual_design ({draft_slide.visual_design}) to layout documentation's design characteristics
-3. Populate selected layout's slots with appropriate widgets
-4. Respects density constraints (minimal: 1-2 points, moderate: 3-4 points, dense: 5+ points)
-5. Sets state to "active"
-6. Includes header and footer
-
-**CRITICAL**: 
-- id field must be: {draft_slide.id}
-- layout field must be: [choose from documentation by matching {draft_slide.visual_design} characteristics]
-- Only populate slots that exist in your chosen layout (check documentation)
-"""
-    
-    return user_prompt
+    return render_slide_generation_prompt(atoms, user_instruction, intent_guidance, themes)
 
 
 def _get_density_description(density: str) -> str:
@@ -1010,8 +670,8 @@ def _get_density_description(density: str) -> str:
         Description string
     """
     descriptions = {
-        "minimal": "1-2 key points, simple layout",
-        "moderate": "3-4 points, standard layout",
-        "dense": "5+ points, complex layout"
+        "minimal": "1-2 key points, large typography",
+        "moderate": "3-4 points max, standard layout",
+        "dense": "5 points max, compact layout"
     }
-    return descriptions.get(density, "3-4 points, standard layout")
+    return descriptions.get(density, "3-4 points max, standard layout")
