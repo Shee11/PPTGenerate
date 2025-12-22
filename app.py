@@ -6,51 +6,24 @@ Features:
 - Chat interface for instructions
 - Todo progress display (live updates)
 - Theme/Vibe switching via todos (unified orchestrator)
-- Live preview iframe
-- Integrated HTTP server for output directory
+- Live preview iframe via FastAPI static mount
 """
 import asyncio
 import gradio as gr
-import http.server
 import json
 import random
 import shutil
-import socketserver
-import threading
 from datetime import datetime
 from pathlib import Path
 from typing import Optional, List, Dict, Any, AsyncGenerator
+from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
 
 # Import pipeline components
 from src.generation.state import PipelineState
 from src.generation.todo.runner import PipelineRunner
 from src.paged.render import SlidevRenderer
 
-
-# HTTP Server for serving output directory
-class OutputHTTPHandler(http.server.SimpleHTTPRequestHandler):
-    """HTTP handler that serves from the output directory."""
-    
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, directory="output", **kwargs)
-    
-    def log_message(self, format, *args):
-        # Suppress HTTP logs
-        pass
-
-
-def start_http_server(port: int = 8080):
-    """Start HTTP server for output directory in a background thread."""
-    try:
-        handler = OutputHTTPHandler
-        with socketserver.TCPServer(("", port), handler) as httpd:
-            print(f"📡 HTTP server started at http://localhost:{port}")
-            httpd.serve_forever()
-    except OSError as e:
-        if "Address already in use" in str(e) or e.errno == 10048:  # Windows errno
-            print(f"📡 HTTP server port {port} already in use, assuming it's running")
-        else:
-            print(f"⚠ HTTP server error: {e}")
 
 # Constants
 OUTPUT_BASE = Path("output")
@@ -161,11 +134,12 @@ def format_chat_message(role: str, content: str) -> Dict[str, str]:
 
 
 def get_preview_html(session_id: str) -> str:
-    """Get preview iframe HTML."""
+    """Get preview iframe HTML using FastAPI static mount."""
     if not session_id:
         return "<div style='height:600px;background:#f0f0f0;display:flex;align-items:center;justify-content:center;'>No session selected</div>"
     timestamp = datetime.now().timestamp()
-    return f'<iframe src="http://localhost:8080/{session_id}/?t={timestamp}" width="100%" height="600" style="border:1px solid #ccc;"></iframe>'
+    # Use FastAPI static mount: /static/{session_id}/index.html
+    return f'<iframe src="/static/{session_id}/?t={timestamp}" width="100%" height="600" style="border:1px solid #ccc;"></iframe>'
 
 
 async def run_generation_async(
@@ -588,16 +562,21 @@ def create_app():
 
 
 if __name__ == "__main__":
-    # Start HTTP server in background thread
-    http_thread = threading.Thread(target=start_http_server, args=(8080,), daemon=True)
-    http_thread.start()
+    import uvicorn
     
     # Create output directory if not exists
     OUTPUT_BASE.mkdir(parents=True, exist_ok=True)
     
-    app = create_app()
-    app.launch(
-        server_name="127.0.0.1",
-        server_port=7860,
-        share=False
-    )
+    # Create Gradio app
+    gradio_app = create_app()
+    
+    # Get the FastAPI app from Gradio and mount static files
+    fastapi_app = FastAPI()
+    fastapi_app.mount("/static", StaticFiles(directory="output", html=True), name="output")
+    fastapi_app = gr.mount_gradio_app(fastapi_app, gradio_app, path="/gradio")
+    
+    print("🚀 Starting server...")
+    print("   Gradio UI: http://127.0.0.1:7860/gradio/")
+    print("   Static files: http://127.0.0.1:7860/static/")
+    
+    uvicorn.run(fastapi_app, host="0.0.0.0", port=7860)

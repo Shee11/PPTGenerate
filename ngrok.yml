@@ -1,0 +1,6 @@
+version: "2"
+authtoken: 31cWMBwgTio03rNNVQmKOp6MKYp_2bpA1hPRJQcAQoGQcgZbZ
+tunnels:
+  gradio:
+    addr: 7860
+    proto: http

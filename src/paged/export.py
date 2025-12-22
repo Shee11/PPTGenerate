@@ -124,10 +124,17 @@ class ExportTool(DirectTool[ExportContext, ExportPatch]):
             self._log("Skipping Slidev build (markdown only)")
             return
         
+        # Determine base path for assets
+        # Use /static/{session_folder}/ for FastAPI static mount
+        output_dir = output_path.parent
+        session_folder = output_dir.name  # e.g., "slide_20251222_56"
+        # base_path = f"/static/{session_folder}/"
+        base_path = f"/static/{session_folder}/"
+        
         # Run Slidev build
-        self._log("Running Slidev build...")
+        self._log(f"Running Slidev build with base={base_path}...")
         try:
-            html_content = renderer.render_to_html(markdown)
+            html_content = renderer.render_to_html(markdown, base_path=base_path)
             
             # Copy dist contents directly to output_dir (no extra dist folder)
             build_dist = renderer.build_dir / "dist"

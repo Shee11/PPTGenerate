@@ -428,7 +428,7 @@ mdc: true
         
         return global_headmatter + "\n" + slides_content
     
-    def render_to_html(self, markdown_content: str) -> str:
+    def render_to_html(self, markdown_content: str, base_path: str = "./") -> str:
         """Build HTML using Slidev/Vue toolchain.
         
         Uses persistent build environment, writes markdown to temp file,
@@ -436,6 +436,7 @@ mdc: true
         
         Args:
             markdown_content: Slidev markdown with frontmatter and slots
+            base_path: Base path for assets (e.g., "/static/session_id/" for FastAPI mount)
             
         Returns:
             str: Complete single-file HTML page built by Slidev/Vue
@@ -463,10 +464,10 @@ mdc: true
             # Use npx.cmd on Windows, npx on Unix
             npx_cmd = "npx.cmd" if Path("C:\\Windows").exists() else "npx"
             
-            print(f"Building slides with Slidev...")
-            # Build SPA with base path ./
+            print(f"Building slides with Slidev (base: {base_path})...")
+            # Build SPA with configured base path
             result = subprocess.run(
-                [npx_cmd, "@slidev/cli", "build", "slides.md", "--base", "./", "--out", "dist"],
+                [npx_cmd, "@slidev/cli", "build", "slides.md", "--base", base_path, "--out", "dist"],
                 cwd=self.build_dir,
                 capture_output=True,
                 text=True,
