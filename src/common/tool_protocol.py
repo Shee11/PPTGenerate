@@ -109,8 +109,12 @@ class Tool(ABC, Generic[TContext, TPatch]):
         return '\n'.join(lines)
     
     @abstractmethod
-    def slice(self, state: "PipelineState") -> TContext:
+    def slice(self, state: "PipelineState", params: Optional[Dict[str, Any]] = None) -> TContext:
         """Extract relevant context from state for LLM.
+        
+        Args:
+            state: Pipeline state
+            params: Optional tool-specific parameters from todo
         
         This controls what the LLM sees. Keep it minimal.
         Do NOT pass full state to LLM.
@@ -146,9 +150,10 @@ class Tool(ABC, Generic[TContext, TPatch]):
         state: "PipelineState",
         constitution: "ConstitutionPatch",
         user_instruction: str,
+        params: Optional[Dict[str, Any]] = None,
     ) -> TPatch:
         """Full execution: slice -> generate -> apply."""
-        context = self.slice(state)
+        context = self.slice(state, params)
         patch = self.generate(constitution, context, user_instruction)
         self.apply(state, patch)
         return patch

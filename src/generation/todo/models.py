@@ -138,12 +138,23 @@ class ContentParams(BaseModel):
     )
     user_instruction: str = Field(
         default="",
-        description="User-specific content guidance"
+        alias="instruction",
+        description="User-specific content guidance (alias: instruction)"
     )
     pattern: str = Field(
         default="story",
         description="Slide pattern (story, tutorial, pitch, etc.)"
     )
+    mode: str = Field(
+        default="generate",
+        description="Mode: 'generate' for full creation, 'refine' for patching existing slides"
+    )
+    slide_count: Optional[int] = Field(
+        default=None,
+        description="Target number of slides (for generate mode)"
+    )
+    
+    model_config = {"populate_by_name": True}
 
 
 class ExportParams(BaseModel):

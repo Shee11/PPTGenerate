@@ -660,6 +660,91 @@ def render_storyline_prompt(
     return render_slide_generation_prompt(atoms, user_instruction, intent_guidance, themes)
 
 
+def render_slide_refinement_prompt(
+    existing_slides: List[Dict],
+    atoms: Any,
+    user_instruction: str,
+    intent_guidance: str = "",
+    themes: List = None
+) -> str:
+    """Render prompt for slide refinement (targeted changes to existing slides).
+    
+    Args:
+        existing_slides: Current slides as list of dicts
+        atoms: AtomCollection for reference
+        user_instruction: User's refinement instruction
+        intent_guidance: Constitution guidance (exclusions, requirements, style rules)
+        themes: List of available themes
+        
+    Returns:
+        Formatted user prompt for refinement
+    """
+    # Format existing slides summary (not full content to save tokens)
+    slides_summary = []
+    for i, slide in enumerate(existing_slides):
+        summary = {
+            "id": slide.get("id", f"slide_{i+1:03d}"),
+            "rank": slide.get("rank", i + 1),
+            "layout": slide.get("layout", "unknown"),
+            "widgets": list(slide.get("widgets", {}).keys()),
+        }
+        # Extract title if available
+        widgets = slide.get("widgets", {})
+        for slot, widget in widgets.items():
+            if widget and isinstance(widget, dict):
+                params = widget.get("parameters", {})
+                if "title" in params:
+                    summary["title"] = params["title"][:50]
+                    break
+                elif "text" in params:
+                    summary["preview"] = params["text"][:50]
+                    break
+        slides_summary.append(summary)
+    
+    prompt_parts = [
+        "## Current Slides",
+        f"You have {len(existing_slides)} existing slides:",
+        "```json",
+        json.dumps(slides_summary, indent=2),
+        "```",
+        "",
+    ]
+    
+    # Add constitution guidance
+    if intent_guidance:
+        prompt_parts.extend([
+            "## Content Rules (from Constitution)",
+            intent_guidance,
+            "",
+        ])
+    
+    # Add user instruction
+    prompt_parts.extend([
+        "## User Instruction",
+        user_instruction,
+        "",
+        "## Your Task",
+        "Based on the content rules and user instruction, generate patch operations to refine the slides.",
+        "- Use 'replace' to modify slide content (keep same id)",
+        "- Use 'remove' to delete slides that violate rules",
+        "- Only include operations for slides that need to change",
+        "- If a rule says to exclude certain content, remove or replace that content",
+        "",
+        "Return ONLY a JSON array of patch operations. If no changes needed, return []",
+    ])
+    
+    # Add full slide data for reference
+    prompt_parts.extend([
+        "",
+        "## Full Slide Data (for reference when generating replace operations)",
+        "```json",
+        json.dumps(existing_slides, indent=2),
+        "```",
+    ])
+    
+    return "\n".join(prompt_parts)
+
+
 def _get_density_description(density: str) -> str:
     """Get human-readable description of density level.
     

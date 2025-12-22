@@ -21,6 +21,8 @@ class ContentContext(ToolContext):
     theme_id: Optional[str] = None
     themes: Optional[List[Dict]] = Field(default=None, description="Available themes")
     intent_guidance: str = Field(default="", description="Guidance from constitution")
+    existing_slides: Optional[List[Dict]] = Field(default=None, description="Existing slides for refinement")
+    refinement_mode: bool = Field(default=False, description="If True, refine existing slides instead of regenerating")
 
 
 class ContentPatch(ToolPatch):
@@ -56,14 +58,32 @@ class ContentTool(DirectTool[ContentContext, ContentPatch]):
     requires: ClassVar[List[str]] = ["constitution", "atoms", "theme"]
     produces: ClassVar[List[str]] = ["slides"]
     
-    def slice(self, state: "PipelineState") -> ContentContext:
-        """Extract context from state."""
+    def slice(self, state: "PipelineState", params: Optional[Dict[str, Any]] = None) -> ContentContext:
+        """Extract context from state.
+        
+        Args:
+            state: Pipeline state
+            params: Optional params from todo with:
+                - mode: "generate" or "refine"
+                - instruction: optional refinement instruction
+                - slide_count: optional target slide count
+        """
+        params = params or {}
+        
         # Build intent guidance from constitution
         intent_guidance = ""
         constitution = state.get_constitution()
         if constitution:
             if hasattr(constitution, 'style_rules') and constitution.style_rules:
                 intent_guidance = "\n".join(constitution.style_rules)
+            # Add content exclusions to guidance
+            if hasattr(constitution, 'content_exclusions') and constitution.content_exclusions:
+                exclusions = "\n".join([f"- {e}" for e in constitution.content_exclusions])
+                intent_guidance += f"\n\nContent to EXCLUDE:\n{exclusions}"
+            # Add content requirements to guidance  
+            if hasattr(constitution, 'content_requirements') and constitution.content_requirements:
+                requirements = "\n".join([f"- {r}" for r in constitution.content_requirements])
+                intent_guidance += f"\n\nContent REQUIRED:\n{requirements}"
         
         # Get available themes (themes in state can be dicts or objects)
         themes = None
@@ -75,11 +95,22 @@ class ContentTool(DirectTool[ContentContext, ContentPatch]):
                 else:
                     themes.append({"id": t.id, "name": getattr(t, 'name', t.id)})
         
+        # Determine mode from params
+        mode = params.get("mode", "generate")
+        refinement_mode = mode == "refine"
+        
+        # Get existing slides for refinement (only if refine mode)
+        existing_slides = None
+        if refinement_mode and state.slides:
+            existing_slides = state.slides
+        
         return ContentContext(
             atoms_collection=state.get_atoms(),
             theme_id=state.active_theme_id,
             themes=themes,
             intent_guidance=intent_guidance,
+            existing_slides=existing_slides,
+            refinement_mode=refinement_mode,
         )
     
     def transform(
@@ -88,7 +119,7 @@ class ContentTool(DirectTool[ContentContext, ContentPatch]):
         user_instruction: str,
     ) -> ContentPatch:
         """Execute content generation via the generator module."""
-        from src.generation.content.generator import generate_layout
+        from src.generation.content.generator import generate_layout, refine_slides
         from src.generation.content.prompts import get_slide_generation_config
         
         if not context.atoms_collection:
@@ -103,23 +134,40 @@ class ContentTool(DirectTool[ContentContext, ContentPatch]):
                 full_guidance = f"User instruction: {user_instruction}"
         
         atom_count = len(context.atoms_collection.list_contexts())
-        self._log(f"Generating slides from {atom_count} atoms")
-        if full_guidance:
-            self._log(f"With guidance: {full_guidance[:100]}...")
         
         # Get config
         config = get_slide_generation_config()
         
-        # Delegate to the sophisticated generator
-        slides_collection = generate_layout(
-            atoms=context.atoms_collection,
-            user_instruction=user_instruction,
-            config=config,
-            use_cache=self.use_cache,
-            intent_guidance=full_guidance,
-            layout_engine="slidev",
-            themes=context.themes
-        )
+        # Choose generation mode based on existing slides and instruction type
+        if context.existing_slides and context.refinement_mode:
+            # Refinement mode: patch existing slides based on instruction
+            self._log(f"Refining {len(context.existing_slides)} existing slides")
+            if full_guidance:
+                self._log(f"With guidance: {full_guidance[:100]}...")
+            
+            slides_collection = refine_slides(
+                existing_slides=context.existing_slides,
+                atoms=context.atoms_collection,
+                user_instruction=user_instruction,
+                config=config,
+                intent_guidance=full_guidance,
+                themes=context.themes
+            )
+        else:
+            # Full generation mode: create from scratch
+            self._log(f"Generating slides from {atom_count} atoms")
+            if full_guidance:
+                self._log(f"With guidance: {full_guidance[:100]}...")
+            
+            slides_collection = generate_layout(
+                atoms=context.atoms_collection,
+                user_instruction=user_instruction,
+                config=config,
+                use_cache=self.use_cache,
+                intent_guidance=full_guidance,
+                layout_engine="slidev",
+                themes=context.themes
+            )
         
         active_count = len(slides_collection.get_active_slides())
         self._log(f"Generated {active_count} active slides")

@@ -97,7 +97,7 @@ class TodoExecutor:
         
         Steps:
         1. Get tool for todo type
-        2. context = tool.slice(state)
+        2. context = tool.slice(state, todo.params)
         3. patch = tool.generate(constitution, context, instruction)
         4. tool.apply(state, patch)
         """
@@ -124,8 +124,16 @@ class TodoExecutor:
             # Get constitution from state
             constitution = state.get_constitution()
             
+            # Extract params dict for slice
+            params = {}
+            if todo.params:
+                if isinstance(todo.params, dict):
+                    params = todo.params
+                else:
+                    params = todo.params.model_dump() if hasattr(todo.params, 'model_dump') else dict(todo.params)
+            
             # Execute tool protocol: slice -> generate -> apply
-            context = tool.slice(state)
+            context = tool.slice(state, params)
             patch = tool.generate(constitution, context, user_instruction)
             tool.apply(state, patch)
             

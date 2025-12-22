@@ -4,7 +4,7 @@ DirectTool: No LLM needed, uses pattern matching.
 """
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, List, ClassVar
+from typing import TYPE_CHECKING, List, ClassVar, Optional, Dict, Any
 from pydantic import Field
 
 from src.common.tool_protocol import DirectTool, ToolContext, register_tool
@@ -39,7 +39,7 @@ class ConstitutionTool(DirectTool[ConstitutionContext, ConstitutionPatch]):
     requires: ClassVar[List[str]] = []
     produces: ClassVar[List[str]] = ["constitution"]
     
-    def slice(self, state: "PipelineState") -> ConstitutionContext:
+    def slice(self, state: "PipelineState", params: Optional[Dict[str, Any]] = None) -> ConstitutionContext:
         return ConstitutionContext()
     
     def transform(

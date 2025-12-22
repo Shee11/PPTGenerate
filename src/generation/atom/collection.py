@@ -5,7 +5,10 @@ from datetime import datetime
 from src.common.patchable_context_pydantic import PatchableCollection, PatchableContextBase, PatchError
 from src.generation.atom.models import (
     Atom,
+    BioAtom,
     FactAtom,
+    StatAtom,
+    QuoteAtom,
     TensionAtom,
     ConceptAtom,
     VisualAtom,
@@ -13,7 +16,10 @@ from src.generation.atom.models import (
 
 # Map atom type names to classes
 ATOM_TYPE_MAP = {
+    'BioAtom': BioAtom,
     'FactAtom': FactAtom,
+    'StatAtom': StatAtom,
+    'QuoteAtom': QuoteAtom,
     'TensionAtom': TensionAtom,
     'ConceptAtom': ConceptAtom,
     'VisualAtom': VisualAtom,
@@ -53,8 +59,14 @@ class AtomCollection(PatchableCollection):
             atom_id = ctx_data.get("id", "")
             atom_type = None
             
-            if atom_id.startswith("fact_"):
+            if atom_id.startswith("bio_"):
+                atom_type = BioAtom
+            elif atom_id.startswith("fact_"):
                 atom_type = FactAtom
+            elif atom_id.startswith("stat_"):
+                atom_type = StatAtom
+            elif atom_id.startswith("quote_"):
+                atom_type = QuoteAtom
             elif atom_id.startswith("tension_"):
                 atom_type = TensionAtom
             elif atom_id.startswith("concept_"):

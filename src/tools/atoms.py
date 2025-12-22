@@ -5,7 +5,7 @@ Uses LLM internally via the extractor module with proper prompts and JSON schema
 """
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, List, ClassVar, Optional, Any
+from typing import TYPE_CHECKING, List, ClassVar, Optional, Any, Dict
 from pydantic import Field
 
 from src.common.tool_protocol import DirectTool, ToolContext, ToolPatch, register_tool
@@ -53,7 +53,7 @@ class AtomsTool(DirectTool[AtomsContext, AtomsPatch]):
     requires: ClassVar[List[str]] = ["constitution"]
     produces: ClassVar[List[str]] = ["atoms"]
     
-    def slice(self, state: "PipelineState") -> AtomsContext:
+    def slice(self, state: "PipelineState", params: Optional[Dict[str, Any]] = None) -> AtomsContext:
         """Extract source and guidance from state."""
         if not state.source:
             raise ValueError("No source in state")

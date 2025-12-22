@@ -26,12 +26,17 @@ class Atom(PatchableContextBase):
         id: Unique identifier (inherited)
         rank: Ordering indicator (inherited)
         state: Current state (inherited)
+        abstract: One-line summary of this atom
         source_ref: Link to source location
         visual: Visual representation suggestion
         created_at: When atom was extracted
         metadata: LLM generation metadata
     """
     
+    abstract: str = Field(
+        default="",
+        description="One-line summary of this atom (max 100 chars)"
+    )
     source_ref: SourceReference = Field(..., description="Link to source location")
     visual: str = Field(
         default="none",

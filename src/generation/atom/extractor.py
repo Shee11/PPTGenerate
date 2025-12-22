@@ -196,6 +196,7 @@ def _parse_bio_atom(data: Dict[str, Any]) -> BioAtom:
     return BioAtom(
         id=data["id"],
         rank=data["rank"],
+        abstract=data.get("abstract", ""),
         name=data["name"],
         role=data.get("role", ""),
         credentials=data.get("credentials", ""),
@@ -218,6 +219,7 @@ def _parse_fact_atom(data: Dict[str, Any]) -> FactAtom:
     return FactAtom(
         id=data["id"],
         rank=data["rank"],
+        abstract=data.get("abstract", ""),
         text=data["text"],
         category=data.get("category", "other"),
         visual=data.get("visual", "none"),
@@ -238,6 +240,7 @@ def _parse_stat_atom(data: Dict[str, Any]) -> StatAtom:
     return StatAtom(
         id=data["id"],
         rank=data["rank"],
+        abstract=data.get("abstract", ""),
         value=data["value"],
         label=data["label"],
         context=data.get("context", ""),
@@ -259,6 +262,7 @@ def _parse_quote_atom(data: Dict[str, Any]) -> QuoteAtom:
     return QuoteAtom(
         id=data["id"],
         rank=data["rank"],
+        abstract=data.get("abstract", ""),
         quote=data["quote"],
         attribution=data.get("attribution", ""),
         context=data.get("context", ""),
@@ -280,6 +284,7 @@ def _parse_tension_atom(data: Dict[str, Any]) -> TensionAtom:
     return TensionAtom(
         id=data["id"],
         rank=data["rank"],
+        abstract=data.get("abstract", ""),
         text=data["text"],
         tension_type=data.get("tension_type", "problem"),
         resolution_hint=data.get("resolution_hint", ""),
@@ -301,6 +306,7 @@ def _parse_concept_atom(data: Dict[str, Any]) -> ConceptAtom:
     return ConceptAtom(
         id=data["id"],
         rank=data["rank"],
+        abstract=data.get("abstract", ""),
         text=data["text"],
         concept_type=data.get("concept_type", "insight"),
         supporting_facts=data.get("supporting_facts", []),
@@ -322,6 +328,7 @@ def _parse_visual_atom(data: Dict[str, Any]) -> VisualAtom:
     return VisualAtom(
         id=data["id"],
         rank=data["rank"],
+        abstract=data.get("abstract", ""),
         description=data["description"],
         visual_category=data.get("visual_category", "other"),
         related_atom=data.get("related_atom", ""),

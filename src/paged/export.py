@@ -59,7 +59,7 @@ class ExportTool(DirectTool[ExportContext, ExportPatch]):
         super().__init__(**kwargs)
         self.output_dir = output_dir
     
-    def slice(self, state: "PipelineState") -> ExportContext:
+    def slice(self, state: "PipelineState", params: Optional[Dict[str, Any]] = None) -> ExportContext:
         return ExportContext(
             slides=state.slides or [],
             theme=state.get_active_theme(),
@@ -115,8 +115,8 @@ class ExportTool(DirectTool[ExportContext, ExportPatch]):
         # Pass output directory to renderer for slidev_build location
         renderer = SlidevRenderer(output_dir=self.output_dir)
         
-        # Generate markdown
-        markdown = renderer.render_to_markdown(context.slides)
+        # Generate markdown with theme from context
+        markdown = renderer.render_to_markdown(context.slides, theme=context.theme)
         output_path.write_text(markdown, encoding='utf-8')
         self._log(f"Generated {output_path.name} ({len(markdown)} chars)")
         

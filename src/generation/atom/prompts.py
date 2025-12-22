@@ -25,6 +25,10 @@ ATOM_EXTRACTION_SCHEMA = {
                             "type": "string",
                             "description": "Unique identifier (e.g., 'fact_001', 'stat_001', 'quote_001')"
                         },
+                        "abstract": {
+                            "type": "string",
+                            "description": "One-line summary of this atom (max 100 chars, e.g., 'John Smith is a Google engineer' or 'Latency improved by 50%')"
+                        },
                         "type": {
                             "type": "string",
                             "enum": ["BIO", "FACT", "STAT", "QUOTE", "TENSION", "CONCEPT", "VISUAL"],
@@ -124,7 +128,7 @@ ATOM_EXTRACTION_SCHEMA = {
                             "additionalProperties": False
                         }
                     },
-                    "required": ["id", "type", "rank", "text", "name", "role", "credentials", "affiliation", "description", "category", "value", "label", "quote", "attribution", "context", "tension_type", "resolution_hint", "concept_type", "supporting_facts", "visual_category", "related_atom", "visual", "source_ref"],
+                    "required": ["id", "abstract", "type", "rank", "text", "name", "role", "credentials", "affiliation", "description", "category", "value", "label", "quote", "attribution", "context", "tension_type", "resolution_hint", "concept_type", "supporting_facts", "visual_category", "related_atom", "visual", "source_ref"],
                     "additionalProperties": False
                 }
             }
@@ -182,6 +186,7 @@ ATOM_EXTRACTION_SYSTEM_PROMPT = """You are an expert editor deconstructing conte
 
 **Required for ALL atoms**:
 - id: unique identifier (e.g., "bio_001", "fact_001", "stat_001", "quote_001", "tension_001", "concept_001", "visual_001")
+- abstract: one-line summary (max 100 chars, e.g., "John Smith is a Google engineer" or "Latency improved by 50%")
 - type: exactly one of BIO, FACT, STAT, QUOTE, TENSION, CONCEPT, VISUAL
 - rank: importance (1=most important)
 - visual: suggested representation (chart/big-number/quote-card/diagram/code/screenshot/photo/icon/timeline/comparison-table/flow/architecture/before-after/list/table/graph/none)

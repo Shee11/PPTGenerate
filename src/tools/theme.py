@@ -51,7 +51,7 @@ class ThemeTool(DirectTool[ThemeContext, ThemePatch]):
     requires: ClassVar[List[str]] = ["constitution"]
     produces: ClassVar[List[str]] = ["themes", "active_theme_id"]
     
-    def slice(self, state: "PipelineState") -> ThemeContext:
+    def slice(self, state: "PipelineState", params: Optional[Dict[str, Any]] = None) -> ThemeContext:
         """Extract context from state."""
         # Build intent guidance from constitution
         intent_guidance = ""

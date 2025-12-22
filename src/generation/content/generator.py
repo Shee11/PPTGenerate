@@ -127,6 +127,116 @@ def generate_layout(
     return slides
 
 
+def refine_slides(
+    existing_slides: List[dict],
+    atoms: AtomCollection,
+    user_instruction: str,
+    config: GenerationConfig,
+    intent_guidance: str = "",
+    themes: List = None
+) -> Slides:
+    """
+    Refine existing slides based on user instruction and constitution rules.
+    
+    Instead of regenerating all slides from scratch, this function:
+    1. Analyzes what needs to change based on instruction
+    2. Generates targeted patch operations (replace, remove)
+    3. Applies only the necessary changes
+    
+    This is more efficient for instructions like:
+    - "remove speaker bio" → finds and removes bio content
+    - "make titles shorter" → replaces only titles
+    - "add call to action to last slide" → modifies one slide
+    
+    Args:
+        existing_slides: Current slides as list of dicts
+        atoms: AtomCollection for reference
+        user_instruction: User's refinement instruction
+        config: Generation configuration
+        intent_guidance: Constitution guidance (exclusions, requirements, etc.)
+        themes: List of available theme dicts
+        
+    Returns:
+        Refined Slides collection
+    """
+    from src.generation.content.prompts import render_slide_refinement_prompt
+    
+    # Initialize slides collection with existing slides
+    slides = Slides(id="slides")
+    
+    # Convert existing slides to patch operations and apply
+    for slide_data in existing_slides:
+        add_op = {"add": slide_data}
+        patch = Patch.from_json_str(json.dumps([add_op]))
+        slides.patch(patch)
+    
+    print(f"⚙ Refining {len(existing_slides)} slides based on instruction...")
+    
+    # Generate refinement patches
+    refinement_prompt = render_slide_refinement_prompt(
+        existing_slides=existing_slides,
+        atoms=atoms,
+        user_instruction=user_instruction,
+        intent_guidance=intent_guidance,
+        themes=themes
+    )
+    
+    # Call LLM for refinement
+    response = call_llm(
+        system_prompt=_get_refinement_system_prompt(),
+        user_prompt=refinement_prompt,
+        deployment=config.model,
+        temperature=0.3,  # Lower temperature for more precise edits
+        max_tokens=config.max_tokens,
+    )
+    
+    # Parse and apply refinement patches
+    try:
+        patch_ops = json.loads(response)
+        if isinstance(patch_ops, dict):
+            patch_ops = [patch_ops]
+            
+        if patch_ops:
+            patch = Patch.from_json_str(json.dumps(patch_ops))
+            slides.patch(patch)
+            print(f"✓ Applied {len(patch_ops)} refinement operations")
+        else:
+            print("✓ No changes needed")
+            
+    except json.JSONDecodeError as e:
+        print(f"  ✗ JSON Parse Error in refinement: {e}")
+        print(f"    Response: {response[:500]}...")
+        raise
+    
+    return slides
+
+
+def _get_refinement_system_prompt() -> str:
+    """Get system prompt for slide refinement."""
+    return """You are a presentation refinement assistant. Your job is to make targeted changes to existing slides based on user instructions and content rules.
+
+OUTPUT RULES:
+1. Return ONLY a JSON array of patch operations
+2. Use "replace" to modify existing slides (keep the same id)
+3. Use "remove" to delete slides ({"remove": {"id": "slide_xxx"}})
+4. Only include operations for slides that actually need to change
+5. If no changes are needed, return an empty array: []
+
+PATCH OPERATION EXAMPLES:
+
+To modify a slide's content:
+{"replace": {"id": "slide_001", "rank": 1, "state": "active", "layout": "smart-grid", "widgets": {...}, "parameters": {...}}}
+
+To remove a slide:
+{"remove": {"id": "slide_002"}}
+
+IMPORTANT:
+- Keep slide IDs the same when replacing
+- Update rank numbers if slides are removed
+- Only modify what needs to change based on the instruction
+- Preserve layout and formatting unless explicitly asked to change"""
+
+
 def _generate_slides(
     atoms: AtomCollection,
     user_instruction: str,

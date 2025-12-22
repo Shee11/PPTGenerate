@@ -206,17 +206,18 @@ class SlidevRenderer:
         # Build HTML using Slidev toolchain
         return self.render_to_html(markdown_content)
     
-    def render_to_markdown(self, renderable):
+    def render_to_markdown(self, renderable, theme: dict = None):
         """Render slide JSON to Slidev markdown (intermediate format).
         
         Args:
             renderable: Single slide dict or list of slide dicts
+            theme: Optional theme dict with colors/typography to override slide themes
             
         Returns:
             str: Slidev markdown content
         """
         if isinstance(renderable, list):
-            return self.render_multi_slide(renderable)
+            return self.render_multi_slide(renderable, theme)
         else:
             return self.render_single_slide(renderable)
     
@@ -290,11 +291,12 @@ class SlidevRenderer:
         # Combine frontmatter + slots
         return f"{frontmatter}\n\n{slots_combined}"
     
-    def render_multi_slide(self, slides: list) -> str:
+    def render_multi_slide(self, slides: list, theme: dict = None) -> str:
         """Render multiple slides to markdown.
         
         Args:
             slides: List of slide JSON dicts
+            theme: Optional theme dict to use (overrides slide theme)
             
         Returns:
             str: Complete multi-slide markdown with slide separators
@@ -302,8 +304,11 @@ class SlidevRenderer:
         if not slides:
             return ""
         
-        # Extract theme from first slide (can be dict, string, or None)
-        theme_data = slides[0].get("theme") if slides else None
+        # Use provided theme first, then fall back to slide theme
+        theme_data = theme
+        if theme_data is None:
+            # Extract theme from first slide (can be dict, string, or None)
+            theme_data = slides[0].get("theme") if slides else None
         
         # Handle None, dict, or string theme
         if theme_data is None:
