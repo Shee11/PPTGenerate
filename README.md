@@ -108,10 +108,35 @@ uce-render --list-themes
 
 ### 3. Run Sample Commands
 
+**CLI Mode:**
 ```bash
-# Render a sample configuration
-uce-render --source "data\context\career_talk.txt" --user-instruction "Generate slides, target audience is entry, mid level devs, high contrast style" --output "output\career_talk_density_test.html" --verbose
+# Render slides from source file
+uce-render --source "data/context/career_talk.txt" \
+  --user-instruction "Generate slides for entry-level developers" \
+  --output "output/career_talk" \
+  --verbose
 
+# List available resources
+uce-render --list-strategies
+uce-render --list-widgets
+uce-render --list-themes
+```
+
+**Gradio Web UI:**
+```bash
+# Start the Gradio app (includes static file server)
+python app.py
+
+# Open in browser: http://127.0.0.1:7860
+```
+
+**With ngrok (for remote access):**
+```bash
+# Start the app
+python app.py
+
+# In another terminal, start ngrok
+ngrok start --config ngrok.yml --all
 ```
 
 ## Architecture
