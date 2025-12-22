@@ -39,7 +39,7 @@ dev = [
 uce-render = "cli.uce_render:cli"
 
 [tool.setuptools]
-packages = ["src", "src.common", "src.layout", "src.layout.strategies", "src.render", "src.widgets", "src.utils", "src.generation", "src.generation.atom", "src.generation.content", "cli"]
+packages = ["src", "src.common", "src.paged", "src.paged.render", "src.paged.render.slidev", "src.tools", "src.utils", "src.generation", "src.generation.atom", "src.generation.content", "src.generation.theme", "src.generation.todo", "cli"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
