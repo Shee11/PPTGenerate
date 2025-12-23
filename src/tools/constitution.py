@@ -28,16 +28,60 @@ class ConstitutionTool(DirectTool[ConstitutionContext, ConstitutionPatch]):
     
     # Self-description
     name: ClassVar[str] = "constitution"
-    description: ClassVar[str] = "Extract global rules and constraints from user instruction. No LLM - uses pattern matching."
-    query_description: ClassVar[str] = "Always runs first. Triggered by any instruction to extract tone, slide count, style rules."
+    description: ClassVar[str] = """Extract GLOBAL, LONG-LASTING rules from user instruction. No LLM - uses pattern matching.
+
+Constitution is for PERSISTENT rules that should apply across multiple interactions.
+
+GOOD - use constitution for these (persistent rules):
+- "use professional tone" → tone rule
+- "do not include user biography in slides" → content exclusion  
+- "avoid technical jargon" → style rule
+- "always include a call to action" → content requirement
+- "target 10 slides maximum" → structural constraint
+- User says "always", "never", "from now on" → rule change
+
+BAD - do NOT use constitution for these (use content tool instead):
+- "split page 3 into multiple pages" → one-time content edit
+- "compress to 8 slides" → content tool with slide_count param
+- "add more details to slide 2" → content refinement
+- "make the intro shorter" → content edit
+- Any one-time content changes
+- Refinement requests
+- Layout or formatting changes
+
+WHEN TO INCLUDE constitution:
+1. User explicitly asks to SET or CHANGE a persistent rule
+2. User is starting fresh and specifies tone/style preferences
+3. User says "always", "never", "from now on" suggesting a rule change
+
+WHEN TO SKIP constitution:
+- Refinement requests (merge/split/edit slides)
+- One-time slide count changes (pass to content params instead)"""
+
+    query_description: ClassVar[str] = """Triggers on:
+- New presentation with tone/style preferences
+- Explicit rule setting: "always use...", "never include...", "from now on..."
+- Content exclusions: "do not include X in slides"
+- Persistent style rules: "use professional tone", "avoid jargon"
+
+Does NOT trigger on:
+- Slide manipulation (merge, split, move)
+- One-time edits to specific slides
+- Refinement requests"""
+
     args_description: ClassVar[List[str]] = [
         "tone (professional, casual, academic, etc.)",
-        "slide_count (number of slides)",
-        "density (sparse, normal, dense)",
-        "style keywords (minimalist, bold, clean, etc.)",
+        "style_rules (list of persistent style guidelines)",
+        "content_exclusions (list of content to never include)",
+        "content_requirements (list of content that must be included)",
+        "target_slides (maximum slide count constraint)",
     ]
     requires: ClassVar[List[str]] = []
     produces: ClassVar[List[str]] = ["constitution"]
+    examples: ClassVar[List[str]] = [
+        '{"id": "constitution", "type": "constitution", "params": {"tone": "professional", "style_rules": ["use formal language"]}}',
+        '{"id": "constitution", "type": "constitution", "params": {"content_exclusions": ["do not include speaker biography"]}}',
+    ]
     
     def slice(self, state: "PipelineState", params: Optional[Dict[str, Any]] = None) -> ConstitutionContext:
         return ConstitutionContext()

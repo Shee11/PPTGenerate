@@ -23,6 +23,8 @@ from src.generation.todo.models import (
     ConstitutionPatch,
     AtomsParams,
     ThemeParams,
+    AtomFilter,
+    StoryParams,
     ContentParams,
     ExportParams,
 )
@@ -39,13 +41,13 @@ from src.common.tool_protocol import (
     register_tool,
 )
 
-# Import tools to register them
+# Import tools to register them (all tools now in src/tools/)
 from src.tools import constitution as _constitution  # noqa: F401
 from src.tools import atoms as _atoms  # noqa: F401
 from src.tools import theme as _theme  # noqa: F401
-# Content and export are in src/paged (connect to layout/render)
-from src.paged import content as _content  # noqa: F401
-from src.paged import export as _export  # noqa: F401
+from src.tools import story as _story  # noqa: F401
+from src.tools import content as _content  # noqa: F401
+from src.tools import export as _export  # noqa: F401
 
 __all__ = [
     # Models
@@ -56,6 +58,7 @@ __all__ = [
     "ConstitutionPatch",
     "AtomsParams",
     "ThemeParams",
+    "AtomFilter",
     "ContentParams",
     "ExportParams",
     # Planner

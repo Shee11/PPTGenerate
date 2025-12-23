@@ -39,7 +39,7 @@
         "quoteStyle": "bold"
       },
       "widgets": {
-        "default": {
+        "quote": {
           "type": "Type.Body",
           "parameters": {
             "text": "Build something incredible. Break the rules (the good kind). Ship it in 48 hours. Win glory, prizes, and maybe change the world."

@@ -26,7 +26,7 @@ from pydantic import BaseModel, Field
 
 from src.generation.todo.models import (
     TodoItem, TodoQueue, TodoType, TodoStatus,
-    ConstitutionPatch, AtomsParams, ThemeParams, ContentParams, ExportParams
+    ConstitutionPatch, AtomsParams, ThemeParams, StoryParams, ContentParams, ExportParams
 )
 from src.common.tool_protocol import get_all_descriptions, get_all_descriptions_structured
 from src.utils.llm_client import call_llm
@@ -241,100 +241,28 @@ You have access to these tools:
 
 {tool_descriptions}
 
-## Constitution Rules (IMPORTANT):
-Constitution is for GLOBAL, LONG-LASTING rules that should persist across multiple interactions.
-
-GOOD constitution updates (persistent rules):
-- "use professional tone" → tone rule
-- "do not include user biography in slides" → content exclusion
-- "avoid technical jargon" → style rule
-- "always include a call to action" → content requirement
-- "target 10 slides maximum" → structural constraint
-
-BAD - these are NOT constitution (use content tool instead):
-- "split page 3 into multiple pages" → one-time content edit
-- "compress to 8 slides" → content regeneration with slide count param
-- "add more details to slide 2" → content refinement
-- "make the intro shorter" → content edit
-
-Constitution should ONLY be included when:
-1. User explicitly asks to SET or CHANGE a persistent rule
-2. User is starting fresh and specifies tone/style preferences
-3. User says "always", "never", "from now on" suggesting a rule change
-
-DO NOT include constitution for:
-- One-time content changes
-- Slide count changes (pass to content params instead)
-- Refinement requests
-- Layout or formatting changes
-
-## Content Tool Modes:
-The content tool has two modes based on params:
-
-1. **Full Generation** (mode: "generate" or omitted):
-   - Used for: new presentations, major restructuring, "regenerate" requests
-   - Creates all slides from scratch using atoms
-   - params: {{"slide_count": 10, "mode": "generate"}}
-
-2. **Refinement** (mode: "refine"):
-   - Used for: targeted changes after constitution rules change
-   - Makes surgical edits to existing slides
-   - params: {{"mode": "refine", "instruction": "remove bio content"}}
-   
-When to use refinement:
-- Constitution adds an exclusion rule (e.g., "do not include bio") → refine to remove that content
-- Constitution adds a style rule → refine to update text accordingly
-- User asks to "fix", "adjust", "update" specific content
-
-When to use full generation:
-- No slides exist yet
-- User says "regenerate", "start over", "create new"
-- User specifies a different slide count
-- Major structural changes requested
-
 ## Rules:
 1. Only include tools that are needed for the user's request
-2. Respect tool dependencies (e.g., content needs atoms first for new presentations)
+2. Respect tool dependencies - read each tool's "requires" field
 3. If atoms already exist and user just wants to change theme/style, skip atoms extraction
 4. If slides already exist and user wants refinement, only run content + export
 5. Always include export at the end if content changes
-6. Pass slide_count to content params, NOT to constitution
-7. Use content mode="refine" when constitution changes require slide updates
+6. Read each tool's description and examples carefully
 
 ## Output Format:
 Return a JSON array of todo items. Each item has:
 - id: unique string identifier
-- type: one of "constitution", "atoms", "theme", "content", "export"
-- params: tool-specific parameters (object)
+- type: one of "constitution", "atoms", "theme", "story", "content", "export"
+- params: tool-specific parameters (object) - read tool's args_description!
 - depends_on: array of todo ids this depends on (optional)
 
-Example for NEW presentation with rules:
-```json
-[
-  {{"id": "constitution", "type": "constitution", "params": {{"tone": "professional", "style_rules": ["use formal language"]}}}},
-  {{"id": "atoms", "type": "atoms", "params": {{}}, "depends_on": ["constitution"]}},
-  {{"id": "theme", "type": "theme", "params": {{}}, "depends_on": ["constitution"]}},
-  {{"id": "content", "type": "content", "params": {{"slide_count": 10, "mode": "generate"}}, "depends_on": ["atoms", "theme"]}},
-  {{"id": "export", "type": "export", "params": {{}}, "depends_on": ["content"]}}
-]
-```
+## Tool Pipeline:
+- story: Plans narrative arc, assigns atoms to draft slides (depends on atoms)
+- content: Generates layouts and widgets for draft slides (depends on story)
+- When creating slides from scratch: atoms → story → content → export
+- When refining existing slides: story (to update draft) → content → export
 
-Example for REFINEMENT after rule change (slides exist + constitution updated):
-```json
-[
-  {{"id": "constitution", "type": "constitution", "params": {{"content_exclusions": ["do not include speaker biography"]}}}},
-  {{"id": "content", "type": "content", "params": {{"mode": "refine", "instruction": "remove speaker bio content"}}, "depends_on": ["constitution"]}},
-  {{"id": "export", "type": "export", "params": {{}}, "depends_on": ["content"]}}
-]
-```
-
-Example for SIMPLE refinement (no rule change):
-```json
-[
-  {{"id": "content", "type": "content", "params": {{"slide_count": 8, "mode": "generate"}}}},
-  {{"id": "export", "type": "export", "params": {{}}, "depends_on": ["content"]}}
-]
-```
+Refer to each tool's examples for proper JSON format.
 
 Only return the JSON array, no other text."""
 
@@ -486,11 +414,33 @@ def _create_typed_params(
             generate_new=params.get("generate_new", False),
         )
     
-    elif todo_type == TodoType.CONTENT:
-        return ContentParams(
+    elif todo_type == TodoType.STORY:
+        # Build atom filter if filter params provided
+        atom_filter = None
+        filter_params = params.get("atom_filter")
+        if filter_params:
+            from src.generation.todo.models import AtomFilter
+            atom_filter = AtomFilter(
+                include_types=filter_params.get("include_types", []),
+                exclude_types=filter_params.get("exclude_types", []),
+                min_rank=filter_params.get("min_rank"),
+                max_rank=filter_params.get("max_rank"),
+                keywords=filter_params.get("keywords", []),
+                exclude_keywords=filter_params.get("exclude_keywords", []),
+            )
+        return StoryParams(
+            mode=params.get("mode", "generate"),
+            instruction=params.get("instruction", params.get("user_instruction", "")),
             slide_count=params.get("slide_count"),
-            audience=params.get("audience"),
-            focus_areas=params.get("focus_areas"),
+            atom_filter=atom_filter,
+        )
+    
+    elif todo_type == TodoType.CONTENT:
+        # Content now works on draft slides from story
+        return ContentParams(
+            mode=params.get("mode", "generate"),
+            instruction=params.get("instruction", params.get("user_instruction", "")),
+            slide_ids=params.get("slide_ids", []),
         )
     
     elif todo_type == TodoType.EXPORT:
@@ -528,15 +478,24 @@ def _create_fallback_queue(state: "PipelineState") -> TodoQueue:
             status=TodoStatus.PENDING,
         ))
     
-    # Add content
-    content_deps = ["constitution"]
+    # Add story (plan narrative arc)
+    story_deps = ["constitution"]
     if state.source and not state.atoms:
-        content_deps.append("atoms")
+        story_deps.append("atoms")
+    queue.add(TodoItem(
+        id="story",
+        type=TodoType.STORY,
+        params=StoryParams(),
+        depends_on=story_deps,
+        status=TodoStatus.PENDING,
+    ))
+    
+    # Add content (generate layouts from draft slides)
     queue.add(TodoItem(
         id="content",
         type=TodoType.CONTENT,
         params=ContentParams(),
-        depends_on=content_deps,
+        depends_on=["story"],
         status=TodoStatus.PENDING,
     ))
     

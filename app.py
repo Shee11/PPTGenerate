@@ -203,6 +203,10 @@ async def run_generation_async(
         todos = plan(state, message)
         state.todos = todos
         
+        # Persist state immediately after planning
+        state_path.parent.mkdir(parents=True, exist_ok=True)
+        state.save(state_path)
+        
         todo_display = get_todo_display(state)
         yield chat_history, todo_display, "🔄 Executing todos...", ""
         
@@ -562,7 +566,14 @@ def create_app():
 
 
 if __name__ == "__main__":
+    import argparse
     import uvicorn
+    
+    # Parse command line arguments
+    parser = argparse.ArgumentParser(description="UCE Slide Generation Gradio UI")
+    parser.add_argument("--port", "-p", type=int, default=7860, help="Port to run the server on (default: 7860)")
+    parser.add_argument("--host", type=str, default="0.0.0.0", help="Host to bind to (default: 0.0.0.0)")
+    args = parser.parse_args()
     
     # Create output directory if not exists
     OUTPUT_BASE.mkdir(parents=True, exist_ok=True)
@@ -576,7 +587,7 @@ if __name__ == "__main__":
     fastapi_app = gr.mount_gradio_app(fastapi_app, gradio_app, path="/gradio")
     
     print("🚀 Starting server...")
-    print("   Gradio UI: http://127.0.0.1:7860/gradio/")
-    print("   Static files: http://127.0.0.1:7860/static/")
+    print(f"   Gradio UI: http://127.0.0.1:{args.port}/gradio/")
+    print(f"   Static files: http://127.0.0.1:{args.port}/static/")
     
-    uvicorn.run(fastapi_app, host="0.0.0.0", port=7860)
+    uvicorn.run(fastapi_app, host=args.host, port=args.port)

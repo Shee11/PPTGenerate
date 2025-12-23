@@ -39,7 +39,7 @@
         "quoteStyle": "centered"
       },
       "widgets": {
-        "default": {
+        "quote": {
           "type": "Type.Body",
           "parameters": {
             "text": "We believe that business success and environmental responsibility are not opposing forces — they are the foundation of a thriving future for all."

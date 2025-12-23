@@ -39,7 +39,7 @@
         "quoteStyle": "centered"
       },
       "widgets": {
-        "default": {
+        "quote": {
           "type": "Type.Body",
           "parameters": {
             "text": "2024 was a transformative year for Horizon Global. Despite market headwinds, we achieved record revenue, expanded into three new markets, and delivered exceptional value to our shareholders."

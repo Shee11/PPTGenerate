@@ -39,7 +39,7 @@
         "quoteStyle": "editorial"
       },
       "widgets": {
-        "default": {
+        "quote": {
           "type": "Type.Body",
           "parameters": {
             "text": "Your wellness journey should be as unique as you are. Zenith adapts to your life, not the other way around."

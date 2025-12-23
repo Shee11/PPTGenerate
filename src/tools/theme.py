@@ -50,6 +50,10 @@ class ThemeTool(DirectTool[ThemeContext, ThemePatch]):
     ]
     requires: ClassVar[List[str]] = ["constitution"]
     produces: ClassVar[List[str]] = ["themes", "active_theme_id"]
+    examples: ClassVar[List[str]] = [
+        '{"id": "theme", "type": "theme", "params": {}, "depends_on": ["constitution"]}',
+        '{"id": "theme", "type": "theme", "params": {"theme_id": "minimal_dark_v1"}}',
+    ]
     
     def slice(self, state: "PipelineState", params: Optional[Dict[str, Any]] = None) -> ThemeContext:
         """Extract context from state."""

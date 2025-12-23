@@ -46,6 +46,7 @@ class ToolDescription(BaseModel):
     args_description: List[str] = Field(default_factory=list, description="Parameters that affect this tool")
     requires: List[str] = Field(default_factory=list, description="Tools that must run before this")
     produces: List[str] = Field(default_factory=list, description="What this tool adds to state")
+    examples: List[str] = Field(default_factory=list, description="Example todo JSON for this tool")
 
 
 class Tool(ABC, Generic[TContext, TPatch]):
@@ -72,6 +73,7 @@ class Tool(ABC, Generic[TContext, TPatch]):
     args_description: ClassVar[List[str]] = []
     requires: ClassVar[List[str]] = []
     produces: ClassVar[List[str]] = []
+    examples: ClassVar[List[str]] = []  # Example todo JSONs for planner
     
     # System prompt for LLM tools
     system_prompt: ClassVar[str] = ""
@@ -90,6 +92,7 @@ class Tool(ABC, Generic[TContext, TPatch]):
             args_description=list(cls.args_description),
             requires=list(cls.requires),
             produces=list(cls.produces),
+            examples=list(cls.examples),
         )
     
     @classmethod
@@ -106,6 +109,10 @@ class Tool(ABC, Generic[TContext, TPatch]):
             lines.append(f"Requires: {', '.join(cls.requires)}")
         if cls.produces:
             lines.append(f"Produces: {', '.join(cls.produces)}")
+        if cls.examples:
+            lines.append("Examples:")
+            for example in cls.examples:
+                lines.append(f"  {example}")
         return '\n'.join(lines)
     
     @abstractmethod

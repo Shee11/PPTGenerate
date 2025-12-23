@@ -24,7 +24,8 @@ class TodoType(str, Enum):
     CONSTITUTION = "constitution"  # Update global rules (non-LLM, direct patch)
     ATOMS = "atoms"                # Extract atoms from source
     THEME = "theme"                # Generate/update theme
-    CONTENT = "content"            # Generate slides content
+    STORY = "story"                # Plan story arc (atoms -> draft slides with story/visual_design)
+    CONTENT = "content"            # Generate layouts/widgets (draft slides -> active slides)
     EXPORT = "export"              # Layout + render
 
 
@@ -130,31 +131,130 @@ class ThemeParams(BaseModel):
     )
 
 
-class ContentParams(BaseModel):
-    """Parameters for content generation todo."""
-    atom_ids: List[str] = Field(
+class AtomFilter(BaseModel):
+    """Filter criteria for selecting atoms at execution time.
+    
+    Solves the planning problem: at planning time, atoms don't exist yet,
+    so we can't specify atom_ids. Instead, we specify filter criteria
+    that are evaluated when the content executor runs.
+    """
+    include_types: List[str] = Field(
         default_factory=list,
-        description="IDs of atoms to use (empty = use all)"
+        description="Atom types to include (e.g., ['FACT', 'STAT', 'QUOTE']). Empty = all types."
     )
-    user_instruction: str = Field(
-        default="",
-        alias="instruction",
-        description="User-specific content guidance (alias: instruction)"
+    exclude_types: List[str] = Field(
+        default_factory=list,
+        description="Atom types to exclude (e.g., ['BIO', 'VISUAL'])"
     )
-    pattern: str = Field(
-        default="story",
-        description="Slide pattern (story, tutorial, pitch, etc.)"
+    min_rank: Optional[int] = Field(
+        default=None,
+        description="Minimum atom rank to include (1=highest importance)"
     )
+    max_rank: Optional[int] = Field(
+        default=None,
+        description="Maximum atom rank to include"
+    )
+    keywords: List[str] = Field(
+        default_factory=list,
+        description="Keywords to filter atoms by (matches abstract/text)"
+    )
+    exclude_keywords: List[str] = Field(
+        default_factory=list,
+        description="Keywords to exclude atoms by"
+    )
+    
+    def apply(self, atoms: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+        """Apply filter criteria to a list of atoms.
+        
+        Args:
+            atoms: List of atom dictionaries (from AtomCollection contexts)
+            
+        Returns:
+            Filtered list of atoms matching criteria
+        """
+        result = []
+        for atom in atoms:
+            atom_type = atom.get("type", "").upper()
+            atom_rank = atom.get("rank", 5)  # Default to mid-rank if not specified
+            atom_abstract = atom.get("abstract", "").lower()
+            atom_text = atom.get("text", "").lower()
+            atom_content = f"{atom_abstract} {atom_text}"
+            
+            # Type inclusion filter
+            if self.include_types:
+                if atom_type not in [t.upper() for t in self.include_types]:
+                    continue
+            
+            # Type exclusion filter
+            if self.exclude_types:
+                if atom_type in [t.upper() for t in self.exclude_types]:
+                    continue
+            
+            # Rank filters
+            if self.min_rank is not None and atom_rank < self.min_rank:
+                continue
+            if self.max_rank is not None and atom_rank > self.max_rank:
+                continue
+            
+            # Keyword inclusion filter
+            if self.keywords:
+                if not any(kw.lower() in atom_content for kw in self.keywords):
+                    continue
+            
+            # Keyword exclusion filter
+            if self.exclude_keywords:
+                if any(kw.lower() in atom_content for kw in self.exclude_keywords):
+                    continue
+            
+            result.append(atom)
+        
+        return result
+
+
+class StoryParams(BaseModel):
+    """Parameters for story planning todo.
+    
+    Story tool plans the narrative arc and assigns atoms to slides.
+    Output: draft slides with story, atoms, density, visual_design populated.
+    Layout and widgets are empty (filled by content tool).
+    """
     mode: str = Field(
         default="generate",
-        description="Mode: 'generate' for full creation, 'refine' for patching existing slides"
+        description="Mode: 'generate' for full creation, 'refine' for editing existing story"
+    )
+    instruction: str = Field(
+        default="",
+        description="User instruction for story planning"
     )
     slide_count: Optional[int] = Field(
         default=None,
-        description="Target number of slides (for generate mode)"
+        description="Target number of slides"
     )
+    atom_filter: Optional[AtomFilter] = Field(
+        default=None,
+        description="Filter criteria for selecting atoms"
+    )
+
+
+class ContentParams(BaseModel):
+    """Parameters for content generation todo.
     
-    model_config = {"populate_by_name": True}
+    Content tool takes draft slides (from story tool) and generates
+    layouts and widgets based on story and visual_design.
+    Depends on story tool completing first.
+    """
+    mode: str = Field(
+        default="generate",
+        description="Mode: 'generate' for full creation, 'refine' for editing specific slides"
+    )
+    instruction: str = Field(
+        default="",
+        description="User instruction for content generation"
+    )
+    slide_ids: List[str] = Field(
+        default_factory=list,
+        description="Specific slide IDs to generate (empty = all draft slides)"
+    )
 
 
 class ExportParams(BaseModel):
@@ -192,7 +292,7 @@ class TodoItem(BaseModel):
     )
     
     # Type-specific parameters
-    params: Union[ConstitutionPatch, AtomsParams, ThemeParams, ContentParams, ExportParams, Dict[str, Any]] = Field(
+    params: Union[ConstitutionPatch, AtomsParams, ThemeParams, StoryParams, ContentParams, ExportParams, Dict[str, Any]] = Field(
         default_factory=dict,
         description="Type-specific parameters"
     )

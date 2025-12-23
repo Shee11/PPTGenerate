@@ -382,7 +382,7 @@
         "quoteStyle": "bold"
       },
       "widgets": {
-        "default": {
+        "quote": {
           "type": "Type.Body",
           "parameters": {
             "text": "Start with a modular monolith. Earn your microservices."

@@ -49,11 +49,13 @@ class PipelineRunner:
         self.verbose = verbose
         self.use_cache = use_cache
         self.output_dir = output_dir or Path("output")
+        self.state_path = self.output_dir / "state.json"
         
         self.executor = TodoExecutor(
             verbose=verbose,
             use_cache=use_cache,
             output_dir=self.output_dir,
+            state_path=self.state_path,  # Pass state_path for persistence
         )
     
     def run(
@@ -95,6 +97,12 @@ class PipelineRunner:
         todos = plan(state, user_instruction)
         state.todos = todos
         
+        # Persist state immediately after planning
+        self.state_path.parent.mkdir(parents=True, exist_ok=True)
+        state.save(self.state_path)
+        if self.verbose:
+            print(f"💾 Todos planned, state persisted")
+        
         if self.verbose:
             print(f"📋 Planned {len(todos.todos)} todos:")
             for todo in todos.todos:
@@ -102,16 +110,15 @@ class PipelineRunner:
                 print(f"   • {todo.type.value}: {todo.id}{deps}")
         
         # Execute all todos - pass user_instruction to executor
+        # (executor persists state on each todo status change)
         if self.verbose:
             print(f"\n🔄 Executing todos...")
         
         count = self.executor.execute_all(state, user_instruction)
         
-        # Save state to output folder
-        state_path.parent.mkdir(parents=True, exist_ok=True)
-        state.save(state_path)
         if self.verbose:
-            print(f"💾 State saved to {state_path}")
+            print(f"\n✅ Completed {count} todos")
+            print(state.summary())
         
         if self.verbose:
             print(f"\n✅ Completed {count} todos")
@@ -146,7 +153,12 @@ class PipelineRunner:
         todos = plan(state, user_instruction)
         state.todos = todos
         
+        # Persist state immediately after planning
+        state_path.parent.mkdir(parents=True, exist_ok=True)
+        state.save(state_path)
+        
         # Execute - pass user_instruction
+        # (executor persists state on each todo status change)
         count = self.executor.execute_all(state, user_instruction)
         
         if self.verbose:

@@ -270,7 +270,7 @@
         "quoteStyle": "modern"
       },
       "widgets": {
-        "default": {
+        "quote": {
           "type": "Type.Body",
           "parameters": {
             "text": "NeuralFlow reduced our data analysis time from weeks to minutes. We've uncovered insights that directly contributed to a 40% increase in customer retention."

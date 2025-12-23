@@ -39,7 +39,7 @@
         "quoteStyle": "highlighted"
       },
       "widgets": {
-        "default": {
+        "quote": {
           "type": "Type.Body",
           "parameters": {
             "text": "We're not just colleagues — we're a family of dreamers, builders, and occasional coffee addicts who believe that the best work comes from collaboration, curiosity, and a healthy amount of GIF warfare."

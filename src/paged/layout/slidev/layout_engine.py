@@ -193,13 +193,13 @@ Two columns with header.
 
 ### quote-hero
 Large quote display.
-- **Slots**: `default` (the quote text), `author`, `context`
+- **Slots**: `quote` (the quote text), `author`, `context`
 - **Example**:
 ```json
 {
   "layout": "quote-hero",
   "widgets": {
-    "default": { "type": "Type.Quote", "parameters": { "text": "The quote goes here..." } },
+    "quote": { "type": "Type.Quote", "parameters": { "text": "The quote goes here..." } },
     "author": { "type": "Type.Body", "parameters": { "text": "Author Name" } },
     "context": { "type": "Type.Body", "parameters": { "text": "Context or title" } }
   }

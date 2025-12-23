@@ -469,7 +469,8 @@ Don't just present atoms—DRAMATIZE the BEST ones:
 - `comparison`: `title`, `beforeLabel`, `before`, `afterLabel`, `after`
 - `dashboard`: `title`, `metric1`, `metric2`, `metric3`, `metric4`, `chart`
 - `center`: `default` (single slot)
-- `spotlight`: `title`, `subtitle`, `description`
+- `spotlight`: `default`, `subtitle`
+- `quote-hero`: `quote` (quote text), `author` (name), `context` (title/company)
 
 # VARIETY & RHYTHM
 

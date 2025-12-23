@@ -38,16 +38,20 @@ class TodoExecutor:
         use_cache: bool = True,
         verbose: bool = False,
         output_dir: Optional[Path] = None,
+        state_path: Optional[Path] = None,
     ):
         self.use_cache = use_cache
         self.verbose = verbose
         self.output_dir = output_dir or Path("output")
+        # Path for persisting state on todo status changes
+        self.state_path = state_path or (self.output_dir / "state.json")
         
         # Tool name mapping
         self._tool_names: Dict[TodoType, str] = {
             TodoType.CONSTITUTION: "constitution",
             TodoType.ATOMS: "atoms",
             TodoType.THEME: "theme",
+            TodoType.STORY: "story",
             TodoType.CONTENT: "content",
             TodoType.EXPORT: "export",
         }
@@ -81,11 +85,21 @@ class TodoExecutor:
                 self.execute_todo(todo, state, user_instruction)
                 count += 1
             except Exception as e:
+                # Persist state on failure too
+                self._persist_state(state)
                 if stop_on_error:
                     raise
                 logger.error(f"Todo failed: {e}")
         
         return count
+    
+    def _persist_state(self, state: "PipelineState"):
+        """Persist state to state.json."""
+        if self.state_path:
+            self.state_path.parent.mkdir(parents=True, exist_ok=True)
+            state.save(self.state_path)
+            if self.verbose:
+                logger.debug(f"State persisted to {self.state_path}")
     
     def execute_todo(
         self,
@@ -116,8 +130,9 @@ class TodoExecutor:
         
         tool = get_tool(tool_name, **tool_kwargs)
         
-        # Mark started
+        # Mark started and persist
         todo.mark_started()
+        self._persist_state(state)
         self._log(f"▶ {todo.type.value}: {todo.id}")
         
         try:
@@ -138,10 +153,12 @@ class TodoExecutor:
             tool.apply(state, patch)
             
             todo.mark_completed()
+            self._persist_state(state)
             self._log(f"✓ {todo.type.value}: {todo.id}")
             
         except Exception as e:
             todo.mark_failed(str(e))
+            self._persist_state(state)
             logger.error(f"✗ {todo.type.value}: {todo.id} - {e}")
             raise
         

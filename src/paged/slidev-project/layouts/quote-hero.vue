@@ -12,7 +12,7 @@
     - quoteStyle: Visual style (classic, modern, editorial, bold)
   
   Slots:
-    - default: The quote text
+    - quote: The quote text
     - author: Quote attribution/author
     - context: Additional context (title, company, etc.)
 -->
@@ -28,9 +28,7 @@
       <!-- Main quote content -->
       <div class="quote-wrapper" :style="quoteTransform">
         <blockquote class="quote-text">
-          <slot>
-            <p>Add your inspiring quote here</p>
-          </slot>
+          <slot name="quote" />
         </blockquote>
         
         <!-- Attribution -->

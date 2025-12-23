@@ -52,6 +52,9 @@ class AtomsTool(DirectTool[AtomsContext, AtomsPatch]):
     ]
     requires: ClassVar[List[str]] = ["constitution"]
     produces: ClassVar[List[str]] = ["atoms"]
+    examples: ClassVar[List[str]] = [
+        '{"id": "atoms", "type": "atoms", "params": {}, "depends_on": ["constitution"]}',
+    ]
     
     def slice(self, state: "PipelineState", params: Optional[Dict[str, Any]] = None) -> AtomsContext:
         """Extract source and guidance from state."""

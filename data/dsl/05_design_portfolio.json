@@ -39,7 +39,7 @@
         "quoteStyle": "editorial"
       },
       "widgets": {
-        "default": {
+        "quote": {
           "type": "Type.Body",
           "parameters": {
             "text": "Design is not just what it looks like and feels like. Design is how it works."
