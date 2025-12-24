@@ -114,7 +114,8 @@ const contentTransform = computed(() => {
     playful: { rotation: 3, translate: 12 },
     professional: { rotation: 0.2, translate: 1 },
     minimal: { rotation: 0, translate: 0 },
-    dramatic: { rotation: 1.5, translate: 6 }
+    dramatic: { rotation: 1.5, translate: 6 },
+    duolingo: { rotation: 1, translate: 4 }
   }
   
   const config = vibeConfig[props.vibe] || vibeConfig.none
@@ -289,5 +290,34 @@ const contentTransform = computed(() => {
 
 .vibe-calm .spotlight-effect {
   filter: blur(60px);
+}
+
+/* Duolingo vibe */
+.vibe-duolingo .content-wrapper {
+  background: var(--theme-bg-surface, #F7F7F7);
+  padding: 3rem 4rem;
+  border-radius: 2rem;
+  border: 3px solid var(--theme-border, #E5E5E5);
+  box-shadow: 0 8px 0 var(--theme-border, #E5E5E5);
+}
+
+.vibe-duolingo .decorative-rings {
+  display: none;
+}
+
+.vibe-duolingo .spotlight-effect {
+  background: radial-gradient(ellipse 70% 70% at center, var(--theme-primary, #58CC02), transparent);
+  opacity: 0.08;
+}
+
+.vibe-duolingo .main-content :deep(h1),
+.vibe-duolingo .main-content :deep(h2) {
+  color: var(--theme-primary, #58CC02);
+  font-weight: 800;
+}
+
+.vibe-duolingo .subtitle-content {
+  color: var(--theme-text-muted, #777777);
+  font-weight: 600;
 }
 </style>

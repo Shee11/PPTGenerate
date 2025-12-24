@@ -99,6 +99,12 @@ class PipelineState(BaseModel):
         description="Currently active theme ID"
     )
     
+    # Project selection for export (slidev or duolingo)
+    project: str = Field(
+        default="slidev",
+        description="Project style for export: 'slidev' (default) or 'duolingo'"
+    )
+    
     # Extracted atoms
     atoms: Optional[Dict[str, Any]] = Field(
         default=None,

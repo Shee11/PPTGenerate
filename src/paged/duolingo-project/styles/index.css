@@ -1,0 +1,155 @@
+/*
+ * Duolingo-Styled Global Styles for Slidev Presentations
+ * Playful, gamified design with rounded edges and vibrant colors
+ */
+
+/* Import Nunito font for Duolingo feel */
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
+
+/* Disable ALL animations and transitions globally for static export */
+*, *::before, *::after {
+  animation: none !important;
+  animation-duration: 0s !important;
+  animation-delay: 0s !important;
+  transition: none !important;
+  transition-duration: 0s !important;
+  transition-delay: 0s !important;
+}
+
+/* Disable Slidev page transitions */
+.slidev-page {
+  transition: none !important;
+}
+
+.slidev-vclick-target {
+  transition: none !important;
+}
+
+/* Disable any keyframe animations */
+@keyframes none {
+  from, to { opacity: 1; }
+}
+
+/* Duolingo color palette as CSS variables */
+:root {
+  /* Primary Colors */
+  --duo-green: #58CC02;
+  --duo-green-dark: #4CAD02;
+  --duo-green-light: #89E219;
+  
+  /* Secondary Colors */
+  --duo-blue: #1CB0F6;
+  --duo-blue-dark: #1899D6;
+  --duo-red: #FF4B4B;
+  --duo-red-dark: #EA2B2B;
+  --duo-orange: #FF9600;
+  --duo-orange-dark: #E68600;
+  --duo-purple: #CE82FF;
+  --duo-purple-dark: #B862E6;
+  --duo-golden: #FFC800;
+  
+  /* Neutral Colors */
+  --duo-white: #FFFFFF;
+  --duo-gray-50: #F7F7F7;
+  --duo-gray-100: #E5E5E5;
+  --duo-gray-200: #CDCDCD;
+  --duo-gray-300: #AFAFAF;
+  --duo-gray-400: #777777;
+  --duo-gray-500: #4B4B4B;
+  --duo-gray-600: #3C3C3C;
+  
+  /* Background Colors */
+  --duo-bg-main: #FFFFFF;
+  --duo-bg-surface: #F7F7F7;
+  --duo-bg-card: #FFFFFF;
+  
+  /* Shadows - Duolingo uses distinctive bottom borders instead of blur shadows */
+  --duo-shadow-button: 0 4px 0 var(--duo-green-dark);
+  --duo-shadow-card: 0 2px 0 var(--duo-gray-100);
+  --duo-shadow-pressed: 0 0 0 transparent;
+  
+  /* Border Radius - Duolingo loves chunky rounded corners */
+  --duo-radius-sm: 12px;
+  --duo-radius-md: 16px;
+  --duo-radius-lg: 20px;
+  --duo-radius-xl: 24px;
+  --duo-radius-full: 9999px;
+  
+  /* Typography */
+  --duo-font: 'Nunito', 'DIN Round', system-ui, sans-serif;
+  
+  /* Border widths - Duolingo uses thick borders */
+  --duo-border-width: 2px;
+  --duo-border-thick: 4px;
+}
+
+/* Global Duolingo styling */
+body {
+  font-family: var(--duo-font);
+  background: var(--duo-bg-main);
+  color: var(--duo-gray-600);
+}
+
+/* Duolingo-style buttons (global utility class) */
+.duo-button {
+  font-family: var(--duo-font);
+  font-weight: 700;
+  padding: 12px 24px;
+  border-radius: var(--duo-radius-md);
+  border: none;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 15px;
+}
+
+.duo-button-primary {
+  background: var(--duo-green);
+  color: white;
+  box-shadow: var(--duo-shadow-button);
+}
+
+.duo-button-primary:hover {
+  background: var(--duo-green-light);
+}
+
+/* Duolingo-style cards (global utility class) */
+.duo-card {
+  background: var(--duo-bg-card);
+  border-radius: var(--duo-radius-lg);
+  border: var(--duo-border-width) solid var(--duo-gray-100);
+  box-shadow: var(--duo-shadow-card);
+  padding: 20px;
+}
+
+/* Duolingo mascot badge style */
+.duo-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--duo-bg-surface);
+  padding: 8px 16px;
+  border-radius: var(--duo-radius-full);
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--duo-gray-500);
+  border: var(--duo-border-width) solid var(--duo-gray-100);
+}
+
+/* XP/Streak style numbers */
+.duo-stat {
+  font-family: var(--duo-font);
+  font-weight: 800;
+  font-size: 48px;
+  color: var(--duo-green);
+  line-height: 1;
+}
+
+.duo-stat-label {
+  font-family: var(--duo-font);
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--duo-gray-400);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}

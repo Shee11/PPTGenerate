@@ -223,13 +223,32 @@ def cli(
         uce-render --source input.txt --stage render --output career_talk --force-rerun
     """
     try:
-        # Handle stage-based pipeline
-        if stage:
-            if not source:
-                click.echo("Error: --stage requires --source to be specified", err=True)
+        # Handle stage-based pipeline OR state-only execution
+        if stage or state:
+            # If state is provided without source, load source from state
+            source_from_state = None
+            if state and not source:
+                state_path = Path(state)
+                if state_path.exists():
+                    from src.generation.state import PipelineState
+                    loaded_state = PipelineState.load(state_path)
+                    if loaded_state.source and loaded_state.source.path:
+                        source_from_state = Path(loaded_state.source.path)
+                        if verbose:
+                            click.echo(f"📂 Loaded source from state: {source_from_state}", err=True)
+                    # Also infer output from state path if not provided
+                    if not output:
+                        output = state_path.parent
+                        if verbose:
+                            click.echo(f"📂 Inferred output from state: {output}", err=True)
+            
+            effective_source = source or source_from_state
+            
+            if not effective_source:
+                click.echo("Error: --stage/--state requires --source or a state.json with source_path", err=True)
                 sys.exit(1)
             if not output:
-                click.echo("Error: --stage requires --output directory to be specified", err=True)
+                click.echo("Error: --stage/--state requires --output directory to be specified", err=True)
                 sys.exit(1)
             
             # Run todo-based pipeline
@@ -255,7 +274,7 @@ def cli(
             )
             
             result_state = runner.run(
-                source_path=source,
+                source_path=effective_source,
                 user_instruction=instruction,
             )
             

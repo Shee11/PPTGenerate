@@ -3,6 +3,17 @@
  * This file is automatically loaded by Slidev
  */
 
+/* Override Slidev's default dark container background */
+/* The inline style uses --slidev-slide-container-background with fallback to black */
+:root {
+  --slidev-slide-container-background: transparent;
+}
+
+.slidev-slide-container {
+  background-color: transparent !important;
+  background: transparent !important;
+}
+
 /* Disable ALL animations and transitions globally */
 *, *::before, *::after {
   animation: none !important;

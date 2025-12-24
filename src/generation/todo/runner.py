@@ -90,24 +90,42 @@ class PipelineRunner:
         # Set source
         state.set_source(source_path)
         
-        # Plan todos from instruction
-        if self.verbose:
-            print(f"📋 Planning todos from instruction...")
+        # Check if state already has pending todos - if so, skip planning
+        # This makes state.json the source of truth
+        has_pending_todos = (
+            state.todos is not None 
+            and hasattr(state.todos, 'todos') 
+            and len(state.todos.todos) > 0
+            and any(t.status in ('pending', 'in_progress') for t in state.todos.todos)
+        )
         
-        todos = plan(state, user_instruction)
-        state.todos = todos
+        if has_pending_todos:
+            if self.verbose:
+                print(f"📋 Using existing todos from state.json (skipping planning)")
+                pending_count = sum(1 for t in state.todos.todos if t.status in ('pending', 'in_progress'))
+                completed_count = sum(1 for t in state.todos.todos if t.status == 'completed')
+                print(f"   • {completed_count} completed, {pending_count} pending")
+            todos = state.todos
+        else:
+            # Plan todos from instruction
+            if self.verbose:
+                print(f"📋 Planning todos from instruction...")
+            
+            todos = plan(state, user_instruction)
+            state.todos = todos
+            
+            # Persist state immediately after planning
+            self.state_path.parent.mkdir(parents=True, exist_ok=True)
+            state.save(self.state_path)
+            if self.verbose:
+                print(f"💾 Todos planned, state persisted")
         
-        # Persist state immediately after planning
-        self.state_path.parent.mkdir(parents=True, exist_ok=True)
-        state.save(self.state_path)
         if self.verbose:
-            print(f"💾 Todos planned, state persisted")
-        
-        if self.verbose:
-            print(f"📋 Planned {len(todos.todos)} todos:")
+            print(f"📋 {len(todos.todos)} todos:")
             for todo in todos.todos:
                 deps = f" (depends: {todo.depends_on})" if todo.depends_on else ""
-                print(f"   • {todo.type.value}: {todo.id}{deps}")
+                status = f"[{todo.status}]" if todo.status != 'pending' else ""
+                print(f"   • {todo.type.value}: {todo.id}{deps} {status}")
         
         # Execute all todos - pass user_instruction to executor
         # (executor persists state on each todo status change)

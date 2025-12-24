@@ -24,6 +24,7 @@ class ExportContext(ToolContext):
     """Context for export."""
     slides: List[Dict[str, Any]] = Field(default_factory=list)
     theme: Optional[Dict[str, Any]] = None
+    project: str = Field(default="slidev", description="Project style: slidev or duolingo")
 
 
 class ExportPatch(ToolPatch):
@@ -63,9 +64,31 @@ class ExportTool(DirectTool[ExportContext, ExportPatch]):
         self.output_dir = output_dir
     
     def slice(self, state: "PipelineState", params: Optional[Dict[str, Any]] = None) -> ExportContext:
+        """Extract slides and theme for export.
+        
+        Theme resolution priority:
+        1. First slide's parameters.theme (set during content generation)
+        2. Fallback to AssetManager.get_theme()
+        """
+        slides = state.slides or []
+        
+        # Get theme from first slide's parameters.theme
+        theme = None
+        theme_id = None
+        if slides:
+            params_theme = slides[0].get("parameters", {}).get("theme")
+            if params_theme:
+                theme_id = params_theme
+        
+        # Load full theme data from AssetManager
+        if theme_id:
+            from src.common.asset_manager import AssetManager
+            theme = AssetManager.get_theme(theme_id)
+        
         return ExportContext(
-            slides=state.slides or [],
-            theme=state.get_active_theme(),
+            slides=slides,
+            theme=theme,
+            project=state.project or "slidev",
         )
     
     def transform(
@@ -115,8 +138,8 @@ class ExportTool(DirectTool[ExportContext, ExportPatch]):
         """
         from src.paged.render import SlidevRenderer
         
-        # Pass output directory to renderer for slidev_build location
-        renderer = SlidevRenderer(output_dir=self.output_dir)
+        # Pass output directory and project to renderer
+        renderer = SlidevRenderer(output_dir=self.output_dir, project=context.project)
         
         # Generate markdown with theme from context
         markdown = renderer.render_to_markdown(context.slides, theme=context.theme)
@@ -132,7 +155,7 @@ class ExportTool(DirectTool[ExportContext, ExportPatch]):
         output_dir = output_path.parent
         session_folder = output_dir.name  # e.g., "slide_20251222_56"
         # base_path = f"/static/{session_folder}/"
-        base_path = f"/static/{session_folder}/"
+        base_path = f"/output/{session_folder}/"
         
         # Run Slidev build
         self._log(f"Running Slidev build with base={base_path}...")
