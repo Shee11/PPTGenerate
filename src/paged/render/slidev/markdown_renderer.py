@@ -68,6 +68,7 @@ class SlidevRenderer:
     Project Selection:
     - "slidev" (default): Professional business styling with gradients and glassmorphism
     - "duolingo": Playful Duolingo-style with chunky rounded corners and bright colors
+    - "cyberpunk": Futuristic neon aesthetic with glows, HUD frames, and glitch effects
     """
     
     # Base path for project directories (src/paged/)
@@ -77,6 +78,9 @@ class SlidevRenderer:
     PROJECTS = {
         "slidev": "slidev-project",
         "duolingo": "duolingo-project",
+        "cyberpunk": "cyberpunk-project",
+        "handdrawn": "handdrawn-project",
+        "editorial": "editorial-project",
     }
     
     # Default project

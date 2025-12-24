@@ -1,0 +1,230 @@
+/* Cyberpunk Project - Global Styles */
+
+/* Import cyberpunk fonts */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap');
+
+/* Cyberpunk Color System */
+:root {
+  /* Primary neon colors */
+  --cyber-cyan: #00FFFF;
+  --cyber-cyan-dark: #00CCCC;
+  --cyber-cyan-glow: rgba(0, 255, 255, 0.5);
+  
+  --cyber-magenta: #FF00FF;
+  --cyber-magenta-dark: #CC00CC;
+  --cyber-magenta-glow: rgba(255, 0, 255, 0.5);
+  
+  --cyber-yellow: #FFFF00;
+  --cyber-yellow-dark: #CCCC00;
+  --cyber-yellow-glow: rgba(255, 255, 0, 0.5);
+  
+  --cyber-pink: #FF0080;
+  --cyber-pink-dark: #CC0066;
+  --cyber-pink-glow: rgba(255, 0, 128, 0.5);
+  
+  --cyber-green: #00FF41;
+  --cyber-green-dark: #00CC33;
+  --cyber-green-glow: rgba(0, 255, 65, 0.5);
+  
+  /* Background colors */
+  --cyber-bg-dark: #0a0a0f;
+  --cyber-bg-darker: #050508;
+  --cyber-bg-card: #12121a;
+  --cyber-bg-elevated: #1a1a25;
+  
+  /* Text colors */
+  --cyber-text: #e0e0e0;
+  --cyber-text-dim: #808090;
+  --cyber-text-bright: #ffffff;
+  
+  /* Typography */
+  --cyber-font-display: 'Orbitron', 'Rajdhani', sans-serif;
+  --cyber-font-body: 'Rajdhani', 'Share Tech Mono', sans-serif;
+  --cyber-font-mono: 'Share Tech Mono', monospace;
+}
+
+/* Base styles */
+.slidev-layout {
+  font-family: var(--cyber-font-body);
+  background: var(--cyber-bg-dark);
+  color: var(--cyber-text);
+}
+
+/* Neon text glow utility */
+.neon-cyan {
+  color: var(--cyber-cyan);
+  text-shadow: 
+    0 0 5px var(--cyber-cyan),
+    0 0 10px var(--cyber-cyan),
+    0 0 20px var(--cyber-cyan-glow);
+}
+
+.neon-magenta {
+  color: var(--cyber-magenta);
+  text-shadow: 
+    0 0 5px var(--cyber-magenta),
+    0 0 10px var(--cyber-magenta),
+    0 0 20px var(--cyber-magenta-glow);
+}
+
+.neon-yellow {
+  color: var(--cyber-yellow);
+  text-shadow: 
+    0 0 5px var(--cyber-yellow),
+    0 0 10px var(--cyber-yellow),
+    0 0 20px var(--cyber-yellow-glow);
+}
+
+.neon-pink {
+  color: var(--cyber-pink);
+  text-shadow: 
+    0 0 5px var(--cyber-pink),
+    0 0 10px var(--cyber-pink),
+    0 0 20px var(--cyber-pink-glow);
+}
+
+.neon-green {
+  color: var(--cyber-green);
+  text-shadow: 
+    0 0 5px var(--cyber-green),
+    0 0 10px var(--cyber-green),
+    0 0 20px var(--cyber-green-glow);
+}
+
+/* Neon border utility */
+.neon-border-cyan {
+  border: 2px solid var(--cyber-cyan);
+  box-shadow: 
+    0 0 5px var(--cyber-cyan),
+    0 0 10px var(--cyber-cyan-glow),
+    inset 0 0 5px var(--cyber-cyan-glow);
+}
+
+.neon-border-magenta {
+  border: 2px solid var(--cyber-magenta);
+  box-shadow: 
+    0 0 5px var(--cyber-magenta),
+    0 0 10px var(--cyber-magenta-glow),
+    inset 0 0 5px var(--cyber-magenta-glow);
+}
+
+/* Glitch effect */
+@keyframes glitch {
+  0%, 100% { transform: translate(0); }
+  20% { transform: translate(-2px, 2px); }
+  40% { transform: translate(-2px, -2px); }
+  60% { transform: translate(2px, 2px); }
+  80% { transform: translate(2px, -2px); }
+}
+
+.glitch {
+  animation: glitch 0.3s ease-in-out infinite;
+}
+
+/* Scan line overlay */
+.scanlines::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.1) 2px,
+    rgba(0, 0, 0, 0.1) 4px
+  );
+  pointer-events: none;
+  z-index: 100;
+}
+
+/* Cyber card */
+.cyber-card {
+  background: var(--cyber-bg-card);
+  border: 1px solid var(--cyber-cyan);
+  border-radius: 4px;
+  box-shadow: 
+    0 0 10px var(--cyber-cyan-glow),
+    inset 0 0 20px rgba(0, 255, 255, 0.05);
+  position: relative;
+  overflow: hidden;
+}
+
+.cyber-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--cyber-cyan), transparent);
+}
+
+/* Flicker animation */
+@keyframes flicker {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.8; }
+  52% { opacity: 1; }
+  54% { opacity: 0.9; }
+}
+
+.flicker {
+  animation: flicker 2s ease-in-out infinite;
+}
+
+/* Matrix rain effect background */
+@keyframes matrix-fall {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100vh); }
+}
+
+/* Pulse glow */
+@keyframes pulse-glow {
+  0%, 100% { 
+    box-shadow: 0 0 5px var(--cyber-cyan), 0 0 10px var(--cyber-cyan-glow);
+  }
+  50% { 
+    box-shadow: 0 0 10px var(--cyber-cyan), 0 0 20px var(--cyber-cyan-glow), 0 0 30px var(--cyber-cyan-glow);
+  }
+}
+
+.pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* HUD corner decorations */
+.hud-corner {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border-color: var(--cyber-cyan);
+  border-style: solid;
+  border-width: 0;
+}
+
+.hud-corner-tl {
+  top: 0;
+  left: 0;
+  border-top-width: 2px;
+  border-left-width: 2px;
+}
+
+.hud-corner-tr {
+  top: 0;
+  right: 0;
+  border-top-width: 2px;
+  border-right-width: 2px;
+}
+
+.hud-corner-bl {
+  bottom: 0;
+  left: 0;
+  border-bottom-width: 2px;
+  border-left-width: 2px;
+}
+
+.hud-corner-br {
+  bottom: 0;
+  right: 0;
+  border-bottom-width: 2px;
+  border-right-width: 2px;
+}

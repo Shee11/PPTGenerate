@@ -56,3 +56,52 @@ Output structure:
 - `output/<name>/slides.md` - Slidev markdown source
 - `output/<name>/slides.json` - Raw slide data for debugging
 - `output/<name>/dist/` - Built Slidev HTML (serve via HTTP)
+
+## Re-export with Different Project Theme
+
+To re-export an existing slide with a different project theme (e.g., cyberpunk, duolingo):
+
+1. **Add/update `project` field** at the top of `state.json`:
+   ```json
+   {
+     "project": "cyberpunk",
+     "todos": { ... }
+   }
+   ```
+
+2. **Override todos to keep only export** - remove all other todos and keep only export with no dependencies:
+   ```json
+   {
+     "project": "cyberpunk",
+     "todos": {
+       "todos": [
+         {
+           "id": "export",
+           "type": "export",
+           "status": "pending",
+           "params": {
+             "layout_engine": "slidev",
+             "output_format": "html",
+             "output_path": null
+           },
+           "created_at": "2025-12-24T08:20:15.103666",
+           "started_at": null,
+           "completed_at": null,
+           "error": null,
+           "depends_on": []
+         }
+       ]
+     },
+     "source": { ... }
+   }
+   ```
+
+3. **Run the CLI**:
+   ```powershell
+   .venv\Scripts\python.exe -m cli.uce_render --state output/<slide_folder>/state.json --output output/<slide_folder>
+   ```
+
+Available project themes:
+- `slidev` (default) - Professional business styling
+- `duolingo` - Playful Duolingo-style with bright colors
+- `cyberpunk` - Futuristic neon aesthetic with glows and HUD frames

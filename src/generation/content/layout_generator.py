@@ -163,7 +163,7 @@ def generate_layouts(
         user_prompt=prompt,
         deployment=deployment,
         temperature=0.7,
-        max_tokens=16000,  # Need room for 10 slides with widgets
+        max_tokens=32000,  # Need room for 10+ slides with widgets (increased for large documents)
     )
     
     # Parse JSON from response

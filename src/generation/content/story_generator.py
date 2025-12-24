@@ -230,7 +230,7 @@ def generate_story(
         user_prompt=prompt,
         deployment=deployment,
         temperature=0.7,
-        max_tokens=8000,  # Need room for 10+ draft slides
+        max_tokens=16000,  # Need room for 10+ draft slides (increased for large documents)
     )
     
     # Parse JSON from response
@@ -272,7 +272,7 @@ def refine_story(
         user_prompt=prompt,
         deployment=deployment,
         temperature=0.7,
-        max_tokens=8000,
+        max_tokens=16000,  # Increased for large documents
     )
     
     # Parse JSON from response

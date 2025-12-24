@@ -1,0 +1,14 @@
+{
+  "name": "handdrawn-project",
+  "private": true,
+  "scripts": {
+    "dev": "slidev",
+    "build": "slidev build",
+    "export": "slidev export"
+  },
+  "dependencies": {
+    "@slidev/cli": "^0.48.0",
+    "@slidev/theme-default": "latest",
+    "vue": "^3.4.0"
+  }
+}

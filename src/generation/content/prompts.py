@@ -307,7 +307,7 @@ def get_slide_generation_config() -> GenerationConfig:
     return GenerationConfig(
         model=deployment,
         temperature=0.5,  # Balanced for structure + creativity
-        max_tokens=16000,  # Full deck generation
+        max_tokens=32000,  # Full deck generation (increased for large documents)
         system_prompt=_build_slide_generation_system_prompt(),
         user_prompt_template=""  # Will be rendered by render_slide_generation_prompt
     )
