@@ -132,6 +132,12 @@ DEFAULT_INSTRUCTION = "create slides, 10 page, professional, corp_modern_v1 them
     is_flag=True,
     help='Force re-run all stages even if completed in state'
 )
+@click.option(
+    '--project', '-p',
+    type=click.Choice(['slidev', 'duolingo', 'cyberpunk', 'handdrawn', 'editorial', 'business', 'simple'], case_sensitive=False),
+    default='slidev',
+    help='Slidev project style to use (default: slidev)'
+)
 def cli(
     config_file: Optional[Path],
     output: Optional[Path],
@@ -154,6 +160,7 @@ def cli(
     stage: Optional[str],
     state: Optional[Path],
     force_rerun: bool,
+    project: str,
 ) -> None:
     """Render layouts using the Universal Content Engine.
     
@@ -446,13 +453,26 @@ def cli(
             
             slides_data = render_data.get('slides', [])
             
-            # Support both 'themes' (array) and legacy 'theme' (single object)
-            themes_data = render_data.get('themes', [])
+            # Support 'themes' as dict (state.json), array, or legacy 'theme' (single object)
+            themes_raw = render_data.get('themes', {})
+            if isinstance(themes_raw, dict):
+                # themes is an object with named keys - convert to list
+                themes_data = list(themes_raw.values())
+            elif isinstance(themes_raw, list):
+                # themes is already an array
+                themes_data = themes_raw
+            else:
+                themes_data = []
+            
             if not themes_data and 'theme' in render_data:
                 themes_data = [render_data['theme']]
             
-            # Use first theme as default, slides can override
-            theme_data = themes_data[0] if themes_data else {}
+            # Get active theme if specified, otherwise use first theme
+            active_theme_id = render_data.get('active_theme_id')
+            if active_theme_id and isinstance(themes_raw, dict) and active_theme_id in themes_raw:
+                theme_data = themes_raw[active_theme_id]
+            else:
+                theme_data = themes_data[0] if themes_data else {}
             
             style_data = render_data.get('style', {})
             layout_width = width if width is not None else render_data.get('width', 1920)
@@ -947,8 +967,9 @@ def cli(
                     # Use Slidev renderer for markdown generation
                     if verbose:
                         click.echo(f"Using Slidev layout engine - converting {slides.count()} slides to Slidev format", err=True)
+                        click.echo(f"Using project style: {project}", err=True)
                     
-                    slidev_renderer = SlidevRenderer()
+                    slidev_renderer = SlidevRenderer(project=project)
                     
                     # Extract theme colors for Slidev
                     theme_data = {}

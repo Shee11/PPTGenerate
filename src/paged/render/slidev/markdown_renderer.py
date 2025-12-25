@@ -69,6 +69,7 @@ class SlidevRenderer:
     - "slidev" (default): Professional business styling with gradients and glassmorphism
     - "duolingo": Playful Duolingo-style with chunky rounded corners and bright colors
     - "cyberpunk": Futuristic neon aesthetic with glows, HUD frames, and glitch effects
+    - "business": Professional corporate style with clean lines and navy blue accents
     """
     
     # Base path for project directories (src/paged/)
@@ -81,6 +82,8 @@ class SlidevRenderer:
         "cyberpunk": "cyberpunk-project",
         "handdrawn": "handdrawn-project",
         "editorial": "editorial-project",
+        "business": "business-project",
+        "simple": "simple-project",
     }
     
     # Default project
@@ -768,6 +771,10 @@ mdc: true
             # Paragraph with markdown preserved
             return text
         
+        elif widget_type == "Type.Caption":
+            # Small caption text - render as italic
+            return f"*{text}*" if text else ""
+        
         elif widget_type == "Type.List":
             # Bullet list
             items = parameters.get("items", [])
@@ -782,6 +789,60 @@ mdc: true
             code = str(parameters.get("code", text))
             language = parameters.get("language", "")
             return f"```{language}\n{code}\n```"
+        
+        elif widget_type == "Type.Image":
+            # Image - render as markdown image
+            src = parameters.get("src", "")
+            alt = parameters.get("alt", "Image")
+            if src:
+                return f"![{alt}]({src})"
+            return ""
+        
+        elif widget_type == "Type.Metric":
+            # Metric - render as big number with label
+            value = parameters.get("value", "")
+            label = parameters.get("label", "")
+            change = parameters.get("change", "")
+            
+            result = f"## {value}"
+            if change:
+                result += f" ({change})"
+            if label:
+                result += f"\n\n**{label}**"
+            return result
+        
+        elif widget_type == "Type.BigNumber":
+            # Big number display
+            value = parameters.get("value", "")
+            label = parameters.get("label", "")
+            
+            result = f"## {value}"
+            if label:
+                result += f"\n\n**{label}**"
+            return result
+        
+        elif widget_type == "Type.Card":
+            # Card with title and content
+            title = parameters.get("title", "")
+            content = parameters.get("content", "")
+            
+            result = ""
+            if title:
+                result = f"### {title}\n\n"
+            if content:
+                result += content
+            return result
+        
+        elif widget_type == "Type.Note":
+            # Note - render as blockquote with note prefix
+            return f"> **Note:** {text}" if text else ""
+        
+        elif widget_type == "Type.Chart":
+            # Chart placeholder
+            chart_type = parameters.get("chartType", "bar")
+            title = parameters.get("title", "Chart")
+            
+            return f"📊 **{title}** ({chart_type} chart)"
         
         else:
             # Fallback

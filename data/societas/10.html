@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Future Vision: Spoken Intent to Immediate Output</title>
+    <link rel="stylesheet" href="/fonts/Arvo/index.css">
+    <link rel="stylesheet" href="/fonts/Inter/index.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .slide-container {
+            height: 100vh;
+            width: 100%;
+            background: #1a1a2e;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .slide-header {
+            text-align: center;
+            padding: 1rem 3rem 0.5rem;
+        }
+
+        .slide-title {
+            font-family: 'Arvo', serif;
+            font-weight: 700;
+            font-size: calc(2.6rem * 0.7);
+            color: #f0f0f8;
+            text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.4);
+            margin: 0;
+        }
+
+        .slide-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem 3rem;
+            overflow: hidden;
+        }
+
+        .vision-statement {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            max-width: 75vw;
+        }
+
+        .vision-title {
+            font-family: 'Arvo', serif;
+            font-weight: 700;
+            font-size: calc(2.6rem * 0.6);
+            color: #e8e8f0;
+            margin-bottom: 0.75rem;
+            text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.4);
+        }
+
+        .vision-text {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.1rem;
+            color: #d0d0e0;
+            line-height: 1.5;
+            font-style: italic;
+        }
+
+        .key-takeaways {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            width: 100%;
+            max-width: 70vw;
+            margin-bottom: 1.5rem;
+        }
+
+        .takeaway-card {
+            background: rgba(232, 232, 240, 0.05);
+            border-radius: 0.75rem;
+            padding: 1.2rem;
+            border: 1px solid rgba(232, 232, 240, 0.1);
+            text-align: center;
+        }
+
+        .takeaway-icon {
+            font-size: 2rem;
+            color: #e8e8f0;
+            margin-bottom: 0.75rem;
+        }
+
+        .takeaway-title {
+            font-family: 'Arvo', serif;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #f0f0f8;
+            margin-bottom: 0.5rem;
+        }
+
+        .takeaway-text {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            color: #d0d0e0;
+            line-height: 1.4;
+        }
+
+        .call-to-action {
+            text-align: center;
+            max-width: 65vw;
+        }
+
+        .cta-text {
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            color: #b8b8d0;
+            line-height: 1.5;
+            margin-bottom: 0.75rem;
+        }
+
+        .cta-highlight {
+            color: #e8e8f0;
+            font-weight: 600;
+        }
+
+        .future-note {
+            font-style: italic;
+            color: #b8b8d0;
+            padding: 0.75rem;
+            background: rgba(232, 232, 240, 0.05);
+            border-radius: 0.5rem;
+            border-left: 3px solid #e8e8f0;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .future-note strong {
+            color: #f0f0f8;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="slide-header">
+            <h1 class="slide-title">The Future Vision: Spoken Intent to Immediate Output</h1>
+        </div>
+        
+        <div class="slide-content">
+            <div class="vision-statement">
+                <h2 class="vision-title">Transforming Every Meeting</h2>
+                <div class="vision-text">
+                    "Turning every meeting from a passive discussion into an active, real-time generator of actionable, high-quality outputs."
+                </div>
+            </div>
+
+            <div class="key-takeaways">
+                <div class="takeaway-card">
+                    <i class="fas fa-magic takeaway-icon"></i>
+                    <div class="takeaway-title">Instant Transformation</div>
+                    <div class="takeaway-text">
+                        Spoken intent becomes immediate output through AI agents that understand context and generate structured deliverables in real-time.
+                    </div>
+                </div>
+                <div class="takeaway-card">
+                    <i class="fas fa-rocket takeaway-icon"></i>
+                    <div class="takeaway-title">Productivity Revolution</div>
+                    <div class="takeaway-text">
+                        Eliminate the gap between discussion and action by automating the translation of conversations into tool-ready formats.
+                    </div>
+                </div>
+                <div class="takeaway-card">
+                    <i class="fas fa-sync-alt takeaway-icon"></i>
+                    <div class="takeaway-title">Real-Time Execution</div>
+                    <div class="takeaway-text">
+                        ADO items update automatically, presentations generate as teams speak, and decisions flow directly into execution systems.
+                    </div>
+                </div>
+                <div class="takeaway-card">
+                    <i class="fas fa-trophy takeaway-icon"></i>
+                    <div class="takeaway-title">Competitive Advantage</div>
+                    <div class="takeaway-text">
+                        Organizations embracing AI-powered meetings gain significant speed and accuracy advantages in today's fast-paced business environment.
+                    </div>
+                </div>
+            </div>
+
+            <div class="call-to-action">
+                <div class="cta-text">
+                    The future of meeting productivity is about <span class="cta-highlight">fundamentally changing how we think about collaboration</span> and turning every conversation into immediate value creation.
+                </div>
+                
+                <div class="future-note">
+                    <strong>The Vision Realized:</strong> When spoken intent becomes immediate output, meetings transform from time-consuming obligations into powerful engines of organizational progress.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // GSAP animations
+        gsap.to('.slide-title', {
+            y: 0,
+            scale: 1,
+            duration: 0.8,
+            ease: 'power2.out'
+        });
+
+        gsap.to('.vision-statement', {
+            y: 0,
+            scale: 1,
+            duration: 1,
+            delay: 0.3,
+            ease: 'power2.out'
+        });
+
+        gsap.to('.takeaway-card', {
+            y: 0,
+            scale: 1,
+            duration: 0.8,
+            delay: 0.5,
+            stagger: 0.1,
+            ease: 'power2.out'
+        });
+
+        gsap.to('.call-to-action', {
+            y: 0,
+            scale: 1,
+            duration: 0.8,
+            delay: 0.8,
+            ease: 'power2.out'
+        });
+    </script>
+</body>
+</html>

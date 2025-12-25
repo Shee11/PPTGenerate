@@ -1,0 +1,78 @@
+/*
+ * Business Project - Global Styles
+ * Professional corporate presentation styling
+ */
+
+/* Override Slidev's default container background */
+:root {
+  --slidev-slide-container-background: transparent;
+}
+
+.slidev-slide-container {
+  background-color: transparent !important;
+  background: transparent !important;
+}
+
+/* Disable ALL animations and transitions globally */
+*, *::before, *::after {
+  animation: none !important;
+  animation-duration: 0s !important;
+  animation-delay: 0s !important;
+  transition: none !important;
+  transition-duration: 0s !important;
+  transition-delay: 0s !important;
+}
+
+/* Disable Slidev page transitions */
+.slidev-page {
+  transition: none !important;
+}
+
+.slidev-vclick-target {
+  transition: none !important;
+}
+
+/* Business Typography */
+.business-layout {
+  font-family: var(--font-body);
+  line-height: 1.6;
+}
+
+.business-layout h1,
+.business-layout h2,
+.business-layout h3,
+.business-layout h4 {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+/* Business Card Styling */
+.business-card {
+  background: var(--theme-bg-surface);
+  border: 1px solid var(--theme-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Professional list styling */
+.business-layout ul,
+.business-layout ol {
+  padding-left: 1.5rem;
+}
+
+.business-layout li {
+  margin-bottom: 0.5rem;
+  position: relative;
+}
+
+.business-layout ul li::marker {
+  color: var(--theme-primary);
+}
+
+/* Business accent bar */
+.accent-bar {
+  height: 4px;
+  background: linear-gradient(90deg, var(--theme-primary), var(--theme-accent));
+  border-radius: 2px;
+}

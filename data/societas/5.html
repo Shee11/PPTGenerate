@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Root Cause: Human Processing Limitations</title>
+    <link rel="stylesheet" href="/fonts/Arvo/index.css">
+    <link rel="stylesheet" href="/fonts/Inter/index.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .slide-container {
+            height: 100vh;
+            width: 100%;
+            background: #1a1a2e;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .slide-header {
+            text-align: center;
+            padding: 2rem 3rem 1rem;
+        }
+
+        .slide-title {
+            font-family: 'Arvo', serif;
+            font-weight: 700;
+            font-size: 2.6rem;
+            color: #f0f0f8;
+            text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.4);
+            margin: 0;
+        }
+
+        .slide-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2.5rem 3rem;
+            overflow: hidden;
+        }
+
+        .big-number-container {
+            text-align: center;
+            max-width: 80vw;
+        }
+
+        .big-number {
+            font-family: 'Arvo', serif;
+            font-weight: 700;
+            font-size: 8rem;
+            color: #e8e8f0;
+            text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.4);
+            margin-bottom: 1rem;
+            line-height: 1;
+        }
+
+        .big-number-label {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.8rem;
+            color: #b8b8d0;
+            margin-bottom: 2rem;
+            font-weight: 500;
+        }
+
+        .supporting-text {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.2rem;
+            color: #d0d0e0;
+            line-height: 1.6;
+            max-width: 70vw;
+            text-align: center;
+        }
+
+        .highlight-limitation {
+            color: #e8e8f0;
+            font-weight: 600;
+        }
+
+        .insight-note {
+            font-style: italic;
+            color: #b8b8d0;
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background: rgba(232, 232, 240, 0.05);
+            border-radius: 0.5rem;
+            border-left: 3px solid #e8e8f0;
+            max-width: 65vw;
+        }
+
+        .insight-note strong {
+            color: #f0f0f8;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="slide-header">
+            <h1 class="slide-title">The Root Cause: Human Processing Limitations</h1>
+        </div>
+        
+        <div class="slide-content">
+            <div class="big-number-container">
+                <div class="big-number">2</div>
+                <div class="big-number-label">Simultaneous Complex Tasks</div>
+                
+                <div class="supporting-text">
+                    <span class="highlight-limitation">Human participants cannot simultaneously process live discussions and operate software</span> quickly enough to generate structured, tool-ready outputs in real time. This fundamental cognitive limitation creates the productivity gap between meeting discussions and actionable deliverables.
+                </div>
+
+                <div class="insight-note">
+                    <strong>Core Challenge:</strong> While humans excel at creative thinking and nuanced discussion, we struggle with parallel processing of conversation analysis and real-time software operation—exactly where AI demonstrates superior capability.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // GSAP animations
+        gsap.to('.slide-title', {
+            y: 0,
+            scale: 1,
+            duration: 0.8,
+            ease: 'power2.out'
+        });
+
+        gsap.to('.big-number', {
+            scale: 1,
+            duration: 1.2,
+            delay: 0.3,
+            ease: 'power2.out'
+        });
+
+        gsap.to('.big-number-label', {
+            y: 0,
+            scale: 1,
+            duration: 0.8,
+            delay: 0.5,
+            ease: 'power2.out'
+        });
+
+        gsap.to('.supporting-text', {
+            y: 0,
+            scale: 1,
+            duration: 0.8,
+            delay: 0.7,
+            ease: 'power2.out'
+        });
+    </script>
+</body>
+</html>

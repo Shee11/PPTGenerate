@@ -12,9 +12,9 @@ mdc: true
 
 <style>
 :root {
-  --slidev-theme-primary: #2563eb;
-  --slidev-theme-background: #0f172a;
-  --slidev-theme-text: #ffffff;
+  --slidev-theme-primary: #e8e8f0;
+  --slidev-theme-background: #1a1a2e;
+  --slidev-theme-text: #d0d0e0;
 }
 
 /* Apply theme colors */
@@ -64,274 +64,295 @@ a {
 
 
 ---
-layout: spotlight
-theme: elegant_minimal_white_v1
-vibe: none
+layout: cover
+theme: societas_dark
+background: '#1a1a2e'
+vibe: professional
 ---
 
 ::title::
 
-Building a Career
-When AI Won’t Sit Still
+The Evolution of Meetings: From Text to AI-Powered Productivity
 
 ::subtitle::
 
-14+ years in AI • 3 major waves • 1 recurring question: how do you stay relevant?
+Transforming spoken intent into immediate, actionable outputs through intelligent automation
 
-::description::
+::footer::
 
-A personal journey through vision, deep learning, and LLMs—and what actually compounds.
-
----
-layout: center
-theme: elegant_minimal_white_v1
-vibe: none
----
-
-“What if AI takes my job?”
+*Meeting Productivity Transformation • December 24, 2025*
 
 ---
-layout: comparison
-theme: elegant_minimal_white_v1
-vibe: none
+layout: split
+theme: societas_dark
+background: '#1a1a2e'
+vibe: professional
 ---
 
 ::title::
 
-## Roles Don’t Disappear.
-They Mutate.
-
-::beforeLabel::
-
-#### Before
-
-::before::
-
-- Dedicated test engineers → developers now own testing.
-- “Pure” coders → expected to understand CI, cloud, telemetry.
-- Specialist roles shrink when tools get better.
-
-::afterLabel::
-
-#### Now (AI Era)
-
-::after::
-
-- Engineers are asked to integrate AI, not compete with it.
-- The valuable skill: evolving, staying curious, becoming a beginner again.
-- Those who adapt design how AI is used by everyone else.
-
----
-layout: timeline
-theme: elegant_minimal_white_v1
-vibe: none
----
-
-::title::
-
-## Three Waves I Had to Survive
-
-::step1::
-
-2011–2015 · Classic Vision
-Hand‑crafted vision algorithms at Microsoft.
-Helped build and tune the first Face API.
-
-::step2::
-
-2015–2020 · Deep Learning Everywhere
-Deep neural nets take over vision.
-Shift to edge and cross‑platform inference, even video generation.
-
-::step3::
-
-2021–Now · Product + AI in Teams
-Vision pipelines inside Microsoft Teams.
-Closer to real users, latency, reliability, and messy constraints.
-
----
-layout: comparison
-theme: elegant_minimal_white_v1
-vibe: none
----
-
-::title::
-
-## How AI Work Itself Has Changed
-
-::beforeLabel::
-
-#### Traditional AI Pipeline
-
-::before::
-
-- Months of data collection and labeling.
-- Model architecture debates, endless training runs.
-- Separate teams: data, model, infra, product.
-- Rebuilding infra and evaluation for every project.
-- Slow, expensive, hard to iterate with users.
-
-::afterLabel::
-
-#### LLM‑Era Workflow
-
-::after::
-
-- Start from powerful base models as a shared foundation.
-- Compose via prompts, tools, and lightweight orchestration.
-- Optimize for user experience and iteration speed, not just accuracy.
-- Reuse infrastructure and evaluation across many features.
-
----
-layout: smart-grid
-theme: elegant_minimal_white_v1
-cols: 3
-vibe: none
----
-
-::header::
-
-## In the LLM Era, What Actually Moves the Needle?
-
-::col1::
-
-**1. Treat Models as a Unified Brain**
-Large models are a shared knowledge base with a reasoning interface.
-Your job: ask better questions, wire better tools.
-
-::col2::
-
-**2. Design Workflows, Not Just Models**
-Prompt strategy, agent architectures, and feedback loops
-often beat another 0.2% accuracy gain.
-
-::col3::
-
-**3. Build Systems, Not Benchmarks**
-Telemetry + adaptive loops + more useful features
-> squeezing the last fraction of a percent from a single model.
-
----
-layout: hero-split
-theme: elegant_minimal_white_v1
-ratio: 50-50
-vibe: none
----
+# The Ancient Foundation: Text-Only Era
 
 ::left::
 
-## When Optimization Makes Things Worse
+![The Evolution of Virtual Meetings](https://media.licdn.com/dms/image/D5612AQG4sJMK1MRm6g/article-cover_image-shrink_720_1280/0/1692996139014)
 
 ::right::
 
-I once spent days hand‑tuning a hot C++ function with intrinsics.
+- Written language was the sole medium for recording meeting outcomes.
+- Text-based documentation represented the only possible output format.
+- Human civilization relied on verbal discussion followed by manual transcription.
+- No multimedia formats existed beyond written words and basic drawings.
 
-The benchmark looked great.
-The binary got bigger.
-The product… didn’t feel faster.
+::note::
 
-Why?
-The real bug: that function was called **38 times per second**.
-It should have been called **once per lifecycle**.
-
-Lesson: if you scope the problem wrong, even brilliant optimization
-just decorates the mistake.
+Historical Context: The foundation of all meeting practices was established when text was humanity's primary tool for preserving knowledge.
 
 ---
-layout: info-boxes
-theme: elegant_minimal_white_v1
-boxes: 3
-vibe: none
+layout: stacked
+theme: societas_dark
+background: '#1a1a2e'
+vibe: professional
 ---
 
 ::title::
 
-## Skills That Survive Every AI Wave
+# Modern Workplace Reality: Rich Media Ecosystem
 
-::box1_title::
+::content::
 
-#### 1. Precise Problem Definition
+- PowerPoint presentations remain the standard for executive communication.
+- Project management tools like ADO and Jira track complex workflows.
+- Digital whiteboards enable real-time brainstorming across distributed teams.
+- Analytics dashboards provide data-driven insights requiring immediate action.
 
-::box1_content::
+::stat1::
 
-Broaden the question beyond today’s UI or API.
-Ask: “If this were magically solved, what would users be able to do?”
-LLMs are a chance to redefine the problem space, not just patch old flows.
+## 85%
 
-::box2_title::
+**of employees prefer remote or hybrid work models**
 
-#### 2. Evaluation & Iteration
+::stat2::
 
-::box2_content::
+## 62%
 
-Design prompts that work for most cases.
-Then systematically hunt failures and fold constraints back in.
-Build feedback loops so the system keeps teaching you where it breaks.
+**of organizations increased digital workplace investment in 2024**
 
-::box3_title::
+::stat3::
 
-#### 3. Cross‑Domain Composition
+## 25%
 
-::box3_content::
-
-Depth in one stack is no longer enough.
-The real leverage: combining models, tools, and domains
-into coherent systems that solve messy, real‑world problems.
+**reduction in project completion times with collaboration tools**
 
 ---
-layout: dashboard
-theme: elegant_minimal_white_v1
-vibe: none
+layout: split
+theme: societas_dark
+background: '#1a1a2e'
+vibe: professional
 ---
 
 ::title::
 
-## Your Next 10 Years Won’t Look Like Your Last 10
+# The Productivity Gap: Current Market Statistics
+
+::left::
+
+📊 **Chart** (bar chart)
+
+::right::
+
+- 4+ hours daily spent in meetings by knowledge workers.
+- Only 46% of meeting participants report being fully engaged.
+- Manual follow-up consumes additional hours converting discussions to deliverables.
+- Productivity drain from context-switching between meetings and actual work.
+
+::note::
+
+Critical Gap: The disconnect between meeting discussions and actionable outputs represents a major productivity opportunity.
+
+---
+layout: centered
+theme: societas_dark
+background: '#1a1a2e'
+vibe: professional
+---
+
+::title::
+
+# The Root Cause: Human Processing Limitations
+
+::number::
+
+## 2
+
+**Simultaneous Complex Tasks**
+
+::body::
+
+Human participants cannot simultaneously process live discussions and operate software quickly enough to generate structured, tool-ready outputs in real time. This fundamental cognitive limitation creates the productivity gap between meeting discussions and actionable deliverables.
+
+::insight::
+
+Core Challenge: While humans excel at creative thinking and nuanced discussion, we struggle with parallel processing—exactly where AI demonstrates superior capability.
+
+---
+layout: split
+theme: societas_dark
+background: '#1a1a2e'
+vibe: professional
+---
+
+::title::
+
+# AI Excellence: Where Technology Thrives
+
+::left::
+
+- Real-time conversation understanding enables AI to process discussions as they unfold.
+- Simultaneous software operation allows AI to generate outputs while maintaining context.
+- Instant artifact creation transforms spoken intent into presentation-ready formats.
+- Continuous adaptation ensures AI learns from meeting patterns to improve quality.
+
+::right::
+
+![AI Agents vs. Traditional Automation](https://writesonic.com/wp-content/uploads/AI-Agents-scaled.jpg)
+
+::note::
+
+Technology Advantage: AI excels precisely where humans struggle—performing complex cognitive tasks and technical operations simultaneously.
+
+---
+layout: split
+theme: societas_dark
+background: '#1a1a2e'
+vibe: professional
+---
+
+::title::
+
+# Market Growth: AI Meeting Tools Explosion
+
+::left::
+
+- $6.5 billion by 2024 AI meeting tools market with 10.2% CAGR through 2033.
+- $402.6B to $561.1B global collaboration market by 2028 at 6.9% CAGR.
+- $2.3B to $5.7B Europe market growth driven by data security focus.
+- Half of meeting planners anticipate significant AI impact within five years.
+
+::right::
+
+📊 **AI Meeting Tools Market Growth ($B)** (line chart)
+
+::note::
+
+Investment Reality: 80% of organizations plan to invest in AI meeting tools by 2025.
+
+---
+layout: split
+theme: societas_dark
+background: '#1a1a2e'
+vibe: professional
+---
+
+::title::
+
+# Real-Time Transformation Examples
+
+::leftHeader::
+
+# Scrum Meetings
+
+::left::
+
+- Automatic ADO updates as team discusses sprint progress in real-time.
+- Burndown chart generation based on velocity discussions.
+- Blocker identification and automatic ticket creation.
+- Sprint planning automation with capacity allocation.
+
+::rightHeader::
+
+# Product Discussions
+
+::right::
+
+- Live slide deck creation as features are discussed.
+- Specification documentation auto-generated from conversations.
+- Roadmap visualization created based on priority discussions.
+- Stakeholder summaries tailored for different audiences.
+
+---
+layout: grid
+theme: societas_dark
+background: '#1a1a2e'
+vibe: professional
+---
+
+::title::
+
+# Implementation Benefits: Productivity Statistics
 
 ::metric1::
 
-## 3
+## 2-3
 
-**Major AI waves in my career**
+**Hours Saved Weekly**
 
 ::metric2::
 
-## ≈5
+## 38%
 
-**Years between waves**
+**Faster Follow-up**
 
 ::metric3::
 
-## ∞
+## 33%
 
-**Times you’ll need to be a beginner again**
+**Decision Speed Boost**
 
 ::metric4::
 
-## 1
+## 107%
 
-**Career you get to build**
+**AI Adoption Growth**
+
+::note::
+
+Transformation Impact: Organizations implementing AI-powered meeting automation report higher accuracy and improved team focus.
 
 ---
-layout: quote-hero
-theme: elegant_minimal_white_v1
-vibe: none
+layout: stacked
+theme: societas_dark
+background: '#1a1a2e'
+vibe: professional
 ---
 
-::default::
+::title::
 
-> Don’t compete with the model.
-Design the problems it gets to solve.
+# The Future Vision: Spoken Intent to Immediate Output
 
-::author::
+::quote::
 
-Practical next steps:
-• Use AI on real tasks you care about—let need drive exploration.
-• Turn each good Q&A with a model into durable understanding.
-• Keep a single source of truth (a spec, an idea) and let AI translate it into code, docs, and slides.
+> Turning every meeting from a passive discussion into an active, real-time generator of actionable, high-quality outputs.
 
-Stay curious. Keep evolving. Be willing to start from zero—again and again.
+::card1::
 
-::context::
+### Instant Transformation
 
-Elegant minimalist theme · White background · Black text
+
+
+::card2::
+
+### Productivity Revolution
+
+
+
+::card3::
+
+### Real-Time Execution
+
+
+
+::card4::
+
+### Competitive Advantage
+
