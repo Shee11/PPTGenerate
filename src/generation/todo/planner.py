@@ -203,6 +203,7 @@ def slice_state_for_planner(state: "PipelineState") -> Dict[str, Any]:
                 "slide_number": i + 1,
                 "layout": layout,
                 "title": title[:50] if title else "",  # Truncate long titles
+                "state": slide.get("state", "active"),  # draft or active
             })
         context["slides"] = {
             "count": len(state.slides),
@@ -241,6 +242,11 @@ You have access to these tools:
 
 {tool_descriptions}
 
+## State Understanding:
+- slides.items[].state: "draft" = needs layout regeneration, "active" = fully generated
+- If slides have state="draft", they need content tool to regenerate layouts
+- The content tool ONLY processes slides with state="draft"
+
 ## Rules:
 1. Only include tools that are needed for the user's request
 2. Respect tool dependencies - read each tool's "requires" field
@@ -248,6 +254,8 @@ You have access to these tools:
 4. If slides already exist and user wants refinement, only run content + export
 5. Always include export at the end if content changes
 6. Read each tool's description and examples carefully
+7. **CRITICAL**: For LAYOUT fixes (overflow, cutoff, empty slot, whitespace issues), ONLY run content + export. Do NOT run story - story changes atom assignments which makes layout worse. Layout issues are fixed by regenerating layouts, not by changing content.
+8. **CRITICAL**: If slides have state="draft" and instruction mentions layout/overflow/cutoff fixes, run content → export ONLY.
 
 ## Output Format:
 Return a JSON array of todo items. Each item has:
@@ -261,6 +269,7 @@ Return a JSON array of todo items. Each item has:
 - content: Generates layouts and widgets for draft slides (depends on story)
 - When creating slides from scratch: atoms → story → content → export
 - When refining existing slides: story (to update draft) → content → export
+- **For LAYOUT issues (overflow/cutoff/empty/whitespace)**: content → export ONLY (no story!)
 
 Refer to each tool's examples for proper JSON format.
 

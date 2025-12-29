@@ -127,6 +127,20 @@ Does NOT trigger on:
         if "data" in instruction_lower or "chart" in instruction_lower:
             style_rules.append("Include data visualizations where appropriate")
         
+        # Audience-aware content rules
+        audience = self._detect_audience(instruction_lower)
+        if audience:
+            style_rules.append(f"Target audience: {audience}")
+            if audience in ("executive", "leadership", "c-suite", "board"):
+                style_rules.append("Use business-impact quotes, avoid technical jargon")
+                style_rules.append("Focus on ROI, risk, and strategic value")
+            elif audience in ("technical", "engineering", "developer"):
+                style_rules.append("Include technical details and architecture")
+                style_rules.append("Use domain-specific terminology")
+            elif audience in ("sales", "customer", "client"):
+                style_rules.append("Focus on customer pain points and solutions")
+                style_rules.append("Use customer success stories and testimonials")
+        
         return ConstitutionPatch(
             tone=tone,
             target_slides=target_slides,
@@ -136,3 +150,17 @@ Does NOT trigger on:
     def apply(self, state: "PipelineState", patch: ConstitutionPatch) -> None:
         state.set_constitution(patch)
         self._log(f"Applied: {len(patch.style_rules)} rules, tone={patch.tone}")
+    
+    def _detect_audience(self, instruction: str) -> Optional[str]:
+        """Detect target audience from instruction."""
+        audience_keywords = {
+            "executive": ["executive", "exec", "leadership", "c-suite", "ceo", "cfo", "cto", "cio", "vp", "director", "board"],
+            "technical": ["technical", "engineering", "developer", "engineer", "architect", "devops", "sre"],
+            "sales": ["sales", "customer", "client", "prospect", "account"],
+            "general": ["team", "all-hands", "company", "stakeholder"],
+        }
+        for audience, keywords in audience_keywords.items():
+            for kw in keywords:
+                if kw in instruction:
+                    return audience
+        return None

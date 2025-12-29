@@ -49,9 +49,9 @@ def test_prompt_integration():
     
     os.environ['LAYOUT_ENGINE'] = 'slidev'
     
-    from src.generation.content.prompts import _build_slide_generation_system_prompt
+    from src.generation.content.prompts import _build_system_prompt
     
-    prompt = _build_slide_generation_system_prompt()
+    prompt = _build_system_prompt()
     
     print(f"Prompt length: {len(prompt)} chars")
     print(f"Contains 'LAYOUT-WIDGET COMPATIBILITY': {'LAYOUT-WIDGET COMPATIBILITY' in prompt}")

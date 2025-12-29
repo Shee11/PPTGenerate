@@ -53,5 +53,13 @@ Thumbs.db
 debug/
 .cache/
 .env
-node_modules
+.env*
+node_modules/
 output/
+
+# Node.js / TypeScript (for React MDX renderer)
+dist/
+*.tsbuildinfo
+.next/
+out/
+slidev_build/

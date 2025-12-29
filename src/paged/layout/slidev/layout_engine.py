@@ -40,8 +40,8 @@ class SlidevLayoutEngine:
     """
     
     @classmethod
-    def get_layout_documentation(cls) -> str:
-        """Provide Slidev layout documentation for content generation LLMs.
+    def get_layout_prompt(cls) -> str:
+        """Provide Slidev layout reference for LLM prompts.
         
         Returns:
             Formatted string describing Slidev layouts, slots, widgets, and themes.

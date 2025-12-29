@@ -159,11 +159,13 @@ class TodoExecutor:
         except Exception as e:
             todo.mark_failed(str(e))
             self._persist_state(state)
-            logger.error(f"✗ {todo.type.value}: {todo.id} - {e}")
+            logger.error(f"X {todo.type.value}: {todo.id} - {e}")
             raise
         
         return todo
     
     def _log(self, msg: str):
         if self.verbose:
-            print(msg)
+            # Use ASCII-safe characters for Windows console
+            safe_msg = msg.replace('\u25b6', '>').replace('\u2713', '+').replace('\u2717', 'X')
+            print(safe_msg, flush=True)

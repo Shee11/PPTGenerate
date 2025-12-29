@@ -88,8 +88,11 @@ def generate_layout(
     
     print(f"⚙ Generating complete presentation via LLM...")
     
+    # Map layout_engine to project type for prompt selection
+    project = "react-mdx" if layout_engine in ("react", "react-mdx") else "slidev"
+    
     # Single-step generation: create complete slides with layout + widgets
-    patch_ops = _generate_slides(atoms, user_instruction, config, intent_guidance, themes)
+    patch_ops = _generate_slides(atoms, user_instruction, config, intent_guidance, themes, project=project)
     
     # Ensure it's a list (LLM might return single operation as dict)
     if isinstance(patch_ops, dict):
@@ -136,20 +139,20 @@ def refine_slides(
     themes: List = None
 ) -> Slides:
     """
-    Refine existing slides based on user instruction and constitution rules.
+    Refine existing slides based on user instruction using Patch format.
     
     Instead of regenerating all slides from scratch, this function:
     1. Analyzes what needs to change based on instruction
-    2. Generates targeted patch operations (replace, remove)
-    3. Applies only the necessary changes
+    2. Generates <Patch> elements targeting specific widget IDs
+    3. Applies patches to modify MDX content in-place
     
     This is more efficient for instructions like:
-    - "remove speaker bio" → finds and removes bio content
-    - "make titles shorter" → replaces only titles
-    - "add call to action to last slide" → modifies one slide
+    - "update the revenue stat" → patches one BigNum element
+    - "change the chart data" → patches one Chart element
+    - "make titles shorter" → patches Heading elements
     
     Args:
-        existing_slides: Current slides as list of dicts
+        existing_slides: Current slides as list of dicts (with mdx field)
         atoms: AtomCollection for reference
         user_instruction: User's refinement instruction
         config: Generation configuration
@@ -157,22 +160,14 @@ def refine_slides(
         themes: List of available theme dicts
         
     Returns:
-        Refined Slides collection
+        Refined Slides collection with patches applied
     """
+    from src.paged.layout.react.mdx_parser import parse_patches, apply_patches
     from src.generation.content.prompts import render_slide_refinement_prompt
-    
-    # Initialize slides collection with existing slides
-    slides = Slides(id="slides")
-    
-    # Convert existing slides to patch operations and apply
-    for slide_data in existing_slides:
-        add_op = {"add": slide_data}
-        patch = Patch.from_json_str(json.dumps([add_op]))
-        slides.patch(patch)
     
     print(f"⚙ Refining {len(existing_slides)} slides based on instruction...")
     
-    # Generate refinement patches
+    # Generate refinement prompt with current MDX
     refinement_prompt = render_slide_refinement_prompt(
         existing_slides=existing_slides,
         atoms=atoms,
@@ -181,7 +176,7 @@ def refine_slides(
         themes=themes
     )
     
-    # Call LLM for refinement
+    # Call LLM for patch generation
     response = call_llm(
         system_prompt=_get_refinement_system_prompt(),
         user_prompt=refinement_prompt,
@@ -190,51 +185,54 @@ def refine_slides(
         max_tokens=config.max_tokens,
     )
     
-    # Parse and apply refinement patches
-    try:
-        patch_ops = json.loads(response)
-        if isinstance(patch_ops, dict):
-            patch_ops = [patch_ops]
-            
-        if patch_ops:
-            patch = Patch.from_json_str(json.dumps(patch_ops))
-            slides.patch(patch)
-            print(f"✓ Applied {len(patch_ops)} refinement operations")
-        else:
-            print("✓ No changes needed")
-            
-    except json.JSONDecodeError as e:
-        print(f"  ✗ JSON Parse Error in refinement: {e}")
-        print(f"    Response: {response[:500]}...")
-        raise
+    # Parse <Patch> elements from response
+    patches = parse_patches(response)
+    
+    if patches:
+        # Apply patches to slide MDX content
+        updated_slides = apply_patches(existing_slides, patches)
+        print(f"✓ Applied {len(patches)} patch operations")
+    else:
+        updated_slides = existing_slides
+        print("✓ No patches needed")
+    
+    # Convert to Slides collection
+    slides = Slides(id="slides")
+    for slide_data in updated_slides:
+        add_op = {"add": slide_data}
+        patch = Patch.from_json_str(json.dumps([add_op]))
+        slides.patch(patch)
     
     return slides
 
 
 def _get_refinement_system_prompt() -> str:
-    """Get system prompt for slide refinement."""
-    return """You are a presentation refinement assistant. Your job is to make targeted changes to existing slides based on user instructions and content rules.
+    """Get system prompt for slide refinement using Patch format."""
+    return """You are a presentation refinement assistant. Make targeted changes to MDX slides using <Patch> elements.
 
-OUTPUT RULES:
-1. Return ONLY a JSON array of patch operations
-2. Use "replace" to modify existing slides (keep the same id)
-3. Use "remove" to delete slides ({"remove": {"id": "slide_xxx"}})
-4. Only include operations for slides that actually need to change
-5. If no changes are needed, return an empty array: []
+OUTPUT FORMAT:
+Output <Patch> elements that target specific widget IDs:
 
-PATCH OPERATION EXAMPLES:
+```mdx
+<Patch id="stat_001">
+  <BigNum value="95%" label="Updated Stat" trend="+10%"/>
+</Patch>
 
-To modify a slide's content:
-{"replace": {"id": "slide_001", "rank": 1, "state": "active", "layout": "smart-grid", "widgets": {...}, "parameters": {...}}}
+<Patch id="list_001">
+  <SmartList items={["New item 1", "New item 2", "New item 3"]}/>
+</Patch>
+```
 
-To remove a slide:
-{"remove": {"id": "slide_002"}}
+RULES:
+1. Each <Patch> targets an element by its id attribute
+2. The patch content replaces the entire original element
+3. Only output patches for elements that need to change
+4. If no changes needed, output nothing
 
 IMPORTANT:
-- Keep slide IDs the same when replacing
-- Update rank numbers if slides are removed
-- Only modify what needs to change based on the instruction
-- Preserve layout and formatting unless explicitly asked to change"""
+- Match the original element's component type unless changing it intentionally
+- Preserve element IDs in the replacement content
+- Keep the same structure/props unless the change requires modification"""
 
 
 def _generate_slides(
@@ -242,7 +240,8 @@ def _generate_slides(
     user_instruction: str,
     config: GenerationConfig,
     intent_guidance: str = "",
-    themes: List = None
+    themes: List = None,
+    project: str = "slidev"
 ) -> Any:
     """
     Generate complete slides in a single LLM call.
@@ -250,7 +249,7 @@ def _generate_slides(
     Creates slides with:
     - Story field describing narrative purpose
     - Layout selection for visual variety
-    - Widget population with brevity
+    - MDX content (react-mdx) or widget definitions (slidev)
     - State set to 'active'
     
     Args:
@@ -259,16 +258,19 @@ def _generate_slides(
         config: Generation configuration
         intent_guidance: Optional guidance from intent detection
         themes: List of available theme dicts (with 'id' field)
+        project: Project type for prompts ('react-mdx')
         
     Returns:
         List of patch operations to create complete slides
         
     Raises:
-        json.JSONDecodeError: If LLM output is not valid JSON
+        ValueError: If MDX parsing fails
         Exception: If LLM API call fails
     """
-    # Get configuration for slide generation
-    slide_config = get_slide_generation_config()
+    from src.paged.layout.react.mdx_parser import parse_slides_from_mdx
+    
+    # Get configuration for slide generation with correct project type
+    slide_config = get_slide_generation_config(project=project)
     
     # Render prompts
     system_prompt = slide_config.system_prompt
@@ -284,16 +286,27 @@ def _generate_slides(
         max_reasoning_tokens=slide_config.max_reasoning_tokens
     )
     
-    # Parse JSON Patch with better error reporting
-    try:
-        patch_operations = json.loads(response)
-    except json.JSONDecodeError as e:
-        print(f"  ✗ JSON Parse Error:")
-        print(f"    Error: {e}")
-        print(f"    LLM Response (first 500 chars):")
-        print(f"    {response[:500]}")
-        print(f"    ...")
-        raise
+    # Parse MDX output
+    parsed_slides = parse_slides_from_mdx(response)
+    
+    if not parsed_slides:
+        print(f"  ⚠ No slides parsed from MDX response")
+        print(f"    Response (first 500 chars): {response[:500]}")
+        return []
+    
+    # Convert ParsedSlide objects to patch operations
+    patch_operations = []
+    for slide in parsed_slides:
+        patch_operations.append({
+            "add": {
+                "id": slide.id,
+                "rank": slide.rank,
+                "state": "active",
+                "story": slide.story,
+                "atoms": slide.atoms,
+                "mdx": slide.mdx,
+            }
+        })
     
     return patch_operations
 

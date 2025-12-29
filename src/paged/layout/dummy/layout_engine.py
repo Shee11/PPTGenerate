@@ -102,14 +102,11 @@ class LayoutEngine:
     }
 
     @classmethod
-    def get_layout_documentation(cls) -> str:
-        """Provide complete layout system documentation for content generation.
-        
-        Returns formatted documentation about layout strategies, widget types,
-        and preset attributes - everything needed for content generation.
+    def get_layout_prompt(cls) -> str:
+        """Provide layout reference for LLM content generation prompts.
         
         Returns:
-            Formatted string with complete layout system documentation
+            Formatted string with layout system reference.
         """
         # Import here to avoid circular dependency
         from src.common.asset_manager import AssetManager

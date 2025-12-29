@@ -1,7 +1,10 @@
 /*
- * Simple Project - Global Styles
+ * Global Styles for Slidev Presentations
+ * This file is automatically loaded by Slidev
  */
 
+/* Override Slidev's default dark container background */
+/* The inline style uses --slidev-slide-container-background with fallback to black */
 :root {
   --slidev-slide-container-background: transparent;
 }
@@ -11,38 +14,26 @@
   background: transparent !important;
 }
 
-/* Disable animations for static export */
+/* Disable ALL animations and transitions globally */
 *, *::before, *::after {
   animation: none !important;
   animation-duration: 0s !important;
+  animation-delay: 0s !important;
   transition: none !important;
   transition-duration: 0s !important;
+  transition-delay: 0s !important;
 }
 
-/* Base typography */
-h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-heading);
-  font-weight: 600;
-  line-height: 1.2;
-  margin: 0;
+/* Disable Slidev page transitions */
+.slidev-page {
+  transition: none !important;
 }
 
-p, li {
-  font-family: var(--font-body);
-  line-height: 1.6;
-  margin: 0;
+.slidev-vclick-target {
+  transition: none !important;
 }
 
-/* Lists */
-ul, ol {
-  margin: 0;
-  padding-left: 1.5em;
-}
-
-li {
-  margin-bottom: 0.5em;
-}
-
-li:last-child {
-  margin-bottom: 0;
+/* Disable any keyframe animations */
+@keyframes none {
+  from, to { opacity: 1; }
 }

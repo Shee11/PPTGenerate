@@ -1,0 +1,200 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://example.com/state-schema.json",
+  "title": "Presentation State",
+  "description": "Schema for state.json used by React MDX renderer",
+  "type": "object",
+  "required": ["meta", "themes", "active_theme_id", "slides"],
+  "properties": {
+    "meta": {
+      "type": "object",
+      "required": ["id"],
+      "properties": {
+        "id": { "type": "string" },
+        "created_at": { "type": "string", "format": "date-time" },
+        "updated_at": { "type": "string", "format": "date-time" },
+        "version": { "type": "string" }
+      }
+    },
+    "source": {
+      "type": "object",
+      "properties": {
+        "path": { "type": "string" },
+        "content_hash": { "type": "string" },
+        "content_type": { "type": "string" }
+      }
+    },
+    "constitution": {
+      "type": "object",
+      "properties": {
+        "tone": { 
+          "type": "string",
+          "enum": ["professional", "casual", "academic", "playful"]
+        },
+        "target_slides": { "type": "integer", "minimum": 1 },
+        "style_rules": { 
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "selected_theme": { "type": "string" },
+        "selected_vibe": { "$ref": "#/$defs/vibe" }
+      }
+    },
+    "themes": {
+      "type": "object",
+      "additionalProperties": { "$ref": "#/$defs/theme" }
+    },
+    "active_theme_id": { "type": "string" },
+    "project": { "type": "string" },
+    "slides": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/slide" }
+    }
+  },
+  "$defs": {
+    "vibe": {
+      "type": "string",
+      "enum": ["minimal", "clean", "balanced", "decorative", "expressive"]
+    },
+    "theme": {
+      "type": "object",
+      "required": ["id"],
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "primary_color": { "type": "string", "pattern": "^#[0-9a-fA-F]{6}$" },
+        "secondary_color": { "type": "string", "pattern": "^#[0-9a-fA-F]{6}$" },
+        "accent_color": { "type": "string", "pattern": "^#[0-9a-fA-F]{6}$" },
+        "background_color": { "type": "string", "pattern": "^#[0-9a-fA-F]{6}$" },
+        "text_color": { "type": "string", "pattern": "^#[0-9a-fA-F]{6}$" },
+        "heading_font": { "type": "string" },
+        "body_font": { "type": "string" }
+      }
+    },
+    "slide": {
+      "type": "object",
+      "required": ["id", "rank", "layout", "widgets"],
+      "properties": {
+        "id": { "type": "string" },
+        "rank": { "type": "integer", "minimum": 1 },
+        "state": { 
+          "type": "string",
+          "enum": ["active", "draft", "archived"],
+          "default": "active"
+        },
+        "story": { "type": "string" },
+        "atoms": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "density": {
+          "type": "string",
+          "enum": ["minimal", "moderate", "dense"]
+        },
+        "visual_design": { "type": "string" },
+        "layout": { "$ref": "#/$defs/layoutType" },
+        "widgets": {
+          "type": "object",
+          "additionalProperties": { "$ref": "#/$defs/widget" }
+        },
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "theme": { "type": "string" },
+            "vibe": { "$ref": "#/$defs/vibe" },
+            "background": { "type": "string" }
+          }
+        }
+      }
+    },
+    "layoutType": {
+      "type": "string",
+      "enum": [
+        "cover",
+        "split",
+        "stacked",
+        "grid",
+        "full-bleed",
+        "timeline",
+        "dashboard",
+        "quote-hero",
+        "spotlight"
+      ]
+    },
+    "widget": {
+      "type": "object",
+      "required": ["type", "parameters"],
+      "properties": {
+        "type": { "$ref": "#/$defs/widgetType" },
+        "parameters": { "$ref": "#/$defs/widgetParameters" }
+      }
+    },
+    "widgetType": {
+      "type": "string",
+      "enum": [
+        "Type.Display",
+        "Type.Heading",
+        "Type.Body",
+        "Type.Caption",
+        "Type.Note",
+        "Type.List",
+        "Type.Quote",
+        "Type.Image",
+        "Type.Metric",
+        "Type.BigNumber",
+        "Type.Chart",
+        "Type.Table"
+      ]
+    },
+    "widgetParameters": {
+      "type": "object",
+      "properties": {
+        "text": { "type": "string" },
+        "level": { "type": "integer", "minimum": 1, "maximum": 6 },
+        "items": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "ordered": { "type": "boolean" },
+        "src": { "type": "string", "format": "uri" },
+        "alt": { "type": "string" },
+        "caption": { "type": "string" },
+        "value": { "type": "string" },
+        "label": { "type": "string" },
+        "change": { "type": "number" },
+        "changeLabel": { "type": "string" },
+        "chartType": {
+          "type": "string",
+          "enum": ["bar", "line", "pie", "donut"]
+        },
+        "title": { "type": "string" },
+        "data": {
+          "type": "object",
+          "properties": {
+            "labels": {
+              "type": "array",
+              "items": { "type": "string" }
+            },
+            "values": {
+              "type": "array",
+              "items": { "type": "number" }
+            }
+          }
+        },
+        "columns": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "rows": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        },
+        "author": { "type": "string" },
+        "attribution": { "type": "string" }
+      }
+    }
+  }
+}

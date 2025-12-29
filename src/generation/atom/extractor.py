@@ -63,12 +63,12 @@ def extract_atoms(
         
         if cached_data is not None:
             logger.info(f"Cache hit for source {source.source_id}")
-            print(f"✓ Using cached atom extraction")
+            print("[atoms] Using cached atom extraction")
             return _build_collection_from_data(source, cached_data)
     
     # Cache miss or cache disabled - call LLM
     logger.info(f"Extracting atoms from source {source.source_id}")
-    print(f"⚙ Extracting atoms via LLM...")
+    print("[atoms] Extracting atoms via LLM...")
     
     response = call_llm(
         system_prompt=config.system_prompt,

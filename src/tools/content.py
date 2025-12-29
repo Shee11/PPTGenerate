@@ -29,6 +29,7 @@ class ContentContext(ToolContext):
     intent_guidance: str = Field(default="", description="Guidance from constitution")
     selected_theme: Optional[str] = Field(default=None, description="User-selected theme from UI")
     selected_vibe: Optional[str] = Field(default=None, description="User-selected vibe from UI")
+    project: str = Field(default="slidev", description="Project/renderer: 'slidev' or 'react-mdx'")
 
 
 class ContentPatch(ToolPatch):
@@ -100,6 +101,13 @@ Only layout and widgets are generated."""
         # Get all slides from state
         all_slides = state.slides or []
         
+        # DEBUG: Log slide states
+        state_counts = {}
+        for s in all_slides:
+            st = s.get("state", "unknown")
+            state_counts[st] = state_counts.get(st, 0) + 1
+        self._log(f"DEBUG: Slide states in build_context: {state_counts}")
+        
         # Sort by rank
         sorted_slides = sorted(all_slides, key=lambda s: s.get("rank", 0))
         
@@ -108,9 +116,11 @@ Only layout and widgets are generated."""
         if slide_ids:
             # Specific slides requested
             draft_slides = [s for s in sorted_slides if s.get("id") in slide_ids]
+            self._log(f"DEBUG: Requested slide_ids: {slide_ids}")
         else:
             # All draft slides
             draft_slides = [s for s in sorted_slides if s.get("state") == "draft"]
+        self._log(f"DEBUG: Found {len(draft_slides)} draft slides for processing")
         
         # Get context slides (2 before and 2 after the draft range)
         context_before = []
@@ -177,11 +187,14 @@ Only layout and widgets are generated."""
             intent_guidance=intent_guidance,
             selected_theme=selected_theme,
             selected_vibe=selected_vibe,
+            project=state.project or "slidev",
         )
     
     def transform(self, context: ContentContext, user_instruction: str) -> ContentPatch:
         """Generate layouts and widgets for draft slides."""
         from src.generation.content.layout_generator import generate_layouts
+        
+        self._log(f"DEBUG transform: draft_slides len={len(context.draft_slides)}")
         
         if not context.draft_slides:
             self._log("No draft slides to process")
@@ -209,6 +222,7 @@ Only layout and widgets are generated."""
             atoms=context.atoms_collection,
             theme_id=context.theme_id,
             intent_guidance=full_guidance,
+            project=context.project,  # Pass project for MDX vs JSON output
         )
         
         self._log(f"Generated {len(active_slides)} active slides")
@@ -264,6 +278,13 @@ Only layout and widgets are generated."""
                 merged.append(generated)
             else:
                 merged.append(slide)
+        
+        # Post-processing: Fix consecutive same-layout issues
+        from src.paged.layout.slidev.validate_slides import fix_consecutive_layouts
+        merged, fix_report = fix_consecutive_layouts(merged, verbose=True)
+        fixes_applied = sum(1 for line in fix_report if "→" in line)
+        if fixes_applied > 0:
+            self._log(f"🔧 Fixed {fixes_applied} consecutive layout issue(s)")
         
         state.set_slides(merged)
         self._log(f"Applied: merged {len(patch.slides)} generated slides" + 

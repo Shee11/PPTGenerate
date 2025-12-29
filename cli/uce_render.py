@@ -37,9 +37,9 @@ DEFAULT_INSTRUCTION = "create slides, 10 page, professional, corp_modern_v1 them
 )
 @click.option(
     '--layout-engine',
-    type=click.Choice(['dummy', 'slidev'], case_sensitive=False),
-    default='slidev',
-    help='Layout engine to use (default: slidev)'
+    type=click.Choice(['dummy', 'slidev', 'react'], case_sensitive=False),
+    default=None,
+    help='Layout engine to use (auto-selected based on project: react for react-mdx, slidev otherwise)'
 )
 @click.option(
     '--validate-only', '--validate',
@@ -134,9 +134,15 @@ DEFAULT_INSTRUCTION = "create slides, 10 page, professional, corp_modern_v1 them
 )
 @click.option(
     '--project', '-p',
-    type=click.Choice(['slidev', 'duolingo', 'cyberpunk', 'handdrawn', 'editorial', 'business', 'simple'], case_sensitive=False),
-    default='slidev',
-    help='Slidev project style to use (default: slidev)'
+    type=click.Choice(['slidev', 'duolingo', 'cyberpunk', 'handdrawn', 'editorial', 'business', 'simple', 'react-mdx'], case_sensitive=False),
+    default='react-mdx',
+    help='Project style to use (default: react-mdx)'
+)
+@click.option(
+    '--mdx-theme',
+    type=click.Choice(['business', 'cyber', 'minimal', 'academic', 'creative', 'duolingo', 'dark', 'purple'], case_sensitive=False),
+    default='business',
+    help='Theme for react-mdx export (default: business)'
 )
 def cli(
     config_file: Optional[Path],
@@ -161,6 +167,7 @@ def cli(
     state: Optional[Path],
     force_rerun: bool,
     project: str,
+    mdx_theme: str,
 ) -> None:
     """Render layouts using the Universal Content Engine.
     
@@ -230,6 +237,13 @@ def cli(
         uce-render --source input.txt --stage render --output career_talk --force-rerun
     """
     try:
+        # Auto-default to stage='render' when source is provided without explicit stage
+        # This routes all LLM generation through PipelineRunner
+        if source and not stage and not render:
+            stage = 'render'
+            if verbose:
+                click.echo("[INFO] Defaulting to --stage render for source-based generation", err=True)
+        
         # Handle stage-based pipeline OR state-only execution
         if stage or state:
             # If state is provided without source, load source from state
@@ -264,15 +278,19 @@ def cli(
             output_dir = Path(output)
             instruction = user_instruction or DEFAULT_INSTRUCTION
             
-            # Set layout engine if specified
-            if layout_engine:
-                from src.paged.layout.engine_registry import LayoutEngineRegistry
-                try:
-                    LayoutEngineRegistry.set_active_engine(layout_engine.lower())
-                    if verbose:
-                        click.echo(f"Set active layout engine: {layout_engine.lower()}", err=True)
-                except KeyError as e:
-                    click.echo(f"Warning: Unknown layout engine '{layout_engine}', using default", err=True)
+            # Auto-select layout engine based on project if not specified
+            effective_engine = layout_engine
+            if not effective_engine:
+                effective_engine = 'react' if project in ('react-mdx', 'react') else 'slidev'
+            
+            # Set layout engine
+            from src.paged.layout.engine_registry import LayoutEngineRegistry
+            try:
+                LayoutEngineRegistry.set_active_engine(effective_engine.lower())
+                if verbose:
+                    click.echo(f"Set active layout engine: {effective_engine.lower()}", err=True)
+            except KeyError as e:
+                click.echo(f"Warning: Unknown layout engine '{effective_engine}', using default", err=True)
             
             runner = PipelineRunner(
                 use_cache=(use_cache.lower() == 'true'),
@@ -283,12 +301,14 @@ def cli(
             result_state = runner.run(
                 source_path=effective_source,
                 user_instruction=instruction,
+                project=project,
+                mdx_theme=mdx_theme,
             )
             
             click.echo(f"\n{'='*50}")
             click.echo(result_state.summary())
             click.echo(f"{'='*50}")
-            click.echo(f"\n✓ Pipeline completed")
+            click.echo(f"\n[OK] Pipeline completed")
             click.echo(f"  Output: {output_dir}")
             return
         
@@ -578,15 +598,19 @@ def cli(
             continue_generation = True  # Allow one iteration to render
             max_iterations = 1  # Limit to single pass
         
+        # Auto-select layout engine based on project if not specified
+        effective_engine = layout_engine
+        if not effective_engine:
+            effective_engine = 'react' if project in ('react-mdx', 'react') else 'slidev'
+        
         # Set active layout engine for content generation
-        if layout_engine:
-            from src.paged.layout.engine_registry import LayoutEngineRegistry
-            try:
-                LayoutEngineRegistry.set_active_engine(layout_engine.lower())
-                if verbose:
-                    click.echo(f"Set active layout engine: {layout_engine.lower()}", err=True)
-            except KeyError as e:
-                click.echo(f"Warning: {e}", err=True)
+        from src.paged.layout.engine_registry import LayoutEngineRegistry
+        try:
+            LayoutEngineRegistry.set_active_engine(effective_engine.lower())
+            if verbose:
+                click.echo(f"Set active layout engine: {effective_engine.lower()}", err=True)
+        except KeyError as e:
+            click.echo(f"Warning: {e}", err=True)
         
         # Create orchestrator for all LLM generation (both interactive and non-interactive)
         # Skip if in render-only mode

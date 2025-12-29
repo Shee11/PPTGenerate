@@ -16,28 +16,11 @@ class LayoutEngine(Protocol):
     """
     
     @classmethod
-    def get_layout_documentation(cls) -> str:
-        """Provide complete layout system documentation for content generation.
-        
-        This method returns formatted documentation about the entire layout system,
-        including strategies, widgets, and presets. The output is used by content
-        generation LLMs to understand all layout capabilities.
+    def get_layout_prompt(cls) -> str:
+        """Provide layout reference for LLM content generation prompts.
         
         Returns:
-            Formatted string describing the complete layout system:
-            - Layout strategies with slot structures and content guidance
-            - Supported widget types with parameters
-            - Available preset categories and variants
-            - Layout-specific rules or constraints
-            
-        Example format:
-            Available Layout Strategies:
-            Bento Family: Grid-based layouts...
-              - Bento.Standard: Slots: [cell_1 (size: M), cell_2 (size: M), ...]
-            
-            Supported Widget Types:
-            - Type.Display: Large display text (parameters: text, align)
-            - Data.BigNum: Numeric metric display (parameters: value, label, unit)
+            Formatted string describing layouts, components, and constraints.
             
             Supported Preset Attributes:
             - surface: Flat, Elevated, Glass, ...

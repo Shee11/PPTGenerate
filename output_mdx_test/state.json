@@ -1,0 +1,1149 @@
+{
+  "todos": {
+    "todos": [
+      {
+        "id": "constitution",
+        "type": "constitution",
+        "status": "completed",
+        "params": {
+          "style_rules": [],
+          "content_exclusions": [],
+          "content_requirements": [],
+          "slide_count_target": null,
+          "slide_count_max": null,
+          "layout_preferences": [],
+          "audience": null,
+          "purpose": null,
+          "tone": "professional",
+          "target_slides": null,
+          "selected_theme": null,
+          "selected_vibe": null
+        },
+        "created_at": "2025-12-27T15:09:22.930064",
+        "started_at": "2025-12-27T15:09:22.934086",
+        "completed_at": "2025-12-27T15:09:22.937037",
+        "error": null,
+        "depends_on": []
+      },
+      {
+        "id": "atoms",
+        "type": "atoms",
+        "status": "completed",
+        "params": {
+          "source_path": "C:\\Users\\wangchao\\repos\\gggg\\data\\context\\simple_context.txt",
+          "content_type": "text/plain",
+          "extraction_prompt": ""
+        },
+        "created_at": "2025-12-27T15:09:22.930173",
+        "started_at": "2025-12-27T15:09:22.955227",
+        "completed_at": "2025-12-27T15:09:33.829412",
+        "error": null,
+        "depends_on": [
+          "constitution"
+        ]
+      },
+      {
+        "id": "theme",
+        "type": "theme",
+        "status": "completed",
+        "params": {
+          "theme_id": null,
+          "visual_guidance": "",
+          "tone": "professional",
+          "generate_new": false
+        },
+        "created_at": "2025-12-27T15:09:22.930246",
+        "started_at": "2025-12-27T15:09:33.833210",
+        "completed_at": "2025-12-27T15:09:33.836560",
+        "error": null,
+        "depends_on": [
+          "constitution"
+        ]
+      },
+      {
+        "id": "story",
+        "type": "story",
+        "status": "completed",
+        "params": {
+          "mode": "generate",
+          "instruction": "Create 3 slides about AI career paths, required skills, and future opportunities.",
+          "slide_count": 3,
+          "atom_filter": null
+        },
+        "created_at": "2025-12-27T15:09:22.930303",
+        "started_at": "2025-12-27T15:09:33.856180",
+        "completed_at": "2025-12-27T15:09:39.097442",
+        "error": null,
+        "depends_on": [
+          "atoms"
+        ]
+      },
+      {
+        "id": "content",
+        "type": "content",
+        "status": "completed",
+        "params": {
+          "mode": "generate",
+          "instruction": "",
+          "slide_ids": []
+        },
+        "created_at": "2025-12-27T15:09:22.930352",
+        "started_at": "2025-12-27T15:09:39.101142",
+        "completed_at": "2025-12-27T15:09:42.717044",
+        "error": null,
+        "depends_on": [
+          "story",
+          "theme"
+        ]
+      },
+      {
+        "id": "export",
+        "type": "export",
+        "status": "completed",
+        "params": {
+          "layout_engine": "slidev",
+          "output_format": "html",
+          "output_path": null
+        },
+        "created_at": "2025-12-27T15:09:22.930409",
+        "started_at": "2025-12-27T15:09:42.720887",
+        "completed_at": "2025-12-27T15:09:42.745792",
+        "error": null,
+        "depends_on": [
+          "content"
+        ]
+      }
+    ]
+  },
+  "source": {
+    "path": "C:\\Users\\wangchao\\repos\\gggg\\data\\context\\simple_context.txt",
+    "content_hash": "bf850924024cd35d",
+    "content_type": "text/plain"
+  },
+  "constitution": {
+    "style_rules": [
+      "Start with a title slide",
+      "Balance content density"
+    ],
+    "content_exclusions": [],
+    "content_requirements": [],
+    "slide_count_target": null,
+    "slide_count_max": null,
+    "layout_preferences": [],
+    "audience": null,
+    "purpose": null,
+    "tone": null,
+    "target_slides": 3,
+    "selected_theme": null,
+    "selected_vibe": null
+  },
+  "themes": {
+    "business_professional": {
+      "id": "business_professional",
+      "name": "Business Professional",
+      "description": "Clean corporate theme with navy blue primary and professional styling",
+      "margin_x": "48px",
+      "margin_y": "36px",
+      "gutter": "24px",
+      "header_footer": {
+        "header_height": "12%",
+        "footer_height": "8%",
+        "header_position": "fixed_top_left",
+        "footer_position": "fixed_bottom_left",
+        "header_decoration": "accent_line",
+        "footer_decoration": "none"
+      },
+      "sequence_pattern": "consistent",
+      "typography": {
+        "h1": {
+          "size": 56,
+          "weight": "bold",
+          "line_height": 1.1
+        },
+        "h2": {
+          "size": 40,
+          "weight": "semibold",
+          "line_height": 1.2
+        },
+        "h3": {
+          "size": 28,
+          "weight": "medium",
+          "line_height": 1.3
+        },
+        "body": {
+          "size": 18,
+          "weight": "regular",
+          "line_height": 1.6
+        },
+        "caption": {
+          "size": 14,
+          "weight": "regular",
+          "line_height": 1.4
+        }
+      },
+      "primary_color": "#0F4C81",
+      "secondary_color": "#2D5F8B",
+      "accent_color": "#E67E22",
+      "background_color": "#FAFBFC",
+      "text_color": "#1A202C",
+      "primary_background": "#FFFFFF",
+      "secondary_background": "#F5F7F9",
+      "font_family": "Inter, Segoe UI, system-ui, sans-serif",
+      "heading_font": "Inter, Segoe UI, system-ui, sans-serif",
+      "colors": {
+        "primary": "#0F4C81",
+        "accent": "#E67E22",
+        "success": "#27AE60",
+        "warning": "#F39C12",
+        "danger": "#E74C3C",
+        "bg_base": "#FAFBFC",
+        "bg_surface": "#FFFFFF",
+        "bg_elevated": "#F5F7F9",
+        "text": "#1A202C",
+        "text_muted": "#4A5568",
+        "text_dim": "#718096",
+        "border": "#E1E5E9",
+        "border_subtle": "#EDF2F7"
+      },
+      "shadows": {
+        "sm": "0 1px 3px rgba(0,0,0,0.08)",
+        "md": "0 4px 12px rgba(0,0,0,0.1)",
+        "lg": "0 8px 24px rgba(0,0,0,0.12)",
+        "glow": "0 0 20px rgba(15,76,129,0.15)"
+      },
+      "radii": {
+        "sm": "4px",
+        "md": "8px",
+        "lg": "12px",
+        "xl": "16px"
+      }
+    },
+    "corp_modern_v1": {
+      "id": "corp_modern_v1",
+      "margin_x": "40px",
+      "margin_y": "30px",
+      "gutter": "20px",
+      "header_footer": {
+        "header_height": "15%",
+        "footer_height": "10%",
+        "header_position": "fixed_top_left",
+        "footer_position": "fixed_bottom_left",
+        "header_decoration": "underline_accent",
+        "footer_decoration": "none"
+      },
+      "sequence_pattern": "alternating_background",
+      "typography": {
+        "h1": {
+          "size": 60,
+          "weight": "bold",
+          "line_height": 1.1
+        },
+        "h2": {
+          "size": 40,
+          "weight": "medium",
+          "line_height": 1.2
+        },
+        "h3": {
+          "size": 28,
+          "weight": "medium",
+          "line_height": 1.3
+        },
+        "body": {
+          "size": 18,
+          "weight": "regular",
+          "line_height": 1.5
+        },
+        "caption": {
+          "size": 14,
+          "weight": "regular",
+          "line_height": 1.4
+        }
+      },
+      "primary_color": "#2563eb",
+      "secondary_color": "#64748b",
+      "accent_color": "#f59e0b",
+      "background_color": "#ffffff",
+      "text_color": "#1e293b",
+      "primary_background": "#f8fafc",
+      "secondary_background": "#ffffff",
+      "font_family": "Inter, system-ui, sans-serif",
+      "heading_font": "Inter, system-ui, sans-serif"
+    },
+    "cyber_neon": {
+      "id": "cyber_neon",
+      "name": "Cyber Neon",
+      "description": "Bold cyberpunk theme with neon accents on dark background, perfect for tech and gaming presentations",
+      "margin_x": "50px",
+      "margin_y": "40px",
+      "gutter": "24px",
+      "header_footer": {
+        "header_height": "15%",
+        "footer_height": "10%",
+        "header_position": "centered",
+        "footer_position": "centered",
+        "header_decoration": "glow",
+        "footer_decoration": "none"
+      },
+      "sequence_pattern": "section_break",
+      "typography": {
+        "h1": {
+          "size": 72,
+          "weight": "black",
+          "line_height": 1.0
+        },
+        "h2": {
+          "size": 48,
+          "weight": "bold",
+          "line_height": 1.1
+        },
+        "h3": {
+          "size": 32,
+          "weight": "semibold",
+          "line_height": 1.2
+        },
+        "body": {
+          "size": 20,
+          "weight": "regular",
+          "line_height": 1.6
+        },
+        "caption": {
+          "size": 16,
+          "weight": "light",
+          "line_height": 1.5
+        }
+      },
+      "primary_color": "#00f0ff",
+      "secondary_color": "#ff00ff",
+      "accent_color": "#ffff00",
+      "background_color": "#0a0a1a",
+      "text_color": "#ffffff",
+      "primary_background": "#141428",
+      "secondary_background": "#0a0a1a",
+      "font_family": "JetBrains Mono, monospace",
+      "heading_font": "Orbitron, sans-serif"
+    },
+    "duolingo_v1": {
+      "id": "duolingo_v1",
+      "name": "Duolingo",
+      "description": "Playful, gamified style inspired by Duolingo's UI - bright green, friendly, encouraging",
+      "margin_x": "48px",
+      "margin_y": "36px",
+      "gutter": "24px",
+      "header_footer": {
+        "header_height": "12%",
+        "footer_height": "8%",
+        "header_position": "fixed_top_center",
+        "footer_position": "fixed_bottom_center",
+        "header_decoration": "none",
+        "footer_decoration": "progress_dots"
+      },
+      "sequence_pattern": "playful_alternating",
+      "typography": {
+        "h1": {
+          "size": 56,
+          "weight": "800",
+          "line_height": 1.15,
+          "letter_spacing": "-0.02em"
+        },
+        "h2": {
+          "size": 36,
+          "weight": "700",
+          "line_height": 1.25,
+          "letter_spacing": "-0.01em"
+        },
+        "h3": {
+          "size": 24,
+          "weight": "700",
+          "line_height": 1.35
+        },
+        "body": {
+          "size": 18,
+          "weight": "600",
+          "line_height": 1.6
+        },
+        "caption": {
+          "size": 14,
+          "weight": "600",
+          "line_height": 1.5
+        }
+      },
+      "primary_color": "#58CC02",
+      "secondary_color": "#1CB0F6",
+      "accent_color": "#FF9600",
+      "background_color": "#ffffff",
+      "text_color": "#3C3C3C",
+      "font_family": "'Nunito', system-ui, sans-serif",
+      "heading_font": "'Nunito', system-ui, sans-serif",
+      "border_radius": "16px",
+      "vibe": "duolingo"
+    },
+    "editorial_v1": {
+      "id": "editorial_v1",
+      "name": "Editorial",
+      "description": "Elegant, serif-based magazine style with sophisticated neutrals and gold accents",
+      "margin_x": "56px",
+      "margin_y": "48px",
+      "gutter": "32px",
+      "header_footer": {
+        "header_height": "10%",
+        "footer_height": "6%",
+        "header_position": "fixed_top_center",
+        "footer_position": "fixed_bottom_center",
+        "header_decoration": "hairline",
+        "footer_decoration": "hairline"
+      },
+      "sequence_pattern": "editorial_flow",
+      "typography": {
+        "h1": {
+          "size": 48,
+          "weight": "400",
+          "line_height": 1.15,
+          "letter_spacing": "-0.01em"
+        },
+        "h2": {
+          "size": 32,
+          "weight": "400",
+          "line_height": 1.25,
+          "letter_spacing": "-0.005em"
+        },
+        "h3": {
+          "size": 24,
+          "weight": "400",
+          "line_height": 1.35
+        },
+        "body": {
+          "size": 18,
+          "weight": "400",
+          "line_height": 1.8
+        },
+        "caption": {
+          "size": 14,
+          "weight": "400",
+          "line_height": 1.5,
+          "font_style": "italic"
+        }
+      },
+      "primary_color": "#c9a962",
+      "secondary_color": "#1e3a5f",
+      "accent_color": "#722f37",
+      "background_color": "#f8f6f3",
+      "text_color": "#4a4a4a",
+      "primary_background": "#f8f6f3",
+      "secondary_background": "#ffffff",
+      "success_color": "#4a7c59",
+      "warning_color": "#c9a962",
+      "danger_color": "#722f37",
+      "font_family": "'Cormorant Garamond', 'Georgia', serif",
+      "heading_font": "'Playfair Display', 'Georgia', serif",
+      "accent_font": "'Source Serif 4', 'Georgia', serif",
+      "border_radius": "2px",
+      "card_radius": "0px",
+      "button_radius": "0px",
+      "vibe": "classic",
+      "decorations": {
+        "corner_frames": true,
+        "hairline_dividers": true,
+        "drop_caps": true,
+        "ornaments": true,
+        "image_frames": true
+      },
+      "colors": {
+        "black": "#1a1a1a",
+        "charcoal": "#2d2d2d",
+        "slate": "#4a4a4a",
+        "gold": "#c9a962",
+        "gold_light": "#e6c984",
+        "navy": "#1e3a5f",
+        "burgundy": "#722f37",
+        "cream": "#f8f6f3",
+        "white": "#ffffff",
+        "light": "#e8e8e8",
+        "muted": "#f5f5f5",
+        "border": "#d4d4d4",
+        "text_dark": "#1a1a1a",
+        "text": "#4a4a4a",
+        "text_light": "#7a7a7a"
+      }
+    },
+    "forest_nature": {
+      "id": "forest_nature",
+      "name": "Forest Nature",
+      "description": "Organic and earthy green theme, perfect for sustainability, health, and nature topics",
+      "margin_x": "55px",
+      "margin_y": "45px",
+      "gutter": "26px",
+      "header_footer": {
+        "header_height": "14%",
+        "footer_height": "10%",
+        "header_position": "fixed_top_left",
+        "footer_position": "fixed_bottom_right",
+        "header_decoration": "none",
+        "footer_decoration": "leaf_accent"
+      },
+      "sequence_pattern": "alternating_background",
+      "typography": {
+        "h1": {
+          "size": 60,
+          "weight": "bold",
+          "line_height": 1.1
+        },
+        "h2": {
+          "size": 42,
+          "weight": "semibold",
+          "line_height": 1.2
+        },
+        "h3": {
+          "size": 28,
+          "weight": "medium",
+          "line_height": 1.3
+        },
+        "body": {
+          "size": 18,
+          "weight": "regular",
+          "line_height": 1.65
+        },
+        "caption": {
+          "size": 14,
+          "weight": "regular",
+          "line_height": 1.5
+        }
+      },
+      "primary_color": "#22c55e",
+      "secondary_color": "#16a34a",
+      "accent_color": "#84cc16",
+      "background_color": "#f0fdf4",
+      "text_color": "#14532d",
+      "primary_background": "#dcfce7",
+      "secondary_background": "#f0fdf4",
+      "font_family": "Lato, sans-serif",
+      "heading_font": "Merriweather, serif"
+    },
+    "handdrawn_v1": {
+      "id": "handdrawn_v1",
+      "name": "Handdrawn",
+      "description": "Sketchy, pastel, friendly aesthetic with handwritten fonts and soft colors",
+      "margin_x": "48px",
+      "margin_y": "40px",
+      "gutter": "24px",
+      "header_footer": {
+        "header_height": "12%",
+        "footer_height": "8%",
+        "header_position": "fixed_top_left",
+        "footer_position": "fixed_bottom_center",
+        "header_decoration": "none",
+        "footer_decoration": "none"
+      },
+      "sequence_pattern": "pastel_rotation",
+      "typography": {
+        "h1": {
+          "size": 56,
+          "weight": "600",
+          "line_height": 1.2
+        },
+        "h2": {
+          "size": 40,
+          "weight": "500",
+          "line_height": 1.3
+        },
+        "h3": {
+          "size": 28,
+          "weight": "500",
+          "line_height": 1.35
+        },
+        "body": {
+          "size": 20,
+          "weight": "400",
+          "line_height": 1.6
+        },
+        "caption": {
+          "size": 16,
+          "weight": "400",
+          "line_height": 1.5
+        }
+      },
+      "primary_color": "#FFB5BA",
+      "secondary_color": "#A8D8EA",
+      "accent_color": "#B5EAD7",
+      "background_color": "#FFFEF9",
+      "text_color": "#4A4A4A",
+      "primary_background": "#FFFEF9",
+      "secondary_background": "#FFF9F0",
+      "success_color": "#B5EAD7",
+      "warning_color": "#FFEAA7",
+      "danger_color": "#FFB5BA",
+      "font_family": "'Nunito', sans-serif",
+      "heading_font": "'Caveat', cursive",
+      "accent_font": "'Patrick Hand', cursive",
+      "border_radius": "12px",
+      "card_radius": "16px",
+      "button_radius": "20px",
+      "vibe": "playful",
+      "decorations": {
+        "sketchy_borders": true,
+        "doodles": true,
+        "paper_texture": true,
+        "stickers": true,
+        "highlights": true
+      },
+      "colors": {
+        "pink": "#FFB5BA",
+        "pink_light": "#FFD4D8",
+        "pink_dark": "#E8969C",
+        "blue": "#A8D8EA",
+        "blue_light": "#C5E8F2",
+        "blue_dark": "#7EC8E3",
+        "green": "#B5EAD7",
+        "green_light": "#D4F5E9",
+        "green_dark": "#8EDABE",
+        "yellow": "#FFEAA7",
+        "yellow_light": "#FFF3C4",
+        "yellow_dark": "#F9D871",
+        "purple": "#DCD6F7",
+        "purple_light": "#EBE7FA",
+        "purple_dark": "#C4B8F0",
+        "orange": "#FFCFB3",
+        "orange_light": "#FFE0CF",
+        "orange_dark": "#FFB088",
+        "bg": "#FFFEF9",
+        "bg_paper": "#FFF9F0",
+        "bg_cream": "#FAF6F0",
+        "text": "#4A4A4A",
+        "text_light": "#6B6B6B",
+        "text_dark": "#2D2D2D"
+      }
+    },
+    "minimal_dark_v1": {
+      "id": "minimal_dark_v1",
+      "margin_x": "60px",
+      "margin_y": "40px",
+      "gutter": "24px",
+      "header_footer": {
+        "header_height": "20%",
+        "footer_height": "10%",
+        "header_position": "centered",
+        "footer_position": "centered",
+        "header_decoration": "none",
+        "footer_decoration": "none"
+      },
+      "sequence_pattern": "section_break",
+      "typography": {
+        "h1": {
+          "size": 72,
+          "weight": "black",
+          "line_height": 1.0
+        },
+        "h2": {
+          "size": 48,
+          "weight": "bold",
+          "line_height": 1.1
+        },
+        "h3": {
+          "size": 32,
+          "weight": "semibold",
+          "line_height": 1.2
+        },
+        "body": {
+          "size": 20,
+          "weight": "light",
+          "line_height": 1.6
+        },
+        "caption": {
+          "size": 16,
+          "weight": "light",
+          "line_height": 1.5
+        }
+      },
+      "primary_color": "#ffffff",
+      "secondary_color": "#94a3b8",
+      "accent_color": "#06b6d4",
+      "background_color": "#0f172a",
+      "text_color": "#f1f5f9",
+      "primary_background": "#1e293b",
+      "secondary_background": "#0f172a",
+      "font_family": "Helvetica Neue, Arial, sans-serif",
+      "heading_font": "Helvetica Neue, Arial, sans-serif"
+    },
+    "ocean_deep": {
+      "id": "ocean_deep",
+      "name": "Ocean Deep",
+      "description": "Calm and professional deep blue theme, great for corporate and financial presentations",
+      "margin_x": "60px",
+      "margin_y": "50px",
+      "gutter": "28px",
+      "header_footer": {
+        "header_height": "12%",
+        "footer_height": "8%",
+        "header_position": "fixed_top_left",
+        "footer_position": "fixed_bottom_left",
+        "header_decoration": "underline_accent",
+        "footer_decoration": "none"
+      },
+      "sequence_pattern": "section_break",
+      "typography": {
+        "h1": {
+          "size": 56,
+          "weight": "bold",
+          "line_height": 1.15
+        },
+        "h2": {
+          "size": 40,
+          "weight": "semibold",
+          "line_height": 1.2
+        },
+        "h3": {
+          "size": 28,
+          "weight": "medium",
+          "line_height": 1.3
+        },
+        "body": {
+          "size": 18,
+          "weight": "regular",
+          "line_height": 1.6
+        },
+        "caption": {
+          "size": 14,
+          "weight": "light",
+          "line_height": 1.5
+        }
+      },
+      "primary_color": "#0ea5e9",
+      "secondary_color": "#06b6d4",
+      "accent_color": "#22d3ee",
+      "background_color": "#0c1929",
+      "text_color": "#f0f9ff",
+      "primary_background": "#0f2744",
+      "secondary_background": "#0c1929",
+      "font_family": "Source Sans Pro, sans-serif",
+      "heading_font": "Montserrat, sans-serif"
+    },
+    "royal_purple": {
+      "id": "royal_purple",
+      "name": "Royal Purple",
+      "description": "Elegant and luxurious purple theme, ideal for premium brands and creative agencies",
+      "margin_x": "60px",
+      "margin_y": "50px",
+      "gutter": "28px",
+      "header_footer": {
+        "header_height": "14%",
+        "footer_height": "10%",
+        "header_position": "centered",
+        "footer_position": "centered",
+        "header_decoration": "gradient_line",
+        "footer_decoration": "none"
+      },
+      "sequence_pattern": "section_break",
+      "typography": {
+        "h1": {
+          "size": 68,
+          "weight": "bold",
+          "line_height": 1.05
+        },
+        "h2": {
+          "size": 46,
+          "weight": "semibold",
+          "line_height": 1.15
+        },
+        "h3": {
+          "size": 30,
+          "weight": "medium",
+          "line_height": 1.25
+        },
+        "body": {
+          "size": 18,
+          "weight": "regular",
+          "line_height": 1.6
+        },
+        "caption": {
+          "size": 14,
+          "weight": "light",
+          "line_height": 1.5
+        }
+      },
+      "primary_color": "#a855f7",
+      "secondary_color": "#8b5cf6",
+      "accent_color": "#f472b6",
+      "background_color": "#1e1033",
+      "text_color": "#faf5ff",
+      "primary_background": "#2e1a47",
+      "secondary_background": "#1e1033",
+      "font_family": "Poppins, sans-serif",
+      "heading_font": "Cormorant Garamond, serif"
+    },
+    "slate_professional": {
+      "id": "slate_professional",
+      "name": "Slate Professional",
+      "description": "Clean and neutral slate gray theme, versatile for any business or academic presentation",
+      "margin_x": "55px",
+      "margin_y": "45px",
+      "gutter": "24px",
+      "header_footer": {
+        "header_height": "12%",
+        "footer_height": "8%",
+        "header_position": "fixed_top_left",
+        "footer_position": "fixed_bottom_left",
+        "header_decoration": "underline_subtle",
+        "footer_decoration": "none"
+      },
+      "sequence_pattern": "alternating_background",
+      "typography": {
+        "h1": {
+          "size": 54,
+          "weight": "bold",
+          "line_height": 1.15
+        },
+        "h2": {
+          "size": 38,
+          "weight": "semibold",
+          "line_height": 1.2
+        },
+        "h3": {
+          "size": 26,
+          "weight": "medium",
+          "line_height": 1.3
+        },
+        "body": {
+          "size": 17,
+          "weight": "regular",
+          "line_height": 1.6
+        },
+        "caption": {
+          "size": 13,
+          "weight": "regular",
+          "line_height": 1.5
+        }
+      },
+      "primary_color": "#475569",
+      "secondary_color": "#64748b",
+      "accent_color": "#0ea5e9",
+      "background_color": "#ffffff",
+      "text_color": "#1e293b",
+      "primary_background": "#f8fafc",
+      "secondary_background": "#ffffff",
+      "font_family": "IBM Plex Sans, sans-serif",
+      "heading_font": "IBM Plex Sans, sans-serif"
+    },
+    "warm_sunset": {
+      "id": "warm_sunset",
+      "name": "Warm Sunset",
+      "description": "Warm and inviting theme with sunset colors, ideal for creative and lifestyle presentations",
+      "margin_x": "50px",
+      "margin_y": "40px",
+      "gutter": "24px",
+      "header_footer": {
+        "header_height": "15%",
+        "footer_height": "10%",
+        "header_position": "fixed_top_left",
+        "footer_position": "fixed_bottom_right",
+        "header_decoration": "none",
+        "footer_decoration": "none"
+      },
+      "sequence_pattern": "alternating_background",
+      "typography": {
+        "h1": {
+          "size": 64,
+          "weight": "bold",
+          "line_height": 1.1
+        },
+        "h2": {
+          "size": 44,
+          "weight": "semibold",
+          "line_height": 1.2
+        },
+        "h3": {
+          "size": 30,
+          "weight": "medium",
+          "line_height": 1.3
+        },
+        "body": {
+          "size": 18,
+          "weight": "regular",
+          "line_height": 1.6
+        },
+        "caption": {
+          "size": 14,
+          "weight": "regular",
+          "line_height": 1.5
+        }
+      },
+      "primary_color": "#f97316",
+      "secondary_color": "#ec4899",
+      "accent_color": "#fbbf24",
+      "background_color": "#fffbeb",
+      "text_color": "#451a03",
+      "primary_background": "#fef3c7",
+      "secondary_background": "#fffbeb",
+      "font_family": "Nunito, sans-serif",
+      "heading_font": "Playfair Display, serif"
+    }
+  },
+  "active_theme_id": "corp_modern_v1",
+  "project": "react-mdx",
+  "mdx_theme": "business",
+  "atoms": {
+    "id": "atoms_bf850924024cd35d",
+    "model": "FactAtom",
+    "contexts": [
+      {
+        "id": "bio_001",
+        "rank": 1,
+        "state": "draft",
+        "abstract": "Chao Wang is an applied scientist in Tim's team",
+        "source_ref": {
+          "source_id": "bf850924024cd35d",
+          "file_path": "C:\\Users\\wangchao\\repos\\gggg\\data\\context\\simple_context.txt",
+          "offset": 58,
+          "length": 60,
+          "line_number": null
+        },
+        "visual": "photo",
+        "created_at": "2025-12-27T07:09:33.828882",
+        "metadata": {},
+        "name": "Chao Wang",
+        "role": "Applied Scientist",
+        "credentials": "Experience in AI-related development including vision algorithms, Face API, edge and cross-platform inference, and vision generation",
+        "affiliation": "Tim's team (Microsoft Teams)"
+      },
+      {
+        "id": "fact_001",
+        "rank": 2,
+        "state": "draft",
+        "abstract": "Talk will share AI career journey and evolving roles",
+        "source_ref": {
+          "source_id": "bf850924024cd35d",
+          "file_path": "C:\\Users\\wangchao\\repos\\gggg\\data\\context\\simple_context.txt",
+          "offset": 92,
+          "length": 188,
+          "line_number": null
+        },
+        "visual": "list",
+        "created_at": "2025-12-27T07:09:33.829005",
+        "metadata": {},
+        "text": "In this session, the speaker wants to share their journey across different phases of their AI-related career and how roles are evolving with large language models.",
+        "category": "context"
+      },
+      {
+        "id": "fact_002",
+        "rank": 3,
+        "state": "draft",
+        "abstract": "Talk will highlight areas with highest AI ROI going forward",
+        "source_ref": {
+          "source_id": "bf850924024cd35d",
+          "file_path": "C:\\Users\\wangchao\\repos\\gggg\\data\\context\\simple_context.txt",
+          "offset": 196,
+          "length": 132,
+          "line_number": null
+        },
+        "visual": "before-after",
+        "created_at": "2025-12-27T07:09:33.829062",
+        "metadata": {},
+        "text": "The speaker plans to discuss where they believe AI-related roles will have the highest return on investment going forward.",
+        "category": "context"
+      },
+      {
+        "id": "fact_003",
+        "rank": 4,
+        "state": "draft",
+        "abstract": "Chao Wang joined Microsoft in 2011 after graduation",
+        "source_ref": {
+          "source_id": "bf850924024cd35d",
+          "file_path": "C:\\Users\\wangchao\\repos\\gggg\\data\\context\\simple_context.txt",
+          "offset": 214,
+          "length": 132,
+          "line_number": null
+        },
+        "visual": "timeline",
+        "created_at": "2025-12-27T07:09:33.829074",
+        "metadata": {},
+        "text": "Starting from 2011, after graduating, Chao Wang joined Microsoft.",
+        "category": "status"
+      },
+      {
+        "id": "fact_004",
+        "rank": 5,
+        "state": "draft",
+        "abstract": "Early work focused on vision algorithms and service-side Face API",
+        "source_ref": {
+          "source_id": "bf850924024cd35d",
+          "file_path": "C:\\Users\\wangchao\\repos\\gggg\\data\\context\\simple_context.txt",
+          "offset": 262,
+          "length": 260,
+          "line_number": null
+        },
+        "visual": "architecture",
+        "created_at": "2025-12-27T07:09:33.829094",
+        "metadata": {},
+        "text": "Early in their career, the speaker worked on vision algorithms and service-side development, participating in the initial version of the Face API with a focus on tuning and starting the service.",
+        "category": "architecture"
+      },
+      {
+        "id": "fact_005",
+        "rank": 6,
+        "state": "draft",
+        "abstract": "Five years later still on vision, moved into edge inference on mobile",
+        "source_ref": {
+          "source_id": "bf850924024cd35d",
+          "file_path": "C:\\Users\\wangchao\\repos\\gggg\\data\\context\\simple_context.txt",
+          "offset": 356,
+          "length": 214,
+          "line_number": null
+        },
+        "visual": "timeline",
+        "created_at": "2025-12-27T07:09:33.829111",
+        "metadata": {},
+        "text": "About five years later, the speaker was still working on vision algorithms and started doing edge inference, running AI models on mobile devices.",
+        "category": "status"
+      },
+      {
+        "id": "fact_006",
+        "rank": 7,
+        "state": "draft",
+        "abstract": "Two years later expanded to cross-platform inference and vision generation",
+        "source_ref": {
+          "source_id": "bf850924024cd35d",
+          "file_path": "C:\\Users\\wangchao\\repos\\gggg\\data\\context\\simple_context.txt",
+          "offset": 430,
+          "length": 230,
+          "line_number": null
+        },
+        "visual": "timeline",
+        "created_at": "2025-12-27T07:09:33.829121",
+        "metadata": {},
+        "text": "Two years later, the speaker expanded their work to cross-platform inference and vision-related generation algorithms, including video generation.",
+        "category": "status"
+      },
+      {
+        "id": "fact_007",
+        "rank": 8,
+        "state": "draft",
+        "abstract": "Since 2021 Chao works on Teams vision pipeline and features",
+        "source_ref": {
+          "source_id": "bf850924024cd35d",
+          "file_path": "C:\\Users\\wangchao\\repos\\gggg\\data\\context\\simple_context.txt",
+          "offset": 512,
+          "length": 230,
+          "line_number": null
+        },
+        "visual": "timeline",
+        "created_at": "2025-12-27T07:09:33.829130",
+        "metadata": {},
+        "text": "Starting from 2021, the speaker has been working in the Teams team, focusing on the vision pipeline and collaborating with the Teams CMD team on Teams features.",
+        "category": "status"
+      },
+      {
+        "id": "concept_001",
+        "rank": 9,
+        "state": "draft",
+        "abstract": "AI career can be framed as phases: cloud vision, edge, cross-platform, Teams",
+        "source_ref": {
+          "source_id": "bf850924024cd35d",
+          "file_path": "C:\\Users\\wangchao\\repos\\gggg\\data\\context\\simple_context.txt",
+          "offset": 214,
+          "length": 528,
+          "line_number": null
+        },
+        "visual": "flow",
+        "created_at": "2025-12-27T07:09:33.829149",
+        "metadata": {},
+        "text": "An AI career path can be structured into phases: starting with cloud-based vision algorithms and services, moving into edge inference on mobile, expanding to cross-platform inference and vision generation, and then integrating vision pipelines into large-scale products like Microsoft Teams.",
+        "concept_type": "insight",
+        "supporting_facts": [
+          "fact_004",
+          "fact_005",
+          "fact_006",
+          "fact_007"
+        ]
+      },
+      {
+        "id": "concept_002",
+        "rank": 10,
+        "state": "draft",
+        "abstract": "Roles evolve with large models, shifting where ROI is highest",
+        "source_ref": {
+          "source_id": "bf850924024cd35d",
+          "file_path": "C:\\Users\\wangchao\\repos\\gggg\\data\\context\\simple_context.txt",
+          "offset": 92,
+          "length": 236,
+          "line_number": null
+        },
+        "visual": "before-after",
+        "created_at": "2025-12-27T07:09:33.829197",
+        "metadata": {},
+        "text": "As large models and large language models emerge, AI roles evolve from low-level algorithm and service work toward higher-leverage areas where integrating and applying these models yields the highest return on investment.",
+        "concept_type": "insight",
+        "supporting_facts": [
+          "fact_001",
+          "fact_002"
+        ]
+      },
+      {
+        "id": "visual_001",
+        "rank": 11,
+        "state": "draft",
+        "abstract": "Timeline of Chao Wang's AI career phases",
+        "source_ref": {
+          "source_id": "bf850924024cd35d",
+          "file_path": "C:\\Users\\wangchao\\repos\\gggg\\data\\context\\simple_context.txt",
+          "offset": 214,
+          "length": 528,
+          "line_number": null
+        },
+        "visual": "timeline",
+        "created_at": "2025-12-27T07:09:33.829213",
+        "metadata": {},
+        "description": "Horizontal timeline showing 2011 (Microsoft vision & Face API), ~2016 (edge inference on mobile), ~2018 (cross-platform inference & vision generation), 2021+ (Teams vision pipeline & features).",
+        "visual_category": "diagram",
+        "related_atom": "concept_001"
+      }
+    ]
+  },
+  "slides": [
+    {
+      "id": "slide_01_hook_title",
+      "rank": 1,
+      "state": "active",
+      "story": "HOOK: Introduce Chao Wang and frame the session as a journey through evolving AI careers.",
+      "atoms": [
+        "bio_001",
+        "fact_001"
+      ],
+      "mdx": "<LayoutCover theme=\"dark\">\n  <Heading level={1}>Designing an AI Career</Heading>\n  <Text variant=\"lead\">From vision algorithms to Teams AI experiences</Text>\n  <Text variant=\"caption\">Chao Wang · Applied Scientist · Microsoft Teams</Text>\n</LayoutCover>",
+      "density": "minimal",
+      "visual_design": "Title slide. Centered bold title like 'Designing an AI Career in the Age of Large Models'. Sub-title line under it referencing 'From Vision Algorithms to Teams AI Experiences'. Speaker name and role (Chao Wang - Applied Scientist - Tim's team, Microsoft Teams) aligned at bottom-left. Background can have a subtle abstract AI/vision graphic, low contrast so text stands out. The main visual emphasis is on the title; everything else is supporting."
+    },
+    {
+      "id": "slide_02_context_timeline",
+      "rank": 2,
+      "state": "active",
+      "story": "CONTEXT + JOURNEY: Show how an AI career can evolve over time across different technical phases.",
+      "atoms": [
+        "fact_003",
+        "fact_004",
+        "fact_005",
+        "fact_006",
+        "visual_001",
+        "concept_001"
+      ],
+      "mdx": "<LayoutTimeline>\n  <Heading level={2}>One AI career, four phases</Heading>\n  <SmartList id=\"list_001\" ordered={true} items={[\n    \"2011 · Cloud vision and Face API\",\n    \"2016 · Edge inference on mobile devices\",\n    \"2018 · Cross-platform inference and vision generation\",\n    \"2021+ · Teams vision pipeline and product features\"\n  ]}/>\n  <Text variant=\"body\">\n    An AI path can move from cloud vision to edge, then cross-platform generation, and finally into large-scale product pipelines.\n  </Text>\n</LayoutTimeline>",
+      "density": "dense",
+      "visual_design": "Horizontal timeline flowing left to right across the slide with four clear milestones: 2011 (Microsoft vision & Face API), ~2016 (edge inference on mobile), ~2018 (cross-platform inference & vision generation), 2021+ (Teams vision pipeline & features). Each milestone has a short label and 1-line description below. Top of slide: short heading like 'One AI Career, Four Phases'. Bottom or side: a compact text block summarizing the concept that an AI career path can be structured into phases (cloud vision, edge, cross-platform & generation, product-focused pipelines). Visual emphasis is on the timeline; text is concise and secondary."
+    },
+    {
+      "id": "slide_03_insight_future",
+      "rank": 3,
+      "state": "active",
+      "story": "INSIGHT + CLOSE: Connect the personal journey to the future of AI roles and where to focus for maximum impact.",
+      "atoms": [
+        "fact_002",
+        "fact_007",
+        "concept_002"
+      ],
+      "mdx": "<LayoutSplit ratio=\"1:1\">\n  <Left>\n    <Heading level={2}>From algorithms to experiences</Heading>\n    <Text variant=\"body\">\n      Recent work focuses on Teams vision pipelines, integrating models into end-to-end collaboration features.\n    </Text>\n  </Left>\n  <Right>\n    <SmartList id=\"list_002\" ordered={false} items={[\n      \"Shift from low-level models to integrating large models\",\n      \"Highest ROI in applying and productizing AI capabilities\",\n      \"Own end-to-end user experiences, not just components\"\n    ]}/>\n  </Right>\n</LayoutSplit>",
+      "density": "moderate",
+      "visual_design": "Two-part layout: left side shows a simplified continuation of the timeline ending at '2021+ Teams: vision pipeline & features' with a highlight around this final node. Right side has a short set of 3 bullets: (1) roles shifting from low-level algorithms to integrating large models, (2) higher ROI in applying and productizing LLMs and vision models, (3) building end-to-end experiences like Teams features. Top-right small heading: 'Where AI Careers Create the Highest ROI Next'. Visual emphasis on the right-side bullets as the key takeaway, with the timeline snippet on the left acting as context."
+    }
+  ],
+  "created_at": "2025-12-27T15:09:13.307155",
+  "updated_at": "2025-12-27T15:09:42.717028",
+  "version": 1,
+  "instruction_history": []
+}

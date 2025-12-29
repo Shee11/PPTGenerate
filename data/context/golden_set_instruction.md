@@ -1,0 +1,5 @@
+I am working on an executive review, need to showcase the business value, customer pain points, what we have achieved cross multiple working streams, pls help produce a ppt suitable for executive review, with some punch lines encourages good interactions during the review
+
+It overall looks good, transcription enricher and transcription quality is a standalone chapter which lays the foundation for AI downstream app to consume and generate good quality AI output, pls separate it from interpreter. Multi-lingual STT is a model which can auto detect spoken language and help with the transcription quality when interpreter is turned on and people speaks different languages, pls put it as part of the interpreter chapter. Pls re-structure the ppt based on the info.
+
+Pls change the background color to light theme and make purple the major color for headline and font color goes with the matching colors.

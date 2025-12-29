@@ -182,5 +182,12 @@ WHEN TO USE GENERATE:
     def apply(self, state: "PipelineState", patch: StoryPatch) -> None:
         """Apply draft slides to state (replaces existing slides)."""
         if patch.slides:
-            state.set_slides(patch.slides)
+            # Post-processing: Fix consecutive same-layout issues
+            from src.paged.layout.slidev.validate_slides import fix_consecutive_layouts
+            fixed_slides, fix_report = fix_consecutive_layouts(patch.slides, verbose=True)
+            fixes_applied = sum(1 for line in fix_report if "→" in line)
+            if fixes_applied > 0:
+                self._log(f"🔧 Fixed {fixes_applied} consecutive layout issue(s)")
+            
+            state.set_slides(fixed_slides)
             self._log(f"Applied: {len(patch.slides)} draft slides")

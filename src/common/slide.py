@@ -126,6 +126,10 @@ class Slide(PatchableContextBase):
         default_factory=dict,
         description="Strategy-specific parameters (e.g., connector for Solar_System)"
     )
+    mdx: str | None = Field(
+        default=None,
+        description="Raw MDX markup for react-mdx project (bypasses widget-based rendering)"
+    )
     
     def format_abstract(self) -> str:
         """Format slide as abstract."""

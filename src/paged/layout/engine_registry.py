@@ -21,7 +21,7 @@ class LayoutEngineRegistry:
         
         # Select at runtime
         engine = LayoutEngineRegistry.get_active_engine()
-        docs = engine.get_layout_documentation()
+        docs = engine.get_layout_prompt()
     """
     
     _engines: Dict[str, Type[LayoutEngine]] = {}
@@ -168,4 +168,15 @@ def _auto_register_dummy_engine():
         pass
 
 
+def _auto_register_react_engine():
+    """Automatically register the React MDX layout engine."""
+    try:
+        from src.paged.layout.react.layout_engine import ReactLayoutEngine
+        LayoutEngineRegistry.register("react", ReactLayoutEngine)
+    except ImportError:
+        # React engine not available, continue without it
+        pass
+
+
 _auto_register_dummy_engine()
+_auto_register_react_engine()
