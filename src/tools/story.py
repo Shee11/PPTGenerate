@@ -22,6 +22,8 @@ if TYPE_CHECKING:
 class StoryContext(ToolContext):
     """Context for story planning - holds atoms and existing slides."""
     atoms_collection: Optional[Any] = Field(default=None, description="AtomCollection for planning")
+    source_content: Optional[str] = Field(default=None, description="Source content for direct generation")
+    source_path: Optional[str] = Field(default=None, description="Source file path")
     existing_slides: Optional[List[Dict]] = Field(default=None, description="Existing slides for refinement")
     intent_guidance: str = Field(default="", description="Guidance from constitution")
     slide_count_target: Optional[int] = Field(default=None, description="Target slide count")
@@ -56,8 +58,8 @@ OUTPUT: Draft slides with story, atoms, density, visual_design populated.
 Layout and widgets are EMPTY (filled by content tool).
 
 MODES:
-1. mode="generate": Plan complete story arc from atoms
-2. mode="refine": Modify existing story (merge/split/reorder slides)
+1. mode="generate": Generate story directly from source content (SCQA framework)
+2. mode="refine": Modify existing story using atoms (merge/split/reorder slides)
 
 WHEN TO USE REFINE:
 - "merge page 3 and 4" → refine existing story
@@ -118,23 +120,39 @@ WHEN TO USE GENERATE:
         if mode == "refine" and state.slides:
             existing_slides = state.slides
         
-        # Get atoms and apply filter
-        atoms_collection = state.get_atoms()
-        atom_filter = params.get("atom_filter")
-        if atom_filter and atoms_collection:
-            from src.generation.todo.models import AtomFilter
-            if isinstance(atom_filter, dict):
-                atom_filter = AtomFilter(**atom_filter)
-            
-            all_atoms = atoms_collection.list_contexts()
-            atom_dicts = [a.model_dump() if hasattr(a, 'model_dump') else a for a in all_atoms]
-            filtered_atoms = atom_filter.apply(atom_dicts)
-            
-            filter_info = f"\n\nAtom filtering: {len(filtered_atoms)}/{len(atom_dicts)} atoms selected"
-            intent_guidance += filter_info
+        # Generate mode: use source content directly
+        # Refine mode: use atoms
+        source_content = None
+        source_path = None
+        atoms_collection = None
+        
+        if mode == "generate" and not existing_slides:
+            # Direct generation from source
+            if state.source:
+                from pathlib import Path
+                source_path_obj = Path(state.source.path)
+                source_content = source_path_obj.read_text(encoding='utf-8')
+                source_path = str(source_path_obj.absolute())
+        else:
+            # Refinement mode: use atoms
+            atoms_collection = state.get_atoms()
+            atom_filter = params.get("atom_filter")
+            if atom_filter and atoms_collection:
+                from src.generation.todo.models import AtomFilter
+                if isinstance(atom_filter, dict):
+                    atom_filter = AtomFilter(**atom_filter)
+                
+                all_atoms = atoms_collection.list_contexts()
+                atom_dicts = [a.model_dump() if hasattr(a, 'model_dump') else a for a in all_atoms]
+                filtered_atoms = atom_filter.apply(atom_dicts)
+                
+                filter_info = f"\n\nAtom filtering: {len(filtered_atoms)}/{len(atom_dicts)} atoms selected"
+                intent_guidance += filter_info
         
         return StoryContext(
             atoms_collection=atoms_collection,
+            source_content=source_content,
+            source_path=source_path,
             existing_slides=existing_slides,
             intent_guidance=intent_guidance,
             slide_count_target=slide_count_target,
@@ -142,10 +160,7 @@ WHEN TO USE GENERATE:
     
     def transform(self, context: StoryContext, user_instruction: str) -> StoryPatch:
         """Execute story planning via LLM."""
-        from src.generation.content.story_generator import generate_story, refine_story
-        
-        if not context.atoms_collection:
-            raise ValueError("No atoms in context for story planning")
+        from src.generation.content.story_generator import generate_story, generate_story_from_source, refine_story
         
         # Build full guidance
         full_guidance = context.intent_guidance
@@ -155,10 +170,11 @@ WHEN TO USE GENERATE:
             else:
                 full_guidance = f"User instruction: {user_instruction}"
         
-        atom_count = len(context.atoms_collection.list_contexts())
-        
         if context.existing_slides:
-            # Refinement mode
+            # Refinement mode - use atoms
+            if not context.atoms_collection:
+                raise ValueError("No atoms in context for story refinement")
+            
             self._log(f"Refining story for {len(context.existing_slides)} existing slides")
             draft_slides = refine_story(
                 existing_slides=context.existing_slides,
@@ -166,8 +182,18 @@ WHEN TO USE GENERATE:
                 user_instruction=user_instruction,
                 intent_guidance=full_guidance,
             )
-        else:
-            # Generate mode
+        elif context.source_content:
+            # Generate mode - direct from source
+            self._log(f"Generating story from source ({len(context.source_content)} chars)")
+            draft_slides = generate_story_from_source(
+                source_content=context.source_content,
+                user_instruction=user_instruction,
+                slide_count=context.slide_count_target,
+                intent_guidance=full_guidance,
+            )
+        elif context.atoms_collection:
+            # Fallback: atoms-based generation
+            atom_count = len(context.atoms_collection.list_contexts())
             self._log(f"Planning story from {atom_count} atoms")
             draft_slides = generate_story(
                 atoms=context.atoms_collection,
@@ -175,6 +201,8 @@ WHEN TO USE GENERATE:
                 slide_count=context.slide_count_target,
                 intent_guidance=full_guidance,
             )
+        else:
+            raise ValueError("No source content or atoms in context for story planning")
         
         self._log(f"Planned {len(draft_slides)} draft slides")
         return StoryPatch(slides=draft_slides)

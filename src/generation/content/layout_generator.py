@@ -54,25 +54,46 @@ def _get_layout_prompt(
     """Build prompt for layout generation."""
     drafts_json = json.dumps(draft_slides, indent=2)
     
-    # Only include atoms that are referenced by the draft slides
-    referenced_atom_ids = set()
-    for slide in draft_slides:
-        for atom_id in slide.get("atoms", []):
-            referenced_atom_ids.add(atom_id)
+    # Check if slides have embedded content or use atoms
+    has_embedded_content = any(slide.get("content") for slide in draft_slides)
     
-    # Filter atoms to only those referenced
-    referenced_atoms = []
-    for atom in atoms.list_contexts():
-        if atom.id in referenced_atom_ids:
-            content = _get_atom_content(atom)
-            referenced_atoms.append({
-                "id": atom.id,
-                "type": _get_atom_type(atom),
-                "content": content[:500] if len(content) > 500 else content,
-                "rank": atom.rank,
-            })
-    
-    atoms_json = json.dumps(referenced_atoms, indent=2)
+    if has_embedded_content:
+        # Source-based: slides have content field, use it directly
+        content_section = f"""## Draft Slides with Embedded Content
+```json
+{drafts_json}
+```
+
+Note: These slides have embedded content from source. Use the content.sections to populate widgets."""
+    else:
+        # Atom-based: extract referenced atoms
+        referenced_atom_ids = set()
+        for slide in draft_slides:
+            for atom_id in slide.get("atoms", []):
+                referenced_atom_ids.add(atom_id)
+        
+        # Filter atoms to only those referenced
+        referenced_atoms = []
+        for atom in atoms.list_contexts():
+            if atom.id in referenced_atom_ids:
+                content = _get_atom_content(atom)
+                referenced_atoms.append({
+                    "id": atom.id,
+                    "type": _get_atom_type(atom),
+                    "content": content[:500] if len(content) > 500 else content,
+                    "rank": atom.rank,
+                })
+        
+        atoms_json = json.dumps(referenced_atoms, indent=2)
+        content_section = f"""## Draft Slides
+```json
+{drafts_json}
+```
+
+## Referenced Atoms
+```json
+{atoms_json}
+```"""
     
     # Build context section - only include layout/widgets from context slides, not full content
     context_section = ""
@@ -85,18 +106,10 @@ def _get_layout_prompt(
     
     return f"""# SLIDE LAYOUT GENERATION
 
-## Draft Slides
-```json
-{drafts_json}
-```
-
-## Referenced Atoms
-```json
-{atoms_json}
-```
+{content_section}
 {context_section}
 # TASK
-For each draft slide: select layout based on visual_design, populate widgets from atoms, set state="active".
+For each draft slide: select layout based on visual_design, populate widgets from atoms or embedded content, set state="active".
 
 # LAYOUTS (name: slots)
 - hero-split: left, right
