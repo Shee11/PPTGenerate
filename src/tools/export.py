@@ -132,7 +132,7 @@ class ExportTool(DirectTool[ExportContext, ExportPatch]):
         output_dir = output_path.parent
         session_folder = output_dir.name  # e.g., "slide_20251222_56"
         # base_path = f"/static/{session_folder}/"
-        base_path = f"/static/{session_folder}/"
+        base_path = f"/output/{session_folder}/"
         
         # Run Slidev build
         self._log(f"Running Slidev build with base={base_path}...")

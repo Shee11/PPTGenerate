@@ -138,8 +138,8 @@ def get_preview_html(session_id: str) -> str:
     if not session_id:
         return "<div style='height:600px;background:#f0f0f0;display:flex;align-items:center;justify-content:center;'>No session selected</div>"
     timestamp = datetime.now().timestamp()
-    # Use FastAPI static mount: /static/{session_id}/index.html
-    return f'<iframe src="/static/{session_id}/?t={timestamp}" width="100%" height="600" style="border:1px solid #ccc;"></iframe>'
+    # Use FastAPI static mount: /output/{session_id}/index.html
+    return f'<iframe src="/output/{session_id}/?t={timestamp}" width="100%" height="600" style="border:1px solid #ccc;"></iframe>'
 
 
 async def run_generation_async(
@@ -583,11 +583,11 @@ if __name__ == "__main__":
     
     # Get the FastAPI app from Gradio and mount static files
     fastapi_app = FastAPI()
-    fastapi_app.mount("/static", StaticFiles(directory="output", html=True), name="output")
+    fastapi_app.mount("/output", StaticFiles(directory="output", html=True), name="output")
     fastapi_app = gr.mount_gradio_app(fastapi_app, gradio_app, path="/gradio")
     
     print("🚀 Starting server...")
     print(f"   Gradio UI: http://127.0.0.1:{args.port}/gradio/")
-    print(f"   Static files: http://127.0.0.1:{args.port}/static/")
+    print(f"   Static files: http://127.0.0.1:{args.port}/output/")
     
     uvicorn.run(fastapi_app, host=args.host, port=args.port)
