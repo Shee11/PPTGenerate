@@ -1,0 +1,607 @@
+[
+  {
+    "id": "slide_01",
+    "rank": 1,
+    "state": "draft",
+    "story": "cover: introduce vision and context",
+    "density": "minimal",
+    "visual_design": "Simple title layout with subtitle and team block; muted background; space for Microsoft logo.",
+    "content": {
+      "headline": "AI turns meetings into immediate, editable artifacts",
+      "subtitle": "Doc Co‑Creation Agent in Teams to power Copilot usage and make Teams the OS of work",
+      "category": "cover",
+      "presenters": [
+        {
+          "name": "Yu / Chao / Bo",
+          "role": "Product & Engineering",
+          "org": "Microsoft"
+        }
+      ],
+      "date": "2025-12-01"
+    },
+    "atoms": [],
+    "layout": "",
+    "widgets": {}
+  },
+  {
+    "id": "slide_02",
+    "rank": 2,
+    "state": "draft",
+    "story": "Situation: establish current business-critical role of documents and Teams",
+    "density": "moderate",
+    "visual_design": "2-column framework: left = 'Work Runs on Artifacts', right = 'Teams is the Collaboration Hub'; use simple iconography, no complex charts.",
+    "content": {
+      "headline": "Enterprise impact still depends on PPT and Word artifacts",
+      "subtitle": "Meetings and chats only create value once turned into specs, decks, and docs",
+      "category": "Situation",
+      "speaker_intent": "Align leadership that our revenue, decisions, and customer impact are mediated through Office artifacts, not just conversations.",
+      "sections": [
+        {
+          "title": "Artifacts drive execution and business outcomes",
+          "bullets": [
+            {
+              "text": "Critical decisions, funding, and execution plans are documented in specs, slide decks, and written proposals."
+            },
+            {
+              "text": "Over 30M PowerPoint files are created every day, underscoring how central slides are to how enterprises think and decide."
+            },
+            {
+              "text": "Word and PPT are the de facto languages of enterprise storytelling and alignment."
+            }
+          ]
+        },
+        {
+          "title": "Teams already concentrates collaboration and context",
+          "bullets": [
+            {
+              "text": "Teams is where meetings happen, chats unfold, and files are shared and discussed."
+            },
+            {
+              "text": "Meeting audio/video, chat histories, and shared documents together capture the richest picture of user intent."
+            },
+            {
+              "text": "Yet the final artifacts that matter (PPTX, DOCX) are still produced outside the live collaboration flow."
+            }
+          ]
+        }
+      ]
+    },
+    "atoms": [],
+    "layout": "",
+    "widgets": {}
+  },
+  {
+    "id": "slide_03",
+    "rank": 3,
+    "state": "draft",
+    "story": "Complication: quantify the productivity and value leakage of manual document creation",
+    "density": "moderate",
+    "visual_design": "Cause-and-effect flow diagram from 'Live discussion' → 'Manual translation' → 'Delayed artifacts' → 'Slower execution'; annotate with bullet callouts.",
+    "content": {
+      "headline": "Manual document creation after meetings drains productivity",
+      "subtitle": "Human bottlenecks slow the conversion of spoken intent into tool-ready outputs",
+      "category": "Complication",
+      "speaker_intent": "Create urgency by framing current workflows as a structural productivity loss and risk to Copilot value realization.",
+      "sections": [
+        {
+          "title": "Meeting outputs are stuck in a legacy workflow",
+          "bullets": [
+            {
+              "text": "Historically, the only meeting output was text minutes; today, work requires structured artifacts across PPT, ADO, specs, and whiteboards."
+            },
+            {
+              "text": "Modern meetings still mostly produce raw text or unstructured notes that require significant post-processing."
+            },
+            {
+              "text": "Participants cannot both engage in a live discussion and operate multiple tools fast enough to generate structured outputs in real time."
+            }
+          ]
+        },
+        {
+          "title": "The cost: time drain, delay, and lost quality",
+          "bullets": [
+            {
+              "text": "Employees spend disproportionate time on formatting, layout, and style instead of high-value strategic thinking."
+            },
+            {
+              "text": "The 'blank page' problem makes it hard to turn dense meeting content into concise, coherent slide narratives."
+            },
+            {
+              "text": "Non-designers struggle to achieve polished, enterprise-ready aesthetics, leading to inconsistent quality and frustration."
+            }
+          ]
+        }
+      ]
+    },
+    "atoms": [],
+    "layout": "",
+    "widgets": {}
+  },
+  {
+    "id": "slide_04",
+    "rank": 4,
+    "state": "draft",
+    "story": "Complication + Question: introduce competitive and market pressure, raise strategic question",
+    "density": "moderate",
+    "visual_design": "2x2 matrix: X-axis = 'Use of enterprise context', Y-axis = 'Fidelity of output'; plot 'Generic summarizers', 'Gamma', 'Gemini', and 'Teams today'; highlight white space in top-right as opportunity.",
+    "content": {
+      "headline": "Competitors target AI slide creation while we leave a gap",
+      "subtitle": "Gamma’s 70M users and Gemini pressure show demand for AI-first content generation",
+      "category": "Question",
+      "speaker_intent": "Highlight that inaction risks ceding the highest-value AI use case to competitors and under-monetizing Copilot.",
+      "sections": [
+        {
+          "title": "Market signals show explosive demand for AI-generated slides",
+          "bullets": [
+            {
+              "text": "Gamma, a dedicated AI slide and doc generator, has already attracted over 70M users."
+            },
+            {
+              "text": "Generative AI tools are shifting expectations from manual editing to direct content generation from ideas and discussions."
+            },
+            {
+              "text": "Users increasingly expect 'one-click' conversion from intent to polished slides and docs."
+            }
+          ]
+        },
+        {
+          "title": "Our current position underutilizes our unique assets",
+          "bullets": [
+            {
+              "text": "Copilot and PowerPoint already support PPT generation, but they operate largely on static prompts and files, not live meeting context."
+            },
+            {
+              "text": "Teams today does not fully exploit its access to fresh meeting audio/video, chats, shared files, and histories to generate artifacts in real time."
+            },
+            {
+              "text": "This creates a 'crisis of inaction': we risk losing the killer AI use case to point solutions while owning the richest data and Office formats."
+            }
+          ]
+        },
+        {
+          "title": "Strategic question",
+          "bullets": [
+            {
+              "text": "How do we turn every Teams meeting into an automatic generator of high-fidelity Office artifacts, strengthening Copilot value and our competitive moat?"
+            }
+          ]
+        }
+      ]
+    },
+    "atoms": [],
+    "layout": "",
+    "widgets": {}
+  },
+  {
+    "id": "slide_05",
+    "rank": 5,
+    "state": "draft",
+    "story": "Answer: introduce the core solution and its transformative promise",
+    "density": "minimal",
+    "visual_design": "Before/After bridge chart: left = 'Today: Talk → Notes → Manual Docs'; right = 'Future: Talk → AI Agent → PPTX/DOCX/ADO in real time'; center arrow labeled with punchline.",
+    "content": {
+      "headline": "Doc co‑creation agent in Teams turns spoken intent into artifacts",
+      "subtitle": "AI generates PPT and Word directly from live meetings, chats, and channel context",
+      "category": "Answer",
+      "speaker_intent": "Land the core idea crisply and position it as a natural extension of Teams and Copilot.",
+      "sections": [
+        {
+          "title": "Core proposition",
+          "bullets": [
+            {
+              "text": "Build a Teams-native doc co‑creation agent that listens to meetings and reads chats and shared files to generate PPTX and DOCX automatically."
+            },
+            {
+              "text": "Unify in-meeting discussion and document creation into a single workflow, enabling artifacts to be created during or immediately after the meeting."
+            },
+            {
+              "text": "Extend the same content generation engine to other Microsoft content platforms such as SharePoint over time."
+            }
+          ]
+        },
+        {
+          "title": "Punchline",
+          "bullets": [
+            {
+              "text": "Spoken intent becomes immediate, tool-ready output inside Teams."
+            }
+          ]
+        }
+      ]
+    },
+    "atoms": [],
+    "layout": "",
+    "widgets": {}
+  },
+  {
+    "id": "slide_06",
+    "rank": 6,
+    "state": "draft",
+    "story": "Answer: zoom into user experience and workflow inside Teams",
+    "density": "moderate",
+    "visual_design": "User journey swimlane with 3 phases: 'During meeting', 'Immediately after', 'Collaborative refinement'; annotate where 'PPT Maker' panel and preview window appear.",
+    "content": {
+      "headline": "Teams-native PPT Maker unifies discussion and document creation",
+      "subtitle": "Interactive co‑creation panel plus live slide preview embedded in the meeting experience",
+      "category": "Answer",
+      "speaker_intent": "Help leadership visualize the experience and understand why it must live in Teams, not just in standalone Office apps.",
+      "sections": [
+        {
+          "title": "In-meeting experience",
+          "bullets": [
+            {
+              "text": "A 'PPT Maker' panel appears within Teams, enabling participants to interact with the agent during the meeting."
+            },
+            {
+              "text": "The agent listens to the evolving conversation, captures decisions and key points, and proposes slide structures in real time."
+            },
+            {
+              "text": "A preview window shows draft slides (e.g., 'Advanced AI-Driven Speech Recognition & Enhancement System') as they are generated."
+            }
+          ]
+        },
+        {
+          "title": "Post-meeting and collaborative refinement",
+          "bullets": [
+            {
+              "text": "Users can navigate thumbnails, enter full-screen mode, and quickly review or adjust generated slides immediately after the meeting."
+            },
+            {
+              "text": "Teams’ collaboration model allows multiple users to review, edit, and refine the document together in real time."
+            },
+            {
+              "text": "The same agent can generate Word specs or other 'Smart Docs' using the same meeting and channel context."
+            }
+          ]
+        },
+        {
+          "title": "Why Teams is the right home",
+          "bullets": [
+            {
+              "text": "Teams uniquely combines live audio/video, chat, and shared files, giving the agent a multi-modal grounding competitors cannot match."
+            }
+          ]
+        }
+      ]
+    },
+    "atoms": [],
+    "layout": "",
+    "widgets": {}
+  },
+  {
+    "id": "slide_07",
+    "rank": 7,
+    "state": "draft",
+    "story": "Answer Deep Dive: explain the technical workflow and feasibility",
+    "density": "dense",
+    "visual_design": "Process flow diagram (consulting-style) with 4 main blocks: Orchestrator → Data Miner → Content Creator (Weaver + Structurer) → Assembler & Engine; use a Sankey-style flow or left-to-right process chart.",
+    "content": {
+      "headline": "Orchestrated AI pipeline makes high-fidelity artifacts technically feasible",
+      "subtitle": "Dispatcher, Miner, Weaver, Structurer, and Assembler collaborate to produce PPTX/DOCX/HTML/MP4",
+      "category": "Answer",
+      "speaker_intent": "Demonstrate that this is an engineered system with clear components, not a vague AI wish list.",
+      "sections": [
+        {
+          "title": "1. Orchestrator plans tasks based on user intent",
+          "bullets": [
+            {
+              "text": "A Dispatcher interprets user input (requested slides, context, instructions) and plans the sequence of tasks."
+            },
+            {
+              "text": "It determines which enterprise data sources to query and what artifacts to generate."
+            }
+          ]
+        },
+        {
+          "title": "2. Miner extracts facts from enterprise data",
+          "bullets": [
+            {
+              "text": "The Miner pulls 'Facts' from meetings, chats, and documents into a structured Content Pool."
+            },
+            {
+              "text": "Content is organized into Atoms such as architecture details, metrics, and code snippets for precise reuse."
+            }
+          ]
+        },
+        {
+          "title": "3. Weaver and Structurer turn facts into narratives",
+          "bullets": [
+            {
+              "text": "The Weaver synthesizes extracted facts into coherent narration aligned to the meeting’s storyline."
+            },
+            {
+              "text": "The Structurer organizes that narration into slides and chapters, ensuring systematic narrative flow."
+            }
+          ]
+        },
+        {
+          "title": "4. Assembler and Engine finalize layout and format",
+          "bullets": [
+            {
+              "text": "The Assembler applies layout and style, targeting a polished, enterprise-ready aesthetic."
+            },
+            {
+              "text": "An Engine layer (HTML, FFMPEG, python-pptx) outputs final artifacts in HTML, PPTX, DOCX, or MP4 formats."
+            }
+          ]
+        }
+      ]
+    },
+    "atoms": [],
+    "layout": "",
+    "widgets": {}
+  },
+  {
+    "id": "slide_08",
+    "rank": 8,
+    "state": "draft",
+    "story": "Answer: articulate the differentiated moat vs. competitors and internal alternatives",
+    "density": "moderate",
+    "visual_design": "Moat flywheel diagram: 'Teams meetings & data' → 'AI doc co‑creation' → 'More usage & data gravity' → 'Stronger Copilot value & retention' → back to 'Teams meetings & data'; annotate with advantages vs. Zoom/Slack/Gamma.",
+    "content": {
+      "headline": "Microsoft’s integrated stack creates a defensible doc co‑creation moat",
+      "subtitle": "Teams + Office formats + Copilot enable a solution competitors cannot easily copy",
+      "category": "Answer",
+      "speaker_intent": "Reassure leadership that this investment deepens our strategic moat, not just adds another feature.",
+      "sections": [
+        {
+          "title": "We own the full stack competitors rely on",
+          "bullets": [
+            {
+              "text": "Teams holds the meeting data (audio/video, chats, shared files, histories)."
+            },
+            {
+              "text": "Microsoft controls the file standards (PPTX, DOCX) that define enterprise artifacts."
+            },
+            {
+              "text": "Copilot provides the AI layer to interpret intent and generate content."
+            }
+          ]
+        },
+        {
+          "title": "Competitors cannot match seamless, native Office outputs",
+          "bullets": [
+            {
+              "text": "Zoom and Slack can summarize meetings but cannot natively generate high-fidelity, editable Office documents as seamlessly."
+            },
+            {
+              "text": "Third-party tools like Gamma generate slides but operate outside Teams and without deep access to enterprise context."
+            },
+            {
+              "text": "Our agent uses fresh meeting knowledge plus chats and files to ground outputs in real enterprise data."
+            }
+          ]
+        },
+        {
+          "title": "Differentiation vs. existing internal solutions",
+          "bullets": [
+            {
+              "text": "Unlike generic Copilot in PowerPoint, the Teams agent is context-rich, using live conversations and collaboration history."
+            },
+            {
+              "text": "We remain open to integrating with existing services like Societas where they are ready, but Teams is the orchestration hub."
+            }
+          ]
+        }
+      ]
+    },
+    "atoms": [],
+    "layout": "",
+    "widgets": {}
+  },
+  {
+    "id": "slide_09",
+    "rank": 9,
+    "state": "draft",
+    "story": "Answer: quantify business value levers—monetization, stickiness, data gravity",
+    "density": "moderate",
+    "visual_design": "3-part value framework (horizontal): 'Monetize Copilot' / 'Deepen moat' / 'Increase Teams stickiness & data gravity'; under each, 2–3 concise bullets.",
+    "content": {
+      "headline": "Doc co‑creation unlocks Copilot monetization and Teams stickiness",
+      "subtitle": "One-click PPT becomes the killer app that keeps work and data in our ecosystem",
+      "category": "Answer",
+      "speaker_intent": "Connect the solution directly to revenue (ARPU uplift), retention, and strategic positioning.",
+      "sections": [
+        {
+          "title": "1. Drive Copilot monetization (ARPU uplift)",
+          "bullets": [
+            {
+              "text": "‘One-click to PPT’ is a tangible, high-value feature that directly justifies the $30/month Copilot for Microsoft 365 license."
+            },
+            {
+              "text": "It moves AI from 'nice to have' to 'essential for workflow' by solving a daily, painful task for knowledge workers."
+            }
+          ]
+        },
+        {
+          "title": "2. Deepen competitive moat",
+          "bullets": [
+            {
+              "text": "Ecosystem advantage: we uniquely combine Teams, Office formats, and Copilot into a tightly integrated experience."
+            },
+            {
+              "text": "Hard to copy: competitors can summarize meetings but cannot generate native, high-fidelity PPTX/DOCX tied to live collaboration."
+            }
+          ]
+        },
+        {
+          "title": "3. Increase platform stickiness and data gravity",
+          "bullets": [
+            {
+              "text": "By moving document creation inside Teams, we transform it from a communication tool into the OS of work."
+            },
+            {
+              "text": "Users never have to leave Teams to create or edit artifacts, increasing time-in-app and reducing churn."
+            },
+            {
+              "text": "If the best way to draft a document is to 'have a meeting about it,' users are incentivized to host more discussions and store more data in our ecosystem."
+            }
+          ]
+        }
+      ]
+    },
+    "atoms": [],
+    "layout": "",
+    "widgets": {}
+  },
+  {
+    "id": "slide_10",
+    "rank": 10,
+    "state": "draft",
+    "story": "Answer: acknowledge key challenges and proposed mitigations to de-risk",
+    "density": "moderate",
+    "visual_design": "Risk vs. Mitigation table: left column = 'Challenge', right column = 'Mitigation approach'; 3–4 rows.",
+    "content": {
+      "headline": "Key challenges are known and can be systematically de-risked",
+      "subtitle": "WOW quality, aesthetic evaluation, and narrative coherence require focused investment",
+      "category": "Answer",
+      "speaker_intent": "Show that we are realistic about execution risks and have a plan to address them.",
+      "sections": [
+        {
+          "title": "Technical and experience challenges",
+          "bullets": [
+            {
+              "text": "Achieving a 'WOW' effect in generated slides is difficult and requires robust aesthetic evaluation."
+            },
+            {
+              "text": "Building systematic, coherent narratives from noisy meeting inputs is non-trivial."
+            },
+            {
+              "text": "Dataset construction for layout, style, and narrative quality is a significant effort."
+            }
+          ]
+        },
+        {
+          "title": "Organizational constraints",
+          "bullets": [
+            {
+              "text": "Current resource limitations in SOX CMD make it hard for the team to own this project end-to-end."
+            }
+          ]
+        },
+        {
+          "title": "Mitigation approach",
+          "bullets": [
+            {
+              "text": "Invest in dedicated design resources to define aesthetic evaluation metrics and target enterprise-grade styles."
+            },
+            {
+              "text": "Leverage Teams’ rich telemetry and existing documents to bootstrap datasets for narrative and layout training."
+            },
+            {
+              "text": "Structure the project as a focused, cross-functional effort with clear ownership and milestones."
+            }
+          ]
+        }
+      ]
+    },
+    "atoms": [],
+    "layout": "",
+    "widgets": {}
+  },
+  {
+    "id": "slide_11",
+    "rank": 11,
+    "state": "draft",
+    "story": "Answer: clarify resource ask and what leadership’s decision will enable",
+    "density": "minimal",
+    "visual_design": "Simple Gantt-style bar or milestone list for phases (e.g., Prototype, Pilot, GA) aligned with resource blocks; no dates invented—leave timing conceptual.",
+    "content": {
+      "headline": "Focused investment will convert Teams’ advantages into a flagship AI experience",
+      "subtitle": "Request: 6 devs (3 senior+) plus designer support to deliver a WOW co‑creation agent",
+      "category": "Answer",
+      "speaker_intent": "Make a concrete ask and tie it to the impact and feasibility already established.",
+      "sections": [
+        {
+          "title": "Resourcing ask",
+          "bullets": [
+            {
+              "text": "Engineering: 6 developers, including at least 3 senior engineers, to own orchestrator, mining, content creation, and integration layers."
+            },
+            {
+              "text": "Design: dedicated designer(s) to define visual standards and aesthetic evaluation metrics for PPT and Word outputs."
+            }
+          ]
+        },
+        {
+          "title": "What this investment enables",
+          "bullets": [
+            {
+              "text": "A Teams-integrated doc co‑creation agent that showcases Copilot’s value in a daily, high-visibility workflow."
+            },
+            {
+              "text": "A differentiated, defensible feature that strengthens Teams as the OS of work and increases Copilot ARPU justification."
+            },
+            {
+              "text": "A reusable content generation engine extensible to SharePoint and other Microsoft applications."
+            }
+          ]
+        },
+        {
+          "title": "Punchline",
+          "bullets": [
+            {
+              "text": "A relatively small, focused team can unlock a flagship AI use case anchored in our core ecosystem."
+            }
+          ]
+        }
+      ]
+    },
+    "atoms": [],
+    "layout": "",
+    "widgets": {}
+  },
+  {
+    "id": "slide_12",
+    "rank": 12,
+    "state": "draft",
+    "story": "ending: crystallize decision and close on vision",
+    "density": "minimal",
+    "visual_design": "Decision slide with 2–3 bullet decision points and a short vision statement; simple layout.",
+    "content": {
+      "headline": "Decision: fund Teams doc co‑creation to make meetings produce work, not work about work",
+      "subtitle": "Approve resources to build the AI agent that turns every Teams meeting into immediate, high-fidelity Office artifacts",
+      "category": "ending"
+    },
+    "atoms": [],
+    "layout": "",
+    "widgets": {}
+  },
+  {
+    "id": "slide_13",
+    "rank": 13,
+    "state": "draft",
+    "story": "data gap summary",
+    "density": "minimal",
+    "visual_design": "Simple bullet list grouped under 'Critical Data Gaps'; no charts.",
+    "content": {
+      "headline": "Data Gap Summary",
+      "category": "data",
+      "sections": [
+        {
+          "title": "Critical Data Gaps",
+          "bullets": [
+            {
+              "text": "No quantified estimate of time saved per user or per document by using the doc co‑creation agent vs. current manual workflows."
+            },
+            {
+              "text": "No explicit linkage between 30M PPT files/day and Microsoft’s own share (e.g., proportion created within Office/Teams)."
+            },
+            {
+              "text": "No projected impact on Copilot adoption or ARPU (e.g., expected increase in attach rate or usage if 'one-click PPT' is delivered)."
+            },
+            {
+              "text": "No timeline or phased roadmap data (e.g., expected duration for prototype, pilot, and GA) to accompany the resourcing ask."
+            },
+            {
+              "text": "No explicit user satisfaction or NPS benchmarks for current PPT creation pain to quantify improvement targets."
+            }
+          ]
+        }
+      ]
+    },
+    "atoms": [],
+    "layout": "",
+    "widgets": {}
+  }
+]
