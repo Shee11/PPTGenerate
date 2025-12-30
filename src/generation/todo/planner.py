@@ -538,7 +538,6 @@ def plan(state: "PipelineState", user_instruction: str) -> TodoQueue:
     deployment = os.getenv('AZURE_OPENAI_DEPLOYMENT', 'gpt-4o')
     
     logger.info(f"Planning todos for instruction: {user_instruction[:100]}...")
-    print(f"🤖 Planner: Calling LLM to plan todos...")
     
     try:
         # Call LLM
@@ -552,23 +551,18 @@ def plan(state: "PipelineState", user_instruction: str) -> TodoQueue:
         )
         
         logger.debug(f"Planner LLM response: {response}")
-        print(f"🤖 Planner LLM response (first 500 chars): {response[:500]}")
         
         # Parse response into TodoQueue
         queue = parse_planner_response(response, state)
         
         logger.info(f"Planned {len(queue.todos)} todos: {[t.type.value for t in queue.todos]}")
-        print(f"✅ Planner: Generated {len(queue.todos)} todos: {[(t.id, t.type.value, t.depends_on) for t in queue.todos]}")
         
         return queue
         
     except Exception as e:
         logger.error(f"Planner LLM call failed: {e}")
-        print(f"❌ Planner failed, using fallback queue. Error: {e}")
         # Return fallback queue
-        fallback = _create_fallback_queue(state)
-        print(f"📋 Fallback queue: {[(t.id, t.type.value, t.depends_on) for t in fallback.todos]}")
-        return fallback
+        return _create_fallback_queue(state)
 
 
 # =============================================================================
