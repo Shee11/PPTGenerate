@@ -1,9 +1,10 @@
 """CLI for UCE Render - uce-render command."""
 import json
+import re
 import shutil
 import sys
 from pathlib import Path
-from typing import Optional
+from typing import Optional, List
 
 import click
 
@@ -20,6 +21,34 @@ from src.paged.render.slidev.markdown_renderer import SlidevRenderer
 
 # Default instruction when --user-instruction is not provided
 DEFAULT_INSTRUCTION = "create slides, 10 page, professional, corp_modern_v1 theme"
+
+
+def parse_instruction_file(file_path: Path) -> List[str]:
+    """Parse a markdown instruction file into multiple instruction rounds.
+    
+    Each paragraph (text separated by one or more blank lines) becomes
+    a separate instruction round.
+    
+    Args:
+        file_path: Path to the markdown instruction file
+        
+    Returns:
+        List of instruction strings, one per round
+    """
+    content = file_path.read_text(encoding='utf-8')
+    
+    # Split by blank lines (one or more empty lines)
+    paragraphs = re.split(r'\n\s*\n', content.strip())
+    
+    # Clean up each paragraph and filter empty ones
+    instructions = []
+    for para in paragraphs:
+        # Strip whitespace and remove any leading markdown artifacts
+        cleaned = para.strip()
+        if cleaned:
+            instructions.append(cleaned)
+    
+    return instructions
 
 
 @click.command()
@@ -94,6 +123,11 @@ DEFAULT_INSTRUCTION = "create slides, 10 page, professional, corp_modern_v1 them
     help='User guidance for LLM content generation'
 )
 @click.option(
+    '--user-instruction-file',
+    type=click.Path(exists=True, path_type=Path),
+    help='Markdown file with instructions. Each paragraph (separated by blank lines) is a separate round.'
+)
+@click.option(
     '--use-cache',
     type=click.Choice(['true', 'false'], case_sensitive=False),
     default='true',
@@ -159,6 +193,7 @@ def cli(
     list_strategies: bool,
     source: Optional[Path],
     user_instruction: Optional[str],
+    user_instruction_file: Optional[Path],
     use_cache: str,
     maxiter: int,
     interactive: bool,
@@ -276,7 +311,19 @@ def cli(
             from src.generation.todo.runner import PipelineRunner
             
             output_dir = Path(output)
-            instruction = user_instruction or DEFAULT_INSTRUCTION
+            
+            # Parse instruction(s) - file takes precedence, then inline, then default
+            if user_instruction_file:
+                instructions = parse_instruction_file(user_instruction_file)
+                if not instructions:
+                    click.echo(f"Warning: No instructions found in {user_instruction_file}, using default", err=True)
+                    instructions = [DEFAULT_INSTRUCTION]
+                if verbose:
+                    click.echo(f"📄 Loaded {len(instructions)} instruction round(s) from {user_instruction_file}", err=True)
+            elif user_instruction:
+                instructions = [user_instruction]
+            else:
+                instructions = [DEFAULT_INSTRUCTION]
             
             # Auto-select layout engine based on project if not specified
             effective_engine = layout_engine
@@ -298,17 +345,26 @@ def cli(
                 output_dir=output_dir
             )
             
-            result_state = runner.run(
-                source_path=effective_source,
-                user_instruction=instruction,
-                project=project,
-                mdx_theme=mdx_theme,
-            )
+            # Run pipeline for each instruction round
+            result_state = None
+            for round_idx, instruction in enumerate(instructions, 1):
+                if len(instructions) > 1:
+                    click.echo(f"\n{'='*50}")
+                    click.echo(f"📝 Round {round_idx}/{len(instructions)}")
+                    click.echo(f"   Instruction: {instruction[:100]}{'...' if len(instruction) > 100 else ''}")
+                    click.echo(f"{'='*50}")
+                
+                result_state = runner.run(
+                    source_path=effective_source,
+                    user_instruction=instruction,
+                    project=project,
+                    mdx_theme=mdx_theme,
+                )
             
             click.echo(f"\n{'='*50}")
             click.echo(result_state.summary())
             click.echo(f"{'='*50}")
-            click.echo(f"\n[OK] Pipeline completed")
+            click.echo(f"\n[OK] Pipeline completed ({len(instructions)} round{'s' if len(instructions) > 1 else ''})")
             click.echo(f"  Output: {output_dir}")
             return
         
