@@ -22,6 +22,7 @@ from fastapi.staticfiles import StaticFiles
 # Import pipeline components
 from src.generation.state import PipelineState
 from src.generation.todo.runner import PipelineRunner
+from src.generation.todo.models import TodoStatus
 from src.paged.render import SlidevRenderer
 
 
@@ -123,20 +124,16 @@ def get_todo_display(state: Optional[PipelineState], current_idx: Optional[int] 
     
     lines = []
     for i, todo in enumerate(state.todos.todos):
-        # Determine status icon and label
-        if current_idx is not None and i == current_idx:
+        # Determine status icon and label based on actual status
+        if todo.status == TodoStatus.IN_PROGRESS:
             # Currently executing
             status_icon = "🔄"
             label = _get_todo_label(todo.type.value)
-        elif todo.status == "completed":
+        elif todo.status == TodoStatus.COMPLETED:
             status_icon = "✅"
             label = todo.type.value
-        elif todo.status == "failed":
+        elif todo.status == TodoStatus.FAILED:
             status_icon = "❌"
-            label = todo.type.value
-        elif current_idx is not None and i < current_idx:
-            # Should be completed but isn't marked
-            status_icon = "✅"
             label = todo.type.value
         else:
             # Pending
@@ -240,32 +237,86 @@ async def run_generation_async(
         state_path.parent.mkdir(parents=True, exist_ok=True)
         state.save(state_path)
         
-        todo_display = get_todo_display(state)
+        todo_display = get_todo_display(state, current_idx=None)
         yield chat_history, todo_display, "🔄 Executing todos...", ""
         
-        # Execute todos one by one with updates
-        for i, todo in enumerate(todos.todos):
-            # Update display to show current execution state
-            current_todo_display = get_todo_display(state, current_idx=i)
-            current_label = _get_todo_label(todo.type.value)
-            
-            yield chat_history, current_todo_display, f"🔄 {current_label}", ""
-            await asyncio.sleep(0.1)  # Allow UI update
-            
-            # Execute the todo
+        # Execute all todos with live progress updates
+        import queue
+        import threading
+        
+        status_queue = queue.Queue()
+        
+        def status_callback(updated_state):
+            """Callback to notify UI of status changes."""
+            # Signal an update - we'll reload from disk in the main thread
+            print(f"📢 Status callback triggered - queuing update signal")
+            status_queue.put("update")
+        
+        # Set callback on executor
+        runner.executor.on_status_change = status_callback
+        print(f"✅ Callback registered on executor")
+        
+        # Run executor in background thread
+        def run_executor():
             try:
-                await asyncio.to_thread(runner.executor.execute_todo, todo, state, message)
-                todo.status = "completed"
+                runner.executor.execute_all(state, message)
+                status_queue.put("done")  # Signal completion
             except Exception as e:
-                todo.status = "failed"
-                print(f"Todo {todo.id} failed: {e}")
+                import traceback
+                traceback.print_exc()
+                status_queue.put(("error", e))  # Signal error
+        
+        executor_thread = threading.Thread(target=run_executor)
+        executor_thread.start()
+        
+        # Poll status queue and yield updates
+        last_todo_display = None
+        try:
+            while True:
+                # Check for status updates (non-blocking with timeout)
+                try:
+                    signal = status_queue.get(timeout=0.1)
+                    
+                    if signal == "done":
+                        # Completion signal
+                        break
+                    elif isinstance(signal, tuple) and signal[0] == "error":
+                        # Error signal
+                        raise signal[1]
+                    elif signal == "update":
+                        # Status update - reload state from disk and yield
+                        print(f"🔄 Received update signal - reloading state from {state_path}")
+                        try:
+                            current_state = PipelineState.load(state_path)
+                            current_display = get_todo_display(current_state, current_idx=None)
+                            print(f"📊 Todo display:\n{current_display}")
+                            
+                            # Only yield if display changed (avoid redundant updates)
+                            if current_display != last_todo_display:
+                                print(f"✨ Display changed - yielding to UI")
+                                last_todo_display = current_display
+                                yield chat_history, current_display, "🔄 Executing todos...", ""
+                            else:
+                                print(f"⏭️ Display unchanged - skipping yield")
+                        except Exception as load_err:
+                            print(f"⚠ Failed to reload state: {load_err}")
+                        
+                except queue.Empty:
+                    # No update yet, just continue polling
+                    await asyncio.sleep(0.05)
+                    continue
+        finally:
+            # Wait for thread to complete
+            executor_thread.join(timeout=2.0)
+            # Reload final state
+            state = PipelineState.load(state_path)
         
         # Save state
         state_path.parent.mkdir(parents=True, exist_ok=True)
         state.save(state_path)
         
         # Final todo display
-        final_todo_display = get_todo_display(state)
+        final_todo_display = get_todo_display(state, current_idx=None)
         
         # Add assistant response
         slide_count = len(state.slides or [])
