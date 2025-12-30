@@ -12,3 +12,6 @@ export type { TextProps } from './Text';
 
 export { Callout } from './Callout';
 export type { CalloutProps } from './Callout';
+
+export { Highlight } from './Highlight';
+export type { HighlightProps, HighlightColor } from './Highlight';

@@ -4,9 +4,10 @@
  * ChartBar Component (L2 Block)
  * 
  * Semantic bar chart component using Recharts.
+ * Supports both single-series and clustered (before/after) bar charts.
  * Automatically styled based on current theme.
  * 
- * Usage:
+ * Usage - Single series:
  * ```mdx
  * <ChartBar 
  *   title="Sales by Quarter"
@@ -15,7 +16,18 @@
  *     { label: "Q2", value: 150 },
  *     { label: "Q3", value: 120 }
  *   ]}
- *   height="md"
+ * />
+ * ```
+ * 
+ * Usage - Clustered (before/after comparison):
+ * ```mdx
+ * <ChartBar 
+ *   title="Performance Improvements"
+ *   data={[
+ *     { label: "Accuracy", before: 65.4, after: 74.8 },
+ *     { label: "Latency", before: 800, after: 450 },
+ *     { label: "CSAT", before: 42.9, after: 62.3 }
+ *   ]}
  * />
  * ```
  */
@@ -29,6 +41,7 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
+  Legend,
 } from 'recharts';
 import type { ChartDataPoint, Size } from '@/utils/types';
 
@@ -70,6 +83,36 @@ const heightMap: Record<Size, number> = {
 };
 
 // =============================================================================
+// Helper Functions
+// =============================================================================
+
+/**
+ * Detect if data is clustered (has before/after or current/target pairs)
+ */
+function isClusteredData(data: ChartDataPoint[]): boolean {
+  if (!data || data.length === 0) return false;
+  const first = data[0];
+  return (
+    (first.before !== undefined && first.after !== undefined) ||
+    (first.current !== undefined && first.target !== undefined)
+  );
+}
+
+/**
+ * Get cluster keys from data
+ */
+function getClusterKeys(data: ChartDataPoint[]): { key1: string; key2: string; label1: string; label2: string } {
+  const first = data[0];
+  if (first.before !== undefined && first.after !== undefined) {
+    return { key1: 'before', key2: 'after', label1: 'Before', label2: 'After' };
+  }
+  if (first.current !== undefined && first.target !== undefined) {
+    return { key1: 'current', key2: 'target', label1: 'Current', label2: 'Target' };
+  }
+  return { key1: 'value', key2: 'value', label1: 'Value', label2: 'Value' };
+}
+
+// =============================================================================
 // Component
 // =============================================================================
 
@@ -77,9 +120,9 @@ const heightMap: Record<Size, number> = {
  * ChartBar Component
  * 
  * Renders a responsive bar chart with theme-aware colors.
- * Supports integrated slots for title, subtitle, and callout.
+ * Automatically detects clustered data (before/after) and renders grouped bars.
  * 
- * @param data - Array of { label, value } objects
+ * @param data - Array of { label, value } or { label, before, after } objects
  * @param title - Optional chart title
  * @param subtitle - Optional chart subtitle
  * @param height - Chart height (sm, md, lg, full)
@@ -102,9 +145,12 @@ export function ChartBar({
   // Ensure data has valid values and is properly formatted
   const validData = (data || []).map(d => ({
     ...d,
-    label: d.label || d.name || '',
-    value: typeof d.value === 'number' && !isNaN(d.value) ? d.value : 0,
+    label: d.label || (d as any).name || '',
   })).filter(d => d.label);
+  
+  // Detect if this is clustered data
+  const isClustered = isClusteredData(validData);
+  const clusterKeys = isClustered ? getClusterKeys(validData) : null;
   
   return (
     <div className="chart-block">
@@ -147,11 +193,34 @@ export function ChartBar({
                 color: 'var(--theme-text)',
               }}
             />
-            <Bar 
-              dataKey="value" 
-              fill="var(--theme-primary)"
-              radius={[4, 4, 0, 0]}
-            />
+            {isClustered && clusterKeys ? (
+              // Clustered bars for before/after comparison
+              <>
+                <Legend 
+                  wrapperStyle={{ fontSize: 12 }}
+                  iconType="rect"
+                />
+                <Bar 
+                  dataKey={clusterKeys.key1}
+                  name={clusterKeys.label1}
+                  fill="var(--theme-text-muted)"
+                  radius={[4, 4, 0, 0]}
+                />
+                <Bar 
+                  dataKey={clusterKeys.key2}
+                  name={clusterKeys.label2}
+                  fill="var(--theme-primary)"
+                  radius={[4, 4, 0, 0]}
+                />
+              </>
+            ) : (
+              // Single series bars
+              <Bar 
+                dataKey="value" 
+                fill="var(--theme-primary)"
+                radius={[4, 4, 0, 0]}
+              />
+            )}
           </BarChart>
         </ResponsiveContainer>
       )}

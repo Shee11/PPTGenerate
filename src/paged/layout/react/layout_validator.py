@@ -25,6 +25,10 @@ class LayoutIssueType(Enum):
     LONELY_ELEMENT = "lonely_element"
     INSUFFICIENT_PAGE_COVERAGE = "insufficient_page_coverage"  # Page-level coverage below 70%
     CONTENT_GAPS = "content_gaps"  # Holes between content blocks
+    CONSECUTIVE_LISTS_WITHOUT_HEADER = "consecutive_lists_without_header"  # SmartLists without Heading between
+    METRIC_VALUE_TOO_LONG = "metric_value_too_long"  # Metric value exceeds 10 characters
+    DASHBOARD_CONTENT_MISMATCH = "dashboard_content_mismatch"  # Wrong content in dashboard main/sidebar
+    PROCESSSTRIP_TOO_WIDE = "processstrip_too_wide"  # ProcessStrip has too many items for narrow layout
 
 
 @dataclass
@@ -637,6 +641,375 @@ def _analyze_slot_content(slot_name: str, components: List[Dict]) -> SlotAnalysi
     )
 
 
+def _detect_consecutive_lists_without_header(mdx_content: str, slide_id: str) -> List[LayoutIssue]:
+    """Detect consecutive SmartList components without a Heading between them.
+    
+    This is a structural issue where the LLM generates multiple SmartLists
+    that should either be merged into one, or each should have its own header.
+    
+    Args:
+        mdx_content: MDX content to analyze
+        slide_id: Slide identifier for error reporting
+        
+    Returns:
+        List of LayoutIssue objects for detected violations
+    """
+    issues = []
+    
+    # Find all SmartList and Heading positions
+    # Pattern matches <SmartList with any attributes and content
+    smartlist_pattern = re.compile(r'<SmartList\s+[^>]*?/>', re.DOTALL)
+    # Also match SmartList with children (closing tag)
+    smartlist_pattern_with_children = re.compile(r'<SmartList\s+[^>]*?>.*?</SmartList>', re.DOTALL)
+    # Heading pattern
+    heading_pattern = re.compile(r'<Heading\s+[^>]*?>', re.DOTALL)
+    
+    # Extract component positions with their types
+    components = []
+    
+    # Find self-closing SmartLists
+    for match in smartlist_pattern.finditer(mdx_content):
+        # Extract id if present
+        id_match = re.search(r'id="([^"]*)"', match.group())
+        list_id = id_match.group(1) if id_match else f"smartlist_at_{match.start()}"
+        components.append({
+            'type': 'SmartList',
+            'start': match.start(),
+            'end': match.end(),
+            'id': list_id
+        })
+    
+    # Find SmartLists with children (shouldn't overlap with self-closing)
+    for match in smartlist_pattern_with_children.finditer(mdx_content):
+        # Check if this overlaps with already found self-closing lists
+        overlaps = any(
+            c['start'] <= match.start() < c['end'] or c['start'] < match.end() <= c['end']
+            for c in components if c['type'] == 'SmartList'
+        )
+        if not overlaps:
+            id_match = re.search(r'id="([^"]*)"', match.group())
+            list_id = id_match.group(1) if id_match else f"smartlist_at_{match.start()}"
+            components.append({
+                'type': 'SmartList',
+                'start': match.start(),
+                'end': match.end(),
+                'id': list_id
+            })
+    
+    # Find Headings
+    for match in heading_pattern.finditer(mdx_content):
+        components.append({
+            'type': 'Heading',
+            'start': match.start(),
+            'end': match.end(),
+            'id': None
+        })
+    
+    # Sort by position
+    components.sort(key=lambda x: x['start'])
+    
+    # Detect consecutive SmartLists without Heading between them
+    prev_smartlist = None
+    for comp in components:
+        if comp['type'] == 'SmartList':
+            if prev_smartlist is not None:
+                # Found consecutive SmartLists without Heading
+                issues.append(LayoutIssue(
+                    issue_type=LayoutIssueType.CONSECUTIVE_LISTS_WITHOUT_HEADER,
+                    severity="error",
+                    slide_id=slide_id,
+                    location="content area",
+                    description=f"Consecutive SmartList components without a Heading between them. "
+                               f"'{prev_smartlist['id']}' is immediately followed by '{comp['id']}'. "
+                               f"The second list appears orphaned without context.",
+                    suggestion="Either merge these lists into a single SmartList with all items combined, "
+                              "or add a Heading before the second SmartList to provide context. "
+                              "Each distinct list topic needs its own header.",
+                    affected_elements=[prev_smartlist['id'], comp['id']]
+                ))
+            prev_smartlist = comp
+        elif comp['type'] == 'Heading':
+            # Reset - Heading breaks the consecutive chain
+            prev_smartlist = None
+    
+    return issues
+
+
+def _detect_long_metric_values(mdx_content: str, slide_id: str, max_length: int = 10) -> List[LayoutIssue]:
+    """Detect Metric components with value text exceeding maximum length.
+    
+    Metric values should be short (e.g., "42%", "1.2M", "$5.4B"). Long values
+    will overflow the metric display. Long text should be moved to the label
+    or description prop instead.
+    
+    Args:
+        mdx_content: MDX content to analyze
+        slide_id: Slide identifier for error reporting
+        max_length: Maximum allowed characters for value prop (default 10)
+        
+    Returns:
+        List of LayoutIssue objects for detected violations
+    """
+    issues = []
+    
+    # Pattern to match Metric components and extract value prop
+    # Handles both value="..." and value={"..."} formats
+    metric_pattern = re.compile(
+        r'<Metric\s+[^>]*?value=["\']([^"\']*)["\'][^>]*?>',
+        re.DOTALL
+    )
+    # Also check for value={"..."} JSX format
+    metric_pattern_jsx = re.compile(
+        r'<Metric\s+[^>]*?value=\{["\']([^"\']*)["\']\}[^>]*?>',
+        re.DOTALL
+    )
+    
+    for pattern in [metric_pattern, metric_pattern_jsx]:
+        for match in pattern.finditer(mdx_content):
+            value = match.group(1)
+            if len(value) > max_length:
+                # Try to extract id or label for better error message
+                id_match = re.search(r'id=["\']([^"\']*)["\']', match.group())
+                label_match = re.search(r'label=["\']([^"\']*)["\']', match.group())
+                metric_id = id_match.group(1) if id_match else None
+                metric_label = label_match.group(1) if label_match else None
+                
+                identifier = metric_id or metric_label or f"metric_at_{match.start()}"
+                
+                issues.append(LayoutIssue(
+                    issue_type=LayoutIssueType.METRIC_VALUE_TOO_LONG,
+                    severity="warning",
+                    slide_id=slide_id,
+                    location="Metric component",
+                    description=f"Metric value '{value}' ({len(value)} chars) exceeds {max_length} character limit. "
+                               f"Long values will overflow the metric display.",
+                    suggestion=f"Shorten the value to a compact format (e.g., '1.2M', '$5.4B', '42%'). "
+                              f"Move descriptive text to the 'label' or 'description' prop instead.",
+                    affected_elements=[identifier]
+                ))
+    
+    return issues
+
+
+def _detect_processstrip_width_issues(mdx_content: str, slide_id: str) -> List[LayoutIssue]:
+    """Detect ProcessStrip components with too many items for narrow layouts.
+    
+    ProcessStrip is horizontal and needs width. Rules:
+    - 1:1 split column: max 3 items
+    - 1:2 split small side: max 2 items
+    - 2:1 split large side: max 4 items
+    - Full width (LayoutStacked, Dashboard Main): 5+ items OK
+    
+    Args:
+        mdx_content: MDX content to analyze
+        slide_id: Slide identifier for error reporting
+        
+    Returns:
+        List of LayoutIssue objects for detected violations
+    """
+    issues = []
+    
+    # Detect layout type and ratio
+    layout_match = re.search(r'<(Layout\w+)', mdx_content)
+    layout_type = layout_match.group(1) if layout_match else "LayoutStacked"
+    
+    # Get split ratio if applicable
+    ratio_match = re.search(r'ratio=["\'](\d+):(\d+)["\']', mdx_content)
+    ratio = (int(ratio_match.group(1)), int(ratio_match.group(2))) if ratio_match else (1, 1)
+    
+    # Pattern to find ProcessStrip and count items
+    processstrip_pattern = re.compile(
+        r'<ProcessStrip[^>]*items=\{?\[([^\]]+)\]',
+        re.DOTALL
+    )
+    
+    # Determine which slot each ProcessStrip is in
+    left_pattern = re.compile(r'<Left>(.*?)</Left>', re.DOTALL)
+    right_pattern = re.compile(r'<Right>(.*?)</Right>', re.DOTALL)
+    main_pattern = re.compile(r'<Main>(.*?)</Main>', re.DOTALL)
+    sidebar_pattern = re.compile(r'<Sidebar>(.*?)</Sidebar>', re.DOTALL)
+    
+    left_content = left_pattern.search(mdx_content)
+    right_content = right_pattern.search(mdx_content)
+    main_content = main_pattern.search(mdx_content)
+    sidebar_content = sidebar_pattern.search(mdx_content)
+    
+    def count_items(items_str: str) -> int:
+        """Count items in ProcessStrip items array."""
+        # Count quoted strings or object literals
+        # Simple strings: "item1", "item2" or 'item1', 'item2'
+        # Objects: {label: "..."}, {label: "..."}
+        string_items = re.findall(r'["\'][^"\']+["\']', items_str)
+        obj_items = re.findall(r'\{[^}]+\}', items_str)
+        # If objects found, count objects; otherwise count strings
+        if obj_items:
+            return len(obj_items)
+        return len(string_items)
+    
+    def get_max_items_for_slot(slot: str) -> int:
+        """Get max ProcessStrip items based on slot and layout."""
+        if layout_type == "LayoutSplit":
+            if slot == "left":
+                # Left side: check ratio
+                if ratio[0] >= ratio[1]:  # 1:1 or larger left
+                    return 3 if ratio[0] == ratio[1] else 4
+                else:  # smaller left
+                    return 2
+            elif slot == "right":
+                # Right side: check ratio
+                if ratio[1] >= ratio[0]:  # 1:1 or larger right
+                    return 3 if ratio[0] == ratio[1] else 4
+                else:  # smaller right
+                    return 2
+        elif layout_type == "LayoutDashboard":
+            if slot == "main":
+                return 4
+            elif slot == "sidebar":
+                return 2
+        # Full width layouts
+        return 6
+    
+    # Check ProcessStrips in each slot
+    slots_to_check = []
+    if left_content:
+        slots_to_check.append(("left", left_content.group(1)))
+    if right_content:
+        slots_to_check.append(("right", right_content.group(1)))
+    if main_content:
+        slots_to_check.append(("main", main_content.group(1)))
+    if sidebar_content:
+        slots_to_check.append(("sidebar", sidebar_content.group(1)))
+    
+    # If no slots found, check full content (LayoutStacked, etc.)
+    if not slots_to_check:
+        slots_to_check.append(("main", mdx_content))
+    
+    for slot_name, slot_content in slots_to_check:
+        for match in processstrip_pattern.finditer(slot_content):
+            items_str = match.group(1)
+            item_count = count_items(items_str)
+            max_items = get_max_items_for_slot(slot_name)
+            
+            if item_count > max_items:
+                # Extract id if available
+                id_match = re.search(r'id=["\']([^"\']*)["\']', match.group())
+                strip_id = id_match.group(1) if id_match else "ProcessStrip"
+                
+                issues.append(LayoutIssue(
+                    issue_type=LayoutIssueType.PROCESSSTRIP_TOO_WIDE,
+                    severity="error",
+                    slide_id=slide_id,
+                    location=f"{slot_name} slot",
+                    description=f"ProcessStrip '{strip_id}' has {item_count} items but max {max_items} allowed "
+                               f"in {layout_type} {slot_name}. Items will overflow horizontally.",
+                    suggestion=f"Use StepList instead (vertical layout fits narrow columns) or move to "
+                              f"a wider layout. StepList handles 4+ items well in split columns.",
+                    affected_elements=[strip_id]
+                ))
+    
+    return issues
+
+
+def _detect_dashboard_content_mismatch(mdx_content: str, slide_id: str) -> List[LayoutIssue]:
+    """Detect improper content placement in LayoutDashboard.
+    
+    Dashboard best practices:
+    - Main: Should contain the PRIMARY content (MetricGroup, Charts, Tables) that needs width
+    - Sidebar: Should contain SUPPORTING content (SmartList, Callout, small visuals)
+    
+    Anti-patterns:
+    - Main has only NetworkGraph (horizontal diagrams waste space, leave gaps)
+    - Sidebar has MetricGroup (not enough width for metrics)
+    
+    Args:
+        mdx_content: MDX content to analyze
+        slide_id: Slide identifier for error reporting
+        
+    Returns:
+        List of LayoutIssue objects for detected violations
+    """
+    issues = []
+    
+    # Check if this is a LayoutDashboard
+    if '<LayoutDashboard' not in mdx_content:
+        return issues
+    
+    # Extract Main and Sidebar content
+    main_pattern = re.compile(r'<Main>(.*?)</Main>', re.DOTALL)
+    sidebar_pattern = re.compile(r'<Sidebar>(.*?)</Sidebar>', re.DOTALL)
+    
+    main_match = main_pattern.search(mdx_content)
+    sidebar_match = sidebar_pattern.search(mdx_content)
+    
+    if not main_match or not sidebar_match:
+        return issues
+    
+    main_content = main_match.group(1)
+    sidebar_content = sidebar_match.group(1)
+    
+    # Check for MetricGroup in sidebar (should be in main)
+    has_metric_in_sidebar = '<MetricGroup' in sidebar_content
+    has_metric_in_main = '<MetricGroup' in main_content
+    
+    # Check for diagram in main
+    has_diagram_in_main = '<NetworkGraph' in main_content or '<SmartDiagram' in main_content
+    
+    # Check for charts in main/sidebar
+    has_chart_in_main = '<Chart' in main_content or '<ChartBar' in main_content or '<ChartLine' in main_content
+    has_chart_in_sidebar = '<Chart' in sidebar_content or '<ChartBar' in sidebar_content or '<ChartLine' in sidebar_content
+    
+    # Anti-pattern 1: MetricGroup in sidebar without metrics in main
+    # (MetricGroup needs width, should be in main)
+    if has_metric_in_sidebar and not has_metric_in_main and not has_chart_in_main:
+        issues.append(LayoutIssue(
+            issue_type=LayoutIssueType.DASHBOARD_CONTENT_MISMATCH,
+            severity="warning",
+            slide_id=slide_id,
+            location="Sidebar slot",
+            description="MetricGroup in Sidebar may not have enough width for proper display. "
+                       "Sidebar is designed for supporting content like lists and callouts.",
+            suggestion="Move MetricGroup to Main slot for better visual display. "
+                      "Use Sidebar for SmartList, Callout, or compact supporting content.",
+            affected_elements=["MetricGroup", "Sidebar"]
+        ))
+    
+    # Anti-pattern 2: Only diagram in main (diagrams often leave empty space)
+    if has_diagram_in_main and not has_metric_in_main and not has_chart_in_main:
+        # Check if main has substantial other content
+        has_substantial_main = (
+            main_content.count('<') > 3 or  # Multiple components
+            '<BigNum' in main_content or
+            '<TableData' in main_content
+        )
+        if not has_substantial_main:
+            issues.append(LayoutIssue(
+                issue_type=LayoutIssueType.DASHBOARD_CONTENT_MISMATCH,
+                severity="info",
+                slide_id=slide_id,
+                location="Main slot",
+                description="Main slot has only NetworkGraph which may leave empty space. "
+                           "Horizontal diagrams don't fill the wide main area well.",
+                suggestion="Add MetricGroup, ChartBar, or BigNum to Main for better density. "
+                          "Consider moving diagram to a LayoutSplit instead if it's the primary visual.",
+                affected_elements=["NetworkGraph", "Main"]
+            ))
+    
+    # Anti-pattern 3: Chart in sidebar (charts need width)
+    if has_chart_in_sidebar and not has_chart_in_main:
+        issues.append(LayoutIssue(
+            issue_type=LayoutIssueType.DASHBOARD_CONTENT_MISMATCH,
+            severity="warning",
+            slide_id=slide_id,
+            location="Sidebar slot",
+            description="Chart in Sidebar may be too compressed. "
+                       "Charts need width for proper data visualization.",
+            suggestion="Move Chart to Main slot. Use Sidebar for SmartList or text content.",
+            affected_elements=["Chart", "Sidebar"]
+        ))
+    
+    return issues
+
+
 def _detect_slot_boundaries(mdx_content: str) -> Dict[str, str]:
     """Detect layout slot boundaries in MDX content.
     
@@ -670,12 +1043,25 @@ def _detect_slot_boundaries(mdx_content: str) -> Dict[str, str]:
     return slots
 
 
-def analyze_slide_whitespace(slide_mdx: str, slide_id: str = "unknown") -> List[LayoutIssue]:
+# Components forbidden on cover pages (keep cover clean and minimal)
+FORBIDDEN_ON_COVER = {
+    "BigNum", "MetricGroup", "Metric", "ChartBar", "ChartLine", "ChartPie",
+    "NetworkGraph", "SmartDiagram", "Diagram", "CardGroup", "Card",
+    "ProcessStrip", "StepList", "TableData", "SmartList"
+}
+
+
+def analyze_slide_whitespace(
+    slide_mdx: str, 
+    slide_id: str = "unknown",
+    is_cover_or_closing: bool = False
+) -> List[LayoutIssue]:
     """Analyze a single slide for whitespace and balance issues.
     
     Args:
         slide_mdx: MDX content for one slide
         slide_id: Identifier for the slide
+        is_cover_or_closing: If True, skip density checks (cover/closing should be minimal)
         
     Returns:
         List of detected LayoutIssue objects
@@ -685,6 +1071,29 @@ def analyze_slide_whitespace(slide_mdx: str, slide_id: str = "unknown") -> List[
     # Detect layout type
     layout_match = re.search(r'<(Layout\w+)', slide_mdx)
     layout_type = layout_match.group(1) if layout_match else "LayoutStacked"
+    
+    # === SPECIAL CHECK: Cover page should be minimal ===
+    if layout_type == "LayoutCover":
+        # Check for forbidden components on cover
+        for component in FORBIDDEN_ON_COVER:
+            if f'<{component}' in slide_mdx:
+                issues.append(LayoutIssue(
+                    issue_type=LayoutIssueType.CONTENT_OVERFLOW,
+                    severity="error",
+                    slide_id=slide_id,
+                    location="cover page",
+                    description=f"Cover page has {component} which makes it look cluttered. "
+                               f"Cover pages should be clean: just title + subtitle.",
+                    suggestion=f"Remove {component} from cover page. Use LayoutSplit or LayoutDashboard "
+                              f"for data-heavy content. Cover should only have Heading + Text + optional QuoteBlock.",
+                    affected_elements=[component]
+                ))
+        # Skip other density checks for cover pages
+        return issues
+    
+    # Skip most checks for closing slides (they should be minimal like cover)
+    if is_cover_or_closing:
+        return issues
     
     # Get slot boundaries
     slots = _detect_slot_boundaries(slide_mdx)
@@ -939,6 +1348,26 @@ def analyze_slide_whitespace(slide_mdx: str, slide_id: str = "unknown") -> List[
                     affected_elements=[e for a in slot_analyses.values() for e in a.elements]
                 ))
     
+    # === CHECK 10: Consecutive SmartLists without header ===
+    # Detect SmartList components that appear consecutively without a Heading between them
+    consecutive_list_issues = _detect_consecutive_lists_without_header(slide_mdx, slide_id)
+    issues.extend(consecutive_list_issues)
+    
+    # === CHECK 11: Metric value length ===
+    # Detect Metric components with values that are too long and will overflow
+    metric_value_issues = _detect_long_metric_values(slide_mdx, slide_id)
+    issues.extend(metric_value_issues)
+    
+    # === CHECK 12: Dashboard content placement ===
+    # Detect improper content in LayoutDashboard main/sidebar slots
+    dashboard_issues = _detect_dashboard_content_mismatch(slide_mdx, slide_id)
+    issues.extend(dashboard_issues)
+    
+    # === CHECK 13: ProcessStrip width in narrow columns ===
+    # Detect ProcessStrip with too many items for narrow layouts (splits, sidebars)
+    processstrip_issues = _detect_processstrip_width_issues(slide_mdx, slide_id)
+    issues.extend(processstrip_issues)
+    
     return issues
 
 
@@ -957,9 +1386,23 @@ def analyze_presentation_whitespace(slides_mdx: List[str], slide_ids: List[str] 
     
     all_issues = []
     slide_summaries = []
+    total_slides = len(slides_mdx)
     
-    for mdx, slide_id in zip(slides_mdx, slide_ids):
-        issues = analyze_slide_whitespace(mdx, slide_id)
+    for idx, (mdx, slide_id) in enumerate(zip(slides_mdx, slide_ids)):
+        # Determine if this is a cover or closing slide (should be minimal)
+        is_first_slide = (idx == 0)
+        is_last_slide = (idx == total_slides - 1)
+        layout_match = re.search(r'<(Layout\w+)', mdx)
+        layout_type = layout_match.group(1) if layout_match else "LayoutStacked"
+        
+        # Cover/closing detection: first slide, last slide, or explicit LayoutCover
+        is_cover_or_closing = (
+            is_first_slide or 
+            is_last_slide or 
+            layout_type == "LayoutCover"
+        )
+        
+        issues = analyze_slide_whitespace(mdx, slide_id, is_cover_or_closing)
         all_issues.extend(issues)
         
         # Summarize slide health

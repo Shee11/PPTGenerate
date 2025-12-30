@@ -39,10 +39,17 @@ export type TextVariant = 'default' | 'lead' | 'caption' | 'code';
 // DATA TYPES
 // =============================================================================
 
-/** Chart data point */
+/** Chart data point - supports single value or clustered (before/after) */
 export interface ChartDataPoint {
   label: string;
-  value: number;
+  value?: number;
+  /** For clustered bar charts: before value */
+  before?: number;
+  /** For clustered bar charts: after value */
+  after?: number;
+  /** Alternative naming for clustered charts */
+  current?: number;
+  target?: number;
 }
 
 /** Metric data for MetricGroup */

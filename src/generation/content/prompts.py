@@ -58,11 +58,13 @@ Follow the draft slide's `story` and `visual_design` fields exactly:
 - HEADLINE → `<Heading>`
 - NARRATIVE → `<Text variant="lead">` or `<SmartList>`
 - EVIDENCE (numbers) → `<MetricGroup>`, `<BigNum>`, `<ChartBar>`
-- EVIDENCE (process) → `<Diagram>` ONLY if visual_design specifies it
+- EVIDENCE (branching graphs) → `<NetworkGraph>` with JSX children (Node, Edge, Group)
+- EVIDENCE (linear flows) → `<ProcessStrip>` for A→B→C sequences
 - TAKEAWAY → `<Callout>` or `<Text variant="caption">`
 
 # VISUAL SELECTION
-- Use Diagram ONLY when visual_design mentions "diagram", "flow", "process"
+- Use NetworkGraph when visual_design mentions branching "architecture", "network", "org chart" (nodes connect to multiple targets)
+- Use ProcessStrip for "flow", "pipeline", "sequence", "stages" (linear A→B→C)
 - Use Chart when visual_design mentions "chart", "comparison", "trend"
 - Default to Text/SmartList for narrative content
 - Each slide should combine text AND visual, but one leads
@@ -73,6 +75,14 @@ Follow the draft slide's `story` and `visual_design` fields exactly:
 - Each element must add NEW information, not repeat what's already visible
 - BAD: MetricGroup(71%, 80%) + BigNum(80%) ← REDUNDANT
 - GOOD: MetricGroup(71%, 80%) + SmartList(key actions) ← COMPLEMENTARY
+
+# SMARTLIST GROUPING RULE (CRITICAL)
+- **NEVER place two SmartList components consecutively without a Heading between them**
+- If you have related list items, combine them into ONE SmartList with all items in the items array
+- A SmartList without a preceding Heading looks like orphaned content (no context)
+- BAD: SmartList followed by another SmartList without Heading between them
+- GOOD: Single SmartList with all related items combined in one items array
+- If lists represent different topics, each MUST have its own Heading before it
 
 # SPACE MANAGEMENT (70% MINIMUM COVERAGE)
 - **EVERY PAGE must fill ≥70% of vertical space** with content

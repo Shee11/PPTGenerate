@@ -54,8 +54,8 @@ export function Text({
     return <span className={className}>{children}</span>;
   }
   
-  // Default and lead variants render as <p>
-  return <p className={className}>{children}</p>;
+  // Default and lead variants render as <div> to avoid nesting issues with MDX's <p> tags
+  return <div className={className}>{children}</div>;
 }
 
 // =============================================================================

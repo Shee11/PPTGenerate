@@ -1,8 +1,8 @@
 /**
  * LayoutTimeline Component (L1 Layout)
  * 
- * Vertical timeline layout for chronological content.
- * Displays items along a central timeline with alternating positions.
+ * Horizontal timeline layout with alternating nodes above/below a center line.
+ * Creates a dynamic visual timeline with circles and connectors.
  * 
  * Usage:
  * ```mdx
@@ -81,8 +81,8 @@ function TimelineItem({
 /**
  * LayoutTimeline Component
  * 
- * Renders a vertical timeline layout for chronological content.
- * Child items alternate left/right along a central line.
+ * Renders a horizontal timeline with alternating nodes above/below a center line.
+ * Creates a dynamic visual timeline with circles and connectors.
  * 
  * @param children - Timeline items (LayoutTimeline.Item)
  * @param theme - Optional theme override
@@ -100,7 +100,6 @@ export function LayoutTimeline({
       data-theme={theme}
       data-vibe={vibe}
     >
-      <div className="timeline-line" />
       <div className="timeline-items">
         {children}
       </div>

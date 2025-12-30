@@ -35,12 +35,15 @@ import { TableData } from '@/components/blocks/TableData';
 import { QuoteBlock } from '@/components/blocks/QuoteBlock';
 import { ImageBlock } from '@/components/blocks/ImageBlock';
 import { CardGroup, Card } from '@/components/blocks/CardGroup';
-import { Diagram, Flowchart, ProcessDiagram } from '@/components/blocks/Diagram';
+import { NetworkGraph, Node, Edge, Group } from '@/components/blocks/NetworkGraph';
+import { StepList } from '@/components/blocks/StepList';
+import { ProcessStrip } from '@/components/blocks/ProcessStrip';
 
 // Import L3 Atom Components
 import { Heading } from '@/components/atoms/Heading';
 import { Text } from '@/components/atoms/Text';
 import { Callout } from '@/components/atoms/Callout';
+import { Highlight } from '@/components/atoms/Highlight';
 
 // =============================================================================
 // Component Mapping
@@ -84,9 +87,18 @@ export const mdxComponents = {
   QuoteBlock,
   ImageBlock,
   CardGroup,
-  Diagram,
-  Flowchart,
-  ProcessDiagram,
+  NetworkGraph,
+  StepList,
+  ProcessStrip,
+  
+  // NetworkGraph child components (JSX syntax)
+  Node,
+  Edge,
+  Group,
+  
+  // Alias mappings for NetworkGraph (backward compatibility)
+  SmartDiagram: NetworkGraph,
+  Diagram: NetworkGraph,
   
   // Block Child Components (standalone use in MDX)
   Metric,
@@ -96,6 +108,7 @@ export const mdxComponents = {
   Heading,
   Text,
   Callout,
+  Highlight,
 };
 
 // =============================================================================

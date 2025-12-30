@@ -43,5 +43,19 @@ export type { ImageBlockProps } from './ImageBlock';
 export { CardGroup, Card } from './CardGroup';
 export type { CardGroupProps, CardProps } from './CardGroup';
 
-export { Diagram, Flowchart, ProcessDiagram } from './Diagram';
-export type { DiagramProps, DiagramType, FlowchartProps, ProcessDiagramProps } from './Diagram';
+export { StepList } from './StepList';
+export type { StepListProps, StepItem } from './StepList';
+
+export { NetworkGraph, Node, Edge, Group } from './NetworkGraph';
+export type { NetworkGraphProps, NodeProps, EdgeProps, GroupProps, DiagramSize } from './NetworkGraph';
+
+export { ProcessStrip } from './ProcessStrip';
+export type { ProcessStripProps, ProcessItem, ProcessStatus } from './ProcessStrip';
+
+// NetworkGraph (Cytoscape-based with JSX syntax) - for branching/network diagrams
+export { diagramTheme, diagramThemeDark } from './NetworkGraph/diagramTheme';
+export type { CytoscapeElement, ParsedDiagram } from './NetworkGraph';
+
+// Backward compatibility alias
+export { NetworkGraph as SmartDiagram } from './NetworkGraph';
+export { NetworkGraph as Diagram } from './NetworkGraph';

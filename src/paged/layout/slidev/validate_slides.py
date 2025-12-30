@@ -51,6 +51,14 @@ def fix_consecutive_layouts(slides: List[dict], verbose: bool = False) -> Tuple[
         current_layout = slides[i].get('layout', 'unknown')
         prev_layout = slides[i-1].get('layout', 'unknown')
         
+        # Handle case where layout is a dict instead of string (LLM error)
+        if isinstance(current_layout, dict):
+            current_layout = current_layout.get('name', current_layout.get('type', 'unknown'))
+            slides[i]['layout'] = current_layout
+        if isinstance(prev_layout, dict):
+            prev_layout = prev_layout.get('name', prev_layout.get('type', 'unknown'))
+            slides[i-1]['layout'] = prev_layout
+        
         if current_layout == prev_layout:
             # Need to change this slide's layout
             slide_id = slides[i].get('id', f'slide_{i+1}')
