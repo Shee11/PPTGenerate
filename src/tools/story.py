@@ -52,44 +52,54 @@ class StoryTool(DirectTool[StoryContext, StoryPatch]):
     """
     
     name: ClassVar[str] = "story"
-    description: ClassVar[str] = """Plan narrative arc and assign atoms to draft slides.
+    description: ClassVar[str] = """Plan narrative arc and create draft slides.
 
-OUTPUT: Draft slides with story, atoms, density, visual_design populated.
+OUTPUT: Draft slides with story, density, visual_design populated.
 Layout and widgets are EMPTY (filled by content tool).
 
 MODES:
-1. mode="generate": Generate story directly from source content (SCQA framework)
+1. mode="generate": Generate story directly from source content using SCQA framework
+   - Uses source file directly (no atoms needed)
+   - Creates slides with embedded content (headline, subtitle, sections, bullets)
+   - Atoms field will be empty in generated slides
+   - Runs in parallel with atoms extraction for future refinement capability
+
 2. mode="refine": Modify existing story using atoms (merge/split/reorder slides)
+   - Uses extracted atoms to restructure slides
+   - Assigns atom IDs to slides
+   - Requires atoms to be extracted first
 
-WHEN TO USE REFINE:
-- "merge page 3 and 4" → refine existing story
-- "split slide 2 into multiple" → refine
-- "remove the intro" → refine
-- "add a conclusion slide" → refine
-- "reorder slides" → refine
-
-WHEN TO USE GENERATE:
-- No slides exist yet
+WHEN TO USE GENERATE (no atoms dependency):
+- No slides exist yet → create from source
 - "regenerate", "start over", "create new"
-- Major restructuring"""
+- "create slides based on the content"
+- Initial presentation creation
+
+WHEN TO USE REFINE (requires atoms):
+- "merge page 3 and 4"
+- "split slide 2 into multiple"
+- "remove the intro"
+- "add a conclusion slide"
+- "reorder slides"
+- Any slide-level editing of existing presentation"""
 
     query_description: ClassVar[str] = """Triggers on:
-- Initial presentation creation (generate)
-- Story restructuring: merge, split, reorder, add, remove slides (refine)
+- Initial presentation creation: generate mode, directly from source
+- Story refinement: refine mode, uses atoms to restructure slides
 - Changing narrative flow or slide count"""
 
     args_description: ClassVar[List[str]] = [
-        "mode: 'generate' for full creation, 'refine' for editing story",
+        "mode: 'generate' (from source, no atoms) or 'refine' (uses atoms)",
         "instruction: user's request",
-        "slide_count: target number of slides",
-        "atom_filter: filter criteria to select specific atoms",
+        "slide_count: target number of slides (for generate mode)",
+        "atom_filter: filter criteria to select specific atoms (for refine mode)",
     ]
-    requires: ClassVar[List[str]] = ["atoms"]
+    requires: ClassVar[List[str]] = ["constitution (generate mode), atoms (refine mode only)"]
     produces: ClassVar[List[str]] = ["slides (draft state)"]
     examples: ClassVar[List[str]] = [
-        '{"id": "story", "type": "story", "params": {"slide_count": 10, "mode": "generate"}, "depends_on": ["atoms"]}',
-        '{"id": "story", "type": "story", "params": {"mode": "refine", "instruction": "merge page 3 and page 4"}}',
-        '{"id": "story", "type": "story", "params": {"mode": "refine", "instruction": "add a conclusion slide"}}',
+        '{"id": "story", "type": "story", "params": {"slide_count": 10, "mode": "generate"}, "depends_on": ["constitution"]}',
+        '{"id": "story", "type": "story", "params": {"mode": "refine", "instruction": "merge page 3 and page 4"}, "depends_on": ["atoms"]}',
+        '{"id": "story", "type": "story", "params": {"mode": "refine", "instruction": "add a conclusion slide"}, "depends_on": ["atoms"]}',
     ]
     
     def slice(self, state: "PipelineState", params: Optional[Dict[str, Any]] = None) -> StoryContext:

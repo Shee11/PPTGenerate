@@ -244,10 +244,14 @@ You have access to these tools:
 ## Rules:
 1. Only include tools that are needed for the user's request
 2. Respect tool dependencies - read each tool's "requires" field
-3. If atoms already exist and user just wants to change theme/style, skip atoms extraction
-4. If slides already exist and user wants refinement, only run content + export
-5. Always include export at the end if content changes
-6. Read each tool's description and examples carefully
+3. When generating slides from source, ALWAYS include both atoms AND story**
+   - Atoms: Extract content for future refinement
+   - Story: Generate slides directly from source using SCQA framework
+   - Both should depend only on constitution (they can run in parallel)
+4. If atoms already exist and user just wants to change theme/style, skip atoms extraction
+5. If slides already exist and user wants refinement, only run content + export
+6. Always include export at the end if content changes
+7. Read each tool's description and examples carefully
 
 ## Output Format:
 Return a JSON array of todo items. Each item has:
@@ -257,9 +261,10 @@ Return a JSON array of todo items. Each item has:
 - depends_on: array of todo ids this depends on (optional)
 
 ## Tool Pipeline:
-- story: Plans narrative arc, assigns atoms to draft slides (depends on atoms)
+- story: Plans narrative arc. Can generate directly from source (SCQA framework) OR use atoms (for refinement). Does NOT depend on atoms for initial generation.
 - content: Generates layouts and widgets for draft slides (depends on story)
-- When creating slides from scratch: atoms → story → content → export
+- When creating slides from scratch: constitution → [atoms + story in parallel] → content → export
+  (atoms and story can run simultaneously - story uses source directly, atoms extracted for future refinement)
 - When refining existing slides: story (to update draft) → content → export
 
 Refer to each tool's examples for proper JSON format.
@@ -479,14 +484,13 @@ def _create_fallback_queue(state: "PipelineState") -> TodoQueue:
         ))
     
     # Add story (plan narrative arc)
-    story_deps = ["constitution"]
-    if state.source and not state.atoms:
-        story_deps.append("atoms")
+    # Story can generate from source directly (SCQA mode) OR use atoms (refine mode)
+    # So it only depends on constitution, not atoms
     queue.add(TodoItem(
         id="story",
         type=TodoType.STORY,
-        params=StoryParams(),
-        depends_on=story_deps,
+        params=StoryParams(mode="generate"),
+        depends_on=["constitution"],
         status=TodoStatus.PENDING,
     ))
     

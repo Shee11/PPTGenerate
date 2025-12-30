@@ -111,21 +111,54 @@ def remove_source_file(session_id: str, filename: str) -> tuple[List[str], str]:
     return get_session_files(session_id), f"File not found: {filename}"
 
 
-def get_todo_display(state: Optional[PipelineState]) -> str:
-    """Format todos for display."""
+def get_todo_display(state: Optional[PipelineState], current_idx: Optional[int] = None) -> str:
+    """Format todos for display with enhanced status.
+    
+    Args:
+        state: Pipeline state with todos
+        current_idx: Index of currently executing todo (None if not executing)
+    """
     if state is None or state.todos is None:
-        return "No todos"
+        return "No todos yet"
     
     lines = []
-    for todo in state.todos.todos:
-        status_icon = {
-            "pending": "⏳",
-            "completed": "✅",
-            "failed": "❌",
-        }.get(todo.status, "⬜")
-        lines.append(f"{status_icon} {todo.type.value}: {todo.id}")
+    for i, todo in enumerate(state.todos.todos):
+        # Determine status icon and label
+        if current_idx is not None and i == current_idx:
+            # Currently executing
+            status_icon = "🔄"
+            label = _get_todo_label(todo.type.value)
+        elif todo.status == "completed":
+            status_icon = "✅"
+            label = todo.type.value
+        elif todo.status == "failed":
+            status_icon = "❌"
+            label = todo.type.value
+        elif current_idx is not None and i < current_idx:
+            # Should be completed but isn't marked
+            status_icon = "✅"
+            label = todo.type.value
+        else:
+            # Pending
+            status_icon = "⏳"
+            label = todo.type.value
+        
+        lines.append(f"{status_icon} {label}")
     
     return "\n".join(lines) if lines else "No todos"
+
+
+def _get_todo_label(todo_type: str) -> str:
+    """Get descriptive label for todo type during execution."""
+    labels = {
+        "constitution": "Loading constitution...",
+        "atoms": "Extracting content atoms...",
+        "theme": "Applying theme...",
+        "story": "Generating story arc...",
+        "content": "Creating slide content...",
+        "export": "Exporting presentation...",
+    }
+    return labels.get(todo_type, f"Processing {todo_type}...")
 
 
 def format_chat_message(role: str, content: str) -> Dict[str, str]:
@@ -212,18 +245,11 @@ async def run_generation_async(
         
         # Execute todos one by one with updates
         for i, todo in enumerate(todos.todos):
-            # Update status to show current todo
-            lines = []
-            for j, t in enumerate(todos.todos):
-                if j < i:
-                    lines.append(f"✅ {t.type.value}: {t.id}")
-                elif j == i:
-                    lines.append(f"🔄 {t.type.value}: {t.id}")
-                else:
-                    lines.append(f"⏳ {t.type.value}: {t.id}")
+            # Update display to show current execution state
+            current_todo_display = get_todo_display(state, current_idx=i)
+            current_label = _get_todo_label(todo.type.value)
             
-            current_todo_display = "\n".join(lines)
-            yield chat_history, current_todo_display, f"🔄 Running: {todo.type.value}...", ""
+            yield chat_history, current_todo_display, f"🔄 {current_label}", ""
             await asyncio.sleep(0.1)  # Allow UI update
             
             # Execute the todo
@@ -412,7 +438,7 @@ def on_session_change(session_id: str) -> tuple[str, List[str], str, str, List[D
     """Handle session ID change."""
     state, status = load_session_state(session_id)
     files = get_session_files(session_id)
-    todo_display = get_todo_display(state)
+    todo_display = get_todo_display(state, current_idx=None)
     current_theme = state.active_theme_id if state else "corp_modern_v1"
     
     # Clear chat history on session change
