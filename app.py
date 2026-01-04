@@ -228,6 +228,11 @@ async def run_generation_async(
         
         state.set_source(source_path)
         
+        # Initialize constitution if needed
+        if state.constitution is None:
+            from src.generation.todo.models import ConstitutionPatch
+            state.constitution = ConstitutionPatch()
+        
         # Store selected theme and vibe in state constitution for generation
         if theme_id:
             state.constitution.selected_theme = theme_id

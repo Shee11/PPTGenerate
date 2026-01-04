@@ -17,6 +17,7 @@ const STATE_JSON_PATHS = [
   path.join(process.cwd(), '../../../../output/golden_set_mdx_v13/state.json'),
   path.join(process.cwd(), '../../../../output/state.json'),
   // Absolute paths for Windows
+  'C:/Users/yidansun/newProject/gggg/output/golden_set_mdx/state.json',
   'C:/Users/wangchao/repos/gggg/output/golden_set_mdx/state.json',
   'C:/Users/wangchao/repos/gggg/output/golden_set_mdx_v13/state.json',
   'C:/Users/wangchao/repos/gggg/output/state.json',
