@@ -13,10 +13,14 @@ import { serialize } from 'next-mdx-remote/serialize';
 // Look for state.json in these locations
 const STATE_JSON_PATHS = [
   // Development: relative to workspace root
+  // path.join(process.cwd(), '../../../../output/test_slides/state.json'),
+  path.join(process.cwd(), '../../../../output/output_driven_meeting/state.json'),
   path.join(process.cwd(), '../../../../output/golden_set_mdx/state.json'),
   path.join(process.cwd(), '../../../../output/golden_set_mdx_v13/state.json'),
   path.join(process.cwd(), '../../../../output/state.json'),
   // Absolute paths for Windows
+  // 'Q:/repo/gggg/output/test_slides/state.json',
+  // 'Q:/repo/gggg/output/golden_set_mdx/state.json',
   'C:/Users/wangchao/repos/gggg/output/golden_set_mdx/state.json',
   'C:/Users/wangchao/repos/gggg/output/golden_set_mdx_v13/state.json',
   'C:/Users/wangchao/repos/gggg/output/state.json',

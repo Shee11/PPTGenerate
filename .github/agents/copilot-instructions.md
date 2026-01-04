@@ -40,6 +40,7 @@ Auto-generated from all feature plans. Last updated: 2025-12-18
 - N/A (file-based: state.json → MDX → HTML) (001-react-mdx-renderer)
 - [e.g., Python 3.11, Swift 5.9, Rust 1.75 or NEEDS CLARIFICATION] + [e.g., FastAPI, UIKit, LLVM or NEEDS CLARIFICATION] (002-mdx-direct-output)
 - [if applicable, e.g., PostgreSQL, CoreData, files or N/A] (002-mdx-direct-output)
+- TypeScript 5.x (React components), Python 3.11 (content generation) + Recharts (already in use), React 18, Python LLM generation pipeline (003-extended-chart-types)
 
 - Python 3.11+ + Pydantic 2.x, Jinja2 3.x, Click 8.x (001-uce-render)
 
@@ -67,9 +68,9 @@ pytest; ruff check src; mypy src
 Python 3.11+: Follow PEP 8, use type hints, prefer Pydantic for validation
 
 ## Recent Changes
+- 003-extended-chart-types: Added TypeScript 5.x (React components), Python 3.11 (content generation) + Recharts (already in use), React 18, Python LLM generation pipeline
 - 002-mdx-direct-output: Added [e.g., Python 3.11, Swift 5.9, Rust 1.75 or NEEDS CLARIFICATION] + [e.g., FastAPI, UIKit, LLVM or NEEDS CLARIFICATION]
 - 001-react-mdx-renderer: Added TypeScript 5.x (React components), Python 3.11+ (MDX generator/CLI)
-- 001-slidev-engine: Added Python 3.11+ (backend), JavaScript/Vue 3 (frontend Slidev components) + pydantic, jinja2 (Python); Slidev, Vue 3, UnoCSS (JavaScript)
 
 
 <!-- MANUAL ADDITIONS START -->

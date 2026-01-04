@@ -110,7 +110,25 @@ Colors: default, primary, success, warning, info, accent
 **CHARTS (for numeric data)**:
 - ChartBar: comparison, before/after (use `before`/`after` keys for clustered bars)
 - ChartLine: trends over time
-- ChartPie: proportions/percentages
+- ChartPie: proportions/percentages (use variant="donut" for doughnut style)
+- ChartArea: cumulative trends, time-series with volume (soft gradient fill)
+- ChartBubble: 3D relationships (x, y, size dimensions)
+- ChartRadar: multivariate comparison (4+ attributes per item, spider/web chart)
+- ChartPolar: cyclical/periodic data (equal angles, varying radii)
+- BarStats: rankings, sorted comparisons (horizontal bars with emphasis)
+
+**CHART SELECTION GUIDE**:
+| Data Pattern | Best Chart | Example |
+|--------------|------------|---------|
+| Time-series (months, quarters) | ChartArea or ChartLine | Revenue over months |
+| Categorical comparison | ChartBar | Sales by product |
+| Rankings/sorted values | BarStats | Top 10 products |
+| Proportions (~100%) | ChartPie (variant="donut" or "pie") | Market share |
+| 3D data (x, y, size) | ChartBubble | Price vs Sales vs Volume |
+| 4+ attributes per item | ChartRadar | Product comparison matrix |
+| Cyclical patterns | ChartPolar | Monthly distribution |
+| Before/after comparison | ChartBar with before/after data | Improvements |
+
 - **RULE**: 3+ data points → use Chart, not multiple Metrics
 
 ## MDX OUTPUT FORMAT
@@ -214,6 +232,22 @@ Each slide wrapped in `<Slide>` with metadata:
 <ChartBar id="chart_002" title="Improvements" data={[{label: "Accuracy", before: 65, after: 75}, {label: "Speed", before: 800, after: 450}]}/>
 <ChartLine id="chart_003" title="Growth" data={[{label: "Jan", value: 50}]}/>
 <ChartPie id="chart_004" title="Share" data={[{label: "A", value: 60}]}/>
+
+// Extended chart types (Feature: 003-extended-chart-types)
+// Area chart with gradient fill:
+<ChartArea id="chart_005" title="Cumulative Revenue" data={[{label: "Jan", value: 100}, {label: "Feb", value: 180}]} gradient={true} curve="smooth"/>
+
+// Bubble chart (3D: x, y, size):
+<ChartBubble id="chart_006" title="Market Analysis" data={[{label: "Product A", x: 10, y: 20, size: 100}]} xLabel="Price" yLabel="Sales"/>
+
+// Radar chart (multivariate comparison, needs 3+ points):
+<ChartRadar id="chart_007" title="Product Comparison" data={[{label: "Speed", value: 80}, {label: "Quality", value: 90}, {label: "Price", value: 65}, {label: "Support", value: 75}]} fillOpacity={0.35}/>
+
+// Polar area chart (cyclical/periodic data):
+<ChartPolar id="chart_008" title="Regional Distribution" data={[{label: "North", value: 40}, {label: "East", value: 60}, {label: "South", value: 30}, {label: "West", value: 50}]}/>
+
+// Bar stats (horizontal bars for rankings):
+<BarStats id="chart_009" title="Top Products" data={[{label: "Product A", value: 95}, {label: "Product B", value: 87}]} showLabels={true} sortDescending={true}/>
 
 // Tables
 <TableData id="table_001" headers={["Name", "Value"]} rows={[["A", "1"]]}/>

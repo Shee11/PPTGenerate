@@ -62,6 +62,19 @@ Follow the draft slide's `story` and `visual_design` fields exactly:
 - EVIDENCE (linear flows) → `<ProcessStrip>` for A→B→C sequences
 - TAKEAWAY → `<Callout>` or `<Text variant="caption">`
 
+# CHART TYPE SELECTION (Feature: 003-extended-chart-types)
+Select chart type based on data patterns:
+| Data Pattern | Chart Type | Component |
+|--------------|------------|-----------|
+| Time-series/cumulative | area | `<ChartArea gradient={{true}}/>` |
+| Categorical comparison | bar | `<ChartBar/>` |
+| Before/after comparison | bar (clustered) | `<ChartBar data={{[{{before: X, after: Y}}]}}/>` |
+| Rankings/sorted values | barStats | `<BarStats sortDescending={{true}}/>` |
+| Proportions (~100%) | pie/doughnut | `<ChartPie variant="donut"/>` |
+| 3D relationships | bubble | `<ChartBubble data={{[{{x, y, size}}]}}/>` |
+| Multivariate (4+ attrs) | radar | `<ChartRadar/>` (needs 3+ data points) |
+| Cyclical/periodic | polarArea | `<ChartPolar/>` |
+
 # VISUAL SELECTION
 - Use NetworkGraph when visual_design mentions branching "architecture", "network", "org chart" (nodes connect to multiple targets)
 - Use ProcessStrip for "flow", "pipeline", "sequence", "stages" (linear A→B→C)

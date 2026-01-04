@@ -16,6 +16,25 @@ export type { ChartLineProps } from './ChartLine';
 export { ChartPie } from './ChartPie';
 export type { ChartPieProps } from './ChartPie';
 
+// Extended chart types (003-extended-chart-types)
+export { ChartArea } from './ChartArea';
+export type { ChartAreaProps } from './ChartArea';
+
+export { ChartBubble } from './ChartBubble';
+export type { ChartBubbleProps } from './ChartBubble';
+
+export { ChartRadar } from './ChartRadar';
+export type { ChartRadarProps } from './ChartRadar';
+
+export { ChartPolar } from './ChartPolar';
+export type { ChartPolarProps } from './ChartPolar';
+
+export { BarStats } from './BarStats';
+export type { BarStatsProps } from './BarStats';
+
+// Chart utilities
+export * from './chartUtils';
+
 export { MetricGroup, Metric } from './MetricGroup';
 export type { MetricGroupProps, MetricProps } from './MetricGroup';
 
