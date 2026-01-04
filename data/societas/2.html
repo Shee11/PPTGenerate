@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Ancient Foundation: Text-Only Era</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="/fonts/Arvo/index.css">
+    <link rel="stylesheet" href="/fonts/Inter/index.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .slide-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            width: 100%;
+            background: #1a1a2e;
+            color: #d0d0e0;
+            font-family: 'Inter', sans-serif;
+            font-weight: 400;
+            font-size: 1.0rem;
+            overflow: hidden;
+        }
+
+        .slide-header {
+            text-align: center;
+            padding: 2rem 3rem 1rem;
+        }
+
+        .slide-title {
+            font-family: 'Arvo', serif;
+            font-weight: 700;
+            font-size: 2.6rem;
+            color: #f0f0f8;
+            text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.4);
+            margin: 0;
+        }
+
+        .slide-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2.5rem 3rem;
+            gap: 3rem;
+            overflow: hidden;
+        }
+
+        .content-left {
+            width: min(40vw, calc(75vh * 1.78));
+            height: calc(min(40vw, calc(75vh * 1.78)) / 1.78);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .image-container {
+            width: 100%;
+            height: 100%;
+            aspect-ratio: 1.78;
+            border-radius: 0.75rem;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .content-right {
+            flex: 1;
+            max-width: 50vw;
+            max-height: 75vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .text-block {
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .section-header {
+            font-family: 'Arvo', serif;
+            font-weight: 700;
+            font-size: 1.8rem;
+            color: #f0f0f8;
+            margin-bottom: 1.5rem;
+            text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.4);
+        }
+
+        .custom-list {
+            margin-bottom: 2rem;
+        }
+
+        .list-item {
+            margin-bottom: 0.75rem;
+            padding: 0.5rem 0;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+
+        .list-item i {
+            margin-right: 0.5rem;
+            font-size: 1.5em;
+            vertical-align: middle;
+            color: #e8e8f0;
+            margin-top: 0.1rem;
+            flex-shrink: 0;
+        }
+
+        .list-item span {
+            line-height: 1.6;
+            color: #d0d0e0;
+        }
+
+        .highlight-era {
+            color: #e8e8f0;
+            font-weight: 600;
+        }
+
+        .summary-note {
+            font-style: italic;
+            color: #b8b8d0;
+            margin-top: 1rem;
+            padding: 0.75rem;
+            background: rgba(232, 232, 240, 0.05);
+            border-radius: 0.5rem;
+            border-left: 3px solid #e8e8f0;
+        }
+
+        .summary-note strong {
+            color: #f0f0f8;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="slide-header">
+            <h1 class="slide-title">The Ancient Foundation: Text-Only Era</h1>
+        </div>
+        
+        <div class="slide-content">
+            <div class="content-left">
+                <div class="image-container">
+                    <img src="https://media.licdn.com/dms/image/D5612AQG4sJMK1MRm6g/article-cover_image-shrink_720_1280/0/1692996139014?e=2147483647&v=beta&t=SgFFqxNhjCxZlCgmAJPiQ73jtduNTEZOtm6NUN7POFY" alt="The Evolution of Virtual Meetings">
+                </div>
+            </div>
+            
+            <div class="content-right">
+                <div class="text-block">
+                    <h2 class="section-header">Early Human Civilization Meetings</h2>
+                    <div class="custom-list">
+                        <div class="list-item">
+                            <i class="fas fa-scroll"></i>
+                            <span><span class="highlight-era">Written language</span> was the sole medium available for recording meeting outcomes and decisions.</span>
+                        </div>
+                        <div class="list-item">
+                            <i class="fas fa-feather-alt"></i>
+                            <span><span class="highlight-era">Text-based documentation</span> represented the only possible output format from collaborative gatherings.</span>
+                        </div>
+                        <div class="list-item">
+                            <i class="fas fa-users"></i>
+                            <span><span class="highlight-era">Human civilization</span> relied entirely on verbal discussion followed by manual transcription processes.</span>
+                        </div>
+                        <div class="list-item">
+                            <i class="fas fa-history"></i>
+                            <span><span class="highlight-era">No multimedia formats</span> existed to express complex ideas beyond written words and basic drawings.</span>
+                        </div>
+                    </div>
+
+                    <div class="summary-note">
+                        <div><strong>Historical Context:</strong> The foundation of all meeting practices was established when text was humanity's primary tool for preserving and sharing knowledge across time and distance.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -211,4 +211,38 @@ const vibeClass = computed(() => `vibe-${currentVibe.value}`)
   border-radius: 3px;
   box-shadow: var(--shadow-glow), 0 0 30px color-mix(in srgb, var(--theme-accent) 50%, transparent);
 }
+
+/* === VIBE: DUOLINGO === */
+.vibe-duolingo {
+  gap: 2rem;
+  padding: 2rem;
+}
+
+.vibe-duolingo .split-left {
+  background: var(--theme-bg-surface, #F7F7F7);
+  border-radius: 1.5rem;
+  border: 3px solid var(--theme-border, #E5E5E5);
+  box-shadow: 0 6px 0 var(--theme-border, #E5E5E5);
+  padding: 2rem;
+}
+
+.vibe-duolingo .split-right {
+  padding: 1.5rem;
+}
+
+.vibe-duolingo .split-divider {
+  display: none;
+}
+
+.vibe-duolingo .split-panel :deep(h1),
+.vibe-duolingo .split-panel :deep(h2) {
+  color: var(--theme-primary, #58CC02);
+  font-weight: 800;
+}
+
+.vibe-duolingo .split-panel :deep(.big-number),
+.vibe-duolingo .split-panel :deep([class*="metric"]) {
+  color: var(--theme-primary, #58CC02);
+  font-weight: 800;
+}
 </style>

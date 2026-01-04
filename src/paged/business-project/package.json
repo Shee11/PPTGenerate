@@ -1,0 +1,11 @@
+{
+  "name": "business-project",
+  "version": "1.0.0",
+  "description": "Professional corporate business presentation project for Slidev",
+  "type": "module",
+  "dependencies": {
+    "@slidev/cli": "latest",
+    "@slidev/theme-default": "latest",
+    "playwright-chromium": "latest"
+  }
+}

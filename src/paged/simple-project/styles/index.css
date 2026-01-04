@@ -1,0 +1,48 @@
+/*
+ * Simple Project - Global Styles
+ */
+
+:root {
+  --slidev-slide-container-background: transparent;
+}
+
+.slidev-slide-container {
+  background-color: transparent !important;
+  background: transparent !important;
+}
+
+/* Disable animations for static export */
+*, *::before, *::after {
+  animation: none !important;
+  animation-duration: 0s !important;
+  transition: none !important;
+  transition-duration: 0s !important;
+}
+
+/* Base typography */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  line-height: 1.2;
+  margin: 0;
+}
+
+p, li {
+  font-family: var(--font-body);
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Lists */
+ul, ol {
+  margin: 0;
+  padding-left: 1.5em;
+}
+
+li {
+  margin-bottom: 0.5em;
+}
+
+li:last-child {
+  margin-bottom: 0;
+}

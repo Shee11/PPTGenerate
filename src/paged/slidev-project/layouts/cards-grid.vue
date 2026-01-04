@@ -78,7 +78,8 @@ const vibeConfig = computed(() => {
     playful: { rotation: 4, translate: 16, scale: 0.04 },
     professional: { rotation: 0.2, translate: 2, scale: 0.005 },
     minimal: { rotation: 0, translate: 0, scale: 0 },
-    dramatic: { rotation: 2.5, translate: 12, scale: 0.025 }
+    dramatic: { rotation: 2.5, translate: 12, scale: 0.025 },
+    duolingo: { rotation: 2, translate: 8, scale: 0.02 }
   }
   return configs[props.vibe] || configs.none
 })
@@ -355,5 +356,49 @@ const cardTransform = (index: number) => {
 
 .vibe-dynamic .card-item:hover .card-inner {
   transform: perspective(500px) rotateX(-5deg) translateY(-8px);
+}
+
+/* Duolingo vibe - Playful, gamified, bouncy */
+.vibe-duolingo .card-inner {
+  border-radius: 1.25rem;
+  border: 2px solid var(--theme-border, #E5E5E5);
+  box-shadow: 0 4px 0 var(--theme-border, #E5E5E5);
+  transition: all 0.15s ease;
+}
+
+.vibe-duolingo .card-item:hover .card-inner {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 0 var(--theme-border, #E5E5E5);
+}
+
+.vibe-duolingo .card-item:active .card-inner {
+  transform: translateY(0);
+  box-shadow: 0 2px 0 var(--theme-border, #E5E5E5);
+}
+
+.vibe-duolingo .card-accent {
+  height: 4px;
+  border-radius: 2px;
+  background: var(--theme-primary, #58CC02);
+}
+
+.vibe-duolingo .card-item:nth-child(4n+1) .card-accent {
+  background: var(--theme-primary, #58CC02);
+}
+
+.vibe-duolingo .card-item:nth-child(4n+2) .card-accent {
+  background: var(--theme-accent, #1CB0F6);
+}
+
+.vibe-duolingo .card-item:nth-child(4n+3) .card-accent {
+  background: var(--theme-warning, #FF9600);
+}
+
+.vibe-duolingo .card-item:nth-child(4n) .card-accent {
+  background: var(--theme-danger, #FF4B4B);
+}
+
+.vibe-duolingo .grid-background {
+  display: none;
 }
 </style>

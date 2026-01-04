@@ -83,7 +83,8 @@ const vibeConfig = computed(() => {
     playful: { rotation: 3, translate: 15, scale: 0.03, stagger: 0.15 },
     professional: { rotation: 0.3, translate: 2, scale: 0.005, stagger: 0.03 },
     minimal: { rotation: 0, translate: 0, scale: 0, stagger: 0 },
-    dramatic: { rotation: 2, translate: 8, scale: 0.025, stagger: 0.08 }
+    dramatic: { rotation: 2, translate: 8, scale: 0.025, stagger: 0.08 },
+    duolingo: { rotation: 1.5, translate: 6, scale: 0.015, stagger: 0.1 }
   }
   return configs[props.vibe] || configs.none
 })
@@ -374,5 +375,59 @@ const statTransform = (index: number) => {
 
 .vibe-dynamic .stat-item {
   transform-origin: center bottom;
+}
+
+/* Duolingo vibe - Gamified achievement style */
+.vibe-duolingo .stat-item {
+  background: var(--theme-bg-surface, #F7F7F7);
+  border-radius: 1.25rem;
+  border: 3px solid var(--theme-border, #E5E5E5);
+  box-shadow: 0 4px 0 var(--theme-border, #E5E5E5);
+  padding: 1.5rem 2rem;
+  transition: all 0.15s ease;
+}
+
+.vibe-duolingo .stat-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 0 var(--theme-border, #E5E5E5);
+}
+
+.vibe-duolingo .stat-glow,
+.vibe-duolingo .stat-underline,
+.vibe-duolingo .stats-background {
+  display: none;
+}
+
+.vibe-duolingo .stat-item:nth-child(4n+1) .stat-content :deep([class*="number"]),
+.vibe-duolingo .stat-item:nth-child(4n+1) .stat-content :deep(h1),
+.vibe-duolingo .stat-item:nth-child(4n+1) .stat-content :deep(h2) {
+  color: var(--theme-primary, #58CC02);
+}
+
+.vibe-duolingo .stat-item:nth-child(4n+2) .stat-content :deep([class*="number"]),
+.vibe-duolingo .stat-item:nth-child(4n+2) .stat-content :deep(h1),
+.vibe-duolingo .stat-item:nth-child(4n+2) .stat-content :deep(h2) {
+  color: var(--theme-accent, #1CB0F6);
+}
+
+.vibe-duolingo .stat-item:nth-child(4n+3) .stat-content :deep([class*="number"]),
+.vibe-duolingo .stat-item:nth-child(4n+3) .stat-content :deep(h1),
+.vibe-duolingo .stat-item:nth-child(4n+3) .stat-content :deep(h2) {
+  color: var(--theme-warning, #FF9600);
+}
+
+.vibe-duolingo .stat-item:nth-child(4n) .stat-content :deep([class*="number"]),
+.vibe-duolingo .stat-item:nth-child(4n) .stat-content :deep(h1),
+.vibe-duolingo .stat-item:nth-child(4n) .stat-content :deep(h2) {
+  color: var(--theme-danger, #FF4B4B);
+}
+
+.vibe-duolingo .stat-content {
+  font-weight: 700;
+}
+
+.vibe-duolingo .section-title {
+  color: var(--theme-text, #3C3C3C);
+  font-weight: 800;
 }
 </style>

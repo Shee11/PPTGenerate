@@ -167,7 +167,13 @@ class Tool(ABC, Generic[TContext, TPatch]):
     
     def _log(self, msg: str):
         if self.verbose:
-            print(f"[{self.name}] {msg}")
+            import sys
+            try:
+                print(f"[{self.name}] {msg}")
+            except UnicodeEncodeError:
+                # Fallback for Windows console
+                safe_msg = msg.encode(sys.stdout.encoding or 'utf-8', errors='replace').decode(sys.stdout.encoding or 'utf-8', errors='replace')
+                print(f"[{self.name}] {safe_msg}")
 
 
 class DirectTool(Tool[TContext, TPatch]):

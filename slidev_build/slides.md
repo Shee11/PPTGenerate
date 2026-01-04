@@ -13,8 +13,8 @@ mdc: true
 <style>
 :root {
   --slidev-theme-primary: #2563eb;
-  --slidev-theme-background: #0f172a;
-  --slidev-theme-text: #ffffff;
+  --slidev-theme-background: #ffffff;
+  --slidev-theme-text: #1e293b;
 }
 
 /* Apply theme colors */
@@ -65,273 +65,277 @@ a {
 
 ---
 layout: spotlight
-theme: elegant_minimal_white_v1
-vibe: none
----
-
-::title::
-
-Building a Career
-When AI Won’t Sit Still
-
-::subtitle::
-
-14+ years in AI • 3 major waves • 1 recurring question: how do you stay relevant?
-
-::description::
-
-A personal journey through vision, deep learning, and LLMs—and what actually compounds.
-
----
-layout: center
-theme: elegant_minimal_white_v1
-vibe: none
----
-
-“What if AI takes my job?”
-
----
-layout: comparison
-theme: elegant_minimal_white_v1
-vibe: none
----
-
-::title::
-
-## Roles Don’t Disappear.
-They Mutate.
-
-::beforeLabel::
-
-#### Before
-
-::before::
-
-- Dedicated test engineers → developers now own testing.
-- “Pure” coders → expected to understand CI, cloud, telemetry.
-- Specialist roles shrink when tools get better.
-
-::afterLabel::
-
-#### Now (AI Era)
-
-::after::
-
-- Engineers are asked to integrate AI, not compete with it.
-- The valuable skill: evolving, staying curious, becoming a beginner again.
-- Those who adapt design how AI is used by everyone else.
-
----
-layout: timeline
-theme: elegant_minimal_white_v1
-vibe: none
----
-
-::title::
-
-## Three Waves I Had to Survive
-
-::step1::
-
-2011–2015 · Classic Vision
-Hand‑crafted vision algorithms at Microsoft.
-Helped build and tune the first Face API.
-
-::step2::
-
-2015–2020 · Deep Learning Everywhere
-Deep neural nets take over vision.
-Shift to edge and cross‑platform inference, even video generation.
-
-::step3::
-
-2021–Now · Product + AI in Teams
-Vision pipelines inside Microsoft Teams.
-Closer to real users, latency, reliability, and messy constraints.
-
----
-layout: comparison
-theme: elegant_minimal_white_v1
-vibe: none
----
-
-::title::
-
-## How AI Work Itself Has Changed
-
-::beforeLabel::
-
-#### Traditional AI Pipeline
-
-::before::
-
-- Months of data collection and labeling.
-- Model architecture debates, endless training runs.
-- Separate teams: data, model, infra, product.
-- Rebuilding infra and evaluation for every project.
-- Slow, expensive, hard to iterate with users.
-
-::afterLabel::
-
-#### LLM‑Era Workflow
-
-::after::
-
-- Start from powerful base models as a shared foundation.
-- Compose via prompts, tools, and lightweight orchestration.
-- Optimize for user experience and iteration speed, not just accuracy.
-- Reuse infrastructure and evaluation across many features.
-
----
-layout: smart-grid
-theme: elegant_minimal_white_v1
-cols: 3
-vibe: none
----
-
-::header::
-
-## In the LLM Era, What Actually Moves the Needle?
-
-::col1::
-
-**1. Treat Models as a Unified Brain**
-Large models are a shared knowledge base with a reasoning interface.
-Your job: ask better questions, wire better tools.
-
-::col2::
-
-**2. Design Workflows, Not Just Models**
-Prompt strategy, agent architectures, and feedback loops
-often beat another 0.2% accuracy gain.
-
-::col3::
-
-**3. Build Systems, Not Benchmarks**
-Telemetry + adaptive loops + more useful features
-> squeezing the last fraction of a percent from a single model.
-
----
-layout: hero-split
-theme: elegant_minimal_white_v1
-ratio: 50-50
-vibe: none
----
-
-::left::
-
-## When Optimization Makes Things Worse
-
-::right::
-
-I once spent days hand‑tuning a hot C++ function with intrinsics.
-
-The benchmark looked great.
-The binary got bigger.
-The product… didn’t feel faster.
-
-Why?
-The real bug: that function was called **38 times per second**.
-It should have been called **once per lifecycle**.
-
-Lesson: if you scope the problem wrong, even brilliant optimization
-just decorates the mistake.
-
----
-layout: info-boxes
-theme: elegant_minimal_white_v1
-boxes: 3
-vibe: none
----
-
-::title::
-
-## Skills That Survive Every AI Wave
-
-::box1_title::
-
-#### 1. Precise Problem Definition
-
-::box1_content::
-
-Broaden the question beyond today’s UI or API.
-Ask: “If this were magically solved, what would users be able to do?”
-LLMs are a chance to redefine the problem space, not just patch old flows.
-
-::box2_title::
-
-#### 2. Evaluation & Iteration
-
-::box2_content::
-
-Design prompts that work for most cases.
-Then systematically hunt failures and fold constraints back in.
-Build feedback loops so the system keeps teaching you where it breaks.
-
-::box3_title::
-
-#### 3. Cross‑Domain Composition
-
-::box3_content::
-
-Depth in one stack is no longer enough.
-The real leverage: combining models, tools, and domains
-into coherent systems that solve messy, real‑world problems.
-
----
-layout: dashboard
-theme: elegant_minimal_white_v1
-vibe: none
----
-
-::title::
-
-## Your Next 10 Years Won’t Look Like Your Last 10
-
-::metric1::
-
-## 3
-
-**Major AI waves in my career**
-
-::metric2::
-
-## ≈5
-
-**Years between waves**
-
-::metric3::
-
-## ∞
-
-**Times you’ll need to be a beginner again**
-
-::metric4::
-
-## 1
-
-**Career you get to build**
-
----
-layout: quote-hero
-theme: elegant_minimal_white_v1
+theme: editorial_v1
+background: '#ffffff'
 vibe: none
 ---
 
 ::default::
 
-> Don’t compete with the model.
-Design the problems it gets to solve.
+Evolving With AI: From Building Models to Composing Intelligent Systems
 
-::author::
+::subtitle::
 
-Practical next steps:
-• Use AI on real tasks you care about—let need drive exploration.
-• Turn each good Q&A with a model into durable understanding.
-• Keep a single source of truth (a spec, an idea) and let AI translate it into code, docs, and slides.
+Chao Wang – Applied Scientist, Microsoft Teams
+“Retire before AI take over your job.”
 
-Stay curious. Keep evolving. Be willing to start from zero—again and again.
+---
+layout: timeline
+theme: editorial_v1
+background: '#ffffff'
+vibe: none
+---
 
-::context::
+::title::
 
-Elegant minimalist theme · White background · Black text
+# Chao’s Journey Mirrors the AI Industry Shift
+
+::step1::
+
+2011: Traditional vision algorithms & service-side components (early Face API, tuning).
+
+::step2::
+
+Next: Edge inference on mobile devices, bringing AI closer to users.
+
+::step3::
+
+Then: Cross-platform inference & vision-related generation (e.g., video generation).
+
+::step4::
+
+Now: Large-model-powered features in Microsoft Teams.
+
+::step5::
+
+
+
+---
+layout: smart-grid
+theme: editorial_v1
+background: '#ffffff'
+vibe: none
+cols: 4
+---
+
+::header::
+
+# Traditional AI: Linear Pipeline, Fixed Roles
+
+::col1::
+
+- Data → owned by data engineers.
+- Focus: coverage, quality, labeling.
+
+::col2::
+
+- Model → owned by model team.
+- Focus: architecture, training, accuracy.
+
+::col3::
+
+- System → owned by developers.
+- Focus: latency, throughput, reliability.
+
+::col4::
+
+- Product → owned by product team.
+- Focus: user impact, metrics, business value.
+
+---
+layout: comparison
+theme: editorial_v1
+background: '#ffffff'
+vibe: none
+---
+
+::title::
+
+# Why the Old Pipeline Hurt → and What Changed Around 2015
+
+::beforeLabel::
+
+# Traditional AI Pipeline
+
+::before::
+
+- Slow: months of data collection and model tuning.
+- Expensive: heavy bespoke infrastructure and tooling.
+- Reinvented the wheel: evaluation and optimization rebuilt for every project.
+
+::afterLabel::
+
+# Deep Nets Era (~2015)
+
+::after::
+
+Deep neural networks became popular, shifting vision from hand-crafted algorithms to learned representations and opening the door to today’s large-model approaches.
+
+---
+layout: hero-split
+theme: editorial_v1
+background: '#ffffff'
+vibe: none
+---
+
+::left::
+
+# From Vision Algorithms to Multi-Modal Collaboration in Teams
+
+::right::
+
+- Since 2021, working on the Microsoft Teams vision pipeline and collaborating with the Teams CMD team.
+- Modern collaboration apps integrate camera, audio, chat, reactions, and more into one unified experience.
+- AI now spans modalities inside a single product, rather than living in isolated components.
+
+---
+layout: smart-grid
+theme: editorial_v1
+background: '#ffffff'
+vibe: none
+cols: 4
+---
+
+::header::
+
+# From Training Models to Composing Large Models into Apps
+
+::col1::
+
+- Large models act as a unified knowledge base with a reasoning interface.
+- They combine broad knowledge with functional capabilities (tools, code, APIs).
+
+::col2::
+
+- Focus shifts from building standalone models from scratch.
+- We compose existing models via prompting and lightweight orchestration.
+
+::col3::
+
+- Optimization moves from raw accuracy to UX, iteration speed, and prompt strategy.
+- Workflow design becomes as important as the underlying model.
+
+::col4::
+
+- Modern apps embed automated feedback loops into runtime workflows.
+- Systems continuously refine behavior instead of relying only on offline retraining.
+
+---
+layout: smart-grid
+theme: editorial_v1
+background: '#ffffff'
+vibe: none
+cols: 4
+---
+
+::header::
+
+# How AI Roles and Problem Definition Have Evolved
+
+::col1::
+
+- Old world: clear split between engineers and applied scientists.
+- Engineers: system stability, latency, integration.
+- Scientists: model training, robustness, algorithmic improvements.
+
+::col2::
+
+- New world: overlapping roles as product-focused AI builders.
+- Both care about delivering useful, reliable products end-to-end.
+
+::col3::
+
+- Roles now include designing prompts and agent architectures.
+- Agents decide how to invoke models, tools, and context to solve tasks.
+
+::col4::
+
+- Problem definition broadens to more open-ended, data-informed framing.
+- Interfaces are co-created with AI through iterative human–AI interaction.
+
+---
+layout: smart-grid
+theme: editorial_v1
+background: '#ffffff'
+vibe: none
+cols: 4
+---
+
+::header::
+
+# Where Developers Get the Highest Return on Effort Now
+
+::col1::
+
+- Define the right problem with precision and real user context.
+- Frame problems to leverage large models and feedback data.
+- Look beyond fitting existing components to rethinking workflows.
+
+::col2::
+
+- Build robust evaluation and tuning mechanisms into your system.
+- Design validation and automated evaluation to accelerate iteration.
+- Use telemetry and adaptive loops instead of manual spot checks.
+
+::col3::
+
+- Combine domains and tools to solve complex problems end-to-end.
+- Deep expertise in one area is less sufficient on its own.
+- Value is in orchestrating models, tools, and product context together.
+
+::col4::
+
+Stop chasing 0.1% accuracy gains—optimize systems, telemetry, and customer value instead.
+
+---
+layout: hero-split
+theme: editorial_v1
+background: '#ffffff'
+vibe: none
+---
+
+::left::
+
+MCP-based workflow:
+- Write a single abstract/spec.
+- Feed it to an LLM connected to Office PowerPoint, Word, and a Mermaid renderer via MCP servers.
+- Generate slides, a script, and diagrams (PNG) from that one source.
+
+LLM as translator from a single source of truth across documents and formats.
+
+::right::
+
+- Treat the written spec as the single source of truth.
+- Use the LLM to translate intent into slides, docs, diagrams, even code structure.
+- Benefits: consistency, speed, and multi-artifact generation with minimal manual duplication.
+
+---
+layout: smart-grid
+theme: editorial_v1
+background: '#ffffff'
+vibe: none
+cols: 4
+---
+
+::header::
+
+# “Make every step solid.” – Chao Wang
+
+::col1::
+
+- Evolve with how the industry is moving, even if it means leaving your comfort zone.
+- Like testing roles 15–20 years ago, some traditional roles will disappear or transform.
+- When automation and AI tools appear, embrace them and redefine your role around them.
+
+::col2::
+
+- Stay current by skimming curated papers in a few focus areas to track direction, not every detail.
+- Adopt new AI tools only when you have concrete needs; evaluate them by how well they help you ship.
+- Turn every question and experiment into durable knowledge—code, systems, and understanding that last.
+
+::col3::
+
+Be the person who evolves with AI, not the one replaced by it.
+
+::col4::
+

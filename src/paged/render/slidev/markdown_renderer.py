@@ -51,31 +51,52 @@ class SlidevRenderer:
     markdown with frontmatter and slot syntax.
     
     Architecture:
-    - Source: slidev-project/ (layouts, components - source controlled)
+    - Source: slidev-project/ or duolingo-project/ (layouts, components - source controlled)
     - Build: slidev_build/ (temporary directory, auto-generated)
     
     Supports:
-    - Custom Vue layouts (slidev-project/layouts/*.vue):
+    - Custom Vue layouts (layouts/*.vue):
       smart-grid, hero-split, full-bleed, feature-grid, comparison, timeline, dashboard
     
-    - Custom Vue components (slidev-project/components/*.vue):
+    - Custom Vue components (components/*.vue):
       ChartWidget, TableWidget, QuoteWidget, MetricWidget
     
     - Slidev built-in layouts:
       default, center, cover, end, fact, image, image-left, image-right,
       intro, quote, section, statement, two-cols, two-cols-header
+    
+    Project Selection:
+    - "slidev" (default): Professional business styling with gradients and glassmorphism
+    - "duolingo": Playful Duolingo-style with chunky rounded corners and bright colors
+    - "cyberpunk": Futuristic neon aesthetic with glows, HUD frames, and glitch effects
+    - "business": Professional corporate style with clean lines and navy blue accents
     """
     
-    # Class-level source directory (src/paged/slidev-project)
-    # Path from src/paged/render/slidev -> parent.parent.parent = src/paged
-    SOURCE_DIR = Path(__file__).parent.parent.parent / "slidev-project"
+    # Base path for project directories (src/paged/)
+    PAGED_DIR = Path(__file__).parent.parent.parent
     
-    def __init__(self, output_dir: Path = None):
+    # Available project mappings
+    PROJECTS = {
+        "slidev": "slidev-project",
+        "duolingo": "duolingo-project",
+        "cyberpunk": "cyberpunk-project",
+        "handdrawn": "handdrawn-project",
+        "editorial": "editorial-project",
+        "business": "business-project",
+        "simple": "simple-project",
+    }
+    
+    # Default project
+    DEFAULT_PROJECT = "slidev"
+    
+    def __init__(self, output_dir: Path = None, project: str = None):
         """Initialize renderer with Jinja2 templates and build directory.
         
         Args:
             output_dir: Output directory for build. If provided, uses output_dir/slidev_build.
                        If None, uses project root/slidev_build (for backwards compatibility).
+            project: Project style to use ("slidev" or "duolingo").
+                    If None, uses DEFAULT_PROJECT ("slidev").
         """
         template_dir = Path(__file__).parent / "templates"
         self.env = Environment(
@@ -89,6 +110,13 @@ class SlidevRenderer:
         self.frontmatter_template = self.env.get_template("frontmatter.j2")
         self.slot_template = self.env.get_template("slot.j2")
         self.slide_template = self.env.get_template("slide.j2")
+        
+        # Set project and source directory
+        self.project = project or self.DEFAULT_PROJECT
+        if self.project not in self.PROJECTS:
+            raise ValueError(f"Unknown project '{self.project}'. Available: {list(self.PROJECTS.keys())}")
+        
+        self.source_dir = self.PAGED_DIR / self.PROJECTS[self.project]
         
         # Setup build directory
         # If output_dir provided, use output_dir/slidev_build
@@ -105,8 +133,8 @@ class SlidevRenderer:
         """Ensure Slidev build environment is set up (run once)."""
         package_json = self.build_dir / "package.json"
         
-        # Copy layouts and components from source (src/paged/slidev-project)
-        self._copy_layouts_and_components(self.SOURCE_DIR)
+        # Copy layouts and components from source project
+        self._copy_layouts_and_components(self.source_dir)
         
         # Skip npm install if already initialized
         if package_json.exists():
@@ -150,10 +178,10 @@ class SlidevRenderer:
         print("Build environment ready")
     
     def _copy_layouts_and_components(self, source_dir: Path):
-        """Copy layouts, components, and styles from slidev-project to build directory.
+        """Copy layouts, components, and styles from project source to build directory.
         
         Args:
-            source_dir: Path to slidev-project directory
+            source_dir: Path to project directory (slidev-project or duolingo-project)
         """
         if not source_dir.exists():
             print(f"Warning: Source directory {source_dir} not found, skipping layout/component copy")
@@ -317,14 +345,25 @@ class SlidevRenderer:
             theme_data = params.get("theme", "default")
         
         if isinstance(theme_data, str):
-            # Theme is just a name - use defaults
+            # Theme is just a name/id - load from theme file
             theme_id = theme_data
-            primary_color = "#2563eb"
-            background_color = "#0f172a"  # Default dark
-            text_color = "#ffffff"
-            font_family = "Arial, sans-serif"
-            heading_font = font_family
-            typography = {}
+            from src.common.asset_manager import AssetManager
+            loaded_theme = AssetManager.get_theme(theme_id)
+            if loaded_theme:
+                primary_color = loaded_theme.get("primary_color", "#2563eb")
+                background_color = loaded_theme.get("background_color", "#ffffff")
+                text_color = loaded_theme.get("text_color", "#1f2937")
+                typography = loaded_theme.get("typography", {})
+                font_family = loaded_theme.get("font_family", "Arial, sans-serif")
+                heading_font = loaded_theme.get("heading_font") or font_family
+            else:
+                # Theme not found - use defaults
+                primary_color = "#2563eb"
+                background_color = "#ffffff"
+                text_color = "#1f2937"
+                font_family = "Arial, sans-serif"
+                heading_font = font_family
+                typography = {}
         else:
             # Theme is a full dict
             theme_id = theme_data.get("id", "default")
@@ -629,7 +668,7 @@ mdc: true
                     params[f"variant_{key}"] = params.pop(key)
             
             # Map vibe from LLM output to our predefined vibes
-            # The Vue layouts expect: none, calm, dynamic, playful, professional, minimal, dramatic
+            # The Vue layouts expect: none, calm, dynamic, playful, professional, minimal, dramatic, duolingo
             if "vibe" in params:
                 vibe_map = {
                     "aurora": "dynamic",
@@ -642,7 +681,10 @@ mdc: true
                     "playful": "playful",
                     "professional": "professional",
                     "minimal": "minimal",
-                    "dramatic": "dramatic"
+                    "dramatic": "dramatic",
+                    "duolingo": "duolingo",
+                    "serious": "professional",
+                    "casual": "playful",
                 }
                 params["vibe"] = vibe_map.get(params["vibe"], "none")
             
@@ -729,6 +771,10 @@ mdc: true
             # Paragraph with markdown preserved
             return text
         
+        elif widget_type == "Type.Caption":
+            # Small caption text - render as italic
+            return f"*{text}*" if text else ""
+        
         elif widget_type == "Type.List":
             # Bullet list
             items = parameters.get("items", [])
@@ -743,6 +789,60 @@ mdc: true
             code = str(parameters.get("code", text))
             language = parameters.get("language", "")
             return f"```{language}\n{code}\n```"
+        
+        elif widget_type == "Type.Image":
+            # Image - render as markdown image
+            src = parameters.get("src", "")
+            alt = parameters.get("alt", "Image")
+            if src:
+                return f"![{alt}]({src})"
+            return ""
+        
+        elif widget_type == "Type.Metric":
+            # Metric - render as big number with label
+            value = parameters.get("value", "")
+            label = parameters.get("label", "")
+            change = parameters.get("change", "")
+            
+            result = f"## {value}"
+            if change:
+                result += f" ({change})"
+            if label:
+                result += f"\n\n**{label}**"
+            return result
+        
+        elif widget_type == "Type.BigNumber":
+            # Big number display
+            value = parameters.get("value", "")
+            label = parameters.get("label", "")
+            
+            result = f"## {value}"
+            if label:
+                result += f"\n\n**{label}**"
+            return result
+        
+        elif widget_type == "Type.Card":
+            # Card with title and content
+            title = parameters.get("title", "")
+            content = parameters.get("content", "")
+            
+            result = ""
+            if title:
+                result = f"### {title}\n\n"
+            if content:
+                result += content
+            return result
+        
+        elif widget_type == "Type.Note":
+            # Note - render as blockquote with note prefix
+            return f"> **Note:** {text}" if text else ""
+        
+        elif widget_type == "Type.Chart":
+            # Chart placeholder
+            chart_type = parameters.get("chartType", "bar")
+            title = parameters.get("title", "Chart")
+            
+            return f"📊 **{title}** ({chart_type} chart)"
         
         else:
             # Fallback

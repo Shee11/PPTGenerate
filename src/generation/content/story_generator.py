@@ -73,80 +73,54 @@ def _get_story_prompt(
     
     target_slides = slide_count or 10
     
-    return f"""You are a STORYTELLER who designs presentation narratives.
+    return f"""You are a STORYTELLER designing presentation narrative and visual approach.
 
 # INPUT
-
-## Atoms (content units to use)
+Atoms:
 ```json
 {atoms_json}
 ```
-
-## User Instruction
-{user_instruction or "Create a compelling presentation"}
-
-## Guidance
-{intent_guidance or "None"}
-
-## Target Slides
-{target_slides} slides
-
-# OUTPUT
-
-Create draft slides with story arc. Each slide needs:
-- id: Unique ID (e.g., "slide_01_hook")
-- rank: Order (1-based)
-- state: "draft"
-- story: Narrative purpose (what this slide accomplishes in the story)
-- atoms: List of atom IDs to use (from input atoms)
-- density: "minimal" (1-2 points) | "moderate" (3-4) | "dense" (5+)
-- visual_design: FREE TEXT describing how to visualize. Include:
-  - Desired elements (big number, quote, bullet list, chart, image placeholder, etc.)
-  - Orientation/layout concept (left-heavy hero, centered, side-by-side comparison, grid of items, etc.)
-  - Visual emphasis (what should stand out, what's supporting)
-  - Rough spatial arrangement
-
-Examples of visual_design:
-- "Large stat on left (the key number), supporting context text on right"
-- "Centered bold quote with author attribution below"
-- "Side-by-side comparison: before state left, after state right"
-- "Grid of 4 feature cards, each with icon placeholder and short label"
-- "Timeline flowing left to right with 5 milestone markers"
-- "Full-bleed dramatic single statement, minimal text"
-- "Dashboard style: 3 metric cards on top, chart area below"
-
-Leave layout and widgets EMPTY (filled later):
-- layout: ""
-- widgets: {{}}
-
-# STORY ARC STRUCTURE
-
-1. **HOOK** (1-2 slides): Grab attention with surprising fact or question
-2. **CONTEXT** (2-3 slides): Set the scene, establish stakes
-3. **JOURNEY** (3-5 slides): Main content, building tension/interest
-4. **INSIGHT** (2-3 slides): Key revelations, "aha" moments
-5. **CLOSE** (1-2 slides): Resolution, call to action, memorable end
+Instruction: {user_instruction or "Create a compelling presentation"}
+Target: {target_slides} slides
 
 # OUTPUT FORMAT
+JSON array of slides: id, rank, state, story, atoms, density, visual_design, layout, widgets.
 
-```json
-[
-  {{
-    "id": "slide_01_hook",
-    "rank": 1,
-    "state": "draft",
-    "story": "HOOK: Surprise with unexpected statistic to grab attention",
-    "atoms": ["stat_001", "fact_002"],
-    "density": "minimal",
-    "visual_design": "Large dramatic number on left, brief context line on right",
-    "layout": "",
-    "widgets": {{}}
-  }},
-  ...
-]
-```
+# STORY STRUCTURE (4-part framework)
+- **HEADLINE**: Conclusion-first (e.g., "Revenue grew 20%", not "Revenue")
+- **NARRATIVE**: Why it matters (speaker's voice)
+- **EVIDENCE**: Supporting data/facts
+- **TAKEAWAY**: Key implication
 
-Return ONLY the JSON array, no other text."""
+# DENSITY GUIDE
+| Density | Focus | Elements | Use When |
+|---------|-------|----------|----------|
+| sparse | Single hero element | 1-2 blocks | Opening, impact moments, key stats |
+| moderate | Balanced content | 3-4 blocks | Most body slides |
+| dense | Detailed breakdown | 5+ blocks | Data-heavy, comparison slides |
+
+# VISUAL_DESIGN (CRITICAL - content generator follows this)
+Specify layout + content approach. Content generator MUST follow this.
+Examples:
+- "LayoutCover" (opening only)
+- "LayoutSplit5050: left=narrative+list, right=BigNum+context"
+- "LayoutDashboard: main=chart+metrics, sidebar=key-points"
+- "LayoutStacked: text-focused with supporting callout"
+- "LayoutSplit5050: left=diagram(process flow), right=explanation"
+
+# SLIDE PACING
+1. **SLIDE 1**: Opening. density=sparse, visual_design="LayoutCover"
+2. **BODY SLIDES**: Vary density. Use "sparse" for impact, "moderate" for content, "dense" for data.
+3. **FINAL SLIDE**: Closing. density=moderate, visual_design includes "SmartList+Callout"
+
+# VISUAL SELECTION RULES
+- Use diagram ONLY for process/flow with ≥4 connected steps
+- Use chart for comparisons/trends with ≥3 data points
+- Use BigNum/MetricGroup for key numbers
+- Use SmartList/Text for narrative/recommendations
+- Do NOT force visuals where text is clearer
+
+Return ONLY the JSON array."""
 
 
 def _get_refine_prompt(
@@ -230,7 +204,7 @@ def generate_story(
         user_prompt=prompt,
         deployment=deployment,
         temperature=0.7,
-        max_tokens=8000,  # Need room for 10+ draft slides
+        max_tokens=16000,  # Need room for 10+ draft slides (increased for large documents)
     )
     
     # Parse JSON from response
@@ -272,7 +246,7 @@ def refine_story(
         user_prompt=prompt,
         deployment=deployment,
         temperature=0.7,
-        max_tokens=8000,
+        max_tokens=16000,  # Increased for large documents
     )
     
     # Parse JSON from response

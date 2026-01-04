@@ -6,7 +6,7 @@ Features:
 - Chat interface for instructions
 - Todo progress display (live updates)
 - Theme/Vibe switching via todos (unified orchestrator)
-- Live preview iframe via FastAPI static mount
+- Live preview iframe via FastAPI output mount
 """
 import asyncio
 import gradio as gr
@@ -43,7 +43,7 @@ def get_available_themes() -> List[str]:
 
 AVAILABLE_VIBES = [
     "professional", "casual", "dramatic", "minimal", 
-    "playful", "serious", "dynamic", "calm"
+    "playful", "serious", "dynamic", "calm", "duolingo"
 ]
 
 
@@ -164,11 +164,11 @@ def format_chat_message(role: str, content: str) -> Dict[str, str]:
 
 
 def get_preview_html(session_id: str) -> str:
-    """Get preview iframe HTML using FastAPI static mount."""
+    """Get preview iframe HTML using FastAPI output mount."""
     if not session_id:
         return "<div style='height:600px;background:#f0f0f0;display:flex;align-items:center;justify-content:center;'>No session selected</div>"
     timestamp = datetime.now().timestamp()
-    # Use FastAPI static mount: /output/{session_id}/index.html
+    # Use FastAPI output mount: /output/{session_id}/index.html
     return f'<iframe src="/output/{session_id}/?t={timestamp}" width="100%" height="600" style="border:1px solid #ccc;"></iframe>'
 
 
@@ -176,6 +176,8 @@ async def run_generation_async(
     session_id: str, 
     message: str, 
     chat_history: List[Dict[str, str]],
+    theme_id: str = None,
+    vibe: str = None,
 ) -> AsyncGenerator[tuple[List[Dict[str, str]], str, str, str], None]:
     """Run the generation pipeline with live updates.
     
@@ -225,6 +227,12 @@ async def run_generation_async(
             state.load_default_themes()
         
         state.set_source(source_path)
+        
+        # Store selected theme and vibe in state constitution for generation
+        if theme_id:
+            state.constitution.selected_theme = theme_id
+        if vibe:
+            state.constitution.selected_vibe = vibe
         
         # Plan todos
         yield chat_history, "⏳ Planning todos...", "🔄 Planning...", ""
@@ -339,7 +347,13 @@ async def apply_theme_async(
     theme_id: str,
     chat_history: List[Dict[str, str]]
 ) -> AsyncGenerator[tuple[List[Dict[str, str]], str, str, str], None]:
-    """Apply theme via todo orchestrator (export only)."""
+    """Apply theme via todo orchestrator (export only).
+    
+    Updates:
+    1. state.active_theme_id - the selected theme
+    2. slides[].parameters.theme - for export to use
+    3. Files export todo
+    """
     if not session_id or not theme_id:
         yield chat_history, "No todos", "⚠ Session or theme not selected", ""
         return
@@ -359,22 +373,19 @@ async def apply_theme_async(
         if not state.themes:
             state.load_default_themes()
         
-        # Set active theme properly (validates theme exists)
+        # Set active theme (validates theme exists)
         try:
             state.set_active_theme(theme_id)
         except ValueError:
-            # Theme not in registry, load defaults and try again
             state.load_default_themes()
             state.set_active_theme(theme_id)
         
-        # Get the full theme dict for slides
-        theme_dict = state.get_active_theme()
-        
+        # Update slides' parameters.theme (this is what export uses)
         if state.slides:
             for slide in state.slides:
-                slide['theme'] = theme_dict  # Use full theme dict, not just ID
-                if 'parameters' in slide:
-                    slide['parameters']['theme_id'] = theme_id
+                if 'parameters' not in slide or slide['parameters'] is None:
+                    slide['parameters'] = {}
+                slide['parameters']['theme'] = theme_id
         
         state.save(state_path)
         
@@ -419,7 +430,13 @@ async def apply_vibe_async(
     vibe: str,
     chat_history: List[Dict[str, str]]
 ) -> AsyncGenerator[tuple[List[Dict[str, str]], str, str, str], None]:
-    """Apply vibe via todo orchestrator (export only)."""
+    """Apply vibe via todo orchestrator (export only).
+    
+    Updates:
+    1. state.selected_vibe - for tracking (optional)
+    2. slides[].parameters.vibe - for export to use
+    3. Files export todo
+    """
     if not session_id or not vibe:
         yield chat_history, "No todos", "⚠ Session or vibe not selected", ""
         return
@@ -435,9 +452,9 @@ async def apply_vibe_async(
         # Load state and update vibe
         state = PipelineState.load(state_path)
         
+        # Update slides' parameters.vibe (this is what export uses)
         if state.slides:
             for slide in state.slides:
-                # Ensure parameters dict exists
                 if 'parameters' not in slide or slide['parameters'] is None:
                     slide['parameters'] = {}
                 slide['parameters']['vibe'] = vibe
@@ -601,7 +618,7 @@ def create_app():
         # Send message - async with streaming updates
         send_btn.click(
             fn=run_generation_async,
-            inputs=[session_id, msg_input, chatbot],
+            inputs=[session_id, msg_input, chatbot, theme_dropdown, vibe_dropdown],
             outputs=[chatbot, todo_display, gen_status, preview_frame]
         ).then(
             fn=lambda: "",
@@ -611,7 +628,7 @@ def create_app():
         # Enter key to send
         msg_input.submit(
             fn=run_generation_async,
-            inputs=[session_id, msg_input, chatbot],
+            inputs=[session_id, msg_input, chatbot, theme_dropdown, vibe_dropdown],
             outputs=[chatbot, todo_display, gen_status, preview_frame]
         ).then(
             fn=lambda: "",
@@ -658,7 +675,7 @@ if __name__ == "__main__":
     # Create Gradio app
     gradio_app = create_app()
     
-    # Get the FastAPI app from Gradio and mount static files
+    # Get the FastAPI app from Gradio and mount output files
     fastapi_app = FastAPI()
     fastapi_app.mount("/output", StaticFiles(directory="output", html=True), name="output")
     fastapi_app = gr.mount_gradio_app(fastapi_app, gradio_app, path="/gradio")

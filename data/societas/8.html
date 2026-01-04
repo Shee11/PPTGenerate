@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-Time Transformation Examples</title>
+    <link rel="stylesheet" href="/fonts/Arvo/index.css">
+    <link rel="stylesheet" href="/fonts/Inter/index.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .slide-container {
+            height: 100vh;
+            width: 100%;
+            background: #1a1a2e;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .slide-header {
+            text-align: center;
+            padding: 1.5rem 3rem 1rem;
+        }
+
+        .slide-title {
+            font-family: 'Arvo', serif;
+            font-weight: 700;
+            font-size: 2.4rem;
+            color: #f0f0f8;
+            text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.4);
+            margin: 0;
+        }
+
+        .slide-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 3rem;
+            gap: 3rem;
+            overflow: hidden;
+        }
+
+        .column {
+            flex: 1;
+            background: rgba(232, 232, 240, 0.05);
+            border-radius: 0.75rem;
+            padding: 2rem;
+            border: 1px solid rgba(232, 232, 240, 0.1);
+            height: 100%;
+            max-height: 55vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .column-header {
+            font-family: 'Arvo', serif;
+            font-weight: 700;
+            font-size: 1.6rem;
+            color: #f0f0f8;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.4);
+        }
+
+        .custom-list {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .list-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            background: rgba(240, 240, 248, 0.03);
+            border-radius: 0.5rem;
+            border-left: 3px solid #e8e8f0;
+        }
+
+        .list-item i {
+            font-size: 1.3em;
+            color: #e8e8f0;
+            margin-top: 0.1rem;
+            flex-shrink: 0;
+        }
+
+        .list-item span {
+            font-family: 'Inter', sans-serif;
+            font-weight: 400;
+            font-size: 0.95rem;
+            color: #d0d0e0;
+            line-height: 1.5;
+        }
+
+        .highlight-feature {
+            color: #e8e8f0;
+            font-weight: 600;
+        }
+
+        .outcome-note {
+            margin-top: 1rem;
+            padding: 0.75rem;
+            background: rgba(232, 232, 240, 0.08);
+            border-radius: 0.5rem;
+            font-style: italic;
+            color: #b8b8d0;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .outcome-note strong {
+            color: #f0f0f8;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="slide-header">
+            <h1 class="slide-title">Real-Time Transformation Examples</h1>
+        </div>
+        
+        <div class="slide-content">
+            <div class="column">
+                <h2 class="column-header">Scrum Meetings</h2>
+                <div class="custom-list">
+                    <div class="list-item">
+                        <i class="fas fa-tasks"></i>
+                        <span><span class="highlight-feature">Automatic ADO updates</span> as team members discuss sprint progress and blockers in real-time.</span>
+                    </div>
+                    <div class="list-item">
+                        <i class="fas fa-chart-bar"></i>
+                        <span><span class="highlight-feature">Burndown chart generation</span> based on velocity discussions and remaining work estimates.</span>
+                    </div>
+                    <div class="list-item">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span><span class="highlight-feature">Blocker identification</span> and automatic ticket creation for impediments mentioned during standup.</span>
+                    </div>
+                    <div class="list-item">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span><span class="highlight-feature">Sprint planning automation</span> with capacity allocation based on team member availability discussions.</span>
+                    </div>
+                </div>
+                <div class="outcome-note">
+                    <strong>Result:</strong> Zero manual follow-up time for project tracking and sprint management.
+                </div>
+            </div>
+
+            <div class="column">
+                <h2 class="column-header">Product Discussions</h2>
+                <div class="custom-list">
+                    <div class="list-item">
+                        <i class="fas fa-presentation"></i>
+                        <span><span class="highlight-feature">Live slide deck creation</span> as product features and requirements are discussed and refined.</span>
+                    </div>
+                    <div class="list-item">
+                        <i class="fas fa-file-alt"></i>
+                        <span><span class="highlight-feature">Specification documentation</span> automatically generated from feature discussions and user story conversations.</span>
+                    </div>
+                    <div class="list-item">
+                        <i class="fas fa-sitemap"></i>
+                        <span><span class="highlight-feature">Roadmap visualization</span> created in real-time based on priority discussions and timeline commitments.</span>
+                    </div>
+                    <div class="list-item">
+                        <i class="fas fa-users"></i>
+                        <span><span class="highlight-feature">Stakeholder summaries</span> tailored for different audiences based on meeting context and decisions made.</span>
+                    </div>
+                </div>
+                <div class="outcome-note">
+                    <strong>Result:</strong> Presentation-ready deliverables available immediately after discussion ends.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // GSAP animations
+        gsap.to('.slide-title', {
+            y: 0,
+            scale: 1,
+            duration: 0.8,
+            ease: 'power2.out'
+        });
+
+        gsap.to('.column:first-child', {
+            x: 0,
+            scale: 1,
+            duration: 1,
+            delay: 0.3,
+            ease: 'power2.out'
+        });
+
+        gsap.to('.column:last-child', {
+            x: 0,
+            scale: 1,
+            duration: 1,
+            delay: 0.5,
+            ease: 'power2.out'
+        });
+    </script>
+</body>
+</html>

@@ -1,15 +1,23 @@
-"""Layout generator - Generates layouts and widgets for draft slides.
+"""Layout generator - Orchestrates layout generation for draft slides.
 
 Takes draft slides with story, atoms, visual_design and generates:
 - layout: Appropriate layout name based on visual_design
-- widgets: Widget content populated from atoms
+- widgets: Widget content populated from atoms  
+- mdx: MDX markup for react-mdx projects
 - state: "active"
+
+This module is an ORCHESTRATOR - it composes prompts from:
+- src/generation/content/prompts.py (content/storytelling prompts)
+- src/paged/layout/react/layout_engine.py (layout/widget prompts)
+
+NO actual prompt text should be defined in this file.
 """
 from __future__ import annotations
 
 import json
 import os
 import re
+import warnings
 from typing import List, Dict, Any, Optional
 
 from src.generation.atom.collection import AtomCollection
@@ -43,99 +51,6 @@ def _get_atom_type(atom) -> str:
     return type(atom).__name__
 
 
-def _get_layout_prompt(
-    draft_slides: List[Dict],
-    context_before: List[Dict],
-    context_after: List[Dict],
-    atoms: AtomCollection,
-    theme_id: Optional[str],
-    intent_guidance: str,
-) -> str:
-    """Build prompt for layout generation."""
-    drafts_json = json.dumps(draft_slides, indent=2)
-    
-    # Check if slides have embedded content or use atoms
-    has_embedded_content = any(slide.get("content") for slide in draft_slides)
-    
-    if has_embedded_content:
-        # Source-based: slides have content field, use it directly
-        content_section = f"""## Draft Slides with Embedded Content
-```json
-{drafts_json}
-```
-
-Note: These slides have embedded content from source. Use the content.sections to populate widgets."""
-    else:
-        # Atom-based: extract referenced atoms
-        referenced_atom_ids = set()
-        for slide in draft_slides:
-            for atom_id in slide.get("atoms", []):
-                referenced_atom_ids.add(atom_id)
-        
-        # Filter atoms to only those referenced
-        referenced_atoms = []
-        for atom in atoms.list_contexts():
-            if atom.id in referenced_atom_ids:
-                content = _get_atom_content(atom)
-                referenced_atoms.append({
-                    "id": atom.id,
-                    "type": _get_atom_type(atom),
-                    "content": content[:500] if len(content) > 500 else content,
-                    "rank": atom.rank,
-                })
-        
-        atoms_json = json.dumps(referenced_atoms, indent=2)
-        content_section = f"""## Draft Slides
-```json
-{drafts_json}
-```
-
-## Referenced Atoms
-```json
-{atoms_json}
-```"""
-    
-    # Build context section - only include layout/widgets from context slides, not full content
-    context_section = ""
-    if context_before:
-        context_slim = [{"id": s.get("id"), "layout": s.get("layout"), "story": s.get("story", "")[:100]} for s in context_before]
-        context_section += f"## Slides Before (for flow reference)\n```json\n{json.dumps(context_slim, indent=2)}\n```\n\n"
-    if context_after:
-        context_slim = [{"id": s.get("id"), "layout": s.get("layout"), "story": s.get("story", "")[:100]} for s in context_after]
-        context_section += f"## Slides After (for flow reference)\n```json\n{json.dumps(context_slim, indent=2)}\n```\n\n"
-    
-    return f"""# SLIDE LAYOUT GENERATION
-
-{content_section}
-{context_section}
-# TASK
-For each draft slide: select layout based on visual_design, populate widgets from atoms or embedded content, set state="active".
-
-# LAYOUTS (name: slots)
-- hero-split: left, right
-- smart-grid: header, col1-col4
-- timeline: title, step1-step5
-- comparison: title, beforeLabel, before, afterLabel, after
-- dashboard: title, metric1-4, chart
-- center: default
-- spotlight: default, subtitle
-- quote-hero: quote, author, context
-- stats-showcase: title, stat-1 to stat-4
-
-# WIDGET TYPES
-- Type.Display (headline), Type.Heading, Type.Body, Type.List (items array), Type.Quote
-- Data.BigNum (value, label, sublabel), Data.Metric (value, label, trend), Data.Chart
-
-# OUTPUT
-JSON array. Each slide must have: id, rank, state="active", story (keep), atoms (keep), density (keep), visual_design (keep), layout (new), widgets (new).
-
-```json
-[{{"id":"...", "rank":1, "state":"active", "story":"...", "atoms":[...], "density":"...", "visual_design":"...", "layout":"hero-split", "widgets":{{"left":{{"type":"Data.BigNum","parameters":{{"value":"14","label":"Years"}}}},"right":{{"type":"Type.Body","parameters":{{"text":"..."}}}}}}}}]
-```
-
-Return ONLY the JSON array, no explanation."""
-
-
 def generate_layouts(
     draft_slides: List[Dict],
     context_before: List[Dict],
@@ -143,6 +58,7 @@ def generate_layouts(
     atoms: Optional[AtomCollection],
     theme_id: Optional[str] = None,
     intent_guidance: str = "",
+    project: str = "react-mdx",
 ) -> List[Dict[str, Any]]:
     """Generate layouts and widgets for draft slides.
     
@@ -153,9 +69,10 @@ def generate_layouts(
         atoms: AtomCollection for widget content
         theme_id: Active theme ID
         intent_guidance: Additional guidance
+        project: Project type - 'react-mdx' (default), 'slidev' is DEPRECATED
         
     Returns:
-        List of active slides with layout and widgets populated
+        List of active slides with layout and widgets populated (and mdx field for react-mdx)
     """
     if not draft_slides:
         return []
@@ -165,33 +82,33 @@ def generate_layouts(
         # Return drafts with minimal layouts
         return _fallback_layouts(draft_slides)
     
-    prompt = _get_layout_prompt(
+    # Slidev is deprecated - warn and redirect to react-mdx
+    if project == "slidev":
+        warnings.warn(
+            "slidev project type is DEPRECATED. Use 'react-mdx' instead. "
+            "Automatically using react-mdx.",
+            DeprecationWarning,
+            stacklevel=2
+        )
+        project = "react-mdx"
+    
+    # Use MDX generation for react-mdx projects
+    if project in ("react-mdx", "react"):
+        return _generate_mdx_layouts(
+            draft_slides, context_before, context_after,
+            atoms, theme_id, intent_guidance
+        )
+    
+    # Unknown project type - fallback to react-mdx
+    warnings.warn(
+        f"Unknown project type '{project}'. Using 'react-mdx'.",
+        UserWarning,
+        stacklevel=2
+    )
+    return _generate_mdx_layouts(
         draft_slides, context_before, context_after,
         atoms, theme_id, intent_guidance
     )
-    
-    deployment = os.getenv('AZURE_OPENAI_DEPLOYMENT', 'gpt-4o')
-    response = call_llm(
-        system_prompt="You are a slide designer. Output only valid JSON array.",
-        user_prompt=prompt,
-        deployment=deployment,
-        temperature=0.7,
-        max_tokens=16000,  # Need room for 10 slides with widgets
-    )
-    
-    # Parse JSON from response
-    active_slides = _parse_json_array(response)
-    
-    # Validate and normalize
-    for slide in active_slides:
-        slide["state"] = "active"
-        if not slide.get("layout"):
-            # Default fallback layout
-            slide["layout"] = "center"
-        if not slide.get("widgets"):
-            slide["widgets"] = {}
-    
-    return active_slides
 
 
 def _fallback_layouts(draft_slides: List[Dict]) -> List[Dict]:
@@ -211,16 +128,88 @@ def _fallback_layouts(draft_slides: List[Dict]) -> List[Dict]:
     return result
 
 
-def _parse_json_array(response: str) -> List[Dict]:
-    """Extract JSON array from LLM response."""
-    json_match = re.search(r'\[[\s\S]*\]', response)
-    if json_match:
-        try:
-            return json.loads(json_match.group())
-        except json.JSONDecodeError:
-            pass
+def _generate_mdx_layouts(
+    draft_slides: List[Dict],
+    context_before: List[Dict],
+    context_after: List[Dict],
+    atoms: AtomCollection,
+    theme_id: Optional[str],
+    intent_guidance: str,
+) -> List[Dict[str, Any]]:
+    """Generate MDX layouts for react-mdx project.
     
-    try:
-        return json.loads(response)
-    except json.JSONDecodeError as e:
-        raise ValueError(f"Failed to parse layout response as JSON: {e}")
+    Uses the existing prompts from layout_engine and prompts.py.
+    Returns slides with 'mdx' field containing raw MDX markup.
+    """
+    from src.paged.layout.react.mdx_parser import parse_slides_from_mdx
+    from src.generation.content.prompts import get_slide_generation_config, render_slide_generation_prompt
+    
+    # Get system prompt from prompts.py (uses layout_engine.get_layout_prompt())
+    config = get_slide_generation_config(project="react-mdx")
+    system_prompt = config.system_prompt
+    
+    # Build user prompt using existing function
+    user_prompt = render_slide_generation_prompt(
+        atoms=atoms,
+        user_instruction=intent_guidance,
+        intent_guidance="",
+        themes=None
+    )
+    
+    # Add draft slides context to the prompt
+    drafts_summary = []
+    for slide in draft_slides:
+        drafts_summary.append({
+            "id": slide.get("id"),
+            "rank": slide.get("rank"),
+            "story": slide.get("story", ""),
+            "atoms": slide.get("atoms", []),
+            "density": slide.get("density", "moderate"),
+            "visual_design": slide.get("visual_design", ""),
+        })
+    
+    user_prompt = f"""# DRAFT SLIDES (use these IDs, ranks, stories, atoms)
+```json
+{json.dumps(drafts_summary, indent=2)}
+```
+
+{user_prompt}"""
+
+    deployment = os.getenv('AZURE_OPENAI_DEPLOYMENT', 'gpt-4o')
+    response = call_llm(
+        system_prompt=system_prompt,
+        user_prompt=user_prompt,
+        deployment=deployment,
+        temperature=config.temperature,
+        max_tokens=config.max_tokens,
+    )
+    
+    # Parse MDX slides using existing parser
+    parsed_slides = parse_slides_from_mdx(response)
+    
+    if not parsed_slides:
+        print(f"  [WARN] No MDX slides parsed, falling back to drafts")
+        return _fallback_layouts(draft_slides)
+    
+    # Convert ParsedSlide to dict with mdx field
+    active_slides = []
+    for parsed in parsed_slides:
+        # Find matching draft to preserve visual_design/density
+        draft = next((d for d in draft_slides if d.get("id") == parsed.id), None)
+        
+        slide = {
+            "id": parsed.id,
+            "rank": parsed.rank,
+            "state": "active",
+            "story": parsed.story,
+            "atoms": parsed.atoms,
+            "mdx": parsed.mdx,
+        }
+        
+        if draft:
+            slide["density"] = draft.get("density", "moderate")
+            slide["visual_design"] = draft.get("visual_design", "")
+        
+        active_slides.append(slide)
+    
+    return active_slides

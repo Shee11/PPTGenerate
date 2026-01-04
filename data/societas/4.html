@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Productivity Gap: Current Market Statistics</title>
+    <link rel="stylesheet" href="/fonts/Arvo/index.css">
+    <link rel="stylesheet" href="/fonts/Inter/index.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@2.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .slide-container {
+            height: 100vh;
+            width: 100%;
+            background: #1a1a2e;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .slide-header {
+            text-align: center;
+            padding: 2rem 0 1rem 0;
+        }
+
+        .slide-title {
+            font-family: 'Arvo', serif;
+            font-weight: 700;
+            font-size: calc(2.6rem * 0.9);
+            color: #f0f0f8;
+            text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.4);
+            margin: 0;
+        }
+
+        .slide-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2.5rem 3rem;
+            gap: 3rem;
+            overflow: hidden;
+        }
+
+        .content-left {
+            width: 50%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .content-right {
+            width: 50%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding-left: 2rem;
+        }
+
+        .chart-container {
+            width: 100%;
+            height: 55vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .text-block {
+            padding: 1.5rem;
+        }
+
+        .section-header {
+            font-family: 'Arvo', serif;
+            font-weight: 700;
+            font-size: calc(1.0rem * 1.8);
+            color: #f0f0f8;
+            margin-bottom: 1.5rem;
+            text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.4);
+        }
+
+        .custom-list {
+            margin-bottom: 2rem;
+        }
+
+        .list-item {
+            margin-bottom: 0.75rem;
+            padding: 0.5rem 0;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .list-item i {
+            margin-right: 0.5rem;
+            font-size: 1.5em;
+            vertical-align: middle;
+            color: #e8e8f0;
+            margin-top: 0.1rem;
+            flex-shrink: 0;
+        }
+
+        .list-item span {
+            font-family: 'Inter', sans-serif;
+            font-weight: 400;
+            font-size: 1.0rem;
+            color: #d0d0e0;
+            line-height: 1.5;
+        }
+
+        .highlight-stat {
+            color: #e8e8f0;
+            font-weight: 600;
+        }
+
+        .summary-note {
+            font-style: italic;
+            color: #b8b8d0;
+            margin-top: 1rem;
+            padding: 0.75rem;
+            background: rgba(232, 232, 240, 0.05);
+            border-radius: 0.5rem;
+            border-left: 3px solid #e8e8f0;
+        }
+
+        .summary-note strong {
+            color: #f0f0f8;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="slide-header">
+            <h1 class="slide-title">The Productivity Gap: Current Market Statistics</h1>
+        </div>
+        
+        <div class="slide-content">
+            <div class="content-left">
+                <div class="chart-container">
+                    <canvas id="productivityChart"></canvas>
+                </div>
+            </div>
+            
+            <div class="content-right">
+                <div class="text-block">
+                    <h2 class="section-header">Meeting Inefficiency Crisis</h2>
+                    <div class="custom-list">
+                        <div class="list-item">
+                            <i class="fas fa-clock"></i>
+                            <span>Workers spend <span class="highlight-stat">2-3 hours weekly</span> on manual meeting follow-up tasks that AI could automate instantly.</span>
+                        </div>
+                        <div class="list-item">
+                            <i class="fas fa-chart-line"></i>
+                            <span>Only <span class="highlight-stat">58% of employees</span> currently use AI tools, representing massive untapped productivity potential.</span>
+                        </div>
+                        <div class="list-item">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <span>Manual follow-up processes reduce <span class="highlight-stat">decision-making speed by 33%</span> compared to automated workflows.</span>
+                        </div>
+                        <div class="list-item">
+                            <i class="fas fa-users"></i>
+                            <span>Teams report <span class="highlight-stat">38% time waste</span> on repetitive documentation that AI agents could eliminate.</span>
+                        </div>
+                    </div>
+                    
+                    <div class="summary-note">
+                        <strong>Market Reality:</strong> The AI-powered meeting tools market is projected to reach $6.5 billion by 2024, growing at 10.2% CAGR as organizations recognize the urgent need to bridge this productivity gap.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Chart configuration
+        const ctx = document.getElementById('productivityChart').getContext('2d');
+        
+        const chart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Manual Follow-up\nTime Waste', 'Decision Speed\nReduction', 'AI Tool\nAdoption Gap', 'Repetitive Task\nOverhead'],
+                datasets: [{
+                    label: 'Productivity Loss (%)',
+                    data: [38, 33, 42, 35],
+                    backgroundColor: ['#e8e8f0', '#d0d0e0', '#b8b8d0', '#a0a0c0'],
+                    borderColor: '#f0f0f8',
+                    borderWidth: 2,
+                    borderRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                layout: {
+                    padding: 0
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(26, 26, 46, 0.9)',
+                        titleColor: '#f0f0f8',
+                        bodyColor: '#d0d0e0',
+                        borderColor: '#e8e8f0',
+                        borderWidth: 1
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 50,
+                        ticks: {
+                            color: '#d0d0e0',
+                            font: {
+                                family: 'Inter',
+                                size: 12
+                            },
+                            callback: function(value) {
+                                return value + '%';
+                            }
+                        },
+                        grid: {
+                            color: 'rgba(208, 208, 224, 0.2)'
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            color: '#d0d0e0',
+                            font: {
+                                family: 'Inter',
+                                size: 11
+                            },
+                            maxRotation: 0
+                        },
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+
+        // GSAP animations
+        gsap.to('.slide-title', {
+            y: 0,
+            scale: 1,
+            duration: 0.8,
+            ease: 'power2.out'
+        });
+
+        gsap.to('.chart-container', {
+            x: 0,
+            scale: 1,
+            duration: 1,
+            delay: 0.3,
+            ease: 'power2.out'
+        });
+
+        gsap.to('.text-block', {
+            x: 0,
+            scale: 1,
+            duration: 1,
+            delay: 0.5,
+            ease: 'power2.out'
+        });
+    </script>
+</body>
+</html>

@@ -99,6 +99,18 @@ class PipelineState(BaseModel):
         description="Currently active theme ID"
     )
     
+    # Project selection for export (slidev, duolingo, or react-mdx)
+    project: str = Field(
+        default="slidev",
+        description="Project style for export: 'slidev' (default), 'duolingo', or 'react-mdx'"
+    )
+    
+    # MDX theme for react-mdx exports
+    mdx_theme: str = Field(
+        default="business",
+        description="MDX theme for react-mdx export: business, cyber, minimal, academic, creative, duolingo, dark"
+    )
+    
     # Extracted atoms
     atoms: Optional[Dict[str, Any]] = Field(
         default=None,
@@ -117,6 +129,18 @@ class PipelineState(BaseModel):
     )
     updated_at: str = Field(
         default_factory=lambda: datetime.now().isoformat()
+    )
+    
+    # Version tracking for iterative refinement
+    version: int = Field(
+        default=1,
+        description="Version number, incremented on each instruction iteration"
+    )
+    
+    # Instruction history for tracking what was applied
+    instruction_history: List[str] = Field(
+        default_factory=list,
+        description="History of user instructions applied to this state"
     )
     
     # === CONSTITUTION METHODS ===
@@ -143,6 +167,33 @@ class PipelineState(BaseModel):
     def get_constitution(self) -> Optional[ConstitutionPatch]:
         """Get constitution."""
         return self.constitution
+    
+    # === VERSION METHODS ===
+    
+    def increment_version(self, instruction: str = "") -> int:
+        """Increment version and record instruction.
+        
+        Args:
+            instruction: The user instruction applied for this version
+            
+        Returns:
+            The new version number
+        """
+        self.version += 1
+        if instruction:
+            self.instruction_history.append(instruction)
+        self._touch()
+        return self.version
+    
+    def get_version_suffix(self) -> str:
+        """Get version suffix for output files.
+        
+        Returns:
+            Empty string for v1, '_v2', '_v3', etc. for later versions
+        """
+        if self.version <= 1:
+            return ""
+        return f"_v{self.version}"
     
     # === TODO METHODS ===
     

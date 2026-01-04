@@ -1,0 +1,1 @@
+I am working on an executive review, need to showcase the business value, customer pain points, what we have achieved cross multiple working streams, pls help produce a ppt suitable for executive review, with some punch lines encourages good interactions during the review

@@ -9,6 +9,85 @@ from src.paged.layout.slidev.layout_validator import (
     WIDGET_SPACE_REQUIREMENTS
 )
 
+# Layout alternatives for consecutive layout fix
+LAYOUT_ALTERNATIVES = {
+    "hero-split": ["comparison", "smart-grid", "dashboard", "spotlight"],
+    "smart-grid": ["hero-split", "comparison", "dashboard", "timeline"],
+    "dashboard": ["hero-split", "smart-grid", "comparison", "timeline"],
+    "comparison": ["hero-split", "smart-grid", "dashboard", "timeline"],
+    "timeline": ["hero-split", "smart-grid", "comparison", "dashboard"],
+    "spotlight": ["hero-split", "smart-grid", "comparison", "center"],
+    "center": ["hero-split", "spotlight", "smart-grid", "comparison"],
+    "stats-showcase": ["hero-split", "smart-grid", "comparison", "dashboard"],
+}
+
+
+def fix_consecutive_layouts(slides: List[dict], verbose: bool = False) -> Tuple[List[dict], List[str]]:
+    """Fix consecutive same-layout issues by rotating layouts.
+    
+    Args:
+        slides: List of slide dicts with 'layout' field or 'mdx' field
+        verbose: If True, include detailed report
+        
+    Returns:
+        Tuple of (fixed_slides, report_lines)
+    """
+    report = []
+    report.append("=" * 80)
+    report.append("CONSECUTIVE LAYOUT FIX REPORT")
+    report.append("=" * 80)
+    
+    # Skip validation for MDX slides (they don't have 'layout' field)
+    # MDX slides store layout in the MDX content itself
+    has_mdx_slides = any(s.get('mdx') for s in slides)
+    if has_mdx_slides:
+        report.append("  ℹ Skipping consecutive layout fix for MDX slides")
+        report.append("=" * 80)
+        return slides, report
+    
+    fixes_applied = 0
+    
+    for i in range(1, len(slides)):
+        current_layout = slides[i].get('layout', 'unknown')
+        prev_layout = slides[i-1].get('layout', 'unknown')
+        
+        # Handle case where layout is a dict instead of string (LLM error)
+        if isinstance(current_layout, dict):
+            current_layout = current_layout.get('name', current_layout.get('type', 'unknown'))
+            slides[i]['layout'] = current_layout
+        if isinstance(prev_layout, dict):
+            prev_layout = prev_layout.get('name', prev_layout.get('type', 'unknown'))
+            slides[i-1]['layout'] = prev_layout
+        
+        if current_layout == prev_layout:
+            # Need to change this slide's layout
+            slide_id = slides[i].get('id', f'slide_{i+1}')
+            alternatives = LAYOUT_ALTERNATIVES.get(current_layout, ["smart-grid", "comparison", "hero-split"])
+            
+            # Pick first alternative not matching previous or next
+            next_layout = slides[i+1].get('layout') if i+1 < len(slides) else None
+            
+            new_layout = None
+            for alt in alternatives:
+                if alt != prev_layout and alt != next_layout:
+                    new_layout = alt
+                    break
+            
+            if new_layout is None:
+                new_layout = alternatives[0]  # Fallback
+            
+            old_layout = slides[i]['layout']
+            slides[i]['layout'] = new_layout
+            fixes_applied += 1
+            
+            report.append(f"  ✅ Slide {i+1} ({slide_id}): {old_layout} → {new_layout} (was same as slide {i})")
+    
+    report.append("")
+    report.append(f"Total consecutive layout fixes: {fixes_applied}")
+    report.append("=" * 80)
+    
+    return slides, report
+
 
 def validate_slides_json(slides_path: str, fix: bool = False) -> Tuple[List[dict], List[str]]:
     """Validate slides JSON for layout-widget compatibility.

@@ -1,9 +1,10 @@
 """CLI for UCE Render - uce-render command."""
 import json
+import re
 import shutil
 import sys
 from pathlib import Path
-from typing import Optional
+from typing import Optional, List
 
 import click
 
@@ -22,6 +23,34 @@ from src.paged.render.slidev.markdown_renderer import SlidevRenderer
 DEFAULT_INSTRUCTION = "create slides, 10 page, professional, corp_modern_v1 theme"
 
 
+def parse_instruction_file(file_path: Path) -> List[str]:
+    """Parse a markdown instruction file into multiple instruction rounds.
+    
+    Each paragraph (text separated by one or more blank lines) becomes
+    a separate instruction round.
+    
+    Args:
+        file_path: Path to the markdown instruction file
+        
+    Returns:
+        List of instruction strings, one per round
+    """
+    content = file_path.read_text(encoding='utf-8')
+    
+    # Split by blank lines (one or more empty lines)
+    paragraphs = re.split(r'\n\s*\n', content.strip())
+    
+    # Clean up each paragraph and filter empty ones
+    instructions = []
+    for para in paragraphs:
+        # Strip whitespace and remove any leading markdown artifacts
+        cleaned = para.strip()
+        if cleaned:
+            instructions.append(cleaned)
+    
+    return instructions
+
+
 @click.command()
 @click.argument('config_file', type=click.Path(exists=True, path_type=Path), required=False)
 @click.option(
@@ -37,9 +66,9 @@ DEFAULT_INSTRUCTION = "create slides, 10 page, professional, corp_modern_v1 them
 )
 @click.option(
     '--layout-engine',
-    type=click.Choice(['dummy', 'slidev'], case_sensitive=False),
-    default='slidev',
-    help='Layout engine to use (default: slidev)'
+    type=click.Choice(['dummy', 'slidev', 'react'], case_sensitive=False),
+    default=None,
+    help='Layout engine to use (auto-selected based on project: react for react-mdx, slidev otherwise)'
 )
 @click.option(
     '--validate-only', '--validate',
@@ -94,6 +123,11 @@ DEFAULT_INSTRUCTION = "create slides, 10 page, professional, corp_modern_v1 them
     help='User guidance for LLM content generation'
 )
 @click.option(
+    '--user-instruction-file',
+    type=click.Path(exists=True, path_type=Path),
+    help='Markdown file with instructions. Each paragraph (separated by blank lines) is a separate round.'
+)
+@click.option(
     '--use-cache',
     type=click.Choice(['true', 'false'], case_sensitive=False),
     default='true',
@@ -132,6 +166,18 @@ DEFAULT_INSTRUCTION = "create slides, 10 page, professional, corp_modern_v1 them
     is_flag=True,
     help='Force re-run all stages even if completed in state'
 )
+@click.option(
+    '--project', '-p',
+    type=click.Choice(['slidev', 'duolingo', 'cyberpunk', 'handdrawn', 'editorial', 'business', 'simple', 'react-mdx'], case_sensitive=False),
+    default='react-mdx',
+    help='Project style to use (default: react-mdx)'
+)
+@click.option(
+    '--mdx-theme',
+    type=click.Choice(['business', 'cyber', 'minimal', 'academic', 'creative', 'duolingo', 'dark', 'purple'], case_sensitive=False),
+    default='business',
+    help='Theme for react-mdx export (default: business)'
+)
 def cli(
     config_file: Optional[Path],
     output: Optional[Path],
@@ -147,6 +193,7 @@ def cli(
     list_strategies: bool,
     source: Optional[Path],
     user_instruction: Optional[str],
+    user_instruction_file: Optional[Path],
     use_cache: str,
     maxiter: int,
     interactive: bool,
@@ -154,6 +201,8 @@ def cli(
     stage: Optional[str],
     state: Optional[Path],
     force_rerun: bool,
+    project: str,
+    mdx_theme: str,
 ) -> None:
     """Render layouts using the Universal Content Engine.
     
@@ -223,30 +272,72 @@ def cli(
         uce-render --source input.txt --stage render --output career_talk --force-rerun
     """
     try:
-        # Handle stage-based pipeline
-        if stage:
-            if not source:
-                click.echo("Error: --stage requires --source to be specified", err=True)
+        # Auto-default to stage='render' when source is provided without explicit stage
+        # This routes all LLM generation through PipelineRunner
+        if source and not stage and not render:
+            stage = 'render'
+            if verbose:
+                click.echo("[INFO] Defaulting to --stage render for source-based generation", err=True)
+        
+        # Handle stage-based pipeline OR state-only execution
+        if stage or state:
+            # If state is provided without source, load source from state
+            source_from_state = None
+            if state and not source:
+                state_path = Path(state)
+                if state_path.exists():
+                    from src.generation.state import PipelineState
+                    loaded_state = PipelineState.load(state_path)
+                    if loaded_state.source and loaded_state.source.path:
+                        source_from_state = Path(loaded_state.source.path)
+                        if verbose:
+                            click.echo(f"📂 Loaded source from state: {source_from_state}", err=True)
+                    # Also infer output from state path if not provided
+                    if not output:
+                        output = state_path.parent
+                        if verbose:
+                            click.echo(f"📂 Inferred output from state: {output}", err=True)
+            
+            effective_source = source or source_from_state
+            
+            if not effective_source:
+                click.echo("Error: --stage/--state requires --source or a state.json with source_path", err=True)
                 sys.exit(1)
             if not output:
-                click.echo("Error: --stage requires --output directory to be specified", err=True)
+                click.echo("Error: --stage/--state requires --output directory to be specified", err=True)
                 sys.exit(1)
             
             # Run todo-based pipeline
             from src.generation.todo.runner import PipelineRunner
             
             output_dir = Path(output)
-            instruction = user_instruction or DEFAULT_INSTRUCTION
             
-            # Set layout engine if specified
-            if layout_engine:
-                from src.paged.layout.engine_registry import LayoutEngineRegistry
-                try:
-                    LayoutEngineRegistry.set_active_engine(layout_engine.lower())
-                    if verbose:
-                        click.echo(f"Set active layout engine: {layout_engine.lower()}", err=True)
-                except KeyError as e:
-                    click.echo(f"Warning: Unknown layout engine '{layout_engine}', using default", err=True)
+            # Parse instruction(s) - file takes precedence, then inline, then default
+            if user_instruction_file:
+                instructions = parse_instruction_file(user_instruction_file)
+                if not instructions:
+                    click.echo(f"Warning: No instructions found in {user_instruction_file}, using default", err=True)
+                    instructions = [DEFAULT_INSTRUCTION]
+                if verbose:
+                    click.echo(f"📄 Loaded {len(instructions)} instruction round(s) from {user_instruction_file}", err=True)
+            elif user_instruction:
+                instructions = [user_instruction]
+            else:
+                instructions = [DEFAULT_INSTRUCTION]
+            
+            # Auto-select layout engine based on project if not specified
+            effective_engine = layout_engine
+            if not effective_engine:
+                effective_engine = 'react' if project in ('react-mdx', 'react') else 'slidev'
+            
+            # Set layout engine
+            from src.paged.layout.engine_registry import LayoutEngineRegistry
+            try:
+                LayoutEngineRegistry.set_active_engine(effective_engine.lower())
+                if verbose:
+                    click.echo(f"Set active layout engine: {effective_engine.lower()}", err=True)
+            except KeyError as e:
+                click.echo(f"Warning: Unknown layout engine '{effective_engine}', using default", err=True)
             
             runner = PipelineRunner(
                 use_cache=(use_cache.lower() == 'true'),
@@ -254,15 +345,26 @@ def cli(
                 output_dir=output_dir
             )
             
-            result_state = runner.run(
-                source_path=source,
-                user_instruction=instruction,
-            )
+            # Run pipeline for each instruction round
+            result_state = None
+            for round_idx, instruction in enumerate(instructions, 1):
+                if len(instructions) > 1:
+                    click.echo(f"\n{'='*50}")
+                    click.echo(f"📝 Round {round_idx}/{len(instructions)}")
+                    click.echo(f"   Instruction: {instruction[:100]}{'...' if len(instruction) > 100 else ''}")
+                    click.echo(f"{'='*50}")
+                
+                result_state = runner.run(
+                    source_path=effective_source,
+                    user_instruction=instruction,
+                    project=project,
+                    mdx_theme=mdx_theme,
+                )
             
             click.echo(f"\n{'='*50}")
             click.echo(result_state.summary())
             click.echo(f"{'='*50}")
-            click.echo(f"\n✓ Pipeline completed")
+            click.echo(f"\n[OK] Pipeline completed ({len(instructions)} round{'s' if len(instructions) > 1 else ''})")
             click.echo(f"  Output: {output_dir}")
             return
         
@@ -427,13 +529,26 @@ def cli(
             
             slides_data = render_data.get('slides', [])
             
-            # Support both 'themes' (array) and legacy 'theme' (single object)
-            themes_data = render_data.get('themes', [])
+            # Support 'themes' as dict (state.json), array, or legacy 'theme' (single object)
+            themes_raw = render_data.get('themes', {})
+            if isinstance(themes_raw, dict):
+                # themes is an object with named keys - convert to list
+                themes_data = list(themes_raw.values())
+            elif isinstance(themes_raw, list):
+                # themes is already an array
+                themes_data = themes_raw
+            else:
+                themes_data = []
+            
             if not themes_data and 'theme' in render_data:
                 themes_data = [render_data['theme']]
             
-            # Use first theme as default, slides can override
-            theme_data = themes_data[0] if themes_data else {}
+            # Get active theme if specified, otherwise use first theme
+            active_theme_id = render_data.get('active_theme_id')
+            if active_theme_id and isinstance(themes_raw, dict) and active_theme_id in themes_raw:
+                theme_data = themes_raw[active_theme_id]
+            else:
+                theme_data = themes_data[0] if themes_data else {}
             
             style_data = render_data.get('style', {})
             layout_width = width if width is not None else render_data.get('width', 1920)
@@ -539,15 +654,19 @@ def cli(
             continue_generation = True  # Allow one iteration to render
             max_iterations = 1  # Limit to single pass
         
+        # Auto-select layout engine based on project if not specified
+        effective_engine = layout_engine
+        if not effective_engine:
+            effective_engine = 'react' if project in ('react-mdx', 'react') else 'slidev'
+        
         # Set active layout engine for content generation
-        if layout_engine:
-            from src.paged.layout.engine_registry import LayoutEngineRegistry
-            try:
-                LayoutEngineRegistry.set_active_engine(layout_engine.lower())
-                if verbose:
-                    click.echo(f"Set active layout engine: {layout_engine.lower()}", err=True)
-            except KeyError as e:
-                click.echo(f"Warning: {e}", err=True)
+        from src.paged.layout.engine_registry import LayoutEngineRegistry
+        try:
+            LayoutEngineRegistry.set_active_engine(effective_engine.lower())
+            if verbose:
+                click.echo(f"Set active layout engine: {effective_engine.lower()}", err=True)
+        except KeyError as e:
+            click.echo(f"Warning: {e}", err=True)
         
         # Create orchestrator for all LLM generation (both interactive and non-interactive)
         # Skip if in render-only mode
@@ -928,8 +1047,9 @@ def cli(
                     # Use Slidev renderer for markdown generation
                     if verbose:
                         click.echo(f"Using Slidev layout engine - converting {slides.count()} slides to Slidev format", err=True)
+                        click.echo(f"Using project style: {project}", err=True)
                     
-                    slidev_renderer = SlidevRenderer()
+                    slidev_renderer = SlidevRenderer(project=project)
                     
                     # Extract theme colors for Slidev
                     theme_data = {}

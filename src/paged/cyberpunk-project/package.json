@@ -1,0 +1,14 @@
+{
+  "name": "cyberpunk-project",
+  "version": "1.0.0",
+  "description": "Cyberpunk-themed Slidev presentation project with neon glows and futuristic styling",
+  "type": "module",
+  "dependencies": {
+    "@slidev/cli": "latest",
+    "@slidev/theme-default": "latest",
+    "vue": "^3"
+  },
+  "devDependencies": {
+    "inline-source-cli": "latest"
+  }
+}

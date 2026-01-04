@@ -80,7 +80,8 @@ const vibeConfig = computed(() => {
     playful: { rotation: 3, translate: 18, scale: 0.03 },
     professional: { rotation: 0.3, translate: 3, scale: 0.005 },
     minimal: { rotation: 0, translate: 0, scale: 0 },
-    dramatic: { rotation: 2.5, translate: 15, scale: 0.025 }
+    dramatic: { rotation: 2.5, translate: 15, scale: 0.025 },
+    duolingo: { rotation: 1.5, translate: 8, scale: 0.015 }
   }
   return configs[props.vibe] || configs.none
 })
@@ -352,5 +353,45 @@ const quoteTransform = computed(() => {
 
 .vibe-professional .attribution-line {
   display: none;
+}
+
+/* Duolingo vibe - Friendly, encouraging, gamified */
+.vibe-duolingo .quote-wrapper {
+  background: var(--theme-bg-surface, #F7F7F7);
+  padding: 2.5rem 3rem;
+  border-radius: 1.5rem;
+  border: 3px solid var(--theme-border, #E5E5E5);
+  box-shadow: 0 6px 0 var(--theme-border, #E5E5E5);
+  max-width: 85%;
+}
+
+.vibe-duolingo .quote-text {
+  font-weight: 700;
+  color: var(--theme-text, #3C3C3C);
+}
+
+.vibe-duolingo .quote-mark {
+  color: var(--theme-primary, #58CC02);
+  font-weight: 800;
+  opacity: 0.8;
+}
+
+.vibe-duolingo .quote-mark-close {
+  color: var(--theme-accent, #1CB0F6);
+}
+
+.vibe-duolingo .attribution-line {
+  background: var(--theme-primary, #58CC02);
+  height: 4px;
+  border-radius: 2px;
+}
+
+.vibe-duolingo .quote-decorations {
+  display: none;
+}
+
+.vibe-duolingo .quote-author {
+  color: var(--theme-primary, #58CC02);
+  font-weight: 700;
 }
 </style>

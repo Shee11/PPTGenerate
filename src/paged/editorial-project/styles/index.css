@@ -1,0 +1,444 @@
+/* Editorial Project - Serif, Elegant, Photography */
+
+/* ========== FONTS ========== */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&display=swap');
+
+/* ========== CSS VARIABLES ========== */
+:root {
+  /* Color Palette - Sophisticated Neutrals */
+  --edit-black: #1a1a1a;
+  --edit-charcoal: #2d2d2d;
+  --edit-slate: #4a4a4a;
+  --edit-gray: #6b6b6b;
+  --edit-silver: #9a9a9a;
+  --edit-light: #e8e8e8;
+  --edit-cream: #f8f6f3;
+  --edit-white: #ffffff;
+  
+  /* Accent Colors */
+  --edit-gold: #c9a962;
+  --edit-gold-light: #e8d9a8;
+  --edit-navy: #1e3a5f;
+  --edit-burgundy: #722f37;
+  --edit-sage: #7d8471;
+  
+  /* Typography */
+  --edit-font-display: 'Playfair Display', Georgia, serif;
+  --edit-font-body: 'Cormorant Garamond', 'Times New Roman', serif;
+  --edit-font-accent: 'Source Serif 4', serif;
+  
+  /* Text Colors */
+  --edit-text-dark: var(--edit-black);
+  --edit-text: var(--edit-charcoal);
+  --edit-text-light: var(--edit-gray);
+  --edit-text-muted: var(--edit-silver);
+  
+  /* Backgrounds */
+  --edit-bg: var(--edit-white);
+  --edit-bg-cream: var(--edit-cream);
+  --edit-bg-dark: var(--edit-charcoal);
+  
+  /* Spacing */
+  --edit-spacing-xs: 0.25rem;
+  --edit-spacing-sm: 0.5rem;
+  --edit-spacing-md: 1rem;
+  --edit-spacing-lg: 2rem;
+  --edit-spacing-xl: 4rem;
+  
+  /* Borders */
+  --edit-border-thin: 1px solid var(--edit-light);
+  --edit-border-accent: 1px solid var(--edit-gold);
+  --edit-border-dark: 1px solid var(--edit-charcoal);
+}
+
+/* ========== BASE STYLES ========== */
+.slidev-layout {
+  background: var(--edit-bg);
+  color: var(--edit-text);
+  font-family: var(--edit-font-body);
+  font-size: 18px;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ========== TYPOGRAPHY ========== */
+
+/* Display Headings */
+.edit-display {
+  font-family: var(--edit-font-display);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.edit-display-lg {
+  font-size: 4rem;
+}
+
+.edit-display-md {
+  font-size: 3rem;
+}
+
+.edit-display-sm {
+  font-size: 2rem;
+}
+
+/* Body Text */
+.edit-body {
+  font-family: var(--edit-font-body);
+  font-size: 1.1rem;
+  line-height: 1.8;
+}
+
+.edit-body-lg {
+  font-size: 1.3rem;
+}
+
+/* Accent Text */
+.edit-accent {
+  font-family: var(--edit-font-accent);
+  font-style: italic;
+}
+
+/* Drop Cap */
+.drop-cap::first-letter {
+  font-family: var(--edit-font-display);
+  font-size: 4em;
+  float: left;
+  line-height: 0.8;
+  margin-right: 0.1em;
+  margin-top: 0.1em;
+  color: var(--edit-gold);
+}
+
+/* Small Caps */
+.small-caps {
+  font-variant: small-caps;
+  letter-spacing: 0.1em;
+  font-weight: 500;
+}
+
+/* ========== DECORATIVE ELEMENTS ========== */
+
+/* Thin Line Divider */
+.line-divider {
+  width: 100%;
+  height: 1px;
+  background: var(--edit-light);
+  margin: var(--edit-spacing-lg) 0;
+}
+
+.line-divider-gold {
+  background: var(--edit-gold);
+}
+
+.line-divider-short {
+  width: 80px;
+}
+
+.line-divider-center {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Ornament */
+.ornament {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  color: var(--edit-gold);
+  font-size: 1.2rem;
+}
+
+.ornament::before,
+.ornament::after {
+  content: '';
+  width: 60px;
+  height: 1px;
+  background: var(--edit-gold);
+}
+
+/* Pull Quote */
+.pull-quote {
+  font-family: var(--edit-font-display);
+  font-size: 1.8rem;
+  font-style: italic;
+  color: var(--edit-text);
+  border-left: 3px solid var(--edit-gold);
+  padding-left: 1.5rem;
+  margin: var(--edit-spacing-lg) 0;
+}
+
+/* Caption */
+.caption {
+  font-family: var(--edit-font-accent);
+  font-size: 0.85rem;
+  color: var(--edit-text-light);
+  letter-spacing: 0.02em;
+}
+
+.caption-uppercase {
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  font-size: 0.75rem;
+}
+
+/* ========== IMAGE STYLES ========== */
+
+/* Image Frame */
+.image-frame {
+  position: relative;
+  overflow: hidden;
+}
+
+.image-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Image with Border */
+.image-bordered {
+  border: 1px solid var(--edit-light);
+  padding: 8px;
+  background: var(--edit-white);
+}
+
+/* Image with Shadow */
+.image-shadow {
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+/* Full Bleed Image */
+.image-bleed {
+  position: absolute;
+  inset: 0;
+}
+
+.image-bleed img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Image Overlay */
+.image-overlay {
+  position: relative;
+}
+
+.image-overlay::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, transparent 40%, rgba(0, 0, 0, 0.7) 100%);
+}
+
+.image-overlay-dark::after {
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.image-overlay-light::after {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* ========== LAYOUT UTILITIES ========== */
+
+/* Content Container */
+.edit-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 var(--edit-spacing-lg);
+}
+
+.edit-container-wide {
+  max-width: 1100px;
+}
+
+.edit-container-narrow {
+  max-width: 700px;
+}
+
+/* Grid */
+.edit-grid {
+  display: grid;
+  gap: var(--edit-spacing-lg);
+}
+
+.edit-grid-2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.edit-grid-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+/* Vertical Spacing */
+.edit-stack > * + * {
+  margin-top: var(--edit-spacing-md);
+}
+
+.edit-stack-lg > * + * {
+  margin-top: var(--edit-spacing-lg);
+}
+
+/* ========== CARD STYLES ========== */
+
+.edit-card {
+  background: var(--edit-bg);
+  border: var(--edit-border-thin);
+  padding: var(--edit-spacing-lg);
+}
+
+.edit-card-cream {
+  background: var(--edit-bg-cream);
+  border: none;
+}
+
+.edit-card-dark {
+  background: var(--edit-bg-dark);
+  color: var(--edit-white);
+  border: none;
+}
+
+/* ========== MAGAZINE ELEMENTS ========== */
+
+/* Article Header */
+.article-header {
+  text-align: center;
+  margin-bottom: var(--edit-spacing-xl);
+}
+
+.article-category {
+  font-family: var(--edit-font-accent);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--edit-gold);
+  margin-bottom: var(--edit-spacing-md);
+}
+
+.article-title {
+  font-family: var(--edit-font-display);
+  font-size: 3rem;
+  font-weight: 400;
+  line-height: 1.15;
+  margin-bottom: var(--edit-spacing-md);
+}
+
+.article-subtitle {
+  font-family: var(--edit-font-body);
+  font-size: 1.3rem;
+  font-style: italic;
+  color: var(--edit-text-light);
+}
+
+/* Byline */
+.byline {
+  font-family: var(--edit-font-accent);
+  font-size: 0.9rem;
+  color: var(--edit-text-light);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.byline-separator {
+  color: var(--edit-silver);
+}
+
+/* Page Number */
+.page-number {
+  font-family: var(--edit-font-display);
+  font-size: 0.9rem;
+  color: var(--edit-text-light);
+}
+
+/* ========== DARK MODE ========== */
+
+.edit-dark {
+  --edit-text-dark: var(--edit-white);
+  --edit-text: var(--edit-light);
+  --edit-text-light: var(--edit-silver);
+  --edit-bg: var(--edit-charcoal);
+  --edit-bg-cream: var(--edit-slate);
+  background: var(--edit-bg-dark);
+  color: var(--edit-light);
+}
+
+/* ========== ANIMATIONS ========== */
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes reveal-line {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+.animate-fade {
+  animation: fade-in 0.6s ease-out;
+}
+
+.animate-slide {
+  animation: slide-up 0.8s ease-out;
+}
+
+.animate-line {
+  animation: reveal-line 1s ease-out;
+}
+
+/* Staggered animations */
+.stagger > *:nth-child(1) { animation-delay: 0s; }
+.stagger > *:nth-child(2) { animation-delay: 0.1s; }
+.stagger > *:nth-child(3) { animation-delay: 0.2s; }
+.stagger > *:nth-child(4) { animation-delay: 0.3s; }
+.stagger > *:nth-child(5) { animation-delay: 0.4s; }
+.stagger > *:nth-child(6) { animation-delay: 0.5s; }
+
+/* ========== VIBES ========== */
+
+/* Classic - Traditional editorial */
+.vibe-classic {
+  --edit-gold: #c9a962;
+}
+
+/* Modern - Minimalist editorial */
+.vibe-modern {
+  --edit-gold: var(--edit-charcoal);
+}
+
+/* Luxe - High-end magazine */
+.vibe-luxe {
+  --edit-gold: #c9a962;
+  --edit-bg: var(--edit-black);
+  --edit-text: var(--edit-light);
+  --edit-text-dark: var(--edit-white);
+}
+
+/* Warm - Lifestyle editorial */
+.vibe-warm {
+  --edit-gold: var(--edit-burgundy);
+  --edit-bg: var(--edit-cream);
+}

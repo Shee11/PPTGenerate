@@ -93,6 +93,32 @@ class AssetManager:
         return Theme.model_validate(theme_dict)
     
     @staticmethod
+    def get_theme(theme_id: str) -> Optional[Dict[str, Any]]:
+        """Get theme data by theme ID.
+        
+        Args:
+            theme_id: Theme ID (e.g., "duolingo_v1", "corp_modern_v1")
+            
+        Returns:
+            Theme dict if found, None otherwise
+        """
+        themes_dir = AssetManager._get_themes_dir()
+        
+        # Search for theme file by ID
+        for filepath in themes_dir.glob("*.json"):
+            try:
+                with open(filepath, 'r', encoding='utf-8') as f:
+                    theme_dict = json.load(f)
+                
+                # Match by id field or filename
+                if theme_dict.get("id") == theme_id or filepath.stem == theme_id:
+                    return theme_dict
+            except Exception:
+                continue
+        
+        return None
+    
+    @staticmethod
     def list_themes() -> Dict[str, Any]:
         """List all available themes with schema information.
         

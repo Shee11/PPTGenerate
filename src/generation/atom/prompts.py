@@ -139,77 +139,27 @@ ATOM_EXTRACTION_SCHEMA = {
 }
 
 
-ATOM_EXTRACTION_SYSTEM_PROMPT = """You are an expert editor deconstructing content into "Narrative Atoms" for slide decks.
+ATOM_EXTRACTION_SYSTEM_PROMPT = """Extract "Narrative Atoms" from content for slide decks.
 
-**Goal**: Extract atomic units that can be rearranged to build a compelling presentation.
+**Atom Types** (use exact: BIO, FACT, STAT, QUOTE, TENSION, CONCEPT, VISUAL):
 
-**Atom Types** (use exact type values: BIO, FACT, STAT, QUOTE, TENSION, CONCEPT, VISUAL):
+| Type | Purpose | Key Fields |
+|------|---------|------------|
+| BIO | Identity/credentials | name, role, credentials, affiliation |
+| FACT | Context/definitions | text, category (definition/architecture/status) |
+| STAT | Numbers/metrics | value ("50%"), label ("Latency"), context |
+| QUOTE | Verbatim phrases | quote, attribution, context |
+| TENSION | Problems/conflicts | text, tension_type (problem/trade-off) |
+| CONCEPT | Solutions/insights | text, concept_type (solution/insight) |
+| VISUAL | Concrete imagery | description, visual_category |
 
-1. **BIO** - Identity/credentials (→ Title/Intro slides)
-   - Who the speaker/subject is, credentials, history, background
-   - Builds the "Who", establishes credibility
-   - Fill: name (person/entity), role (title/position), credentials (background/achievements), affiliation (company/org)
-   - Example: name="John Smith" role="Principal Engineer" credentials="15 years experience" affiliation="Google"
-
-2. **FACT** - Objective context (→ Anchor slides)
-   - Background context, definitions, architecture, status quo
-   - NOT for specific numbers (use STAT) or memorable phrases (use QUOTE)
-   - Fill: text (content), category (definition/architecture/status/context/other)
-   - Example: "Architecture uses microservices pattern"
-
-3. **STAT** - Quantitative data (→ Charts/Big Number slides)
-   - Specific numbers, metrics, KPIs, percentages
-   - Triggers data visualization (charts, big numbers)
-   - Fill: value (the number, e.g., "50%", "200ms"), label (what it represents), context (optional)
-   - Example: value="50%" label="Latency Reduction"
-
-4. **QUOTE** - Verbatim impact (→ Impact slides with big typography)
-   - Memorable phrases that should NOT be summarized or rewritten
-   - Perfect for "punchline" slides with large text
-   - Fill: quote (exact verbatim text), attribution (who said it), context (optional)
-   - Example: quote="Speed is not a feature. It is a requirement."
-
-5. **TENSION** - Conflict/problem (→ Friction slides)
-   - Problems, contradictions, trade-offs, mistakes, surprises
-   - Fill: text (content), tension_type (problem/contradiction/trade-off/surprise/mistake/other), resolution_hint
-   - Example: "But latency spiked to 2 seconds under load"
-
-6. **CONCEPT** - Solution/insight (→ Insight slides)
-   - Key takeaways, methods, mental models, aha moments
-   - Fill: text (content), concept_type (solution/insight/method/principle/takeaway/other), supporting_facts (array of fact IDs)
-   - Example: "Solution: Cache at the edge"
-
-7. **VISUAL** - Concrete imagery (→ Visual instruction)
-   - Specific visuals mentioned: screenshots, metaphors, demos
-   - Fill: description (NOT text!), visual_category (metaphor/demo/screenshot/diagram/comparison/other), related_atom
-   - Example: "Screen filled with red error messages"
-
-**Required for ALL atoms**:
-- id: unique identifier (e.g., "bio_001", "fact_001", "stat_001", "quote_001", "tension_001", "concept_001", "visual_001")
-- abstract: one-line summary (max 100 chars, e.g., "John Smith is a Google engineer" or "Latency improved by 50%")
-- type: exactly one of BIO, FACT, STAT, QUOTE, TENSION, CONCEPT, VISUAL
-- rank: importance (1=most important)
-- visual: suggested representation (chart/big-number/quote-card/diagram/code/screenshot/photo/icon/timeline/comparison-table/flow/architecture/before-after/list/table/graph/none)
-- source_ref: {source_id, file_path, offset, length}
-
-**IMPORTANT - Fill ALL fields**:
-For non-applicable fields, use empty string "" or empty array []:
-- BIO: Fill name, role, credentials, affiliation. Empty: text, description, category, value, label, quote, attribution, context, tension_type, resolution_hint, concept_type, supporting_facts=[], visual_category, related_atom
-- FACT: Fill text, category. Empty: name, role, credentials, affiliation, description, value, label, quote, attribution, context, tension_type, resolution_hint, concept_type, supporting_facts=[], visual_category, related_atom
-- STAT: Fill value, label, context. Empty: text, name, role, credentials, affiliation, description, category, quote, attribution, tension_type, resolution_hint, concept_type, supporting_facts=[], visual_category, related_atom. visual should be "chart" or "big-number"
-- QUOTE: Fill quote, attribution, context. Empty: text, name, role, credentials, affiliation, description, category, value, label, tension_type, resolution_hint, concept_type, supporting_facts=[], visual_category, related_atom. visual should be "quote-card"
-- TENSION: Fill text, tension_type, resolution_hint. Empty: name, role, credentials, affiliation, description, category, value, label, quote, attribution, context, concept_type, supporting_facts=[], visual_category, related_atom
-- CONCEPT: Fill text, concept_type, supporting_facts. Empty: name, role, credentials, affiliation, description, category, value, label, quote, attribution, context, tension_type, resolution_hint, visual_category, related_atom
-- VISUAL: Fill description, visual_category, related_atom. Empty: text, name, role, credentials, affiliation, category, value, label, quote, attribution, context, tension_type, resolution_hint, concept_type, supporting_facts=[]
+**All atoms require**: id, abstract (1-line summary), type, rank (1=most important), visual (chart/big-number/quote-card/diagram/none), source_ref
 
 **Rules**:
-- Ignore fluff: filler words, pleasantries, repetition
-- Extract 5-20 atoms
-- Use BIO for speaker/subject identity and credentials
-- Use STAT for any specific numbers/metrics (not FACT)
-- Use QUOTE for memorable phrases that shouldn't be changed (not CONCEPT)
-- FACT = context/definitions, TENSION = negative/conflict, CONCEPT = conclusion/solution
-- For BIO, use 'name'+'role'+'credentials'+'affiliation'. For VISUAL, use 'description'. For STAT use 'value'+'label'. For QUOTE use 'quote'. For others, use 'text' field.
+- Extract 5-20 atoms, ignore fluff
+- STAT for numbers, QUOTE for memorable phrases, FACT for context
+- Fill type-specific fields, use empty "" for others
+- QUOTE: Use for impact phrases relevant to the audience/scenario
 """
 
 

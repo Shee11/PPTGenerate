@@ -1,0 +1,87 @@
+{
+  "id": "duolingo_v1",
+  "name": "Duolingo",
+  "description": "Playful, gamified style inspired by Duolingo's UI - bright green, friendly, encouraging",
+  "margin_x": "48px",
+  "margin_y": "36px",
+  "gutter": "24px",
+  "header_footer": {
+    "header_height": "12%",
+    "footer_height": "8%",
+    "header_position": "fixed_top_center",
+    "footer_position": "fixed_bottom_center",
+    "header_decoration": "none",
+    "footer_decoration": "progress_dots"
+  },
+  "sequence_pattern": "playful_alternating",
+  "typography": {
+    "h1": {
+      "size": 56,
+      "weight": "800",
+      "line_height": 1.15,
+      "letter_spacing": "-0.02em"
+    },
+    "h2": {
+      "size": 36,
+      "weight": "700",
+      "line_height": 1.25,
+      "letter_spacing": "-0.01em"
+    },
+    "h3": {
+      "size": 24,
+      "weight": "700",
+      "line_height": 1.35
+    },
+    "body": {
+      "size": 18,
+      "weight": "600",
+      "line_height": 1.6
+    },
+    "caption": {
+      "size": 14,
+      "weight": "600",
+      "line_height": 1.5
+    }
+  },
+  "primary_color": "#58CC02",
+  "secondary_color": "#1CB0F6",
+  "accent_color": "#FF9600",
+  "background_color": "#ffffff",
+  "text_color": "#3C3C3C",
+  "primary_background": "#ffffff",
+  "secondary_background": "#F7F7F7",
+  "success_color": "#58CC02",
+  "warning_color": "#FF9600",
+  "danger_color": "#FF4B4B",
+  "streak_color": "#FF9600",
+  "xp_color": "#1CB0F6",
+  "font_family": "'Nunito', 'DIN Round', system-ui, sans-serif",
+  "heading_font": "'Nunito', 'DIN Round', system-ui, sans-serif",
+  "border_radius": "16px",
+  "card_radius": "20px",
+  "button_radius": "12px",
+  "vibe": "playful",
+  "decorations": {
+    "confetti": true,
+    "mascot": true,
+    "progress_bar": true,
+    "achievement_badges": true,
+    "bounce_animations": true
+  },
+  "colors": {
+    "owl_green": "#58CC02",
+    "sky_blue": "#1CB0F6",
+    "fire_orange": "#FF9600",
+    "heart_red": "#FF4B4B",
+    "premium_purple": "#CE82FF",
+    "golden": "#FFC800",
+    "light_green": "#89E219",
+    "dark_green": "#4CAF50",
+    "background_white": "#FFFFFF",
+    "card_gray": "#F7F7F7",
+    "border_gray": "#E5E5E5",
+    "text_dark": "#3C3C3C",
+    "text_muted": "#777777",
+    "text_light": "#AFAFAF"
+  }
+}

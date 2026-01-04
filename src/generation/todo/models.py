@@ -93,6 +93,16 @@ class ConstitutionPatch(BaseModel):
         default=None,
         description="Target number of slides"
     )
+    
+    # Theme and vibe selections from UI
+    selected_theme: Optional[str] = Field(
+        default=None,
+        description="Theme ID selected by user (e.g., 'duolingo_v1')"
+    )
+    selected_vibe: Optional[str] = Field(
+        default=None,
+        description="Vibe selected by user (e.g., 'duolingo', 'professional')"
+    )
 
 
 class AtomsParams(BaseModel):
