@@ -342,7 +342,8 @@ def cli(
             runner = PipelineRunner(
                 use_cache=(use_cache.lower() == 'true'),
                 verbose=verbose,
-                output_dir=output_dir
+                output_dir=output_dir,
+                refine_iterations=maxiter
             )
             
             # Run pipeline for each instruction round
