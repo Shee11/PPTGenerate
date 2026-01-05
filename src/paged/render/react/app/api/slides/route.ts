@@ -65,13 +65,25 @@ function fixMdxContent(mdx: string): string {
   return fixed;
 }
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
+    // Get path parameter from query string
+    const { searchParams } = new URL(request.url);
+    const outputPath = searchParams.get('path') || 'golden_set_mdx';
+    
+    // Build paths to check based on the requested output directory
+    const pathsToCheck = [
+      // Relative paths
+      path.join(process.cwd(), `../../../../output/${outputPath}/state.json`),
+      // Absolute path
+      `C:/Users/yidansun/newProject/gggg/output/${outputPath}/state.json`,
+    ];
+    
     // Find state.json
     let stateJson: StateJson | null = null;
     let foundPath = '';
     
-    for (const statePath of STATE_JSON_PATHS) {
+    for (const statePath of pathsToCheck) {
       try {
         if (fs.existsSync(statePath)) {
           const content = fs.readFileSync(statePath, 'utf-8');
@@ -86,7 +98,7 @@ export async function GET() {
     
     if (!stateJson) {
       return NextResponse.json(
-        { error: 'state.json not found', searched: STATE_JSON_PATHS },
+        { error: 'state.json not found', searched: pathsToCheck, requestedPath: outputPath },
         { status: 404 }
       );
     }

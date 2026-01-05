@@ -131,7 +131,7 @@ def render_slide_generation_prompt(
     
     # Rule 6 changes based on whether using atoms or content field
     if use_content_field:
-        rule_6 = "6. Each <Slide> has id, rank, story, content attributes. Use content.sections to populate slide content. Also consider content.headline, content.subtitle, content.category, and content.speaker_intent if present"
+        rule_6 = "6. Each <Slide> has id, rank, story, content attributes. Use content.sections as REFERENCE for slide content—you may refactor, condense, or omit details to fit the layout beautifully. Prioritize visual balance over exhaustive coverage. Also consider content.headline, content.subtitle, content.category, and content.speaker_intent if present"
     else:
         rule_6 = "6. Each <Slide> has id, rank, story, atoms attributes"
     
@@ -145,6 +145,7 @@ def render_slide_generation_prompt(
 {rule_6}
 7. Combine text AND visual on each slide (one leads, other supports)
 8. Fill space appropriate to density (sparse≠empty)
+9. **CONTENT FLEXIBILITY**: You may refactor, shorten, or selectively omit content details to achieve a clean, well-balanced layout. Visual appeal and readability trump exhaustive completeness.
 
 Generate MDX slides wrapped in <Slide> elements."""
     

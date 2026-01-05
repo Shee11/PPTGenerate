@@ -3,21 +3,21 @@
     "id": "slide_01",
     "rank": 1,
     "state": "draft",
-    "story": "cover: introduce vision and context",
+    "story": "cover: set the strategic frame and outcome in one line",
     "density": "minimal",
-    "visual_design": "Simple title layout with subtitle and team block; muted background; space for Microsoft logo.",
+    "visual_design": "Simple title layout with a subtle 3-layer stack motif (Interpreter, Captions, Transcription) to hint at unification; space for logo and presenter info.",
     "content": {
-      "headline": "AI turns meetings into immediate, editable artifacts",
-      "subtitle": "Doc Co‑Creation Agent in Teams to power Copilot usage and make Teams the OS of work",
+      "headline": "Next‑Gen Speech Intelligence as Teams’ Global Advantage",
+      "subtitle": "Unifying Interpreter, Captions, and Transcription into a multilingual AI speech stack",
       "category": "cover",
       "presenters": [
         {
-          "name": "Yu / Chao / Bo",
-          "role": "Product & Engineering",
-          "org": "Microsoft"
+          "name": "Presenter Name",
+          "role": "Product Lead, Next‑Gen Speech & Interpreter",
+          "org": "Teams AI Experiences"
         }
       ],
-      "date": "2025-12-01"
+      "date": "2025-12-25"
     },
     "atoms": [],
     "layout": "",
@@ -27,40 +27,40 @@
     "id": "slide_02",
     "rank": 2,
     "state": "draft",
-    "story": "Situation: establish current business-critical role of documents and Teams",
+    "story": "Situation: anchor on current business impact and adoption to create agreement",
     "density": "moderate",
-    "visual_design": "2-column framework: left = 'Work Runs on Artifacts', right = 'Teams is the Collaboration Hub'; use simple iconography, no complex charts.",
+    "visual_design": "KPI summary dashboard: one main number panel for MAU, supporting tiles for WAU, meeting count, >5‑min rate, reliability, CSAT; small trend arrows.",
     "content": {
-      "headline": "Enterprise impact still depends on PPT and Word artifacts",
-      "subtitle": "Meetings and chats only create value once turned into specs, decks, and docs",
+      "headline": "Interpreter is now a scaled, reliable asset inside Teams",
+      "subtitle": "Growing usage depth and strong reliability signal real business value today",
       "category": "Situation",
-      "speaker_intent": "Align leadership that our revenue, decisions, and customer impact are mediated through Office artifacts, not just conversations.",
+      "speaker_intent": "Have leaders internalize that Interpreter is no longer experimental; it is a scaled, high‑reliability capability worth investing behind.",
       "sections": [
         {
-          "title": "Artifacts drive execution and business outcomes",
+          "title": "Adoption and Engagement",
           "bullets": [
             {
-              "text": "Critical decisions, funding, and execution plans are documented in specs, slide decks, and written proposals."
+              "text": "136k monthly active Interpreter users (+1.9% MoM) and 106k meetings per month (+5.4% MoM) show sustained demand."
             },
             {
-              "text": "Over 30M PowerPoint files are created every day, underscoring how central slides are to how enterprises think and decide."
+              "text": "62.2% of Interpreter meetings run longer than 5 minutes (+2.1% MoM), indicating deeper engagement and real meeting dependence."
             },
             {
-              "text": "Word and PPT are the de facto languages of enterprise storytelling and alignment."
+              "text": "Retention holds in the 11–13% range, with usage trending up rather than spiking and dropping."
             }
           ]
         },
         {
-          "title": "Teams already concentrates collaboration and context",
+          "title": "Reliability and Quality Foundation",
           "bullets": [
             {
-              "text": "Teams is where meetings happen, chats unfold, and files are shared and discussed."
+              "text": "End‑to‑end Interpreter reliability is 99.38% (+0.2% MoM), meeting enterprise expectations for mission‑critical meetings."
             },
             {
-              "text": "Meeting audio/video, chat histories, and shared documents together capture the richest picture of user intent."
+              "text": "Transcript quality improvements reduce Copilot and Recap DSAT by improving readability and entity accuracy at no additional CoGS."
             },
             {
-              "text": "Yet the final artifacts that matter (PPTX, DOCX) are still produced outside the live collaboration flow."
+              "text": "Admin reporting and metering workstreams are underway, laying the foundation for value articulation to enterprise buyers."
             }
           ]
         }
@@ -74,40 +74,40 @@
     "id": "slide_03",
     "rank": 3,
     "state": "draft",
-    "story": "Complication: quantify the productivity and value leakage of manual document creation",
+    "story": "Situation: link speech quality directly to Teams AI and customer outcomes",
     "density": "moderate",
-    "visual_design": "Cause-and-effect flow diagram from 'Live discussion' → 'Manual translation' → 'Delayed artifacts' → 'Slower execution'; annotate with bullet callouts.",
+    "visual_design": "2x2 matrix: rows = 'In‑meeting experience', 'Post‑meeting AI (Copilot/Recap)'; columns = 'Today’s gains', 'Emerging opportunity'; bullets in each quadrant.",
     "content": {
-      "headline": "Manual document creation after meetings drains productivity",
-      "subtitle": "Human bottlenecks slow the conversion of spoken intent into tool-ready outputs",
-      "category": "Complication",
-      "speaker_intent": "Create urgency by framing current workflows as a structural productivity loss and risk to Copilot value realization.",
+      "headline": "Unified speech quality is a force multiplier for Teams AI",
+      "subtitle": "Interpreter, captions, and transcription quality directly drive Copilot outcomes and enterprise AI value",
+      "category": "Situation",
+      "speaker_intent": "Make leaders see speech not as a feature silo but as core infrastructure for Teams AI and enterprise trust.",
       "sections": [
         {
-          "title": "Meeting outputs are stuck in a legacy workflow",
+          "title": "In‑Meeting Experience Drives Perceived Product Value",
           "bullets": [
             {
-              "text": "Historically, the only meeting output was text minutes; today, work requires structured artifacts across PPT, ADO, specs, and whiteboards."
+              "text": "Multilingual STT with auto language detection removes setup friction and reduces gibberish, especially in bilingual global meetings."
             },
             {
-              "text": "Modern meetings still mostly produce raw text or unstructured notes that require significant post-processing."
+              "text": "SIM Interpreter improvements (semantic mode, faster TTS) improve flow and reduce latency, aligning better with spoken content."
             },
             {
-              "text": "Participants cannot both engage in a live discussion and operate multiple tools fast enough to generate structured outputs in real time."
+              "text": "High reliability (~99%+) makes Interpreter viable for formal, high‑stakes meetings rather than just informal calls."
             }
           ]
         },
         {
-          "title": "The cost: time drain, delay, and lost quality",
+          "title": "Post‑Meeting AI Relies on Accurate Transcripts and Entities",
           "bullets": [
             {
-              "text": "Employees spend disproportionate time on formatting, layout, and style instead of high-value strategic thinking."
+              "text": "Transcript Enricher already enhances 1.8M+ meetings weekly, reducing entity errors and accent/dialect issues."
             },
             {
-              "text": "The 'blank page' problem makes it hard to turn dense meeting content into concise, coherent slide narratives."
+              "text": "Post‑meeting Enricher cuts inaccuracy from 19.5% to 12.3% (−37%) and boosts CSAT from 42.95% to 62.32%."
             },
             {
-              "text": "Non-designers struggle to achieve polished, enterprise-ready aesthetics, leading to inconsistent quality and frustration."
+              "text": "Improved entity accuracy directly reduces Copilot and Recap DSAT by grounding AI on cleaner, enriched transcripts."
             }
           ]
         }
@@ -121,48 +121,54 @@
     "id": "slide_04",
     "rank": 4,
     "state": "draft",
-    "story": "Complication + Question: introduce competitive and market pressure, raise strategic question",
+    "story": "Complication: surface the unresolved pain and risk as a crisis of inaction",
     "density": "moderate",
-    "visual_design": "2x2 matrix: X-axis = 'Use of enterprise context', Y-axis = 'Fidelity of output'; plot 'Generic summarizers', 'Gamma', 'Gemini', and 'Teams today'; highlight white space in top-right as opportunity.",
+    "visual_design": "Problem tree: root = “Multilingual high‑stakes meetings”; three branches = Accuracy, Flow/Tone, Governance/Visibility; bullets under each.",
     "content": {
-      "headline": "Competitors target AI slide creation while we leave a gap",
-      "subtitle": "Gamma’s 70M users and Gemini pressure show demand for AI-first content generation",
-      "category": "Question",
-      "speaker_intent": "Highlight that inaction risks ceding the highest-value AI use case to competitors and under-monetizing Copilot.",
+      "headline": "Current gaps risk losing high‑stakes multilingual meetings to competitors",
+      "subtitle": "Precision, flow, tone, and governance issues block us from being the default choice for global enterprises",
+      "category": "Complication",
+      "speaker_intent": "Create constructive anxiety that without decisive investment, we under‑serve the most valuable meetings and weaken our AI differentiation.",
       "sections": [
         {
-          "title": "Market signals show explosive demand for AI-generated slides",
+          "title": "Accuracy and Domain Precision Still Fall Short",
           "bullets": [
             {
-              "text": "Gamma, a dedicated AI slide and doc generator, has already attracted over 70M users."
+              "text": "Customers report accuracy issues on technical terms, names, and numbers/units; JP‑EN name recall remains below 50% (improving but not solved)."
             },
             {
-              "text": "Generative AI tools are shifting expectations from manual editing to direct content generation from ideas and discussions."
+              "text": "Simultaneous translations can feel too literal, eroding trust in high‑stakes or public sector settings."
             },
             {
-              "text": "Users increasingly expect 'one-click' conversion from intent to polished slides and docs."
+              "text": "Global dictionary integration is pending and custom dictionaries are still Tier‑1 only, limiting enterprise domain adaptation."
             }
           ]
         },
         {
-          "title": "Our current position underutilizes our unique assets",
+          "title": "Meeting Flow and Tone Can Break Executive‑Level Experiences",
           "bullets": [
             {
-              "text": "Copilot and PowerPoint already support PPT generation, but they operate largely on static prompts and files, not live meeting context."
+              "text": "Latency and mis‑segmentation in SIM disrupt conversation flow and alignment with shared content; first‑sentence delays are highly sensitive."
             },
             {
-              "text": "Teams today does not fully exploit its access to fresh meeting audio/video, chats, shared files, and histories to generate artifacts in real time."
+              "text": "Tone and naturalness in JP/KR are not yet market‑grade, with occasional gender/voice mismatches and rare harassment/tone issues."
             },
             {
-              "text": "This creates a 'crisis of inaction': we risk losing the killer AI use case to point solutions while owning the richest data and Office formats."
+              "text": "SIM is better for fluid conversations, but customers lack clear guidance or UX cues for when to use SIM vs Turn‑by‑Turn."
             }
           ]
         },
         {
-          "title": "Strategic question",
+          "title": "Governance and Visibility Limit Enterprise‑Wide Adoption",
           "bullets": [
             {
-              "text": "How do we turn every Teams meeting into an automatic generator of high-fidelity Office artifacts, strengthening Copilot value and our competitive moat?"
+              "text": "Cross‑tenant/guest licensing behavior is not clear to customers, creating friction for external or public events."
+            },
+            {
+              "text": "Interpreted audio is not yet captured in recordings, preventing full meeting parity and compliance in regulated sectors."
+            },
+            {
+              "text": "Admin reporting and CFR data pipelines are still maturing, limiting how field and admins can articulate value by meeting type and language pair."
             }
           ]
         }
@@ -176,34 +182,34 @@
     "id": "slide_05",
     "rank": 5,
     "state": "draft",
-    "story": "Answer: introduce the core solution and its transformative promise",
+    "story": "Question → Answer: introduce the unified speech stack as the strategic response (punchline #1)",
     "density": "minimal",
-    "visual_design": "Before/After bridge chart: left = 'Today: Talk → Notes → Manual Docs'; right = 'Future: Talk → AI Agent → PPTX/DOCX/ADO in real time'; center arrow labeled with punchline.",
+    "visual_design": "High‑level “stack” diagram: bottom = Multilingual STT; middle = Transcript Enricher & Transcription++; top = Interpreter (SIM + TBT) and Admin/Governance; side rail for evaluation & GPU infra.",
     "content": {
-      "headline": "Doc co‑creation agent in Teams turns spoken intent into artifacts",
-      "subtitle": "AI generates PPT and Word directly from live meetings, chats, and channel context",
+      "headline": "A unified multilingual speech stack turns pain points into a defensible moat",
+      "subtitle": "One stack for Interpreter, Captions, and Transcription with entity accuracy and governance at the core",
       "category": "Answer",
-      "speaker_intent": "Land the core idea crisply and position it as a natural extension of Teams and Copilot.",
+      "speaker_intent": "Land the core thesis: convergence into a unified speech intelligence layer is how Teams wins global, AI‑driven collaboration.",
       "sections": [
         {
-          "title": "Core proposition",
+          "title": "Strategic Question We Are Answering",
           "bullets": [
             {
-              "text": "Build a Teams-native doc co‑creation agent that listens to meetings and reads chats and shared files to generate PPTX and DOCX automatically."
-            },
-            {
-              "text": "Unify in-meeting discussion and document creation into a single workflow, enabling artifacts to be created during or immediately after the meeting."
-            },
-            {
-              "text": "Extend the same content generation engine to other Microsoft content platforms such as SharePoint over time."
+              "text": "How do we convert fragmented speech features into a single, AI‑ready speech intelligence layer that delights users, satisfies IT, and differentiates Teams?"
             }
           ]
         },
         {
-          "title": "Punchline",
+          "title": "Our Answer: Unified Speech Intelligence for Teams",
           "bullets": [
             {
-              "text": "Spoken intent becomes immediate, tool-ready output inside Teams."
+              "text": "Converge Interpreter, Captions, and Transcription onto a unified multilingual STT and enrichment stack, with entity accuracy as the north star."
+            },
+            {
+              "text": "Pair two complementary Interpreter modes—SIM for fluid conversations and Turn‑by‑Turn for structured meetings—on top of this shared stack."
+            },
+            {
+              "text": "Wrap the stack with governance, admin reporting, and responsible AI guardrails to make it enterprise‑grade and difficult to replicate."
             }
           ]
         }
@@ -217,48 +223,60 @@
     "id": "slide_06",
     "rank": 6,
     "state": "draft",
-    "story": "Answer: zoom into user experience and workflow inside Teams",
-    "density": "moderate",
-    "visual_design": "User journey swimlane with 3 phases: 'During meeting', 'Immediately after', 'Collaborative refinement'; annotate where 'PPT Maker' panel and preview window appear.",
+    "story": "Answer: deep dive on Interpreter SIM + TBT as the flagship experience",
+    "density": "dense",
+    "visual_design": "Side‑by‑side comparison table (Harvey Balls) for SIM vs TBT: columns = SIM, TBT; rows = Use case fit, Flow, Tone, Latency, Accuracy, Status. Below, small timeline for recent and upcoming milestones.",
     "content": {
-      "headline": "Teams-native PPT Maker unifies discussion and document creation",
-      "subtitle": "Interactive co‑creation panel plus live slide preview embedded in the meeting experience",
+      "headline": "Dual‑mode Interpreter combines SIM and Turn‑by‑Turn for every meeting type",
+      "subtitle": "Quality, latency, and tone improvements make Interpreter viable for both fluid and formal conversations",
       "category": "Answer",
-      "speaker_intent": "Help leadership visualize the experience and understand why it must live in Teams, not just in standalone Office apps.",
+      "speaker_intent": "Show that we have a concrete, feasible Interpreter roadmap that directly addresses customer pain and opens premium scenarios.",
       "sections": [
         {
-          "title": "In-meeting experience",
+          "title": "Simultaneous Interpreter (SIM) — Fluid Conversation at Scale",
           "bullets": [
             {
-              "text": "A 'PPT Maker' panel appears within Teams, enabling participants to interact with the agent during the meeting."
+              "text": "Semantic mode enabled in lower rings and phrase segmentation fixes improve long‑segment coherence and readability."
             },
             {
-              "text": "The agent listens to the evolving conversation, captures decisions and key points, and proposes slide structures in real time."
+              "text": "TTS acceleration (1.2×–1.35×) and audio prefix reduce accumulated translated audio latency and mask first‑turn RTT."
             },
             {
-              "text": "A preview window shows draft slides (e.g., 'Advanced AI-Driven Speech Recognition & Enhancement System') as they are generated."
+              "text": "SIM is enabled across Calling and MTR rings with ~99%+ reliability and CSS meeting‑level license checks live."
+            },
+            {
+              "text": "Phi‑4‑based streaming translation and LM‑based segmentation scoring are under exploration to further improve semantic preservation."
             }
           ]
         },
         {
-          "title": "Post-meeting and collaborative refinement",
+          "title": "Turn‑by‑Turn Interpreter (TBT) — Clarity for High‑Stakes Meetings",
           "bullets": [
             {
-              "text": "Users can navigate thumbnails, enter full-screen mode, and quickly review or adjust generated slides immediately after the meeting."
+              "text": "R0 is available with early JP/KR customer and GBB feedback citing strong accuracy and clearer turn‑taking."
             },
             {
-              "text": "Teams’ collaboration model allows multiple users to review, edit, and refine the document together in real time."
+              "text": "GPT‑4o‑realtime + Azure Voice Live API stack improves semantic and tone accuracy compared to SIM in structured settings."
             },
             {
-              "text": "The same agent can generate Word specs or other 'Smart Docs' using the same meeting and channel context."
+              "text": "Designed for board meetings, lectures, and public sector use (e.g., Welsh Government), where overlapping speech is costly."
+            },
+            {
+              "text": "Known limits (25 concurrent sessions, some edge cases) are targeted for capacity expansion and stabilization in the next 1–2 quarters."
             }
           ]
         },
         {
-          "title": "Why Teams is the right home",
+          "title": "Near‑Term Enhancements (Next 1–2 Quarters)",
           "bullets": [
             {
-              "text": "Teams uniquely combines live audio/video, chat, and shared files, giving the agent a multi-modal grounding competitors cannot match."
+              "text": "Expand TBT capacity and harden edge‑case behaviors to support larger events and complex meetings."
+            },
+            {
+              "text": "Introduce UX cues for turn etiquette and future automatic mode guidance (SIM vs TBT) based on meeting type."
+            },
+            {
+              "text": "Implement evaluation pipelines for accuracy, tone, and flow, leveraging LLM‑based end‑to‑end metrics for faster iteration."
             }
           ]
         }
@@ -272,56 +290,54 @@
     "id": "slide_07",
     "rank": 7,
     "state": "draft",
-    "story": "Answer Deep Dive: explain the technical workflow and feasibility",
+    "story": "Answer: deep dive on Multilingual STT and Transcript Enricher as the quality engine (punchline #2)",
     "density": "dense",
-    "visual_design": "Process flow diagram (consulting-style) with 4 main blocks: Orchestrator → Data Miner → Content Creator (Weaver + Structurer) → Assembler & Engine; use a Sankey-style flow or left-to-right process chart.",
+    "visual_design": "Layered process flow (Sankey): Audio → Multilingual STT → Transcript Enricher (real‑time & post‑meeting) → Copilot/Recap/Facilitator; annotations with key metrics (recall, error reduction, CSAT).",
     "content": {
-      "headline": "Orchestrated AI pipeline makes high-fidelity artifacts technically feasible",
-      "subtitle": "Dispatcher, Miner, Weaver, Structurer, and Assembler collaborate to produce PPTX/DOCX/HTML/MP4",
+      "headline": "Multilingual STT and Enricher turn noisy speech into AI‑ready transcripts",
+      "subtitle": "Unified recognition plus entity enrichment materially lift accuracy, CSAT, and Copilot outcomes",
       "category": "Answer",
-      "speaker_intent": "Demonstrate that this is an engineered system with clear components, not a vague AI wish list.",
+      "speaker_intent": "Demonstrate that we have a working, scaling quality engine that converts speech into trustworthy artifacts at scale.",
       "sections": [
         {
-          "title": "1. Orchestrator plans tasks based on user intent",
+          "title": "Multilingual STT — One Endpoint, Less Friction, Better Accuracy",
           "bullets": [
             {
-              "text": "A Dispatcher interprets user input (requested slides, context, instructions) and plans the sequence of tasks."
+              "text": "Unified multi‑recognizer endpoint with auto language detection is deployed for R0/R1, supporting 9 languages in preview."
             },
             {
-              "text": "It determines which enterprise data sources to query and what artifacts to generate."
+              "text": "Multilingual STT eliminates setup friction and reduces gibberish, enabling bilingual meetings for global customers."
+            },
+            {
+              "text": "Entity recall improvements (65.42 → 74.76 Type II) and phrase hint fixes (>800ms freeze) improve both accuracy and responsiveness."
             }
           ]
         },
         {
-          "title": "2. Miner extracts facts from enterprise data",
+          "title": "Transcript Enricher — Entity‑First Quality Gains at Scale",
           "bullets": [
             {
-              "text": "The Miner pulls 'Facts' from meetings, chats, and documents into a structured Content Pool."
+              "text": "R4 rollout at 50% for EN/JP and 10% for FR/DE/PT/ES, enhancing 1.8M+ meetings weekly with strong online reliability."
             },
             {
-              "text": "Content is organized into Atoms such as architecture details, metrics, and code snippets for precise reuse."
+              "text": "Post‑meeting Enricher reduces overall inaccuracy from 19.5% to 12.3% (−37%) and entity errors by 34%, while cutting accent/dialect issues by 31%."
+            },
+            {
+              "text": "CSAT jumps from 42.95% to 62.32%, proving that entity‑focused corrections directly improve perceived quality."
             }
           ]
         },
         {
-          "title": "3. Weaver and Structurer turn facts into narratives",
+          "title": "Roadmap to Full Multilingual and Enterprise Coverage",
           "bullets": [
             {
-              "text": "The Weaver synthesizes extracted facts into coherent narration aligned to the meeting’s storyline."
+              "text": "Multilingual Enricher support planned for CY2026 Q1, with alignment to in‑meeting enrichment architecture."
             },
             {
-              "text": "The Structurer organizes that narration into slides and chapters, ensuring systematic narrative flow."
-            }
-          ]
-        },
-        {
-          "title": "4. Assembler and Engine finalize layout and format",
-          "bullets": [
-            {
-              "text": "The Assembler applies layout and style, targeting a polished, enterprise-ready aesthetic."
+              "text": "Tenant auto‑dictionary and broader language coverage (zh‑TW, NL, VI, TH) will further reduce domain errors."
             },
             {
-              "text": "An Engine layer (HTML, FFMPEG, python-pptx) outputs final artifacts in HTML, PPTX, DOCX, or MP4 formats."
+              "text": "zh‑TW transcription/captioning already treated like zh‑CN at the STT layer, with internal testing planned and Cantonese tracked under Tier‑2 expansion."
             }
           ]
         }
@@ -335,51 +351,54 @@
     "id": "slide_08",
     "rank": 8,
     "state": "draft",
-    "story": "Answer: articulate the differentiated moat vs. competitors and internal alternatives",
-    "density": "moderate",
-    "visual_design": "Moat flywheel diagram: 'Teams meetings & data' → 'AI doc co‑creation' → 'More usage & data gravity' → 'Stronger Copilot value & retention' → back to 'Teams meetings & data'; annotate with advantages vs. Zoom/Slack/Gamma.",
+    "story": "Answer: position Transcription++ and unified evaluation as the moat and feasibility proof",
+    "density": "dense",
+    "visual_design": "Two‑part slide: left = conceptual “enterprise understanding layer” stack for Transcription++; right = LLM‑as‑judge evaluation framework (flow from models → metrics → rollout decisions). Use a stacked bar or simple flow diagram.",
     "content": {
-      "headline": "Microsoft’s integrated stack creates a defensible doc co‑creation moat",
-      "subtitle": "Teams + Office formats + Copilot enable a solution competitors cannot easily copy",
+      "headline": "Transcription++ and LLM evaluation make our speech stack hard to copy",
+      "subtitle": "Enterprise understanding, governance‑by‑design, and unified metrics create a durable competitive edge",
       "category": "Answer",
-      "speaker_intent": "Reassure leadership that this investment deepens our strategic moat, not just adds another feature.",
+      "speaker_intent": "Reassure leaders that we are building not just features but a defensible platform with built‑in governance and evaluation.",
       "sections": [
         {
-          "title": "We own the full stack competitors rely on",
+          "title": "Transcription++ — Enterprise Understanding Layer on Top of STT",
           "bullets": [
             {
-              "text": "Teams holds the meeting data (audio/video, chats, shared files, histories)."
+              "text": "Tiered model stack with grounding and enrichment converts raw transcripts into enterprise‑aware artifacts."
             },
             {
-              "text": "Microsoft controls the file standards (PPTX, DOCX) that define enterprise artifacts."
+              "text": "Global and custom dictionaries plus dynamic vocabulary align speech output with each tenant’s domain language."
             },
             {
-              "text": "Copilot provides the AI layer to interpret intent and generate content."
+              "text": "Governance‑by‑design and multilingual‑by‑default architecture make it suitable for regulated and global customers."
             }
           ]
         },
         {
-          "title": "Competitors cannot match seamless, native Office outputs",
+          "title": "Unified Evaluation — LLM‑as‑Judge for Faster, Safer Rollouts",
           "bullets": [
             {
-              "text": "Zoom and Slack can summarize meetings but cannot natively generate high-fidelity, editable Office documents as seamlessly."
+              "text": "LLM‑based evaluation produces semantic, tone, latency, and entity scores across ST, Semantic, Phi, GPT‑4o realtime, TBT, and Multilingual STT."
             },
             {
-              "text": "Third-party tools like Gamma generate slides but operate outside Teams and without deep access to enterprise context."
+              "text": "Consistent metrics across models reduce human evaluation cost and accelerate iteration and rollout decisions."
             },
             {
-              "text": "Our agent uses fresh meeting knowledge plus chats and files to ground outputs in real enterprise data."
+              "text": "End‑to‑end evaluation enables stronger quality gates and ringed rollout, lowering the risk of regressions in production."
             }
           ]
         },
         {
-          "title": "Differentiation vs. existing internal solutions",
+          "title": "Infrastructure — Multi‑Recognizer and GPU Foundation",
           "bullets": [
             {
-              "text": "Unlike generic Copilot in PowerPoint, the Teams agent is context-rich, using live conversations and collaboration history."
+              "text": "Multi‑recognizer platform (coming Jan 2026) enables hot‑switching between STS and LRM/LLM models in the same pipeline."
             },
             {
-              "text": "We remain open to integrating with existing services like Societas where they are ready, but Teams is the orchestration hub."
+              "text": "This foundation supports Phi‑4, multimodal LLMs, and unified multilingual models without re‑architecting the product."
+            },
+            {
+              "text": "Resource expansion (10→20 environments) and robust error handling/retry logic are planned to strengthen global reliability."
             }
           ]
         }
@@ -393,48 +412,54 @@
     "id": "slide_09",
     "rank": 9,
     "state": "draft",
-    "story": "Answer: quantify business value levers—monetization, stickiness, data gravity",
+    "story": "Answer: connect roadmap to business outcomes and admin value (punchline #3)",
     "density": "moderate",
-    "visual_design": "3-part value framework (horizontal): 'Monetize Copilot' / 'Deepen moat' / 'Increase Teams stickiness & data gravity'; under each, 2–3 concise bullets.",
+    "visual_design": "Roadmap Gantt chart over 6–12 months with workstreams: Interpreter, STT/Enricher, Governance/Admin, Responsible AI; annotate key milestones and impact callouts.",
     "content": {
-      "headline": "Doc co‑creation unlocks Copilot monetization and Teams stickiness",
-      "subtitle": "One-click PPT becomes the killer app that keeps work and data in our ecosystem",
+      "headline": "Next 6–12 months convert technical progress into enterprise‑visible value",
+      "subtitle": "Roadmap focuses on CSAT, governance, language coverage, and recording parity to unlock more revenue‑critical meetings",
       "category": "Answer",
-      "speaker_intent": "Connect the solution directly to revenue (ARPU uplift), retention, and strategic positioning.",
+      "speaker_intent": "Show that we have a concrete, time‑bound plan to turn the stack into visible value for customers, field, and leadership.",
       "sections": [
         {
-          "title": "1. Drive Copilot monetization (ARPU uplift)",
+          "title": "Experience and CSAT Outcomes",
           "bullets": [
             {
-              "text": "‘One-click to PPT’ is a tangible, high-value feature that directly justifies the $30/month Copilot for Microsoft 365 license."
+              "text": "Target >80% CSAT for Interpreter by pairing SIM for fluid conversations with TBT for structured clarity and future automatic mode switching."
             },
             {
-              "text": "It moves AI from 'nice to have' to 'essential for workflow' by solving a daily, painful task for knowledge workers."
+              "text": "Improve first‑sentence telemetry, segmentation, and pipeline tuning to reduce perceived latency and flow breaks."
+            },
+            {
+              "text": "Market‑specific tone tuning for JP/KR to address naturalness and gender/voice concerns in key markets."
             }
           ]
         },
         {
-          "title": "2. Deepen competitive moat",
+          "title": "Governance, Admin Visibility, and Recording Parity",
           "bullets": [
             {
-              "text": "Ecosystem advantage: we uniquely combine Teams, Office formats, and Copilot into a tightly integrated experience."
+              "text": "Admin Center usage dashboard preview targeted for Mar 31, 2026, enabling tenant‑level adoption and language pair reporting."
             },
             {
-              "text": "Hard to copy: competitors can summarize meetings but cannot generate native, high-fidelity PPTX/DOCX tied to live collaboration."
+              "text": "CFR and metering integration to articulate usage by meeting type and support enterprise governance policies."
+            },
+            {
+              "text": "Recording parity for interpreted audio, including multi‑track options, to satisfy compliance and replay scenarios."
             }
           ]
         },
         {
-          "title": "3. Increase platform stickiness and data gravity",
+          "title": "Language Coverage and Offline Scenarios",
           "bullets": [
             {
-              "text": "By moving document creation inside Teams, we transform it from a communication tool into the OS of work."
+              "text": "Broaden language coverage to zh‑TW, NL, VI, and TH while continuing Tier‑2 expansion (e.g., Cantonese)."
             },
             {
-              "text": "Users never have to leave Teams to create or edit artifacts, increasing time-in-app and reducing churn."
+              "text": "Explore offline and fast catch‑up transcription to support low‑connectivity or late‑join scenarios."
             },
             {
-              "text": "If the best way to draft a document is to 'have a meeting about it,' users are incentivized to host more discussions and store more data in our ecosystem."
+              "text": "Extend Enricher GA across Tier‑1 languages with multilingual support and tenant auto‑dictionary capabilities."
             }
           ]
         }
@@ -448,48 +473,48 @@
     "id": "slide_10",
     "rank": 10,
     "state": "draft",
-    "story": "Answer: acknowledge key challenges and proposed mitigations to de-risk",
+    "story": "Risks and asks: de‑risk the plan and make explicit leadership decisions",
     "density": "moderate",
-    "visual_design": "Risk vs. Mitigation table: left column = 'Challenge', right column = 'Mitigation approach'; 3–4 rows.",
+    "visual_design": "Risk → Mitigation table (3 columns: Risk, Impact, Mitigation/Ask); highlight asks in bold; use simple icons for severity.",
     "content": {
-      "headline": "Key challenges are known and can be systematically de-risked",
-      "subtitle": "WOW quality, aesthetic evaluation, and narrative coherence require focused investment",
+      "headline": "Targeted leadership support will convert our advantage into a moat",
+      "subtitle": "Focused decisions on GPU, data, and RAI unlock the full potential of the speech stack",
       "category": "Answer",
-      "speaker_intent": "Show that we are realistic about execution risks and have a plan to address them.",
+      "speaker_intent": "Make clear, bounded asks that feel targeted and high‑leverage, increasing confidence that risks are understood and managed.",
       "sections": [
         {
-          "title": "Technical and experience challenges",
+          "title": "Infrastructure and Model Capacity",
           "bullets": [
             {
-              "text": "Achieving a 'WOW' effect in generated slides is difficult and requires robust aesthetic evaluation."
+              "text": "Risk: GPU capacity and substrate LLM onboarding timelines could slow real‑time model rollout (Phi‑4, GPT‑4o realtime, multilingual models)."
             },
             {
-              "text": "Building systematic, coherent narratives from noisy meeting inputs is non-trivial."
-            },
-            {
-              "text": "Dataset construction for layout, style, and narrative quality is a significant effort."
+              "text": "Ask: Prioritize GPU allocation and LLM onboarding for real‑time speech scenarios to maintain latency and quality commitments."
             }
           ]
         },
         {
-          "title": "Organizational constraints",
+          "title": "Data, Monitoring, and CFR Ownership",
           "bullets": [
             {
-              "text": "Current resource limitations in SOX CMD make it hard for the team to own this project end-to-end."
+              "text": "Risk: Single points of failure and immature error‑handling/incident monitoring could erode reliability in new environments."
+            },
+            {
+              "text": "Risk: CFR data cooking ownership and latency are not yet fully resolved, slowing admin reporting and value articulation."
+            },
+            {
+              "text": "Ask: Clarify CFR data ownership and fund monitoring/alerting maturity to support ringed rollout and admin dashboards."
             }
           ]
         },
         {
-          "title": "Mitigation approach",
+          "title": "Responsible AI and Market‑Specific Tone",
           "bullets": [
             {
-              "text": "Invest in dedicated design resources to define aesthetic evaluation metrics and target enterprise-grade styles."
+              "text": "Risk: Harassment/misgendering and tone issues (especially JP/KR) could damage trust in sensitive markets and public sector deployments."
             },
             {
-              "text": "Leverage Teams’ rich telemetry and existing documents to bootstrap datasets for narrative and layout training."
-            },
-            {
-              "text": "Structure the project as a focused, cross-functional effort with clear ownership and milestones."
+              "text": "Ask: Endorse stronger Responsible AI guardrails, tone control workstreams, and explicit evaluation criteria for high‑risk locales."
             }
           ]
         }
@@ -503,45 +528,53 @@
     "id": "slide_11",
     "rank": 11,
     "state": "draft",
-    "story": "Answer: clarify resource ask and what leadership’s decision will enable",
+    "story": "ending: close with clear commitments and invite discussion",
     "density": "minimal",
-    "visual_design": "Simple Gantt-style bar or milestone list for phases (e.g., Prototype, Pilot, GA) aligned with resource blocks; no dates invented—leave timing conceptual.",
+    "visual_design": "Three‑column “Commitments / What we need / Discussion prompts” layout; minimal text to keep it conversational.",
     "content": {
-      "headline": "Focused investment will convert Teams’ advantages into a flagship AI experience",
-      "subtitle": "Request: 6 devs (3 senior+) plus designer support to deliver a WOW co‑creation agent",
-      "category": "Answer",
-      "speaker_intent": "Make a concrete ask and tie it to the impact and feasibility already established.",
+      "headline": "Commitment: Make Teams the default platform for global interpreted meetings",
+      "subtitle": "We have the stack, traction, and roadmap—now we align on scale and governance",
+      "category": "ending",
       "sections": [
         {
-          "title": "Resourcing ask",
+          "title": "What We Will Deliver in the Next 6–12 Months",
           "bullets": [
             {
-              "text": "Engineering: 6 developers, including at least 3 senior engineers, to own orchestrator, mining, content creation, and integration layers."
+              "text": "Unified speech stack powering Interpreter, Captions, and Transcription with measurable CSAT and reliability gains."
             },
             {
-              "text": "Design: dedicated designer(s) to define visual standards and aesthetic evaluation metrics for PPT and Word outputs."
+              "text": "Dual‑mode Interpreter (SIM + TBT) tuned for both fluid and high‑stakes meetings, with improved tone in JP/KR and broader language coverage."
+            },
+            {
+              "text": "Admin dashboards, recording parity, and governance‑by‑design features that make speech intelligence enterprise‑ready."
             }
           ]
         },
         {
-          "title": "What this investment enables",
+          "title": "Decisions and Support We Are Asking From LT",
           "bullets": [
             {
-              "text": "A Teams-integrated doc co‑creation agent that showcases Copilot’s value in a daily, high-visibility workflow."
+              "text": "Prioritize GPU and LLM onboarding for real‑time speech workloads."
             },
             {
-              "text": "A differentiated, defensible feature that strengthens Teams as the OS of work and increases Copilot ARPU justification."
+              "text": "Clarify CFR data ownership and support monitoring/RAI investments for speech scenarios."
             },
             {
-              "text": "A reusable content generation engine extensible to SharePoint and other Microsoft applications."
+              "text": "Align on Interpreter as a strategic differentiator for global, high‑stakes meetings in Teams."
             }
           ]
         },
         {
-          "title": "Punchline",
+          "title": "Discussion Prompts for This Review",
           "bullets": [
             {
-              "text": "A relatively small, focused team can unlock a flagship AI use case anchored in our core ecosystem."
+              "text": "Where should we focus first to make Interpreter the default choice for our most valuable customers?"
+            },
+            {
+              "text": "How do we best communicate this unified speech story to field and key accounts?"
+            },
+            {
+              "text": "What additional signals would increase your confidence in scaling this investment further?"
             }
           ]
         }
@@ -555,46 +588,49 @@
     "id": "slide_12",
     "rank": 12,
     "state": "draft",
-    "story": "ending: crystallize decision and close on vision",
-    "density": "minimal",
-    "visual_design": "Decision slide with 2–3 bullet decision points and a short vision statement; simple layout.",
-    "content": {
-      "headline": "Decision: fund Teams doc co‑creation to make meetings produce work, not work about work",
-      "subtitle": "Approve resources to build the AI agent that turns every Teams meeting into immediate, high-fidelity Office artifacts",
-      "category": "ending"
-    },
-    "atoms": [],
-    "layout": "",
-    "widgets": {}
-  },
-  {
-    "id": "slide_13",
-    "rank": 13,
-    "state": "draft",
     "story": "data gap summary",
     "density": "minimal",
-    "visual_design": "Simple bullet list grouped under 'Critical Data Gaps'; no charts.",
+    "visual_design": "Simple bullet list grouped by theme (Business impact, Competitive context, Financials).",
     "content": {
       "headline": "Data Gap Summary",
       "category": "data",
       "sections": [
         {
-          "title": "Critical Data Gaps",
+          "title": "Business and Financial Impact",
           "bullets": [
             {
-              "text": "No quantified estimate of time saved per user or per document by using the doc co‑creation agent vs. current manual workflows."
+              "text": "No quantified revenue impact, deal win/loss data, or ARR uplift directly attributed to Interpreter or improved transcription quality."
             },
             {
-              "text": "No explicit linkage between 30M PPT files/day and Microsoft’s own share (e.g., proportion created within Office/Teams)."
+              "text": "No explicit linkage between speech usage and Teams seat expansion, retention, or premium SKU uplift."
             },
             {
-              "text": "No projected impact on Copilot adoption or ARPU (e.g., expected increase in attach rate or usage if 'one-click PPT' is delivered)."
+              "text": "No CoGS breakdown for real‑time models or projected GPU cost curves for the 6–12 month roadmap."
+            }
+          ]
+        },
+        {
+          "title": "Competitive and Market Positioning",
+          "bullets": [
+            {
+              "text": "No competitive benchmarks vs other collaboration platforms’ interpreter/caption capabilities (latency, CSAT, language coverage)."
             },
             {
-              "text": "No timeline or phased roadmap data (e.g., expected duration for prototype, pilot, and GA) to accompany the resourcing ask."
+              "text": "No external market sizing for interpreted or multilingual meetings as a segment within collaboration/AI spend."
+            }
+          ]
+        },
+        {
+          "title": "Customer and Segment Insights",
+          "bullets": [
+            {
+              "text": "No segmented KPIs by customer type (e.g., public sector vs enterprise) or by region/language to inform prioritization."
             },
             {
-              "text": "No explicit user satisfaction or NPS benchmarks for current PPT creation pain to quantify improvement targets."
+              "text": "No longitudinal CSAT trend data beyond single points (e.g., pre/post Enricher over time, Interpreter CSAT over multiple months)."
+            },
+            {
+              "text": "No quantified impact of admin dashboards and metering on adoption or governance outcomes (as these are still in progress)."
             }
           ]
         }

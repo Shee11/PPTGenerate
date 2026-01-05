@@ -6,7 +6,7 @@ from src.generation.content.story_generator import generate_story_from_source
 
 def main():
     # Read source content from file
-    source_file = Path("data/context/output_driven_meeting.txt")
+    source_file = Path("data/context/golden_set.md")
     print(f"Reading source content from: {source_file}")
     
     with open(source_file, 'r', encoding='utf-8') as f:
@@ -20,7 +20,7 @@ def main():
     try:
         slides = generate_story_from_source(
             source_content=source_content,
-            user_instruction="Create an executive pitch deck for leadership review",
+            user_instruction="I am working on an executive review, need to showcase the business value, customer pain points, what we have achieved cross multiple working streams, pls help produce a ppt suitable for executive review, with some punch lines encourages good interactions during the review",
             slide_count=12,
             intent_guidance="Focus on business value and competitive advantage"
         )

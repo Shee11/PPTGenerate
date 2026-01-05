@@ -75,13 +75,22 @@ export default function SlidesPage(): JSX.Element {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [outputPath, setOutputPath] = useState<string>('golden_set_mdx');
+
+  // Get path from URL query parameter - runs on mount and when URL changes
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const pathParam = params.get('path') || 'golden_set_mdx';
+    setOutputPath(pathParam);
+    setLoading(true); // Reset loading state when path changes
+  }, [typeof window !== 'undefined' ? window.location.search : '']);
 
   // Load pre-serialized slides from API
   useEffect(() => {
     async function loadSlides() {
       try {
         // Load from API endpoint that returns pre-serialized MDX
-        const response = await fetch('/api/slides/');
+        const response = await fetch(`/api/slides/?path=${encodeURIComponent(outputPath)}`);
         if (!response.ok) {
           throw new Error(`Failed to load slides: ${response.statusText}`);
         }
@@ -96,7 +105,7 @@ export default function SlidesPage(): JSX.Element {
           throw new Error('No slides found in response');
         }
 
-        console.log(`Loaded ${data.slides.length} slides from ${data.source}`);
+        console.log(`Loaded ${data.slides.length} slides from ${data.source} (path: ${outputPath})`);
         setSlides(data.slides);
         setLoading(false);
       } catch (err) {
@@ -107,7 +116,7 @@ export default function SlidesPage(): JSX.Element {
     }
 
     loadSlides();
-  }, []);
+  }, [outputPath]);
 
   // Keyboard navigation
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
