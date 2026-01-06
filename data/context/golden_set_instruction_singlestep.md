@@ -1,1 +1,1 @@
-I am working on an executive review, need to showcase the business value, customer pain points, what we have achieved cross multiple working streams, pls help produce a ppt suitable for executive review, with some punch lines encourages good interactions during the review
+Create slides based on the doc I provided. You should generate slides based on the exact storyline I provided and create exact number of slides I required.

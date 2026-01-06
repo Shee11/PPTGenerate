@@ -77,10 +77,10 @@ def generate_layouts(
     if not draft_slides:
         return []
     
-    # Check if slides have embedded content (source-based generation)
-    has_embedded_content = any(slide.get("content") for slide in draft_slides)
+    # Check if ANY slide has embedded content or atoms
+    has_any_content = any(slide.get("content") or slide.get("atoms") for slide in draft_slides)
     
-    if not atoms and not has_embedded_content:
+    if not atoms and not has_any_content:
         # No atoms and no embedded content - can't populate widgets meaningfully
         # Return drafts with minimal layouts
         return _fallback_layouts(draft_slides)
@@ -99,7 +99,7 @@ def generate_layouts(
     if project in ("react-mdx", "react"):
         return _generate_mdx_layouts(
             draft_slides, context_before, context_after,
-            atoms, theme_id, intent_guidance, has_embedded_content
+            atoms, theme_id, intent_guidance
         )
     
     # Unknown project type - fallback to react-mdx
@@ -110,7 +110,7 @@ def generate_layouts(
     )
     return _generate_mdx_layouts(
         draft_slides, context_before, context_after,
-        atoms, theme_id, intent_guidance, has_embedded_content
+        atoms, theme_id, intent_guidance
     )
 
 
@@ -138,21 +138,24 @@ def _generate_mdx_layouts(
     atoms: Optional[AtomCollection],
     theme_id: Optional[str],
     intent_guidance: str,
-    has_embedded_content: bool = False,
 ) -> List[Dict[str, Any]]:
     """Generate MDX layouts for react-mdx project.
     
     Uses the existing prompts from layout_engine and prompts.py.
     Returns slides with 'mdx' field containing raw MDX markup.
     
+    Handles slides with:
+    - Only atoms (atom-based generation)
+    - Only content (source-based generation)
+    - Both atoms AND content (after story refinement attaches atoms)
+    
     Args:
-        draft_slides: Draft slides with story/atoms/visual_design OR story/content/visual_design
+        draft_slides: Draft slides with story/atoms/visual_design and/or content
         context_before: Slides before for context
         context_after: Slides after for context
-        atoms: AtomCollection (can be None if has_embedded_content=True)
+        atoms: AtomCollection for widget content
         theme_id: Active theme ID
         intent_guidance: Additional guidance
-        has_embedded_content: If True, slides have content field instead of atoms
     """
     from src.paged.layout.react.mdx_parser import parse_slides_from_mdx
     from src.generation.content.prompts import get_slide_generation_config, render_slide_generation_prompt
@@ -161,7 +164,7 @@ def _generate_mdx_layouts(
     config = get_slide_generation_config(project="react-mdx")
     system_prompt = config.system_prompt
     
-    # Build draft slides context with content field if present
+    # Build draft slides context - include both atoms and content when present
     drafts_summary = []
     for slide in draft_slides:
         slide_summary = {
@@ -172,25 +175,38 @@ def _generate_mdx_layouts(
             "visual_design": slide.get("visual_design", ""),
         }
         
-        # Include content field if present (source-based generation)
-        if has_embedded_content and slide.get("content"):
+        # Include content if present (from source-based generation)
+        if slide.get("content"):
             slide_summary["content"] = slide.get("content")
-        else:
-            # Include atoms field (atom-based generation)
-            slide_summary["atoms"] = slide.get("atoms", [])
+        
+        # Include atoms if present (from atom extraction or story refinement)
+        if slide.get("atoms"):
+            slide_summary["atoms"] = slide.get("atoms")
         
         drafts_summary.append(slide_summary)
     
-    # Build user prompt - different based on whether we have atoms or embedded content
-    if has_embedded_content:
-        # Source-based: slides already have content - use shared prompt function
-        user_prompt = f"""**Draft Slides**: 
+    # Build user prompt - handle slides with atoms, content, or both
+    has_any_content = any(slide.get("content") for slide in draft_slides)
+    has_any_atoms = any(slide.get("atoms") for slide in draft_slides)
+    
+    # Always start with draft slides context
+    user_prompt = f"""# DRAFT SLIDES
 ```json
 {json.dumps(drafts_summary, indent=2)}
 ```
 
 """
-        # Reuse render_slide_generation_prompt with use_content_field=True
+    
+    if has_any_atoms and atoms:
+        # Include atom collection for reference
+        user_prompt += render_slide_generation_prompt(
+            atoms=atoms,
+            user_instruction=intent_guidance if intent_guidance else "Generate presentation slides based on the draft slides above.",
+            intent_guidance="",
+            themes=None
+        )
+    elif has_any_content:
+        # Content-only slides (no atoms available)
         user_prompt += render_slide_generation_prompt(
             atoms=None,
             user_instruction=intent_guidance if intent_guidance else "Generate presentation slides based on the draft slides above.",
@@ -199,21 +215,19 @@ def _generate_mdx_layouts(
             use_content_field=True
         )
     else:
-        # Atom-based: use existing prompt function
-        user_prompt = render_slide_generation_prompt(
-            atoms=atoms,
-            user_instruction=intent_guidance,
-            intent_guidance="",
-            themes=None
-        )
-        
-        # Add draft slides context to the prompt
-        user_prompt = f"""# DRAFT SLIDES (use these IDs, ranks, stories, atoms)
-```json
-{json.dumps(drafts_summary, indent=2)}
-```
+        # Fallback - shouldn't reach here if validation above works
+        user_prompt += f"""Generate MDX slides based on the draft slides above.
 
-{user_prompt}"""
+Instructions: {intent_guidance or 'Create compelling presentation slides.'}
+"""
+    
+    # Add note about handling both atoms and content if both are present
+    if has_any_atoms and has_any_content:
+        user_prompt += """\n\n**IMPORTANT**: Some slides have BOTH atoms and content fields.
+- Use atoms for widget population where available
+- Use embedded content as additional context and validation
+- Ensure consistency between atoms and content when both are present
+"""
 
     deployment = os.getenv('AZURE_OPENAI_DEPLOYMENT', 'gpt-4o')
     response = call_llm(
@@ -245,22 +259,24 @@ def _generate_mdx_layouts(
             "mdx": parsed.mdx,
         }
         
-        # Preserve content or atoms from draft
+        # Preserve content and atoms from draft (can have both)
         if draft:
             slide["density"] = draft.get("density", "moderate")
             slide["visual_design"] = draft.get("visual_design", "")
             
-            # Keep content field if present (source-based), otherwise atoms (atom-based)
-            if has_embedded_content and draft.get("content"):
+            # Preserve both content and atoms if present
+            if draft.get("content"):
                 slide["content"] = draft.get("content")
-            else:
-                slide["atoms"] = draft.get("atoms", [])
+            if draft.get("atoms"):
+                slide["atoms"] = draft.get("atoms")
+            
+            # Ensure at least one is present for backward compatibility
+            if not draft.get("content") and not draft.get("atoms"):
+                slide["atoms"] = []
         else:
             # Fallback if no matching draft
-            if has_embedded_content:
-                slide["content"] = parsed.content if hasattr(parsed, 'content') else {}
-            else:
-                slide["atoms"] = parsed.atoms
+            slide["content"] = parsed.content if hasattr(parsed, 'content') else {}
+            slide["atoms"] = parsed.atoms if hasattr(parsed, 'atoms') else []
         
         active_slides.append(slide)
     

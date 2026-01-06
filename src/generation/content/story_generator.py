@@ -123,6 +123,111 @@ Examples:
 Return ONLY the JSON array."""
 
 
+def _attach_atoms_to_slides(
+    slides: List[Dict],
+    atoms: AtomCollection,
+) -> List[Dict]:
+    """Attach atoms to slides that have embedded content but no atoms.
+    
+    Uses LLM to intelligently match slide content to available atoms.
+    
+    Args:
+        slides: Slides that may have content but no atoms
+        atoms: AtomCollection to reference
+        
+    Returns:
+        Slides with atoms attached where appropriate
+    """
+    # Filter slides that need atom attachment
+    slides_needing_atoms = [
+        s for s in slides 
+        if not s.get("atoms") or len(s.get("atoms", [])) == 0
+    ]
+    
+    if not slides_needing_atoms:
+        return slides
+    
+    # Build atom summaries for LLM
+    atom_summaries = []
+    for atom in atoms.list_contexts():
+        content = _get_atom_content(atom)
+        content_preview = content[:200] if len(content) > 200 else content
+        atom_summaries.append({
+            "id": atom.id,
+            "type": _get_atom_type(atom),
+            "content": content_preview,
+        })
+    
+    # Build slides summaries for LLM
+    slide_summaries = []
+    for slide in slides_needing_atoms:
+        slide_summaries.append({
+            "id": slide.get("id"),
+            "story": slide.get("story", ""),
+            "content": slide.get("content", {}),
+        })
+    
+    # Create prompt for LLM
+    prompt = f"""You are matching slide content to available atoms.
+
+# AVAILABLE ATOMS
+```json
+{json.dumps(atom_summaries, indent=2)}
+```
+
+# SLIDES NEEDING ATOMS
+```json
+{json.dumps(slide_summaries, indent=2)}
+```
+
+# TASK
+For each slide, identify which atoms best match its content. Consider:
+- Semantic similarity between slide content and atom content
+- Relevance of atom type to slide purpose
+- Coverage of slide topics by atoms
+
+# OUTPUT FORMAT
+Return a JSON object mapping slide IDs to arrays of atom IDs:
+```json
+{{
+  "slide_01": ["atom_1", "atom_3"],
+  "slide_02": ["atom_2", "atom_5"],
+  ...
+}}
+```
+
+Return ONLY the JSON object."""
+    
+    deployment = os.getenv('AZURE_OPENAI_DEPLOYMENT', 'gpt-4o')
+    response = call_llm(
+        system_prompt="You are an AI that matches presentation content to data atoms. Output only valid JSON.",
+        user_prompt=prompt,
+        deployment=deployment,
+        temperature=0.3,
+        max_tokens=4000,
+    )
+    
+    # Parse LLM response
+    try:
+        json_match = re.search(r'\{[\s\S]*\}', response)
+        if json_match:
+            atom_mapping = json.loads(json_match.group())
+        else:
+            atom_mapping = json.loads(response)
+        
+        # Apply atom mappings to slides
+        for slide in slides:
+            slide_id = slide.get("id")
+            if slide_id in atom_mapping:
+                slide["atoms"] = atom_mapping[slide_id]
+        
+    except (json.JSONDecodeError, KeyError) as e:
+        # Fallback: keep slides without atoms if LLM fails
+        pass
+    
+    return slides
+
+
 def _get_refine_prompt(
     existing_slides: List[Dict],
     atoms: AtomCollection,
@@ -154,18 +259,29 @@ def _get_refine_prompt(
 # TASK
 
 Modify the story based on the user's request. Common operations:
-- Merge slides: Combine story/atoms from multiple slides into one
+- Merge slides: Combine story/atoms/content from multiple slides into one
 - Split slide: Divide one slide's content into multiple
-- Add slide: Insert new slide with atoms and story
-- Remove slide: Delete slide (don't reassign its atoms elsewhere)
+- Add slide: Insert new slide with atoms/content and story
+- Remove slide: Delete slide (don't reassign its atoms/content elsewhere)
 - Reorder: Change ranks to restructure flow
+
+# IMPORTANT NOTES
+
+- Slides have BOTH atoms (list of IDs) AND content (embedded structured data)
+- Atoms and content are SYNCHRONIZED - they must reflect each other's changes:
+  * If you change atoms: Extract new atom content into the content field to reflect the new atoms
+  * If you change content: Update the atoms array to reference atoms that match the new content
+  * Atoms provide the data source, content provides the narrative structure
+- NEVER modify one without updating the other to maintain consistency
+- Both fields are required and must stay aligned during refinement
 
 # OUTPUT RULES
 
-1. For slides you DON'T change: Keep exactly as-is
+1. For slides you DON'T change: Keep exactly as-is (preserve atoms AND content)
 2. For slides you CHANGE: Set state="draft" (they need new layout/widgets)
 3. Return the COMPLETE slide list (not just changed ones)
 4. Keep layout="" and widgets={{}} for all draft slides
+5. **CRITICAL**: ALWAYS include BOTH "atoms" and "content" fields in output, even if unchanged
 
 # OUTPUT FORMAT
 
@@ -238,7 +354,11 @@ def refine_story(
     Returns:
         Updated list of slides (mix of active and draft)
     """
-    prompt = _get_refine_prompt(existing_slides, atoms, user_instruction, intent_guidance)
+    # Attach atoms to slides that have content but no atoms
+    # This ensures slides generated from source can be refined
+    slides_with_atoms = _attach_atoms_to_slides(existing_slides, atoms)
+    
+    prompt = _get_refine_prompt(slides_with_atoms, atoms, user_instruction, intent_guidance)
     
     deployment = os.getenv('AZURE_OPENAI_DEPLOYMENT', 'gpt-4o')
     response = call_llm(
@@ -383,8 +503,22 @@ def _get_scqa_prompt(
 ### V. Visual Hint (Hard Constraints): 
 - Framework over Imagery: Do not describe "pictures." Describe logical frameworks (e.g., 2x2 matrix, Flywheel, Bridge chart).
 - Mandatory for Deep Dives: For every "Deep Dive" slide, the visual_design must specify a professional consulting chart type (e.g., Waterfall, Sankey, Gantt, or Harvey Balls).
+Specify layout + content approach. Content generator MUST follow this.
+Examples:
+- "LayoutCover" (opening only)
+- "LayoutSplit5050: left=narrative+list, right=BigNum+context"
+- "LayoutDashboard: main=chart+metrics, sidebar=key-points"
+- "LayoutStacked: text-focused with supporting callout"
+- "LayoutSplit5050: left=diagram(process flow), right=explanation"
 
-### VI. The Creative Edge (Soft Guidance): 
+### VI. VISUAL SELECTION RULES
+- Use diagram ONLY for process/flow with ≥4 connected steps
+- Use chart for comparisons/trends with ≥3 data points
+- Use BigNum/MetricGroup for key numbers
+- Use SmartList/Text for narrative/recommendations
+- Do NOT force visuals where text is clearer
+
+### VII. The Creative Edge (Soft Guidance): 
 1. Use metaphors where appropriate to clarify complex concepts (e.g., comparing a platform to an "operating system for logistics" rather than just a "management tool"). 
 2. Aim for a "Visionary yet Grounded" tone—the deck should feel like it was written by a partner who deeply understands the business, not a clerk summarizing a file.
 

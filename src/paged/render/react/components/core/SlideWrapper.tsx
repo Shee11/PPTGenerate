@@ -103,6 +103,10 @@ export interface SlideContainerProps {
   children: ReactNode;
   /** Current slide index */
   currentSlide?: number;
+  /** Callback when slide changes */
+  onSlideChange?: (slide: number) => void;
+  /** Total number of slides */
+  totalSlides?: number;
 }
 
 /**
@@ -113,6 +117,8 @@ export interface SlideContainerProps {
 export function SlideContainer({
   children,
   currentSlide = 0,
+  onSlideChange,
+  totalSlides,
 }: SlideContainerProps): JSX.Element {
   return (
     <div 

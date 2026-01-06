@@ -112,12 +112,43 @@ class TodoExecutor:
     def _get_all_ready_todos(self, state: PipelineState) -> List[TodoItem]:
         """Get all todos that are ready to execute (all dependencies met).
         
+        Checks both:
+        1. Todos completed in current queue
+        2. Data already present in state from previous runs (only if NOT in current queue)
+        
         Returns:
             List of ready todos (can be multiple for parallel execution)
         """
+        # Get completed todos from current queue
         completed_ids = {t.id for t in state.todos.todos if t.status == TodoStatus.COMPLETED}
-        ready = []
         
+        # Get IDs of todos in current queue (including pending/in-progress)
+        # These should NOT be marked as virtually completed even if data exists
+        todos_in_queue = {t.id for t in state.todos.todos}
+        
+        # Add virtual "completed" IDs for data that already exists in state
+        # BUT only if the todo is NOT in the current queue
+        # This allows refinement runs to satisfy dependencies without re-running completed todos
+        if state.constitution is not None and "constitution" not in todos_in_queue:
+            completed_ids.add("constitution")
+            completed_ids.add("constitution_existing")  # For refinement dependencies
+        if state.atoms is not None and "atoms" not in todos_in_queue:
+            completed_ids.add("atoms")
+            completed_ids.add("atoms_existing")  # For refinement dependencies
+        if state.themes and state.active_theme_id and "theme" not in todos_in_queue:
+            completed_ids.add("theme")
+            completed_ids.add("theme_existing")  # For refinement dependencies
+        if state.slides and len(state.slides) > 0:
+            # If slides exist, both story and content were completed previously
+            # But only mark them as completed if they're NOT being re-run in current queue
+            if "story" not in todos_in_queue:
+                completed_ids.add("story")
+                completed_ids.add("story_existing")  # For refinement dependencies
+            if "content" not in todos_in_queue:
+                completed_ids.add("content")
+                completed_ids.add("content_existing")  # For refinement dependencies
+        
+        ready = []
         for todo in state.todos.todos:
             if todo.status == TodoStatus.PENDING and todo.is_ready(completed_ids):
                 ready.append(todo)
