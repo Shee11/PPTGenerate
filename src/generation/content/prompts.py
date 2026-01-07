@@ -63,7 +63,9 @@ Follow the draft slide's `story` and `visual_design` fields exactly:
 - TAKEAWAY → `<Callout>` or `<Text variant="caption">`
 
 # CHART TYPE SELECTION (Feature: 003-extended-chart-types)
-Select chart type based on data patterns:
+**PRIORITY: If the source content or user instruction explicitly specifies a chart type, USE THAT CHART TYPE. Do not override with automatic selection.**
+
+When NO chart type is specified, select based on data patterns:
 | Data Pattern | Chart Type | Component |
 |--------------|------------|-----------|
 | Time-series/cumulative | area | `<ChartArea gradient={{true}}/>` |
@@ -93,11 +95,27 @@ Each chart component expects specific data properties. Using wrong properties ca
 - BAD: `data={{[{{label: "Q1", revenue: 50}}]}}` ← ChartArea ignores `revenue`, renders EMPTY
 - GOOD: `data={{[{{label: "Q1", value: 50}}]}}` ← ChartArea reads `value`, renders correctly
 
+# CHART AND IMAGE LAYOUT PATTERNS (CRITICAL)
+When adding a chart or image to a slide, follow these layout patterns:
+| Pattern | Description | Layout Implementation |
+|---------|-------------|----------------------|
+| `chart-left` | Chart on left, explanatory text on right | `<LayoutSplit><Left>Chart</Left><Right>Text/SmartList</Right></LayoutSplit>` |
+| `chart-right` | Chart on right, related text on left | `<LayoutSplit><Left>Text/SmartList</Left><Right>Chart</Right></LayoutSplit>` |
+| `image-left` | Image on left, text on right | `<LayoutSplit><Left>ImageBlock</Left><Right>Text/SmartList</Right></LayoutSplit>` |
+| `image-right` | Image on right, text on left | `<LayoutSplit><Left>Text/SmartList</Left><Right>ImageBlock</Right></LayoutSplit>` |
+| `image-top` | Image on top, text below | `<LayoutStacked>ImageBlock then Text</LayoutStacked>` |
+| `cover` | Title slide with title, subtitle, footer | `<LayoutCover>Heading + Text</LayoutCover>` |
+| `no-image` | Text-only layout | `<LayoutStacked>` or `<LayoutSplit>` with text only |
+
 # CHART AND IMAGE EXCLUSIVITY (CRITICAL)
-- **Charts and ImageBlock CANNOT appear on the same slide**
-- If slide needs a chart, do NOT add ImageBlock
-- If slide needs an image, do NOT add any Chart component
-- Choose ONE visual type per slide: Chart OR Image, never both
+- **ONLY ONE chart OR ONE image per slide** - never 2 charts, never 2 images, never chart+image together
+- If slide needs a chart, do NOT add ImageBlock or another chart
+- If slide needs an image, do NOT add any Chart component or another image
+- Choose ONE visual type per slide: ONE Chart OR ONE Image OR no visual
+- BAD: Two ChartBar on same slide ← TOO MANY VISUALS
+- BAD: ChartArea + ChartPolar on same slide ← TOO MANY VISUALS  
+- BAD: ChartBar + ImageBlock on same slide ← MIXED VISUAL TYPES
+- GOOD: ONE ChartArea + Text/SmartList ← SINGLE VISUAL WITH TEXT
 
 # VISUAL SELECTION
 - Use NetworkGraph when visual_design mentions branching "architecture", "network", "org chart" (nodes connect to multiple targets)
