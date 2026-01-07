@@ -669,6 +669,14 @@ class ReactMDXRenderer:
         # Legacy widget-to-MDX conversion (fallback for old state.json format)
         layout = slide.get("layout", "default")
         widgets = slide.get("widgets", {})
+        # Backwards-compat: older/partial states may store widgets as a list.
+        # Normalize to the dict-of-slots shape expected by the renderer.
+        if widgets is None:
+            widgets = {}
+        elif isinstance(widgets, list):
+            widgets = {"content": widgets} if widgets else {}
+        elif not isinstance(widgets, dict):
+            widgets = {}
         theme = slide.get("theme", self.theme)
         
         # Map layout to component

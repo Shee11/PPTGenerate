@@ -77,7 +77,20 @@ def generate_layouts(
     if not draft_slides:
         return []
     
-    if not atoms:
+    # Check if atoms collection is truly empty (even if object exists)
+    has_atoms = False
+    if atoms:
+        if hasattr(atoms, 'list_contexts'):
+            if atoms.list_contexts():
+                has_atoms = True
+        # Fallback if atoms is some other iterable
+        elif hasattr(atoms, '__len__') and len(atoms) > 0:
+            has_atoms = True
+        # If it's truthy but doesn't match above, assume it has content (e.g. dict)
+        elif not hasattr(atoms, 'list_contexts') and not hasattr(atoms, '__len__'):
+            has_atoms = True
+            
+    if not has_atoms:
         # No atoms - can't populate widgets meaningfully
         # Return drafts with minimal layouts
         return _fallback_layouts(draft_slides)

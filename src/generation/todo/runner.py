@@ -79,6 +79,7 @@ class PipelineRunner:
         state: Optional["PipelineState"] = None,
         project: str = "slidev",
         mdx_theme: str = "business",
+        force_rerun: bool = False,
     ) -> "PipelineState":
         """Run full pipeline from source.
         
@@ -95,9 +96,14 @@ class PipelineRunner:
         # Late import to avoid circular dependency
         from src.generation.state import PipelineState
         
-        # Try to load existing state from output folder
+        # Try to load existing state from output folder unless force_rerun is set
         state_path = self.output_dir / "state.json"
-        if state is None and state_path.exists():
+        if state is None and force_rerun and state_path.exists():
+            if self.verbose:
+                _safe_print(f"🧹 --force-rerun: ignoring existing state at {state_path}")
+            state = PipelineState()
+            state.load_default_themes()
+        elif state is None and state_path.exists():
             if self.verbose:
                 _safe_print(f"📂 Loading existing state from {state_path}")
             state = PipelineState.load(state_path)
