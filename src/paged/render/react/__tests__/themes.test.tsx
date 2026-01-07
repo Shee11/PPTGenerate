@@ -14,7 +14,7 @@ import {
   applyThemeToDocument,
   getVibeMultiplier,
 } from '@/themes';
-import { ThemeProvider, useTheme } from '@/components/core/ThemeContext';
+import { ThemeProvider, useTheme } from '@/library/core/ThemeContext';
 import { businessTheme } from '@/themes/business';
 import type { ThemeName, VibeLevel } from '@/utils/types';
 

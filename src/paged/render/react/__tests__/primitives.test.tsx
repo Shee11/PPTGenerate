@@ -1,14 +1,14 @@
 /**
- * Atoms Component Tests
+ * Primitives Component Tests
  * 
- * Tests for L3 Atom components: Heading, Text, Callout
+ * Tests for L3 Primitive components: Heading, Text, Callout
  */
 
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { Heading } from '@/components/atoms/Heading';
-import { Text } from '@/components/atoms/Text';
-import { Callout } from '@/components/atoms/Callout';
+import { Heading } from '@/library/primitives/Heading';
+import { Text } from '@/library/primitives/Text';
+import { Callout } from '@/library/primitives/Callout';
 
 describe('Heading Component', () => {
   it('renders h1 by default', () => {

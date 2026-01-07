@@ -25,7 +25,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': resolve(__dirname, './'),
-      '@/components': resolve(__dirname, './components'),
+      '@/library': resolve(__dirname, './library'),
       '@/themes': resolve(__dirname, './themes'),
       '@/utils': resolve(__dirname, './utils'),
     },

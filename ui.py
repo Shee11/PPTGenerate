@@ -1416,7 +1416,7 @@ def build_ui() -> gr.Blocks:
 
         init_btn = gr.Button("Initialize")
 
-        gr.Markdown("## 1) planner")
+        gr.Markdown("## 0) planner")
         with gr.Accordion("Prompts", open=False):
             planner_default_sys = gr.Code(
                 label="system prompt",
@@ -1436,7 +1436,7 @@ def build_ui() -> gr.Blocks:
             )
         with gr.Row():
             with gr.Column(scale=9, min_width=160):
-                planner_run = gr.Button("1) Run planner")
+                planner_run = gr.Button("0) Run planner")
             with gr.Column(scale=1, min_width=60):
                 planner_timer = gr.HTML(value="", elem_id="planner_timer")
         with gr.Row():
@@ -1445,11 +1445,11 @@ def build_ui() -> gr.Blocks:
             with gr.Column():
                 planner_resp = gr.Textbox(label="response", lines=8, max_lines=8)
 
-        gr.Markdown("## 2) constitution")
-        constitution_run = gr.Button("2) Run constitution")
+        gr.Markdown("## 1) constitution")
+        constitution_run = gr.Button("1) Run constitution")
         constitution_result = gr.Textbox(label="constitution result", lines=8, max_lines=8)
 
-        gr.Markdown("## 3) atoms")
+        gr.Markdown("## 2) atoms")
         with gr.Accordion("Prompts", open=False):
             atoms_default_sys = gr.Code(
                 label="system prompt",
@@ -1469,7 +1469,7 @@ def build_ui() -> gr.Blocks:
             )
         with gr.Row():
             with gr.Column(scale=9, min_width=160):
-                atoms_run = gr.Button("3) Run atoms")
+                atoms_run = gr.Button("2) Run atoms")
             with gr.Column(scale=1, min_width=60):
                 atoms_timer = gr.HTML(value="", elem_id="atoms_timer")
         with gr.Row():
@@ -1478,7 +1478,7 @@ def build_ui() -> gr.Blocks:
             with gr.Column():
                 atoms_resp = gr.Textbox(label="response", lines=8, max_lines=8)
 
-        gr.Markdown("## 4) theme")
+        gr.Markdown("## 3) theme")
         with gr.Accordion("Prompts", open=False):
             theme_default_sys = gr.Code(
                 label="system prompt",
@@ -1498,7 +1498,7 @@ def build_ui() -> gr.Blocks:
             )
         with gr.Row():
             with gr.Column(scale=9, min_width=160):
-                theme_run = gr.Button("4) Run theme")
+                theme_run = gr.Button("3) Run theme")
             with gr.Column(scale=1, min_width=60):
                 theme_timer = gr.HTML(value="", elem_id="theme_timer")
         theme_result = gr.Textbox(label="theme result (no LLM)", lines=6, max_lines=6, visible=False)
@@ -1508,7 +1508,7 @@ def build_ui() -> gr.Blocks:
             with gr.Column():
                 theme_resp = gr.Textbox(label="response", lines=8, max_lines=8, visible=True)
 
-        gr.Markdown("## 5) story")
+        gr.Markdown("## 4) story")
         with gr.Accordion("Prompts", open=False):
             story_default_sys = gr.Code(
                 label="system prompt",
@@ -1528,7 +1528,7 @@ def build_ui() -> gr.Blocks:
             )
         with gr.Row():
             with gr.Column(scale=9, min_width=160):
-                story_run = gr.Button("5) Run story")
+                story_run = gr.Button("4) Run story")
             with gr.Column(scale=1, min_width=60):
                 story_timer = gr.HTML(value="", elem_id="story_timer")
         with gr.Row():
@@ -1537,7 +1537,7 @@ def build_ui() -> gr.Blocks:
             with gr.Column():
                 story_resp = gr.Textbox(label="response", lines=8, max_lines=8)
 
-        gr.Markdown("## 6) content")
+        gr.Markdown("## 5) content")
         with gr.Accordion("Prompts", open=False):
             content_default_sys = gr.Code(
                 label="system prompt",
@@ -1557,7 +1557,7 @@ def build_ui() -> gr.Blocks:
             )
         with gr.Row():
             with gr.Column(scale=9, min_width=160):
-                content_run = gr.Button("6) Run content")
+                content_run = gr.Button("5) Run content")
             with gr.Column(scale=1, min_width=60):
                 content_timer = gr.HTML(value="", elem_id="content_timer")
         with gr.Row():
@@ -1566,8 +1566,8 @@ def build_ui() -> gr.Blocks:
             with gr.Column():
                 content_resp = gr.Textbox(label="response", lines=8, max_lines=8)
 
-        gr.Markdown("## 7) export")
-        export_run = gr.Button("7) Run export")
+        gr.Markdown("## 6) export")
+        export_run = gr.Button("6) Run export")
         export_preview_btn = gr.Button("Preview")
         export_preview_link = gr.HTML(label="preview")
         output_files = gr.Files(label="produced files")

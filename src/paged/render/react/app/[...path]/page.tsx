@@ -9,8 +9,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'next/navigation';
 import { MDXRemote, MDXRemoteSerializeResult } from 'next-mdx-remote';
-import { mdxComponents } from '@/components/core/MDXProvider';
-import { SlideContainer, SlideWrapper, SlideNavigation } from '@/components/core';
+import { mdxComponents } from '@/library/core/MDXProvider';
+import { SlideContainer, SlideWrapper, SlideNavigation } from '@/library/core';
 
 // =============================================================================
 // Types

@@ -6,9 +6,9 @@
 
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { LayoutCover } from '@/components/layouts/LayoutCover';
-import { LayoutSplit } from '@/components/layouts/LayoutSplit';
-import { LayoutGrid } from '@/components/layouts/LayoutGrid';
+import { LayoutCover } from '@/library/layouts/LayoutCover';
+import { LayoutSplit } from '@/library/layouts/LayoutSplit';
+import { LayoutGrid } from '@/library/layouts/LayoutGrid';
 
 describe('LayoutCover Component', () => {
   it('renders children content', () => {

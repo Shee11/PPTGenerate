@@ -7,10 +7,10 @@
  */
 
 import React from 'react';
-import { SlideContainer, SlideWrapper } from '@/components';
-import { LayoutCover, LayoutSplit, LayoutGrid, LayoutTimeline } from '@/components/layouts';
-import { Heading, Text, Callout, Highlight } from '@/components/atoms';
-import { SmartList, ChartBar, MetricGroup, StepList, ProcessStrip } from '@/components/blocks';
+import { SlideContainer, SlideWrapper } from '@/library';
+import { LayoutCover, LayoutSplit, LayoutGrid, LayoutTimeline } from '@/library/layouts';
+import { Heading, Text, Callout, Highlight } from '@/library/primitives';
+import { SmartList, ChartBar, MetricGroup, StepList, ProcessStrip } from '@/library/blocks';
 
 /**
  * Demo Presentation

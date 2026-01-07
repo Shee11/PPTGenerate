@@ -1,7 +1,7 @@
 /**
- * Atoms Components Index
+ * Primitives Components Index
  * 
- * L3 Atoms - Basic typography and semantic elements
+ * L3 Primitives - Basic typography and semantic elements
  */
 
 export { Heading } from './Heading';

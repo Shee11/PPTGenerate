@@ -6,9 +6,9 @@
 
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { SmartList } from '@/components/blocks/SmartList';
-import { ChartBar } from '@/components/blocks/ChartBar';
-import { MetricGroup } from '@/components/blocks/MetricGroup';
+import { SmartList } from '@/library/blocks/SmartList';
+import { ChartBar } from '@/library/blocks/ChartBar';
+import { MetricGroup } from '@/library/blocks/MetricGroup';
 
 describe('SmartList Component', () => {
   it('renders simple string items', () => {

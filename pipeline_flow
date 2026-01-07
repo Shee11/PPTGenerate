@@ -1,0 +1,54 @@
+// UCE Pipeline Data Flow
+digraph {
+	rankdir=TB
+	dpi=300
+	node [fontname=Arial fontsize=12]
+	edge [fontname=Arial fontsize=10]
+	subgraph cluster_inputs {
+		color=lightgrey label=Inputs
+		User [label="User Instruction" fillcolor=white shape=ellipse style=filled]
+		Source [label="Source Text" fillcolor=white shape=note style=filled]
+	}
+	node [fillcolor="#E6F3FF" shape=box style=filled]
+	Step1 [label="1. Constitution
+
+[Output]
+Rules, Tone, Exclusions"]
+	Step2 [label="2. Atoms
+
+[Output]
+Facts, Quotes, Contexts, Visuals"]
+	Step3 [label="3. Theme
+
+[Output]
+Colors, Fonts, ID"]
+	Step4 [label="4. Story
+
+[Output]
+Draft Slides
+(Story, Visual Design, Atom Refs)"]
+	Step5 [label="5. Content
+
+[Output]
+Active Slides
+(Layouts & Components)"]
+	Step6 [label="6. Export
+
+[Action]
+Render & Build"]
+	FileMDX [label="Output: slides.mdx" fillcolor=white shape=note style=filled]
+	User -> Step1
+	Source -> Step2
+	Step1 -> Step2 [label=Guidance]
+	Step1 -> Step3 [label=Vibe]
+	Step2 -> Step4
+	Step1 -> Step4 [label=Constraints]
+	Step4 -> Step5
+	Step2 -> Step5 [label=Details]
+	Step3 -> Step5
+	Step1 -> Step5 [label=Prefs]
+	Step5 -> Step6
+	Step3 -> Step6
+	Step6 -> FileMDX
+	FileMDX [label="Output: slides.mdx" fillcolor=white shape=note style=filled]
+}

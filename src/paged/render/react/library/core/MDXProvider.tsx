@@ -13,37 +13,37 @@ import React, { type ReactNode } from 'react';
 import { MDXProvider as BaseMDXProvider } from '@mdx-js/react';
 
 // Import L1 Layout Components
-import { LayoutCover } from '@/components/layouts/LayoutCover';
-import { LayoutSplit, Left, Right } from '@/components/layouts/LayoutSplit';
-import { LayoutGrid } from '@/components/layouts/LayoutGrid';
-import { LayoutFullBleed } from '@/components/layouts/LayoutFullBleed';
-import { LayoutTimeline } from '@/components/layouts/LayoutTimeline';
-import { LayoutDashboard, Header, Main, Sidebar, Footer } from '@/components/layouts/LayoutDashboard';
-import { LayoutStacked } from '@/components/layouts/LayoutStacked';
+import { LayoutCover } from '@/library/layouts/LayoutCover';
+import { LayoutSplit, Left, Right } from '@/library/layouts/LayoutSplit';
+import { LayoutGrid } from '@/library/layouts/LayoutGrid';
+import { LayoutFullBleed } from '@/library/layouts/LayoutFullBleed';
+import { LayoutTimeline } from '@/library/layouts/LayoutTimeline';
+import { LayoutDashboard, Header, Main, Sidebar, Footer } from '@/library/layouts/LayoutDashboard';
+import { LayoutStacked } from '@/library/layouts/LayoutStacked';
 
 // Timeline Item component (LayoutTimeline.Item)
 const Item = LayoutTimeline.Item;
 
 // Import L2 Block Components
-import { SmartList } from '@/components/blocks/SmartList';
-import { ChartBar } from '@/components/blocks/ChartBar';
-import { ChartLine } from '@/components/blocks/ChartLine';
-import { ChartPie } from '@/components/blocks/ChartPie';
-import { MetricGroup, Metric } from '@/components/blocks/MetricGroup';
-import { BigNum } from '@/components/blocks/BigNum';
-import { TableData } from '@/components/blocks/TableData';
-import { QuoteBlock } from '@/components/blocks/QuoteBlock';
-import { ImageBlock } from '@/components/blocks/ImageBlock';
-import { CardGroup, Card } from '@/components/blocks/CardGroup';
-import { NetworkGraph, Node, Edge, Group } from '@/components/blocks/NetworkGraph';
-import { StepList } from '@/components/blocks/StepList';
-import { ProcessStrip } from '@/components/blocks/ProcessStrip';
+import { SmartList } from '@/library/blocks/SmartList';
+import { ChartBar } from '@/library/blocks/ChartBar';
+import { ChartLine } from '@/library/blocks/ChartLine';
+import { ChartPie } from '@/library/blocks/ChartPie';
+import { MetricGroup, Metric } from '@/library/blocks/MetricGroup';
+import { BigNum } from '@/library/blocks/BigNum';
+import { TableData } from '@/library/blocks/TableData';
+import { QuoteBlock } from '@/library/blocks/QuoteBlock';
+import { ImageBlock } from '@/library/blocks/ImageBlock';
+import { CardGroup, Card } from '@/library/blocks/CardGroup';
+import { NetworkGraph, Node, Edge, Group } from '@/library/blocks/NetworkGraph';
+import { StepList } from '@/library/blocks/StepList';
+import { ProcessStrip } from '@/library/blocks/ProcessStrip';
 
 // Import L3 Primitive Components
-import { Heading } from '@/components/primitives/Heading';
-import { Text } from '@/components/primitives/Text';
-import { Callout } from '@/components/primitives/Callout';
-import { Highlight } from '@/components/primitives/Highlight';
+import { Heading } from '@/library/primitives/Heading';
+import { Text } from '@/library/primitives/Text';
+import { Callout } from '@/library/primitives/Callout';
+import { Highlight } from '@/library/primitives/Highlight';
 
 // =============================================================================
 // Component Mapping

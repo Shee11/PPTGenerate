@@ -60,7 +60,7 @@ export function ChartSkeleton({
  * Only loads Recharts when the component is rendered
  */
 export const LazyChartBar = dynamic(
-  () => import('@/components/blocks/ChartBar').then((mod) => mod.ChartBar),
+  () => import('@/library/blocks/ChartBar').then((mod) => mod.ChartBar),
   { 
     loading: () => <ChartSkeleton />,
     ssr: false, // Disable SSR for charts (requires client-side rendering)
@@ -71,7 +71,7 @@ export const LazyChartBar = dynamic(
  * Lazy-loaded ChartLine component
  */
 export const LazyChartLine = dynamic(
-  () => import('@/components/blocks/ChartLine').then((mod) => mod.ChartLine),
+  () => import('@/library/blocks/ChartLine').then((mod) => mod.ChartLine),
   { 
     loading: () => <ChartSkeleton />,
     ssr: false,
@@ -82,7 +82,7 @@ export const LazyChartLine = dynamic(
  * Lazy-loaded ChartPie component
  */
 export const LazyChartPie = dynamic(
-  () => import('@/components/blocks/ChartPie').then((mod) => mod.ChartPie),
+  () => import('@/library/blocks/ChartPie').then((mod) => mod.ChartPie),
   { 
     loading: () => <ChartSkeleton />,
     ssr: false,
