@@ -1,6 +1,9 @@
 version: "2"
-authtoken: 31cWMBwgTio03rNNVQmKOp6MKYp_2bpA1hPRJQcAQoGQcgZbZ
+authtoken: 37ov9OnSE3rnfQgLWfbIDuIT5I1_52qumRTBts7diiuP6rKfq
 tunnels:
   gradio:
     addr: 7860
+    proto: http
+  slides:
+    addr: 3000
     proto: http

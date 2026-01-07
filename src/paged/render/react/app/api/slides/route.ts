@@ -13,14 +13,11 @@ import { serialize } from 'next-mdx-remote/serialize';
 // Look for state.json in these locations
 const STATE_JSON_PATHS = [
   // Development: relative to workspace root
-  // path.join(process.cwd(), '../../../../output/test_slides/state.json'),
-  path.join(process.cwd(), '../../../../output/output_driven_meeting/state.json'),
   path.join(process.cwd(), '../../../../output/golden_set_mdx/state.json'),
   path.join(process.cwd(), '../../../../output/golden_set_mdx_v13/state.json'),
   path.join(process.cwd(), '../../../../output/state.json'),
   // Absolute paths for Windows
-  // 'Q:/repo/gggg/output/test_slides/state.json',
-  // 'Q:/repo/gggg/output/golden_set_mdx/state.json',
+  'C:/Users/yidansun/newProject/gggg/output/golden_set_mdx/state.json',
   'C:/Users/wangchao/repos/gggg/output/golden_set_mdx/state.json',
   'C:/Users/wangchao/repos/gggg/output/golden_set_mdx_v13/state.json',
   'C:/Users/wangchao/repos/gggg/output/state.json',
@@ -68,13 +65,25 @@ function fixMdxContent(mdx: string): string {
   return fixed;
 }
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
+    // Get path parameter from query string
+    const { searchParams } = new URL(request.url);
+    const outputPath = searchParams.get('path') || 'golden_set_mdx';
+    
+    // Build paths to check based on the requested output directory
+    const pathsToCheck = [
+      // Relative paths
+      path.join(process.cwd(), `../../../../output/${outputPath}/state.json`),
+      // Absolute path
+      `C:/Users/yidansun/newProject/gggg/output/${outputPath}/state.json`,
+    ];
+    
     // Find state.json
     let stateJson: StateJson | null = null;
     let foundPath = '';
     
-    for (const statePath of STATE_JSON_PATHS) {
+    for (const statePath of pathsToCheck) {
       try {
         if (fs.existsSync(statePath)) {
           const content = fs.readFileSync(statePath, 'utf-8');
@@ -89,7 +98,7 @@ export async function GET() {
     
     if (!stateJson) {
       return NextResponse.json(
-        { error: 'state.json not found', searched: STATE_JSON_PATHS },
+        { error: 'state.json not found', searched: pathsToCheck, requestedPath: outputPath },
         { status: 404 }
       );
     }

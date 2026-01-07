@@ -261,10 +261,14 @@ Only layout and widgets are generated."""
             if slide_id in generated_by_id:
                 # Replace draft with generated active slide
                 generated = generated_by_id[slide_id]
-                # Preserve story/atoms/visual_design from original
+                # Preserve story/atoms/visual_design/content from original
                 generated["story"] = slide.get("story", generated.get("story", ""))
                 generated["atoms"] = slide.get("atoms", generated.get("atoms", []))
                 generated["visual_design"] = slide.get("visual_design", generated.get("visual_design", ""))
+                
+                # Preserve content field if present (from source-based generation)
+                if slide.get("content"):
+                    generated["content"] = slide.get("content")
                 
                 # Apply selected theme/vibe if set
                 if selected_theme or selected_vibe:

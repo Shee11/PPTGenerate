@@ -59,7 +59,8 @@ export async function GET(
     const possiblePaths = [
       path.join(WORKSPACE_ROOT, 'output', outputPath, 'state.json'),
       path.join(WORKSPACE_ROOT, outputPath, 'state.json'),
-      // Windows absolute fallback
+      // Windows absolute fallbacks
+      `C:/Users/yidansun/newProject/gggg/output/${outputPath}/state.json`,
       `C:/Users/wangchao/repos/gggg/output/${outputPath}/state.json`,
     ];
     

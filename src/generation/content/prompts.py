@@ -112,15 +112,28 @@ Select chart type based on data patterns:
 
 
 def render_slide_generation_prompt(
-    atoms: AtomCollection,
-    user_instruction: str,
+    atoms: AtomCollection = None,
+    user_instruction: str = "",
     intent_guidance: str = "",
-    themes: List[Dict[str, Any]] = None
+    themes: List[Dict[str, Any]] = None,
+    use_content_field: bool = False
 ) -> str:
-    """Render user prompt for slide generation."""
-    atoms_json = atoms.to_json(indent=2)
+    """Render user prompt for slide generation.
     
-    prompt = f"**Atoms**: {atoms_json}\n**Instructions**: {user_instruction}\n"
+    Args:
+        atoms: AtomCollection (required unless use_content_field=True)
+        user_instruction: User's instruction
+        intent_guidance: Additional guidance
+        themes: List of theme dicts
+        use_content_field: If True, slide attributes use 'content' instead of 'atoms'
+    """
+    prompt = ""
+    
+    if atoms:
+        atoms_json = atoms.to_json(indent=2)
+        prompt = f"**Atoms**: {atoms_json}\n"
+    
+    prompt += f"**Instructions**: {user_instruction}\n"
     
     if intent_guidance:
         prompt += f"**Guidance**: {intent_guidance}\n"
@@ -129,16 +142,23 @@ def render_slide_generation_prompt(
         theme_ids = [t.get("id", "default") for t in themes]
         prompt += f"**Themes**: {', '.join(theme_ids)}\n"
     
-    prompt += """
+    # Rule 6 changes based on whether using atoms or content field
+    if use_content_field:
+        rule_6 = "6. Each <Slide> has id, rank, story, content attributes. Use content.sections as REFERENCE for slide content—you may refactor, condense, or omit details to fit the layout beautifully. Prioritize visual balance over exhaustive coverage. Also consider content.headline, content.subtitle, content.category, and content.speaker_intent if present"
+    else:
+        rule_6 = "6. Each <Slide> has id, rank, story, atoms attributes"
+    
+    prompt += f"""
 **RULES**:
 1. Follow each slide's `visual_design` field for layout and content approach
 2. Follow each slide's `density` field (sparse=2-3 blocks, moderate=3-4, dense=5+)
 3. Each slide tells its own story from the `story` field
 4. Use Diagram ONLY when visual_design explicitly mentions it
 5. ≥4 different layouts across deck, no consecutive repeats
-6. Each <Slide> has id, rank, story, atoms attributes
+{rule_6}
 7. Combine text AND visual on each slide (one leads, other supports)
 8. Fill space appropriate to density (sparse≠empty)
+9. **CONTENT FLEXIBILITY**: You may refactor, shorten, or selectively omit content details to achieve a clean, well-balanced layout. Visual appeal and readability trump exhaustive completeness.
 
 Generate MDX slides wrapped in <Slide> elements."""
     
