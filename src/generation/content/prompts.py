@@ -68,12 +68,36 @@ Select chart type based on data patterns:
 |--------------|------------|-----------|
 | Time-series/cumulative | area | `<ChartArea gradient={{true}}/>` |
 | Categorical comparison | bar | `<ChartBar/>` |
-| Before/after comparison | bar (clustered) | `<ChartBar data={{[{{before: X, after: Y}}]}}/>` |
+| Before/after comparison | bar (clustered) | `<ChartBar data={{[{{label, before, after}}]}}/>` |
 | Rankings/sorted values | barStats | `<BarStats sortDescending={{true}}/>` |
 | Proportions (~100%) | pie/doughnut | `<ChartPie variant="donut"/>` |
-| 3D relationships | bubble | `<ChartBubble data={{[{{x, y, size}}]}}/>` |
+| 3D relationships | bubble | `<ChartBubble data={{[{{label, x, y, size}}]}}/>` |
 | Multivariate (4+ attrs) | radar | `<ChartRadar/>` (needs 3+ data points) |
 | Cyclical/periodic | polarArea | `<ChartPolar/>` |
+
+# CHART DATA FORMAT (CRITICAL - Must Match Component Interface)
+Each chart component expects specific data properties. Using wrong properties causes EMPTY charts:
+
+| Component | Required Data Format | Example |
+|-----------|---------------------|---------|
+| ChartArea | `{{label, value}}` | `{{label: "Jan", value: 100}}` |
+| ChartBar (simple) | `{{label, value}}` | `{{label: "Q1", value: 50}}` |
+| ChartBar (clustered) | `{{label, before, after}}` | `{{label: "Sales", before: 80, after: 120}}` |
+| BarStats | `{{label, value}}` | `{{label: "Region A", value: 85}}` |
+| ChartPie/Doughnut | `{{label, value}}` | `{{label: "Segment", value: 30}}` |
+| ChartPolar | `{{label, value}}` | `{{label: "Mon", value: 250}}` |
+| ChartRadar | `{{label, value}}` | `{{label: "Speed", value: 80}}` |
+| ChartBubble | `{{label, x, y, size}}` | `{{label: "Item", x: 10, y: 20, size: 50}}` |
+
+- NEVER use arbitrary keys like `revenue`, `signups`, `sales` - components ignore unknown properties
+- BAD: `data={{[{{label: "Q1", revenue: 50}}]}}` ← ChartArea ignores `revenue`, renders EMPTY
+- GOOD: `data={{[{{label: "Q1", value: 50}}]}}` ← ChartArea reads `value`, renders correctly
+
+# CHART AND IMAGE EXCLUSIVITY (CRITICAL)
+- **Charts and ImageBlock CANNOT appear on the same slide**
+- If slide needs a chart, do NOT add ImageBlock
+- If slide needs an image, do NOT add any Chart component
+- Choose ONE visual type per slide: Chart OR Image, never both
 
 # VISUAL SELECTION
 - Use NetworkGraph when visual_design mentions branching "architecture", "network", "org chart" (nodes connect to multiple targets)
