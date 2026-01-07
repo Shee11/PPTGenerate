@@ -1,0 +1,53 @@
+________________________________________
+Design Theme & Style Guidelines
+•	Primary Color: Deep Purple (Hex: #4B0082 or Microsoft Teams Purple).
+•	Font: Segoe UI.
+•	Background: Light/White for maximum clarity.
+•	Icons: Purple accented, minimalist style.
+________________________________________
+Slide 1: Title Slide
+•	Title: Doc Co-creation Agent in Teams.
+•	Subtitle: Transforming Meetings from "Talk" to "Artifacts".
+•	Footer: Dec 2025 | Microsoft Confidential | Prepared for CVP Review.
+•	Visual: High-resolution image of a Teams Meeting interface with a "Generate Artifact" button highlighted in purple.
+________________________________________
+Slide 2: The Vision – Spoken Intent to Immediate Output
+•	Header: The Evolution of Meeting Outputs.
+•	Left (Past): Written language was the sole medium, resulting in "Text Only" output.
+•	Middle (Present): Human bottleneck in generating tool-ready outputs (The Productivity Gap).
+•	Right (Future): Active, Real-time Generator where AI bridges the gap by turning live conversation into structured artifacts.
+•	Key Message: We are moving Teams from a communication tool to a "Productivity Studio" and "Central Hub".
+________________________________________
+Slide 3: Sharpening the Unique Value of Teams
+•	Differentiation: Why build in Teams vs. PPT or M365 Copilot?.
+•	The "Freshness" Advantage: We have immediate access to fresh transcripts and multi-modal grounding (chat, shared files, and live sentiment).
+•	Data Gravity: Creating docs immediately within the meeting ecosystem enriches our data lake and drives higher user retention.
+•	Workflow Integration: Teams is where users start their workflow; we capture intent at the point of origin rather than asking them to context-switch later.
+________________________________________
+Slide 4: Strategic Alignment – The Drafting & Editing Pipeline
+•	Strategic Frame: Teams is the Incubation Point; PowerPoint is the Refinement Studio.
+•	The Teams Agent Role: Focuses on capturing context, mining "Atoms" (facts/metrics), and creating the initial structural draft.
+•	The PPT Team Role: Provides the "Last Mile"—professional design polish, layout intelligence, and final high-fidelity editing.
+•	Synergy: We feed the PPT ecosystem by eliminating the "blank slide" problem for 30M files created daily.
+________________________________________
+Slide 5: User Journey – The "Slides Studio" Experience
+•	Step 1: Contextual Capture: The Agent identifies key data points (e.g., "Revenue Target: $50M") from the live transcript.
+•	Step 2: Intention Queue: Users see an "Intention Queue" in the sidebar to approve or reject suggested slide topics in real-time.
+•	Step 3: Storyline View: A structured narrative view (Storyline) allows users to see the flow before the pixels are placed.
+•	Step 4: Real-Time Preview: High-fidelity slide previews appear immediately, allowing for collaborative review without leaving the call.
+________________________________________
+Slide 6: Technical Feasibility & Solving the "WOW" Factor
+•	Architecture: A modular engine consisting of a Miner (Facts), Weaver (Narration), and Assembler (Layout & Style)14.
+•	Aesthetic Fidelity: We solve the "subjectivity" challenge by leveraging Societas "Taste-Driven Prompts" to ensure consistent high-quality output.
++1
+•	Resources: Supported by 6 Developers (3 Senior+ level) focused specifically on narrative structure and layout intelligence.
+•	Evaluation: Using a systematic evaluation framework to measure "Aesthetic Eval" against human-produced benchmarks.
+________________________________________
+Slide 7: Success Metrics & The Path Forward
+•	Core Metrics:
+o	Time-to-Artifact: Reduction in hours from "Meeting End" to "First Draft."
+o	Acceptance Rate: % of AI-generated slides retained after moving to PPT for final editing.
+o	User Retention: Correlation between Agent usage and Teams daily active usage (DAU).
+•	Actionable Scenario: Targeting the pain point of "Wasted Knowledge" where meeting insights never make it into formal documentation19.
+________________________________________
+

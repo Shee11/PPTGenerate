@@ -22,6 +22,7 @@ from fastapi.staticfiles import StaticFiles
 # Import pipeline components
 from src.generation.state import PipelineState
 from src.generation.todo.runner import PipelineRunner
+from src.generation.todo.models import TodoStatus
 from src.paged.render import SlidevRenderer
 
 
@@ -111,21 +112,50 @@ def remove_source_file(session_id: str, filename: str) -> tuple[List[str], str]:
     return get_session_files(session_id), f"File not found: {filename}"
 
 
-def get_todo_display(state: Optional[PipelineState]) -> str:
-    """Format todos for display."""
+def get_todo_display(state: Optional[PipelineState], current_idx: Optional[int] = None) -> str:
+    """Format todos for display with enhanced status.
+    
+    Args:
+        state: Pipeline state with todos
+        current_idx: Index of currently executing todo (None if not executing)
+    """
     if state is None or state.todos is None:
-        return "No todos"
+        return "No todos yet"
     
     lines = []
-    for todo in state.todos.todos:
-        status_icon = {
-            "pending": "⏳",
-            "completed": "✅",
-            "failed": "❌",
-        }.get(todo.status, "⬜")
-        lines.append(f"{status_icon} {todo.type.value}: {todo.id}")
+    for i, todo in enumerate(state.todos.todos):
+        # Determine status icon and label based on actual status
+        if todo.status == TodoStatus.IN_PROGRESS:
+            # Currently executing
+            status_icon = "🔄"
+            label = _get_todo_label(todo.type.value)
+        elif todo.status == TodoStatus.COMPLETED:
+            status_icon = "✅"
+            label = todo.type.value
+        elif todo.status == TodoStatus.FAILED:
+            status_icon = "❌"
+            label = todo.type.value
+        else:
+            # Pending
+            status_icon = "⏳"
+            label = todo.type.value
+        
+        lines.append(f"{status_icon} {label}")
     
     return "\n".join(lines) if lines else "No todos"
+
+
+def _get_todo_label(todo_type: str) -> str:
+    """Get descriptive label for todo type during execution."""
+    labels = {
+        "constitution": "Loading constitution...",
+        "atoms": "Extracting content atoms...",
+        "theme": "Applying theme...",
+        "story": "Generating story arc...",
+        "content": "Creating slide content...",
+        "export": "Exporting presentation...",
+    }
+    return labels.get(todo_type, f"Processing {todo_type}...")
 
 
 def format_chat_message(role: str, content: str) -> Dict[str, str]:
@@ -198,6 +228,11 @@ async def run_generation_async(
         
         state.set_source(source_path)
         
+        # Initialize constitution if needed
+        if state.constitution is None:
+            from src.generation.todo.models import ConstitutionPatch
+            state.constitution = ConstitutionPatch()
+        
         # Store selected theme and vibe in state constitution for generation
         if theme_id:
             state.constitution.selected_theme = theme_id
@@ -215,39 +250,86 @@ async def run_generation_async(
         state_path.parent.mkdir(parents=True, exist_ok=True)
         state.save(state_path)
         
-        todo_display = get_todo_display(state)
+        todo_display = get_todo_display(state, current_idx=None)
         yield chat_history, todo_display, "🔄 Executing todos...", ""
         
-        # Execute todos one by one with updates
-        for i, todo in enumerate(todos.todos):
-            # Update status to show current todo
-            lines = []
-            for j, t in enumerate(todos.todos):
-                if j < i:
-                    lines.append(f"✅ {t.type.value}: {t.id}")
-                elif j == i:
-                    lines.append(f"🔄 {t.type.value}: {t.id}")
-                else:
-                    lines.append(f"⏳ {t.type.value}: {t.id}")
-            
-            current_todo_display = "\n".join(lines)
-            yield chat_history, current_todo_display, f"🔄 Running: {todo.type.value}...", ""
-            await asyncio.sleep(0.1)  # Allow UI update
-            
-            # Execute the todo
+        # Execute all todos with live progress updates
+        import queue
+        import threading
+        
+        status_queue = queue.Queue()
+        
+        def status_callback(updated_state):
+            """Callback to notify UI of status changes."""
+            # Signal an update - we'll reload from disk in the main thread
+            print(f"📢 Status callback triggered - queuing update signal")
+            status_queue.put("update")
+        
+        # Set callback on executor
+        runner.executor.on_status_change = status_callback
+        print(f"✅ Callback registered on executor")
+        
+        # Run executor in background thread
+        def run_executor():
             try:
-                await asyncio.to_thread(runner.executor.execute_todo, todo, state, message)
-                todo.status = "completed"
+                runner.executor.execute_all(state, message)
+                status_queue.put("done")  # Signal completion
             except Exception as e:
-                todo.status = "failed"
-                print(f"Todo {todo.id} failed: {e}")
+                import traceback
+                traceback.print_exc()
+                status_queue.put(("error", e))  # Signal error
+        
+        executor_thread = threading.Thread(target=run_executor)
+        executor_thread.start()
+        
+        # Poll status queue and yield updates
+        last_todo_display = None
+        try:
+            while True:
+                # Check for status updates (non-blocking with timeout)
+                try:
+                    signal = status_queue.get(timeout=0.1)
+                    
+                    if signal == "done":
+                        # Completion signal
+                        break
+                    elif isinstance(signal, tuple) and signal[0] == "error":
+                        # Error signal
+                        raise signal[1]
+                    elif signal == "update":
+                        # Status update - reload state from disk and yield
+                        print(f"🔄 Received update signal - reloading state from {state_path}")
+                        try:
+                            current_state = PipelineState.load(state_path)
+                            current_display = get_todo_display(current_state, current_idx=None)
+                            print(f"📊 Todo display:\n{current_display}")
+                            
+                            # Only yield if display changed (avoid redundant updates)
+                            if current_display != last_todo_display:
+                                print(f"✨ Display changed - yielding to UI")
+                                last_todo_display = current_display
+                                yield chat_history, current_display, "🔄 Executing todos...", ""
+                            else:
+                                print(f"⏭️ Display unchanged - skipping yield")
+                        except Exception as load_err:
+                            print(f"⚠ Failed to reload state: {load_err}")
+                        
+                except queue.Empty:
+                    # No update yet, just continue polling
+                    await asyncio.sleep(0.05)
+                    continue
+        finally:
+            # Wait for thread to complete
+            executor_thread.join(timeout=2.0)
+            # Reload final state
+            state = PipelineState.load(state_path)
         
         # Save state
         state_path.parent.mkdir(parents=True, exist_ok=True)
         state.save(state_path)
         
         # Final todo display
-        final_todo_display = get_todo_display(state)
+        final_todo_display = get_todo_display(state, current_idx=None)
         
         # Add assistant response
         slide_count = len(state.slides or [])
@@ -429,7 +511,7 @@ def on_session_change(session_id: str) -> tuple[str, List[str], str, str, List[D
     """Handle session ID change."""
     state, status = load_session_state(session_id)
     files = get_session_files(session_id)
-    todo_display = get_todo_display(state)
+    todo_display = get_todo_display(state, current_idx=None)
     current_theme = state.active_theme_id if state else "corp_modern_v1"
     
     # Clear chat history on session change
