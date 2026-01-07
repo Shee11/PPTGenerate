@@ -313,7 +313,7 @@ export const diagramTheme: Stylesheet[] = [
 /**
  * Dark theme variant
  */
-export const diagramThemeDark: StylesheetCSS[] = [
+export const diagramThemeDark: Stylesheet[] = [
   // Override base styles for dark mode
   {
     selector: 'node',

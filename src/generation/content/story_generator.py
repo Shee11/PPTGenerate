@@ -527,7 +527,7 @@ You must output a JSON object strictly following this schema. Do not output mark
 
 After analyzing the uploaded file, first decide the main focus of the storyline. Use `presentation_meta` for your internal planning to design the SCQA structure. This section helps you organize your thinking but **will not be extracted** - only the `slides` array will be used.
 
-Target slide count: {slide_count} (guidance only - adjust if needed for better narrative flow)
+Target slide count: {slide_count} 
 
 Output the complete JSON with both `presentation_meta` (for planning) and `slides` (will be extracted):
 
