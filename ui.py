@@ -24,12 +24,14 @@ from __future__ import annotations
 import io
 import json
 import os
+import re
 import shutil
 import html as _html
 import socket
 import subprocess
 import threading
 import time
+from urllib.parse import quote
 from contextlib import redirect_stderr, redirect_stdout
 from dataclasses import dataclass
 from datetime import datetime
@@ -42,6 +44,74 @@ from src.generation.state import PipelineState
 from src.generation.todo.executor import TodoExecutor
 from src.generation.todo.models import TodoType
 from src.generation.todo.planner import plan
+
+
+_COMPONENT_FILE_INDEX: Optional[Dict[str, Path]] = None
+
+
+def _build_component_file_index() -> Dict[str, Path]:
+    """Best-effort mapping of ComponentName -> .tsx file path."""
+    repo_root = Path(__file__).resolve().parent
+    roots = [
+        repo_root / "src" / "paged" / "render" / "react" / "library",
+        repo_root / "src" / "paged" / "render" / "react" / "components",
+        repo_root / "src" / "paged" / "render" / "react",
+    ]
+
+    candidates: Dict[str, List[Path]] = {}
+    for root in roots:
+        if not root.exists():
+            continue
+        for p in root.rglob("*.tsx"):
+            candidates.setdefault(p.stem, []).append(p)
+
+    out: Dict[str, Path] = {}
+    for name, paths in candidates.items():
+        # Prefer shortest path; this tends to pick library components over tests.
+        out[name] = sorted(paths, key=lambda p: (len(str(p)), str(p)))[0]
+    return out
+
+
+def _get_component_file_index() -> Dict[str, Path]:
+    global _COMPONENT_FILE_INDEX
+    if _COMPONENT_FILE_INDEX is None:
+        _COMPONENT_FILE_INDEX = _build_component_file_index()
+    return _COMPONENT_FILE_INDEX
+
+
+def _get_component_source_html(component_name: str) -> str:
+    name = (component_name or "").strip()
+    if not name:
+        return "<h3>Missing component name</h3>"
+
+    idx = _get_component_file_index()
+    path = idx.get(name)
+    if not path or not path.exists():
+        return f"<h3>Component not found: {_html.escape(name)}</h3>"
+
+    try:
+        rel = path.resolve().relative_to(Path(__file__).resolve().parent)
+        rel_str = str(rel)
+    except Exception:
+        rel_str = str(path)
+
+    try:
+        content = path.read_text(encoding="utf-8")
+    except Exception as e:
+        return f"<h3>Failed to read: {_html.escape(rel_str)}</h3><pre>{_html.escape(str(e))}</pre>"
+
+    return (
+        "<html><head><meta charset='utf-8'/>"
+        "<title>" + _html.escape(name) + "</title>"
+        "<style>body{font-family:ui-sans-serif,system-ui,-apple-system; padding:16px;}"
+        "pre{white-space:pre; overflow:auto; background:#111827; color:#e5e7eb; padding:12px; border-radius:8px;}"
+        "code{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace; font-size:12px;}"
+        "</style></head><body>"
+        "<h2>" + _html.escape(name) + "</h2>"
+        "<div style='opacity:0.8;margin-bottom:12px'>" + _html.escape(rel_str) + "</div>"
+        "<pre><code>" + _html.escape(content) + "</code></pre>"
+        "</body></html>"
+    )
 
 
 UI_CSS = """
@@ -247,11 +317,13 @@ def import_progress(progress_file):
             "",  # planner_resp
             "",  # atoms_sent
             "",  # atoms_resp
+            [],  # atoms_table
             gr.update(value="", visible=False),  # theme_result
             gr.update(value="", visible=True),  # theme_sent
             gr.update(value="", visible=True),  # theme_resp
             "",  # story_sent
             "",  # story_resp
+            "",  # story_slides_display
             "",  # content_sent
             "",  # content_resp
         )
@@ -322,6 +394,7 @@ def import_progress(progress_file):
     planner_resp = _format_llm_response(_sr("planner"))
     atoms_sent = _format_llm_sent(_sr("atoms"))
     atoms_resp = _format_llm_response(_sr("atoms"))
+    atoms_table = _parse_atoms_table(atoms_resp)
     theme_sent = _format_llm_sent(_sr("theme"))
     theme_resp = _format_llm_response(_sr("theme"))
     story_sent = _format_llm_sent(_sr("story"))
@@ -344,6 +417,9 @@ def import_progress(progress_file):
         "use_cache": bool(use_cache),
         "trace_pos": 0,
     }
+
+    atoms_map = _get_atoms_map(session)
+    story_slides_display = _render_slides_html(story_resp, atoms_map, content_mdx=content_resp)
 
     return (
         session,
@@ -368,11 +444,13 @@ def import_progress(progress_file):
         planner_resp,
         atoms_sent,
         atoms_resp,
+        atoms_table,
         theme_result_update,
         theme_sent_update,
         theme_resp_update,
         story_sent,
         story_resp,
+        story_slides_display,
         content_sent,
         content_resp,
     )
@@ -1084,22 +1162,227 @@ def run_step_atoms_and_refresh_stream(session: Session, override_system: Optiona
     for session, sent, resp in run_step_todo_llm_stream_with_overrides(
         session, "atoms", TodoType.ATOMS, override_system, override_user
     ):
+        table = _parse_atoms_table(resp)
         # While running, keep downstream prompts blank.
-        yield session, sent, resp, "", "", "", ""
+        yield session, sent, resp, table, "", "", "", ""
 
     story_sys, story_user = _refresh_predefined_prompt(session, "story")
     content_sys, content_user = _refresh_predefined_prompt(session, "content")
-    yield session, sent, resp, story_sys, story_user, content_sys, content_user
+    table = _parse_atoms_table(resp)
+    yield session, sent, resp, table, story_sys, story_user, content_sys, content_user
+
+
+
+def _get_atoms_map(session: Session) -> Dict[str, str]:
+    try:
+        _, state_path, _ = _session_paths(session)
+        if not state_path.exists():
+            return {}
+        state = PipelineState.load(state_path)
+        
+        # state.atoms is a dict returned by AtomCollection.to_dict()
+        # structure: { "contexts": [ {id:..., abstract:...}, ... ], ... }
+        atoms_data = getattr(state, "atoms", {}) or {}
+        contexts = atoms_data.get("contexts", [])
+        
+        result = {}
+        for item in contexts:
+            if isinstance(item, dict):
+                atom_id = str(item.get("id", ""))
+                if atom_id:
+                    result[atom_id] = str(item.get("abstract", ""))
+        
+        return result
+    except Exception:
+        return {}
+
+
+def _extract_content_layouts_and_components(content_mdx: str) -> Dict[str, Dict[str, object]]:
+    """Best-effort parsing of Content step response to extract per-slide layout + component tags.
+
+    The Content step returns MDX/JSX-like markup (not strict XML), so we use regex.
+    Returns: { slide_id: {"layout": str, "components": List[str]} }
+    """
+    text = (content_mdx or "").strip()
+    if not text:
+        return {}
+
+    slide_blocks = re.findall(r"<Slide\b([^>]*)>(.*?)</Slide>", text, flags=re.DOTALL | re.IGNORECASE)
+    if not slide_blocks:
+        return {}
+
+    out: Dict[str, Dict[str, object]] = {}
+
+    for slide_attrs, slide_body in slide_blocks:
+        # Slide id
+        m_id = re.search(r"\bid\s*=\s*\"([^\"]+)\"", slide_attrs)
+        slide_id = (m_id.group(1) if m_id else "").strip()
+        if not slide_id:
+            continue
+
+        # Layout tag (first Layout* component inside Slide)
+        m_layout = re.search(r"<(Layout[A-Za-z0-9_]*)\b", slide_body)
+        layout_name = (m_layout.group(1) if m_layout else "").strip()
+
+        # Components: collect JSX tag names (capitalized). Deduplicate while preserving order.
+        tags = re.findall(r"<([A-Z][A-Za-z0-9_]*)\b", slide_body)
+        components: List[str] = []
+        seen = set()
+        for t in tags:
+            if t == "Slide":
+                continue
+            if t.startswith("Layout"):
+                continue
+            if t not in seen:
+                seen.add(t)
+                components.append(t)
+
+        out[slide_id] = {"layout": layout_name, "components": components}
+
+    return out
+
+
+def _render_slides_html(json_text: str, atoms_map: Dict[str, str], content_mdx: Optional[str] = None) -> str:
+    try:
+        data = json.loads(json_text)
+        if not isinstance(data, list):
+            return "<div style='color:gray;font-style:italic'>Waiting for valid JSON...</div>"
+
+        content_info = _extract_content_layouts_and_components(content_mdx or "")
+
+        html = """
+        <style>
+        .slide-table { width: 100%; border-collapse: collapse; font-family: sans-serif; font-size: 13px; }
+        .slide-table th { text-align: left; background: #333; color: #fff; padding: 8px; border: 1px solid #555; }
+        .slide-table td { vertical-align: top; padding: 8px; border: 1px solid #444; color: #ccc; }
+        .atom-tag { cursor: pointer; color: #60a5fa; text-decoration: underline; margin-right: 6px; display: inline-block; }
+        .component-link { color: #60a5fa; text-decoration: underline; display: inline-block; }
+        .atom-abstract { margin-top: 4px; padding: 6px; background: #1f2937; border-radius: 4px; color: #d1d5db; font-size: 0.9em; border-left: 3px solid #60a5fa; }
+        details > summary { list-style: none; }
+        details > summary::-webkit-details-marker { display: none; }
+        </style>
+        <table class="slide-table">
+        <thead>
+            <tr>
+            <th style="width:5%">Rank</th>
+            <th style="width:30%">Story</th>
+            <th style="width:25%">Atoms</th>
+            <th style="width:15%">Visual Design</th>
+            <th style="width:10%">Density</th>
+            <th style="width:10%">Layouts</th>
+            <th style="width:5%">Components</th>
+            </tr>
+        </thead>
+        <tbody>
+        """
+        
+        for slide in data:
+            if not isinstance(slide, dict):
+                continue
+            
+            slide_id = str(slide.get("id", "") or "").strip()
+            rank = str(slide.get("rank", ""))
+
+            story = slide.get("story", {})
+            story_obj = story if isinstance(story, dict) else {}
+            layout = slide.get("layout", {})
+            layout_obj = layout if isinstance(layout, dict) else {}
+            
+            headline = _html.escape(str(story_obj.get("headline", "")))
+            narrative = _html.escape(str(story_obj.get("narrative", "")))
+            takeaway = _html.escape(str(story_obj.get("takeaway", "")))
+            density = _html.escape(str(slide.get("density", "")))
+            visual_design = _html.escape(str(slide.get("visual_design", "")))
+            
+            # Layouts + Components from Content step response
+            content_row = content_info.get(slide_id) if slide_id else None
+            layouts_value = ""
+            components_value = ""
+
+            if isinstance(content_row, dict):
+                layouts_value = str(content_row.get("layout", "") or "")
+                comps = content_row.get("components")
+                if isinstance(comps, list):
+                    components_value = ", ".join(str(c) for c in comps if str(c).strip())
+
+            # Fallback to Story-step layout (if Content layout is unavailable)
+            if not layouts_value:
+                l_title = _html.escape(str(layout_obj.get("title", "")))
+                l_sub = _html.escape(str(layout_obj.get("subtitle", "")))
+                l_vis = _html.escape(str(layout_obj.get("primary_visual", "")))
+                fallback_layout = f"<b>{l_title}</b>" if l_title else ""
+                if l_sub:
+                    fallback_layout += f"<br/><span style='opacity:0.8'>{l_sub}</span>"
+                if l_vis:
+                    fallback_layout += f"<br/><br/><span style='color:#a78bfa;font-size:0.9em'>Visual: {l_vis}</span>"
+                layouts_html = fallback_layout
+            else:
+                layout_name = layouts_value.strip()
+                href = f"/component?name={quote(layout_name)}"
+                layouts_html = (
+                    f"<a class='component-link' href='{href}' target='_blank'>"
+                    f"{_html.escape(layout_name)}"
+                    f"</a>"
+                )
+
+            components_html = ""
+            if components_value:
+                for comp in [c.strip() for c in components_value.split(",") if c.strip()]:
+                    href = f"/component?name={quote(comp)}"
+                    components_html += (
+                        f"<div style='margin-bottom:4px'>"
+                        f"<a class='component-link' href='{href}' target='_blank'>"
+                        f"{_html.escape(comp)}"
+                        f"</a>"
+                        f"</div>"
+                    )
+
+            # Atoms column
+            slide_atom_ids = slide.get("atoms", []) or []
+            atoms_html = ""
+            for aid in slide_atom_ids:
+                aid_str = str(aid)
+                abstract = _html.escape(atoms_map.get(aid_str, "(no abstract found)"))
+                atoms_html += f"""
+                <details style="margin-bottom:4px">
+                    <summary class="atom-tag">{_html.escape(aid_str)}</summary>
+                    <div class="atom-abstract">{abstract}</div>
+                </details>
+                """
+
+            html += f"""
+            <tr>
+                <td>{rank}</td>
+                <td>
+                    <div style="font-weight:bold;margin-bottom:6px;color:#fff">{headline}</div>
+                    <div style="opacity:0.9;margin-bottom:6px">{narrative}</div>
+                    <div style="font-style:italic;opacity:0.9;font-size:0.9em">{takeaway}</div>
+                </td>
+                <td>{atoms_html}</td>
+                <td>{visual_design}</td>
+                <td>{density}</td>
+                <td>{layouts_html}</td>
+                <td>{components_html}</td>
+            </tr>
+            """
+
+        html += "</tbody></table>"
+        return html
+    except Exception as e:
+        return f"<div style='color:red'>Error parsing slides: {str(e)}</div>"
 
 
 def run_step_story_and_refresh_stream(session: Session, override_system: Optional[str], override_user: Optional[str]):
+    atoms_map = _get_atoms_map(session)
     for session, sent, resp in run_step_todo_llm_stream_with_overrides(
         session, "story", TodoType.STORY, override_system, override_user
     ):
-        yield session, sent, resp, "", ""
+        table_html = _render_slides_html(resp, atoms_map)
+        yield session, sent, resp, table_html, "", ""
 
     content_sys, content_user = _refresh_predefined_prompt(session, "content")
-    yield session, sent, resp, content_sys, content_user
+    table_html = _render_slides_html(resp, atoms_map)
+    yield session, sent, resp, table_html, content_sys, content_user
 
 
 def run_step_theme_stream(session: Session, override_system: Optional[str], override_user: Optional[str]):
@@ -1151,13 +1434,42 @@ def run_step_theme_stream(session: Session, override_system: Optional[str], over
 
 def run_step_content_stream(session: Session, override_system: Optional[str], override_user: Optional[str]):
     """Streaming wrapper for content step (Gradio can't stream from a lambda)."""
-    yield from run_step_todo_llm_stream_with_overrides(
+    # Need to keep the slides table updated if we want it to persist/show here
+    # But content step doesn't change slide structure, only potentially content detail.
+    # We can just fetch the current slides from state or use the previous story output if available.
+    # For simplicity, we'll re-render slides from the *Story* step output which drives the structure.
+    
+    # We need to get the story response to render the table.
+    # It's not passed in directly. We can try to read from state if needed, 
+    # but `run_step_todo_llm_stream_with_overrides` yields session.
+    
+    atoms_map = _get_atoms_map(session)
+    
+    # Helper to get story resp from trace or state? 
+    # Actually, the story response is in the 'story' step trace.
+    # But let's look at `story_resp` passed in prompt which is not available here.
+    
+    # Let's just pass through the generator and append the slides render.
+    # We need to read the state to get the slides JSON.
+    
+    for session, sent, resp in run_step_todo_llm_stream_with_overrides(
         session,
         "content",
         TodoType.CONTENT,
         override_system,
         override_user,
-    )
+    ):
+        # Render Slides table based on Story-step JSON, augmented with Content-step MDX.
+        try:
+            _, _, trace_path = _session_paths(session)
+            records = _read_all_trace(trace_path)
+            story_records = [r for r in records if r.get("step") == "story"]
+            story_resp = _format_llm_response(story_records)
+            slides_html = _render_slides_html(story_resp, atoms_map, content_mdx=resp)
+        except Exception:
+            slides_html = ""
+
+        yield session, sent, resp, slides_html
 
 
 def run_step_planner_stream_with_overrides_timed(
@@ -1171,20 +1483,55 @@ def run_step_planner_stream_with_overrides_timed(
         yield session, sent, resp, elapsed
 
 
+
+def _parse_atoms_table(json_text: str) -> List[List[str]]:
+    try:
+        data = json.loads(json_text)
+        if isinstance(data, dict):
+            data = data.get("atoms", []) or []
+        if not isinstance(data, list):
+            return []
+
+        rows = []
+        for atom in data:
+            if not isinstance(atom, dict):
+                continue
+            
+            # Determine subtype based on type
+            atom_type = str(atom.get("type", "")).upper()
+            subtype = ""
+            if atom_type == "TENSION":
+                subtype = atom.get("tension_type", "")
+            elif atom_type == "CONCEPT":
+                subtype = atom.get("concept_type", "")
+            elif atom_type == "FACT":
+                subtype = atom.get("category", "")
+            
+            rows.append([
+                str(atom.get("id", "")),
+                str(subtype),
+                str(atom.get("visual", "")),
+                str(atom.get("abstract", "")),
+            ])
+        return rows
+    except Exception:
+        return []
+
+
 def run_step_atoms_and_refresh_stream_timed(session: Session, override_system: Optional[str], override_user: Optional[str]):
     t0 = time.perf_counter()
-    for session, sent, resp, story_sys, story_user, content_sys, content_user in run_step_atoms_and_refresh_stream(
+    for session, sent, resp, table, story_sys, story_user, content_sys, content_user in run_step_atoms_and_refresh_stream(
         session, override_system, override_user
     ):
         elapsed = f"{(time.perf_counter() - t0):.2f}s"
-        yield session, sent, resp, story_sys, story_user, content_sys, content_user, elapsed
+        yield session, sent, resp, table, story_sys, story_user, content_sys, content_user, elapsed
 
 
 def run_step_story_and_refresh_stream_timed(session: Session, override_system: Optional[str], override_user: Optional[str]):
     t0 = time.perf_counter()
-    for session, sent, resp, content_sys, content_user in run_step_story_and_refresh_stream(session, override_system, override_user):
+    for session, sent, resp, table, content_sys, content_user in run_step_story_and_refresh_stream(session, override_system, override_user):
         elapsed = f"{(time.perf_counter() - t0):.2f}s"
-        yield session, sent, resp, content_sys, content_user, elapsed
+        yield session, sent, resp, table, content_sys, content_user, elapsed
 
 
 def run_step_theme_stream_timed(session: Session, override_system: Optional[str], override_user: Optional[str]):
@@ -1196,9 +1543,9 @@ def run_step_theme_stream_timed(session: Session, override_system: Optional[str]
 
 def run_step_content_stream_timed(session: Session, override_system: Optional[str], override_user: Optional[str]):
     t0 = time.perf_counter()
-    for session, sent, resp in run_step_content_stream(session, override_system, override_user):
+    for session, sent, resp, story_slides in run_step_content_stream(session, override_system, override_user):
         elapsed = f"{(time.perf_counter() - t0):.2f}s"
-        yield session, sent, resp, elapsed
+        yield session, sent, resp, story_slides, elapsed
 
 
 def run_step_atoms_and_refresh(session: Session) -> Tuple[Session, str, str, str, str, str, str, str]:
@@ -1337,6 +1684,7 @@ def get_export_preview(session: Session) -> Tuple[Session, str]:
 
 def build_ui() -> gr.Blocks:
     with gr.Blocks(title="UCE Pipeline UI") as demo:
+        gr.HTML(f"<style>{UI_CSS}</style>")
         gr.Markdown("# UCE Pipeline UI\nInitialize a session, then run each step.")
 
         session_state = gr.State({})
@@ -1477,6 +1825,12 @@ def build_ui() -> gr.Blocks:
                 atoms_sent = gr.Textbox(label="call", lines=8, max_lines=8)
             with gr.Column():
                 atoms_resp = gr.Textbox(label="response", lines=8, max_lines=8)
+        
+        atoms_table = gr.Dataframe(
+            headers=["ID", "Subtype", "Visual", "Abstract"],
+            label="Atoms",
+            wrap=True,
+        )
 
         gr.Markdown("## 3) theme")
         with gr.Accordion("Prompts", open=False):
@@ -1565,6 +1919,9 @@ def build_ui() -> gr.Blocks:
                 content_sent = gr.Textbox(label="call", lines=8, max_lines=8)
             with gr.Column():
                 content_resp = gr.Textbox(label="response", lines=8, max_lines=8)
+
+        gr.Markdown("### Slides")
+        story_slides_display = gr.HTML(label="Slides")
 
         gr.Markdown("## 6) export")
         export_run = gr.Button("6) Run export")
@@ -1673,11 +2030,13 @@ def build_ui() -> gr.Blocks:
                 planner_resp,
                 atoms_sent,
                 atoms_resp,
+                atoms_table,
                 theme_result,
                 theme_sent,
                 theme_resp,
                 story_sent,
                 story_resp,
+                story_slides_display,
                 content_sent,
                 content_resp,
             ],
@@ -1702,6 +2061,7 @@ def build_ui() -> gr.Blocks:
                 session_state,
                 atoms_sent,
                 atoms_resp,
+                atoms_table,
                 story_default_sys,
                 story_default_user,
                 content_default_sys,
@@ -1723,6 +2083,7 @@ def build_ui() -> gr.Blocks:
                 session_state,
                 story_sent,
                 story_resp,
+                story_slides_display,
                 content_default_sys,
                 content_default_user,
                 story_timer,
@@ -1732,7 +2093,7 @@ def build_ui() -> gr.Blocks:
         content_run.click(
             fn=run_step_content_stream_timed,
             inputs=[session_state, content_default_sys, content_default_user],
-            outputs=[session_state, content_sent, content_resp, content_timer],
+            outputs=[session_state, content_sent, content_resp, story_slides_display, content_timer],
         )
 
         export_run.click(
@@ -1751,5 +2112,16 @@ def build_ui() -> gr.Blocks:
 
 
 if __name__ == "__main__":
-    ui = build_ui()
-    ui.launch(css=UI_CSS)
+    from fastapi import FastAPI
+    from fastapi.responses import HTMLResponse
+    import uvicorn
+
+    demo = build_ui()
+    app = FastAPI()
+
+    @app.get("/component", response_class=HTMLResponse)
+    def component_viewer(name: str = ""):
+        return HTMLResponse(_get_component_source_html(name))
+
+    app = gr.mount_gradio_app(app, demo, path="/")
+    uvicorn.run(app, host="127.0.0.1", port=7860)
