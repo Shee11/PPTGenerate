@@ -40,79 +40,28 @@ export interface MetricStripProps {
 }
 
 // =============================================================================
-// Styles
-// =============================================================================
-
-const styles = {
-  container: {
-    display: 'flex',
-    flexWrap: 'wrap' as const,
-    gap: '16px',
-    padding: '16px 20px',
-    background: 'var(--surface)',
-    borderRadius: '12px',
-    margin: '8px 0',
-  },
-  title: {
-    width: '100%',
-    fontSize: '18px',
-    fontWeight: 600,
-    color: 'var(--text)',
-    marginBottom: '8px',
-    paddingBottom: '8px',
-    borderBottom: '1px solid rgba(255,255,255,0.1)',
-  },
-  item: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '8px',
-    padding: '8px 16px',
-    background: 'rgba(255,255,255,0.05)',
-    borderRadius: '8px',
-    borderLeft: '3px solid var(--accent)',
-  },
-  icon: {
-    fontSize: '18px',
-    opacity: 0.8,
-  },
-  value: {
-    fontSize: '24px',
-    fontWeight: 700,
-    color: 'var(--accent)',
-  },
-  label: {
-    fontSize: '14px',
-    color: 'var(--muted)',
-  },
-};
-
-// =============================================================================
 // Component
 // =============================================================================
 
 export function MetricStrip({ metrics, title }: MetricStripProps): JSX.Element {
   return (
-    <div className="metric-strip" style={styles.container}>
+    <div className="metric-strip">
       {title && (
-        <div className="metric-strip-title" style={styles.title}>
+        <div className="metric-strip-title">
           {title}
         </div>
       )}
       {metrics.map((metric, index) => (
-        <div 
-          key={index} 
-          className="metric-strip-item" 
-          style={styles.item}
-        >
+        <div key={index} className="metric-strip-item">
           {metric.icon && (
-            <span className="strip-icon" style={styles.icon} aria-hidden="true">
+            <span className="strip-icon" aria-hidden="true">
               {metric.icon}
             </span>
           )}
-          <span className="strip-value" style={styles.value}>
+          <span className="strip-value">
             {metric.value}
           </span>
-          <span className="strip-label" style={styles.label}>
+          <span className="strip-label">
             {metric.label}
           </span>
         </div>
@@ -120,5 +69,6 @@ export function MetricStrip({ metrics, title }: MetricStripProps): JSX.Element {
     </div>
   );
 }
+
 
 export default MetricStrip;

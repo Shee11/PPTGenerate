@@ -322,6 +322,7 @@ export function NetworkGraph({
       
       // Try to load dagre extension
       try {
+        // @ts-ignore
         const dagreModule = await import('cytoscape-dagre');
         const dagre = dagreModule.default;
         cytoscape.use(dagre);
