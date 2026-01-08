@@ -9,7 +9,6 @@ Takes draft slides with story, atoms, visual_design and generates:
 This module is an ORCHESTRATOR - it composes prompts from:
 - src/generation/content/prompts.py (content/storytelling prompts)
 - src/paged/layout/react/layout_engine.py (layout/widget prompts)
-- src/generation/content/chart_selector.py (LLM-based chart type selection)
 
 NO actual prompt text should be defined in this file.
 """
@@ -26,61 +25,6 @@ from src.generation.atom.collection import AtomCollection
 from src.utils.llm_client import call_llm
 
 logger = logging.getLogger(__name__)
-
-
-def _apply_chart_type_selection(atoms: AtomCollection) -> None:
-    """Apply LLM-based chart type selection to atoms with visual="chart".
-    
-    For atoms that have visual="chart" but no explicit chart_type,
-    uses LLM to analyze the data and select the optimal chart type.
-    
-    This modifies the atoms in place.
-    """
-    from src.generation.content.chart_selector import (
-        should_select_chart_type,
-        select_chart_type,
-        ChartSelectionContext,
-    )
-    
-    if not atoms:
-        return
-    
-    # Iterate through all atoms and apply chart selection where needed
-    for atom in atoms.list_contexts():
-        atom_dict = atom.to_dict() if hasattr(atom, 'to_dict') else atom.model_dump() if hasattr(atom, 'model_dump') else vars(atom)
-        
-        if should_select_chart_type(atom_dict):
-            data = atom_dict.get("data") or atom_dict.get("chart_data") or []
-            description = atom_dict.get("description") or atom_dict.get("text") or ""
-            
-            context = ChartSelectionContext(
-                data=data,
-                description=description,
-                slide_context="",  # Could add surrounding context if needed
-                suggested_type=atom_dict.get("chart_type") or atom_dict.get("chartType"),
-            )
-            
-            try:
-                result = select_chart_type(context)
-                
-                # Update the atom with selected chart type
-                if hasattr(atom, 'chart_type'):
-                    atom.chart_type = result.chart_type
-                elif hasattr(atom, 'chartType'):
-                    atom.chartType = result.chart_type
-                else:
-                    # Try to set as attribute
-                    setattr(atom, 'chart_type', result.chart_type)
-                
-                logger.info(
-                    f"Chart type selected for atom {atom_dict.get('id', 'unknown')}: "
-                    f"{result.chart_type} (confidence: {result.confidence:.2f})"
-                )
-                logger.debug(f"Selection reasoning: {result.reasoning}")
-                
-            except Exception as e:
-                logger.warning(f"Chart type selection failed for atom: {e}")
-                # Atom keeps its original state, will use default in rendering
 
 
 def _get_atom_content(atom) -> str:
@@ -203,10 +147,6 @@ def _generate_mdx_layouts(
     Uses the existing prompts from layout_engine and prompts.py.
     Returns slides with 'mdx' field containing raw MDX markup.
     
-    Chart Type Selection:
-    - Before generating MDX, applies LLM-based chart type selection
-    - For atoms with visual="chart" and no explicit chart_type,
-      the optimal chart type is automatically selected based on data patterns
     Handles slides with:
     - Only atoms (atom-based generation)
     - Only content (source-based generation)
@@ -222,9 +162,6 @@ def _generate_mdx_layouts(
     """
     from src.paged.layout.react.mdx_parser import parse_slides_from_mdx
     from src.generation.content.prompts import get_slide_generation_config, render_slide_generation_prompt
-    
-    # Apply LLM-based chart type selection to atoms (Feature: 003-extended-chart-types)
-    _apply_chart_type_selection(atoms)
     
     # Get system prompt from prompts.py (uses layout_engine.get_layout_prompt())
     config = get_slide_generation_config(project="react-mdx")

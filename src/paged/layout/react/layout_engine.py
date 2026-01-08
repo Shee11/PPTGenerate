@@ -5,6 +5,121 @@ class ReactLayoutEngine:
     """Layout engine for React MDX presentations with semantic components."""
     
     @classmethod
+    def get_chart_prompt(cls) -> str:
+        """Provide chart component documentation for LLM prompts.
+        
+        This is the SINGLE SOURCE OF TRUTH for all chart-related documentation.
+        Other modules should reference this instead of duplicating chart info.
+        """
+        return """# CHART DOCUMENTATION
+
+## CHART TYPE SELECTION
+**PRIORITY: If source content or user instruction explicitly specifies a chart type, USE THAT CHART TYPE.**
+
+When NO chart type is specified, select based on data patterns:
+| Data Pattern | Chart Type | Component |
+|--------------|------------|-----------|
+| Time-series/cumulative | area | `<ChartArea gradient={true}/>` |
+| Categorical comparison | bar | `<ChartBar/>` |
+| Before/after comparison | bar (clustered) | `<ChartBar data={[{label, before, after}]}/>` |
+| Rankings/sorted values | barStats | `<BarStats sortDescending={true}/>` |
+| Proportions (~100%) | pie/doughnut | `<ChartPie variant="donut"/>` |
+| 3D relationships | bubble | `<ChartBubble data={[{label, x, y, size}]}/>` |
+| Multivariate (4+ attrs) | radar | `<ChartRadar/>` (needs 3+ data points) |
+| Cyclical/periodic | polarArea | `<ChartPolar/>` |
+| Direction/wind distribution | rose | `<ChartCustom type="rose"/>` |
+
+## STANDARD CHART COMPONENTS
+| Component | Best For | Example |
+|-----------|----------|---------|
+| ChartBar | Categorical comparison | Sales by product |
+| ChartLine | Trends over time | Monthly growth |
+| ChartPie | Proportions (variant="donut" for doughnut) | Market share |
+| ChartArea | Cumulative trends, time-series with volume | Revenue over months |
+| ChartBubble | 3D data (x, y, size) | Price vs Sales vs Volume |
+| ChartRadar | 4+ attributes per item | Product comparison matrix |
+| ChartPolar | Cyclical patterns | Monthly distribution |
+| BarStats | Rankings, sorted comparisons | Top 10 products |
+
+## CUSTOM CHART (ChartCustom) - For Novel Visualizations
+Use `<ChartCustom>` when standard charts don't fit or user requests custom visualization.
+
+**Supported Types (type prop):**
+| Type | Description | Best For |
+|------|-------------|----------|
+| `scatter` | Points with custom shapes | Comparing discrete items |
+| `bar` | Vertical bars with custom styles | Category comparison |
+| `horizontal-bar` | Horizontal bars | Rankings, long labels |
+| `line` | Line with custom point shapes | Trends over time |
+| `area` | Filled area with custom styling | Cumulative data |
+| `pie` | Pie/donut chart | Proportions |
+| `pictogram` | Repeating icons (isotype chart) | Making data tangible |
+| `lollipop` | Line + shape markers | Clean comparison |
+| `waffle` | 10x10 grid chart | Percentages out of 100 |
+| `radial` | Circular progress bars | Progress/completion |
+| `rose` | Nightingale/coxcomb chart | Direction distribution, cyclical data with magnitude |
+| `funnel` | Funnel/conversion chart | Sales pipeline, conversion rates |
+| `gauge` | Speedometer/dial | Single value progress |
+| `treemap` | Nested rectangles | Hierarchical proportions |
+
+**Custom Shapes (shape prop):**
+`water droplet`, `star`, `heart`, `cloud`, `flame`, `leaf`, `diamond`, `hexagon`, `circle`
+
+**Bar Styles (style prop):**
+`default`, `rounded`, `pill`, `gradient`, `striped`, `3d`
+
+**ChartCustom Syntax Examples:**
+```jsx
+// Pictogram with star icons
+<ChartCustom type="pictogram" shape="star" data={[{label: "Team A", value: 5}]} colorScheme="purple"/>
+
+// Waffle chart for percentages
+<ChartCustom type="waffle" data={[{label: "Complete", value: 73}, {label: "Remaining", value: 27}]}/>
+
+// Rose chart for direction distribution
+<ChartCustom type="rose" data={[{label: "N", value: 145}, {label: "NE", value: 98}, {label: "E", value: 67}]} colorScheme="teal"/>
+
+// Radial progress chart
+<ChartCustom type="radial" data={[{label: "Sales", value: 75}, {label: "Growth", value: 60}]}/>
+
+// Gauge for single value
+<ChartCustom type="gauge" data={[{label: "Performance", value: 85}]} colorScheme="green"/>
+```
+
+**ChartCustom Props:**
+- `type`: Chart paradigm (see table above)
+- `shape`: Custom point/icon shape
+- `style`: Bar style variant
+- `data`: Array of `{label, value}`
+- `colorScheme`: `blue|green|red|purple|orange|teal|pink|rainbow`
+- `showGrid`, `showValues`, `donut`: boolean options
+
+## CHART DATA FORMAT (CRITICAL)
+Using wrong data properties causes EMPTY charts:
+
+| Component | Required Format | Example |
+|-----------|----------------|---------|
+| ChartCustom | `{label, value}` | `{label: "Item", value: 50}` |
+| ChartArea | `{label, value}` | `{label: "Jan", value: 100}` |
+| ChartBar (simple) | `{label, value}` | `{label: "Q1", value: 50}` |
+| ChartBar (clustered) | `{label, before, after}` | `{label: "Sales", before: 80, after: 120}` |
+| BarStats | `{label, value}` | `{label: "Region A", value: 85}` |
+| ChartPie/Doughnut | `{label, value}` | `{label: "Segment", value: 30}` |
+| ChartPolar | `{label, value}` | `{label: "Mon", value: 250}` |
+| ChartRadar | `{label, value}` | `{label: "Speed", value: 80}` |
+| ChartBubble | `{label, x, y, size}` | `{label: "Item", x: 10, y: 20, size: 50}` |
+
+**⚠️ NEVER use arbitrary keys** like `revenue`, `signups`, `sales` - components ignore unknown properties!
+- BAD: `data={[{label: "Q1", revenue: 50}]}` ← renders EMPTY
+- GOOD: `data={[{label: "Q1", value: 50}]}` ← renders correctly
+
+## CHART LAYOUT RULES
+- **ONE chart per slide** - never 2 charts or chart+image together
+- Use LayoutSplit to pair chart with explanation text
+- Charts work best in: split, dashboard, stacked layouts
+- **3+ data points** → use Chart, not multiple BigNum/Metrics"""
+    
+    @classmethod
     def get_layout_prompt(cls) -> str:
         """Provide React MDX layout reference for LLM prompts."""
         return """# VISUAL DESIGN INSTRUCTIONS
@@ -107,27 +222,16 @@ Use `<Highlight>` to emphasize key words within text:
 ```
 Colors: default, primary, success, warning, info, accent
 
-**CHARTS (for numeric data)**:
+**CHARTS (for numeric data)** - See Chart Documentation section for full details.
 - ChartBar: comparison, before/after (use `before`/`after` keys for clustered bars)
 - ChartLine: trends over time
 - ChartPie: proportions/percentages (use variant="donut" for doughnut style)
-- ChartArea: cumulative trends, time-series with volume (soft gradient fill)
+- ChartArea: cumulative trends, time-series with volume
 - ChartBubble: 3D relationships (x, y, size dimensions)
-- ChartRadar: multivariate comparison (4+ attributes per item, spider/web chart)
-- ChartPolar: cyclical/periodic data (equal angles, varying radii)
-- BarStats: rankings, sorted comparisons (horizontal bars with emphasis)
-
-**CHART SELECTION GUIDE**:
-| Data Pattern | Best Chart | Example |
-|--------------|------------|---------|
-| Time-series (months, quarters) | ChartArea or ChartLine | Revenue over months |
-| Categorical comparison | ChartBar | Sales by product |
-| Rankings/sorted values | BarStats | Top 10 products |
-| Proportions (~100%) | ChartPie (variant="donut" or "pie") | Market share |
-| 3D data (x, y, size) | ChartBubble | Price vs Sales vs Volume |
-| 4+ attributes per item | ChartRadar | Product comparison matrix |
-| Cyclical patterns | ChartPolar | Monthly distribution |
-| Before/after comparison | ChartBar with before/after data | Improvements |
+- ChartRadar: multivariate comparison (4+ attributes per item)
+- ChartPolar: cyclical/periodic data
+- BarStats: rankings, sorted comparisons
+- ChartCustom: novel visualizations (rose, waffle, pictogram, gauge, funnel, treemap, radial)
 
 - **RULE**: 3+ data points → use Chart, not multiple Metrics
 
@@ -225,29 +329,15 @@ Each slide wrapped in `<Slide>` with metadata:
 </LayoutTimeline>
 // NOTE: ProcessStrip is better for simple year labels; LayoutTimeline is better for detailed milestone stories
 
-// Charts (must have id)
-// Single series:
+// Charts (must have id) - See Chart Documentation for full syntax
+// Standard charts:
 <ChartBar id="chart_001" title="Revenue" data={[{label: "Q1", value: 100}, {label: "Q2", value: 150}]}/>
-// Clustered bars for before/after comparison:
-<ChartBar id="chart_002" title="Improvements" data={[{label: "Accuracy", before: 65, after: 75}, {label: "Speed", before: 800, after: 450}]}/>
+<ChartBar id="chart_002" title="Improvements" data={[{label: "Accuracy", before: 65, after: 75}]}/>
 <ChartLine id="chart_003" title="Growth" data={[{label: "Jan", value: 50}]}/>
 <ChartPie id="chart_004" title="Share" data={[{label: "A", value: 60}]}/>
-
-// Extended chart types (Feature: 003-extended-chart-types)
-// Area chart with gradient fill:
-<ChartArea id="chart_005" title="Cumulative Revenue" data={[{label: "Jan", value: 100}, {label: "Feb", value: 180}]} gradient={true} curve="smooth"/>
-
-// Bubble chart (3D: x, y, size):
-<ChartBubble id="chart_006" title="Market Analysis" data={[{label: "Product A", x: 10, y: 20, size: 100}]} xLabel="Price" yLabel="Sales"/>
-
-// Radar chart (multivariate comparison, needs 3+ points):
-<ChartRadar id="chart_007" title="Product Comparison" data={[{label: "Speed", value: 80}, {label: "Quality", value: 90}, {label: "Price", value: 65}, {label: "Support", value: 75}]} fillOpacity={0.35}/>
-
-// Polar area chart (cyclical/periodic data):
-<ChartPolar id="chart_008" title="Regional Distribution" data={[{label: "North", value: 40}, {label: "East", value: 60}, {label: "South", value: 30}, {label: "West", value: 50}]}/>
-
-// Bar stats (horizontal bars for rankings):
-<BarStats id="chart_009" title="Top Products" data={[{label: "Product A", value: 95}, {label: "Product B", value: 87}]} showLabels={true} sortDescending={true}/>
+<ChartArea id="chart_005" title="Trend" data={[{label: "Jan", value: 100}]} gradient={true}/>
+<BarStats id="chart_006" title="Rankings" data={[{label: "A", value: 95}]} sortDescending={true}/>
+// For custom/novel visualizations: <ChartCustom type="rose|waffle|pictogram|gauge|funnel|treemap|radial" .../>
 
 // Tables
 <TableData id="table_001" headers={["Name", "Value"]} rows={[["A", "1"]]}/>

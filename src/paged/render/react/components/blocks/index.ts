@@ -32,6 +32,10 @@ export type { ChartPolarProps } from './ChartPolar';
 export { BarStats } from './BarStats';
 export type { BarStatsProps } from './BarStats';
 
+// Custom chart component for user-defined visualizations
+export { ChartCustom } from './ChartCustom';
+export type { ChartCustomProps } from './ChartCustom';
+
 // Chart utilities
 export * from './chartUtils';
 

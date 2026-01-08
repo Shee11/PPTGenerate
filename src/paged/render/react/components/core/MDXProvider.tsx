@@ -33,6 +33,7 @@ import { ChartArea } from '@/components/blocks/ChartArea';
 import { ChartBubble } from '@/components/blocks/ChartBubble';
 import { ChartRadar } from '@/components/blocks/ChartRadar';
 import { ChartPolar } from '@/components/blocks/ChartPolar';
+import { ChartCustom } from '@/components/blocks/ChartCustom';
 import { BarStats } from '@/components/blocks/BarStats';
 import { MetricGroup, Metric } from '@/components/blocks/MetricGroup';
 import { BigNum } from '@/components/blocks/BigNum';
@@ -90,6 +91,7 @@ export const mdxComponents = {
   ChartBubble,
   ChartRadar,
   ChartPolar,
+  ChartCustom,
   BarStats,
   MetricGroup,
   BigNum,
