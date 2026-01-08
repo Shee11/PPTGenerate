@@ -74,19 +74,6 @@ Follow the draft slide's `story` and `visual_design` fields exactly:
 - Default to Text/SmartList for narrative content
 - Each slide should combine text AND visual, but one leads
 
-# CHART AND IMAGE LAYOUT PATTERNS
-| Pattern | Layout Implementation |
-|---------|----------------------|
-| `chart-left` | `<LayoutSplit><Left>Chart</Left><Right>Text/SmartList</Right></LayoutSplit>` |
-| `chart-right` | `<LayoutSplit><Left>Text/SmartList</Left><Right>Chart</Right></LayoutSplit>` |
-| `image-left` | `<LayoutSplit><Left>ImageBlock</Left><Right>Text</Right></LayoutSplit>` |
-| `cover` | `<LayoutCover>Heading + Text</LayoutCover>` |
-
-# CHART AND IMAGE EXCLUSIVITY (CRITICAL)
-- **ONLY ONE chart OR ONE image per slide** - never 2 charts, never 2 images
-- Choose ONE visual type per slide: ONE Chart OR ONE Image OR no visual
-- GOOD: ONE ChartArea + Text/SmartList ← SINGLE VISUAL WITH TEXT
-
 # NO REDUNDANT CONTENT (CRITICAL)
 - NEVER show the same data twice on a slide in different formats
 - If Left has MetricGroup with "71% → 80%", Right should NOT have BigNum with same numbers
