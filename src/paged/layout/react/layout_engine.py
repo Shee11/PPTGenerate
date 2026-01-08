@@ -181,6 +181,110 @@ You are designing slides as MDX markup. Match layout to the visual_design intent
 - Components inside Item: Heading level={3}, Text (keep brief)
 - PREFER over ProcessStrip when milestones need detailed explanations
 
+## CHART & IMAGE EXCLUSIVITY (CRITICAL)
+
+**⚠️ ONE VISUAL ASSET PER SLIDE** — Never place 2 charts, 2 images, or 1 chart + 1 image on the same slide.
+- Each slide gets exactly ONE of: Chart OR ImageBlock OR neither
+- Pair the single visual with text elements (Heading, Text, SmartList, Callout)
+- If you need multiple data views, split them across separate slides
+
+**Why this matters:**
+- Multiple visuals compete for attention and confuse the narrative
+- Split layouts already have limited width per side
+- One focused visual + supporting text = clear communication
+
+## CHART & IMAGE PLACEMENT PATTERNS
+
+**Use LayoutSplit to pair a single visual with explanatory content. Choose side based on content flow:**
+
+| Pattern | When to Use | Layout |
+|---------|-------------|--------|
+| **Chart-Left** | Data DRIVES the narrative (evidence-first, then explain) | `<Left>Chart</Left><Right>SmartList+Text</Right>` |
+| **Chart-Right** | Context FRAMES the data (explain setup, then show proof) | `<Left>Heading+SmartList</Left><Right>Chart</Right>` |
+| **Image-Left** | Visual anchors the story (product, diagram, screenshot) | `<Left>ImageBlock</Left><Right>Text+SmartList</Right>` |
+| **Image-Right** | Text leads, image supports (description, then show) | `<Left>Heading+Text</Left><Right>ImageBlock</Right>` |
+
+**Detailed Placement Guidelines:**
+
+### Chart-Left (Data-First Pattern)
+Use when the data is the PRIMARY message:
+- Performance metrics and KPIs being showcased
+- Trend reveals ("Look at this growth!")
+- Comparison results that speak for themselves
+- Before/after demonstrations
+```mdx
+<LayoutSplit ratio="1:1">
+  <Left>
+    <ChartBar id="chart_001" data={[...]}/>
+    <Text variant="caption">Source: Q4 Report</Text>
+  </Left>
+  <Right>
+    <Heading level={2}>Key Takeaways</Heading>
+    <SmartList id="list_001" items={["Insight 1", "Insight 2", "Insight 3"]}/>
+    <Callout intent="success">Record-breaking quarter</Callout>
+  </Right>
+</LayoutSplit>
+```
+
+### Chart-Right (Context-First Pattern)
+Use when context is needed to INTERPRET the data:
+- Complex metrics requiring explanation
+- New concepts or unfamiliar metrics
+- Building toward a reveal/conclusion
+- Stories where the "why" matters before the "what"
+```mdx
+<LayoutSplit ratio="1:1">
+  <Left>
+    <Heading level={2}>Understanding Churn Rate</Heading>
+    <Text variant="lead">How we measure customer retention</Text>
+    <SmartList id="list_001" items={["Monthly active users", "Engagement scoring", "Renewal tracking"]}/>
+  </Left>
+  <Right>
+    <ChartLine id="chart_001" title="12-Month Trend" data={[...]}/>
+    <Text variant="caption">Churn decreased 40% after Q2 initiatives</Text>
+  </Right>
+</LayoutSplit>
+```
+
+### Image-Left (Visual-Anchor Pattern)
+Use when the image IS the subject:
+- Product screenshots or demos
+- Architecture diagrams
+- Team photos or headshots
+- Physical products or locations
+```mdx
+<LayoutSplit ratio="1:1">
+  <Left>
+    <ImageBlock src="/product-v2.png" alt="Product interface" size="lg"/>
+    <Text variant="caption">New dashboard design</Text>
+  </Left>
+  <Right>
+    <Heading level={2}>Redesigned Experience</Heading>
+    <SmartList id="list_001" items={["50% faster navigation", "Unified search", "Dark mode support"]}/>
+    <Callout intent="info">Launching Q1 2026</Callout>
+  </Right>
+</LayoutSplit>
+```
+
+### Image-Right (Description-First Pattern)
+Use when narrative builds to visual reveal:
+- Introducing a new feature or concept first
+- Complex systems explained then illustrated
+- Stories leading to a visual payoff
+```mdx
+<LayoutSplit ratio="2:1">
+  <Left>
+    <Heading level={2}>Next-Gen Architecture</Heading>
+    <Text variant="lead">Built for scale from day one</Text>
+    <SmartList id="list_001" items={["Microservices backbone", "Edge computing ready", "Auto-scaling clusters"]}/>
+    <Text>Our new platform handles 10x the load with half the latency.</Text>
+  </Left>
+  <Right>
+    <ImageBlock src="/architecture-diagram.png" alt="System architecture"/>
+  </Right>
+</LayoutSplit>
+```
+
 ## COMPONENT REFERENCE
 
 **⚠️ CONTENT MINIMUM PER SLIDE** (non-negotiable):

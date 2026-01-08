@@ -87,6 +87,8 @@ export type ChartParadigm =
 export type BarStyle = 'default' | 'rounded' | 'pill' | 'gradient' | 'striped' | '3d';
 
 export interface ChartCustomProps {
+  /** Unique identifier for the chart */
+  id?: string;
   /** Chart paradigm/type */
   type?: ChartParadigm;
   /** Shape description for point-based charts */
@@ -112,23 +114,56 @@ export interface ChartCustomProps {
 }
 
 // =============================================================================
-// Color Schemes
+// Theme-Aware Color System
+// Uses CSS variables that automatically adapt to theme changes
 // =============================================================================
 
-const colorSchemes: Record<string, { primary: string; secondary: string; gradient: string[] }> = {
-  blue: { primary: '#3B82F6', secondary: '#93C5FD', gradient: ['#3B82F6', '#60A5FA', '#93C5FD'] },
-  green: { primary: '#10B981', secondary: '#6EE7B7', gradient: ['#10B981', '#34D399', '#6EE7B7'] },
-  red: { primary: '#EF4444', secondary: '#FCA5A5', gradient: ['#EF4444', '#F87171', '#FCA5A5'] },
-  purple: { primary: '#8B5CF6', secondary: '#C4B5FD', gradient: ['#8B5CF6', '#A78BFA', '#C4B5FD'] },
-  orange: { primary: '#F97316', secondary: '#FDBA74', gradient: ['#F97316', '#FB923C', '#FDBA74'] },
-  teal: { primary: '#14B8A6', secondary: '#5EEAD4', gradient: ['#14B8A6', '#2DD4BF', '#5EEAD4'] },
-  pink: { primary: '#EC4899', secondary: '#F9A8D4', gradient: ['#EC4899', '#F472B6', '#F9A8D4'] },
-  rainbow: { 
-    primary: '#EF4444', 
-    secondary: '#8B5CF6', 
-    gradient: ['#EF4444', '#F97316', '#EAB308', '#22C55E', '#3B82F6', '#8B5CF6', '#EC4899'] 
-  },
-};
+/**
+ * Get theme colors using CSS variables
+ * Falls back to provided colorScheme for multi-color charts (gradients)
+ */
+function getThemeColors(colorScheme?: string): { 
+  primary: string; 
+  secondary: string; 
+  gradient: string[];
+  textMuted: string;
+  border: string;
+  surface: string;
+} {
+  // Base theme colors from CSS variables
+  const baseColors = {
+    primary: 'var(--theme-primary)',
+    secondary: 'var(--theme-accent, var(--theme-primary))',
+    textMuted: 'var(--theme-text-muted)',
+    border: 'var(--theme-border)',
+    surface: 'var(--theme-surface)',
+  };
+
+  // For multi-color gradients, we use theme-derived colors
+  // These use color-mix to create variations from theme colors
+  const gradientColors: Record<string, string[]> = {
+    // Default: uses theme primary with opacity variations
+    default: [
+      'var(--theme-primary)',
+      'color-mix(in srgb, var(--theme-primary) 70%, var(--theme-accent, var(--theme-primary)))',
+      'var(--theme-accent, var(--theme-primary))',
+    ],
+    // Rainbow uses semantic colors from theme
+    rainbow: [
+      'var(--theme-danger, #EF4444)',
+      'var(--theme-warning, #F97316)',
+      'var(--theme-primary)',
+      'var(--theme-success, #22C55E)',
+      'var(--theme-accent, #3B82F6)',
+      'color-mix(in srgb, var(--theme-primary) 50%, var(--theme-accent))',
+    ],
+  };
+
+  return {
+    ...baseColors,
+    gradient: gradientColors[colorScheme || 'default'] || gradientColors.default,
+  };
+}
 
 // =============================================================================
 // Custom Shape Renderers
@@ -446,7 +481,14 @@ function parseBarStyle(description: string): BarStyle {
 
 interface ParadigmProps {
   data: Array<{ label: string; value: number }>;
-  colors: { primary: string; secondary: string; gradient: string[] };
+  colors: { 
+    primary: string; 
+    secondary: string; 
+    gradient: string[];
+    textMuted: string;
+    border: string;
+    surface: string;
+  };
   shape: string;
   style: BarStyle | string;
   showGrid: boolean;
@@ -457,38 +499,73 @@ interface ParadigmProps {
 
 /**
  * Scatter Chart with Custom Shapes
+ * Uses fixed dimensions to avoid ResponsiveContainer sizing issues
  */
-const ScatterParadigm: React.FC<ParadigmProps> = ({ data, colors, ShapeComponent }) => {
-  const scatterData = data.map((d, i) => ({ ...d, x: i + 1, y: d.value }));
+const ScatterParadigm: React.FC<ParadigmProps> = ({ data, colors, showGrid, ShapeComponent }) => {
+  // Transform data for scatter chart - needs numeric x and y
+  const scatterData = data.map((d, i) => ({ 
+    ...d, 
+    x: i + 1, 
+    y: d.value,
+  }));
   
+  // Custom shape renderer
   const renderShape = (props: any) => {
-    const colorIndex = props.index % colors.gradient.length;
-    return <ShapeComponent {...props} fill={colors.gradient[colorIndex]} />;
+    const { cx, cy, payload } = props;
+    if (typeof cx !== 'number' || typeof cy !== 'number') return null;
+    const colorIndex = scatterData.findIndex(d => d.label === payload?.label);
+    return (
+      <ShapeComponent 
+        cx={cx} 
+        cy={cy} 
+        fill={colors.gradient[Math.max(0, colorIndex) % colors.gradient.length]} 
+        payload={payload} 
+        size={20} 
+      />
+    );
   };
 
   return (
-    <ScatterChart margin={{ top: 20, right: 30, bottom: 20, left: 20 }}>
-      <CartesianGrid {...gridStyle} />
+    <ScatterChart 
+      width={320} 
+      height={200} 
+      margin={{ top: 20, right: 30, bottom: 20, left: 20 }}
+    >
+      {showGrid && <CartesianGrid {...gridStyle} />}
       <XAxis 
         dataKey="x" 
         type="number"
-        domain={[0, scatterData.length + 1]}
-        tickFormatter={(value) => scatterData.find(d => d.x === value)?.label || ''}
+        domain={[0, 'dataMax + 1']}
+        tickFormatter={(value) => {
+          const item = scatterData.find(d => d.x === value);
+          return item?.label || '';
+        }}
         {...axisStyle}
       />
-      <YAxis dataKey="y" {...axisStyle} />
-      <Tooltip content={({ active, payload }) => {
-        if (active && payload?.length) {
-          const d = payload[0].payload;
-          return <div style={tooltipStyle.contentStyle}><p className="font-medium">{d.label}</p><p className="text-sm">Value: {d.value}</p></div>;
-        }
-        return null;
-      }} />
-      <Scatter data={scatterData} shape={renderShape}>
-        {scatterData.map((_, index) => (
-          <Cell key={`cell-${index}`} fill={colors.gradient[index % colors.gradient.length]} />
-        ))}
-      </Scatter>
+      <YAxis 
+        dataKey="y" 
+        type="number"
+        {...axisStyle} 
+      />
+      <Tooltip 
+        content={({ active, payload }) => {
+          if (active && payload?.length) {
+            const d = payload[0].payload;
+            return (
+              <div style={tooltipStyle.contentStyle}>
+                <p className="font-medium">{d.label}</p>
+                <p className="text-sm">Value: {d.value}</p>
+              </div>
+            );
+          }
+          return null;
+        }} 
+      />
+      <Scatter 
+        data={scatterData} 
+        shape={renderShape}
+        fill={colors.primary}
+      />
     </ScatterChart>
   );
 };
@@ -531,7 +608,7 @@ const BarParadigm: React.FC<ParadigmProps & { horizontal?: boolean }> = ({
         {data.map((_, index) => (
           <Cell key={`cell-${index}`} fill={colors.gradient[index % colors.gradient.length]} />
         ))}
-        {showValues && <LabelList dataKey="value" position={horizontal ? 'right' : 'top'} fill="#9CA3AF" />}
+        {showValues && <LabelList dataKey="value" position={horizontal ? 'right' : 'top'} fill={colors.textMuted} />}
       </Bar>
     </BarChart>
   );
@@ -659,7 +736,7 @@ const PictogramParadigm: React.FC<ParadigmProps> = ({ data, colors, ShapeCompone
         const iconCount = Math.round(item.value / unitValue);
         return (
           <div key={item.label} className="flex items-center gap-3">
-            <span className="text-sm text-gray-400 w-20 text-right">{item.label}</span>
+            <span className="text-sm w-20 text-right" style={{ color: 'var(--theme-text-muted)' }}>{item.label}</span>
             <div className="flex flex-wrap gap-1">
               {Array.from({ length: iconCount }).map((_, i) => (
                 <svg key={i} width="24" height="24" viewBox="-12 -12 24 24">
@@ -673,11 +750,11 @@ const PictogramParadigm: React.FC<ParadigmProps> = ({ data, colors, ShapeCompone
                 </svg>
               ))}
             </div>
-            <span className="text-xs text-gray-500">{item.value}</span>
+            <span className="text-xs" style={{ color: 'var(--theme-text-muted)' }}>{item.value}</span>
           </div>
         );
       })}
-      <div className="text-xs text-gray-500 mt-2">Each icon = {unitValue} unit{unitValue > 1 ? 's' : ''}</div>
+      <div className="text-xs mt-2" style={{ color: 'var(--theme-text-muted)' }}>Each icon = {unitValue} unit{unitValue > 1 ? 's' : ''}</div>
     </div>
   );
 };
@@ -702,7 +779,7 @@ const WaffleParadigm: React.FC<ParadigmProps> = ({ data, colors }) => {
   
   // Fill remaining cells
   while (cells.length < 100) {
-    cells.push({ color: '#374151', label: 'empty' });
+    cells.push({ color: colors.border, label: 'empty' });
   }
 
   return (
@@ -724,7 +801,7 @@ const WaffleParadigm: React.FC<ParadigmProps> = ({ data, colors }) => {
               className="w-3 h-3 rounded-sm" 
               style={{ backgroundColor: colors.gradient[index % colors.gradient.length] }}
             />
-            <span className="text-xs text-gray-400">{item.label} ({item.value})</span>
+            <span className="text-xs" style={{ color: 'var(--theme-text-muted)' }}>{item.label} ({item.value})</span>
           </div>
         ))}
       </div>
@@ -755,7 +832,7 @@ const RadialParadigm: React.FC<ParadigmProps> = ({ data, colors }) => {
                 cy="100"
                 r={radius}
                 fill="none"
-                stroke="#374151"
+                stroke={colors.border}
                 strokeWidth="12"
               />
               {/* Progress circle */}
@@ -782,7 +859,7 @@ const RadialParadigm: React.FC<ParadigmProps> = ({ data, colors }) => {
               className="w-3 h-3 rounded-full" 
               style={{ backgroundColor: colors.gradient[index % colors.gradient.length] }}
             />
-            <span className="text-xs text-gray-400">{item.label}: {item.value}</span>
+            <span className="text-xs" style={{ color: 'var(--theme-text-muted)' }}>{item.label}: {item.value}</span>
           </div>
         ))}
       </div>
@@ -827,7 +904,7 @@ const RoseParadigm: React.FC<ParadigmProps> = ({ data, colors }) => {
               key={item.label}
               d={path}
               fill={colors.gradient[index % colors.gradient.length]}
-              stroke="#1F2937"
+              stroke={colors.border}
               strokeWidth="1"
               opacity={0.85}
             >
@@ -836,7 +913,7 @@ const RoseParadigm: React.FC<ParadigmProps> = ({ data, colors }) => {
           );
         })}
         {/* Center circle */}
-        <circle cx={centerX} cy={centerY} r="5" fill="#1F2937" />
+        <circle cx={centerX} cy={centerY} r="5" fill={colors.border} />
       </svg>
       <div className="flex flex-wrap gap-4 justify-center">
         {data.map((item, index) => (
@@ -845,7 +922,7 @@ const RoseParadigm: React.FC<ParadigmProps> = ({ data, colors }) => {
               className="w-3 h-3 rounded-sm" 
               style={{ backgroundColor: colors.gradient[index % colors.gradient.length] }}
             />
-            <span className="text-xs text-gray-400">{item.label}: {item.value}</span>
+            <span className="text-xs" style={{ color: 'var(--theme-text-muted)' }}>{item.label}: {item.value}</span>
           </div>
         ))}
       </div>
@@ -932,7 +1009,7 @@ const GaugeParadigm: React.FC<ParadigmProps> = ({ data, colors }) => {
         <path
           d={`M ${arcStart.x} ${arcStart.y} A ${radius} ${radius} 0 1 1 ${arcEnd.x} ${arcEnd.y}`}
           fill="none"
-          stroke="#374151"
+          stroke={colors.border}
           strokeWidth="16"
           strokeLinecap="round"
         />
@@ -950,18 +1027,18 @@ const GaugeParadigm: React.FC<ParadigmProps> = ({ data, colors }) => {
           y1={centerY}
           x2={needleEnd.x}
           y2={needleEnd.y}
-          stroke="#E5E7EB"
+          stroke="var(--theme-text)"
           strokeWidth="3"
           strokeLinecap="round"
         />
         {/* Center dot */}
-        <circle cx={centerX} cy={centerY} r="8" fill="#374151" />
+        <circle cx={centerX} cy={centerY} r="8" fill={colors.border} />
         <circle cx={centerX} cy={centerY} r="4" fill={colors.primary} />
         {/* Value text */}
-        <text x={centerX} y={centerY + 35} textAnchor="middle" fill="#E5E7EB" fontSize="20" fontWeight="bold">
+        <text x={centerX} y={centerY + 35} textAnchor="middle" fill="var(--theme-text)" fontSize="20" fontWeight="bold">
           {item.value}
         </text>
-        <text x={centerX} y={centerY + 50} textAnchor="middle" fill="#9CA3AF" fontSize="10">
+        <text x={centerX} y={centerY + 50} textAnchor="middle" fill="var(--theme-text-muted)" fontSize="10">
           {item.label}
         </text>
       </svg>
@@ -1052,7 +1129,7 @@ const TreemapParadigm: React.FC<ParadigmProps> = ({ data, colors }) => {
               className="w-3 h-3 rounded-sm" 
               style={{ backgroundColor: colors.gradient[index % colors.gradient.length] }}
             />
-            <span className="text-xs text-gray-400">{item.label}: {item.value}</span>
+            <span className="text-xs" style={{ color: 'var(--theme-text-muted)' }}>{item.label}: {item.value}</span>
           </div>
         ))}
       </div>
@@ -1069,16 +1146,23 @@ const UnknownParadigm: React.FC<ParadigmProps & { originalRequest?: string }> = 
   return (
     <div className="flex flex-col items-center gap-4 p-4">
       {/* Warning banner */}
-      <div className="bg-yellow-900/30 border border-yellow-600/50 rounded-lg p-3 text-center max-w-md">
-        <p className="text-yellow-400 text-sm font-medium">
+      <div style={{ 
+        backgroundColor: 'color-mix(in srgb, var(--theme-warning, #F59E0B) 15%, transparent)',
+        border: '1px solid color-mix(in srgb, var(--theme-warning, #F59E0B) 50%, transparent)',
+        borderRadius: 'var(--theme-radius, 8px)',
+        padding: '0.75rem',
+        textAlign: 'center',
+        maxWidth: '28rem'
+      }}>
+        <p style={{ color: 'var(--theme-warning, #F59E0B)', fontSize: '0.875rem', fontWeight: 500 }}>
           ⚠️ Chart type not recognized
         </p>
         {originalRequest && (
-          <p className="text-yellow-300/70 text-xs mt-1">
+          <p style={{ color: 'var(--theme-warning, #F59E0B)', opacity: 0.7, fontSize: '0.75rem', marginTop: '0.25rem' }}>
             Requested: "{originalRequest}"
           </p>
         )}
-        <p className="text-gray-400 text-xs mt-2">
+        <p style={{ color: 'var(--theme-text-muted)', fontSize: '0.75rem', marginTop: '0.5rem' }}>
           Showing data as a simple bar chart. Consider using: bar, line, area, pie, scatter, waffle, radial, rose, funnel, gauge, treemap, pictogram, or lollipop.
         </p>
       </div>
@@ -1090,8 +1174,8 @@ const UnknownParadigm: React.FC<ParadigmProps & { originalRequest?: string }> = 
           const widthPercent = (item.value / maxValue) * 100;
           return (
             <div key={item.label} className="flex items-center gap-2">
-              <span className="text-xs text-gray-400 w-20 text-right truncate">{item.label}</span>
-              <div className="flex-1 h-6 bg-gray-700 rounded overflow-hidden">
+              <span className="text-xs w-20 text-right truncate" style={{ color: 'var(--theme-text-muted)' }}>{item.label}</span>
+              <div className="flex-1 h-6 rounded overflow-hidden" style={{ backgroundColor: colors.border }}>
                 <div
                   className="h-full rounded transition-all"
                   style={{
@@ -1100,7 +1184,7 @@ const UnknownParadigm: React.FC<ParadigmProps & { originalRequest?: string }> = 
                   }}
                 />
               </div>
-              <span className="text-xs text-gray-500 w-12">{item.value}</span>
+              <span className="text-xs w-12" style={{ color: 'var(--theme-text-muted)' }}>{item.value}</span>
             </div>
           );
         })}
@@ -1121,6 +1205,7 @@ const UnknownParadigm: React.FC<ParadigmProps & { originalRequest?: string }> = 
  * with customizable shapes and styles.
  */
 export function ChartCustom({
+  id,
   type,
   shape = 'circle',
   style = 'default',
@@ -1145,8 +1230,8 @@ export function ChartCustom({
   const originalRequest = parseResult.originalRequest;
   const barStyle = typeof style === 'string' ? parseBarStyle(style) : style;
   
-  // Get colors and shape
-  const colors = colorSchemes[colorScheme] || colorSchemes.blue;
+  // Get theme-aware colors and shape component
+  const colors = getThemeColors(colorScheme === 'rainbow' ? 'rainbow' : 'default');
   const ShapeComponent = getShapeComponent(shape);
   
   // Common props for paradigm renderers
@@ -1199,32 +1284,34 @@ export function ChartCustom({
     }
   };
 
-  // Some paradigms render outside ResponsiveContainer
-  const needsResponsiveContainer = !['pictogram', 'waffle', 'radial', 'rose', 'funnel', 'gauge', 'treemap', 'unknown'].includes(paradigm);
+  // Some paradigms render their own custom SVG/HTML layouts (not Recharts)
+  // 'scatter' uses custom SVG to avoid ResponsiveContainer sizing issues with Recharts ScatterChart
+  const isCustomRendered = ['scatter', 'pictogram', 'waffle', 'radial', 'rose', 'funnel', 'gauge', 'treemap', 'unknown'].includes(paradigm);
+  
+  // Get explicit pixel height
+  const chartHeight = heightMap[height] || 250;
 
   return (
-    <div className="w-full">
+    <div id={id} className="w-full">
       {(title || subtitle) && (
         <div className="mb-3">
-          {title && <h3 className="text-lg font-semibold text-gray-100">{title}</h3>}
-          {subtitle && <p className="text-sm text-gray-400">{subtitle}</p>}
+          {title && <h3 className="text-lg font-semibold" style={{ color: 'var(--theme-text)' }}>{title}</h3>}
+          {subtitle && <p className="text-sm" style={{ color: 'var(--theme-text-muted)' }}>{subtitle}</p>}
         </div>
       )}
       
-      {needsResponsiveContainer ? (
-        <div style={{ height: heightMap[height] }}>
-          <ResponsiveContainer width="100%" height="100%">
-            {renderParadigm()}
-          </ResponsiveContainer>
-        </div>
-      ) : (
-        <div style={{ minHeight: heightMap[height] }} className="flex items-center justify-center">
+      {isCustomRendered ? (
+        <div style={{ minHeight: chartHeight }} className="flex items-center justify-center">
           {renderParadigm()}
         </div>
+      ) : (
+        <ResponsiveContainer width="100%" height={chartHeight}>
+          {renderParadigm()}
+        </ResponsiveContainer>
       )}
       
       {/* Chart type indicator */}
-      <div className="mt-2 text-xs text-gray-500 text-center">
+      <div className="mt-2 text-xs text-center" style={{ color: 'var(--theme-text-muted)' }}>
         {paradigm}{shape !== 'circle' ? ` • ${shape}` : ''}{barStyle !== 'default' ? ` • ${barStyle}` : ''}
       </div>
     </div>

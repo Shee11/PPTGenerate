@@ -15,7 +15,6 @@ NO actual prompt text should be defined in this file.
 from __future__ import annotations
 
 import json
-import logging
 import os
 import re
 import warnings
@@ -23,8 +22,6 @@ from typing import List, Dict, Any, Optional
 
 from src.generation.atom.collection import AtomCollection
 from src.utils.llm_client import call_llm
-
-logger = logging.getLogger(__name__)
 
 
 def _get_atom_content(atom) -> str:
