@@ -4,17 +4,27 @@
  * Dynamic Slides Page - Routes /:path to output/:path/state.json
  * 
  * Example: /golden_set_mdx -> renders slides from output/golden_set_mdx/state.json
+ * Generated components are loaded from state.json at runtime.
  */
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useParams } from 'next/navigation';
 import { MDXRemote, MDXRemoteSerializeResult } from 'next-mdx-remote';
 import { mdxComponents } from '@/components/core/MDXProvider';
 import { SlideContainer, SlideWrapper, SlideNavigation } from '@/components/core';
+import { transform } from 'sucrase';
+import * as FramerMotion from 'framer-motion';
+import * as Lucide from 'lucide-react';
 
 // =============================================================================
 // Types
 // =============================================================================
+
+interface GeneratedComponent {
+  name: string;
+  code?: string;
+  props_interface?: string;
+}
 
 interface SlideContent {
   source: MDXRemoteSerializeResult | null;
@@ -29,7 +39,71 @@ interface ApiResponse {
   source: string;
   theme: string;
   path: string;
+  generatedComponents?: Record<string, GeneratedComponent>;
   error?: string;
+}
+
+// =============================================================================
+// Runtime Component Compiler
+// =============================================================================
+
+/**
+ * Compile generated component code into React components at runtime.
+ * Uses 'sucrase' to transpile TSX -> JS (CommonJS) and execute with new Function.
+ */
+function compileGeneratedComponents(
+  generatedComponents: Record<string, GeneratedComponent>
+): Record<string, React.ComponentType<any>> {
+  const compiled: Record<string, React.ComponentType<any>> = {};
+  
+  for (const [id, comp] of Object.entries(generatedComponents)) {
+    if (!comp.code || !comp.name) continue;
+    
+    try {
+      const tsxCode = comp.code;
+      
+      // 1. Transpile TSX to CommonJS using sucrase
+      // This handles:
+      // - JSX -> React.createElement
+      // - TypeScript types -> stripped
+      // - import/export -> require/exports
+      const { code: jsCode } = transform(tsxCode, {
+        transforms: ['typescript', 'jsx', 'imports'],
+      });
+      
+      // 2. Execute code in a CommonJS-like environment
+      // We explicitly provide 'exports', 'require', and 'React'
+      const componentFn = new Function('exports', 'require', 'React', jsCode);
+      
+      const exportsObj: Record<string, any> = {};
+      
+      // Minimal require shim to handle 'react' import
+      const requireFn = (mod: string) => {
+        if (mod === 'react') return React;
+        if (mod === 'framer-motion') return FramerMotion;
+        if (mod === 'lucide-react') return Lucide;
+        throw new Error(`Cannot require module '${mod}' in generated component`);
+      };
+      
+      // Execute
+      componentFn(exportsObj, requireFn, React);
+      
+      // 3. Extract the exported component
+      // The component should be a named export matching comp.name
+      const Component = exportsObj[comp.name];
+      
+      if (Component) {
+        compiled[comp.name] = Component;
+        console.log(`[path] Compiled generated component: ${comp.name}`);
+      } else {
+        console.warn(`[path] Component '${comp.name}' not found in exports. Available:`, Object.keys(exportsObj));
+      }
+    } catch (err) {
+      console.error(`[path] Failed to compile ${comp.name}:`, err);
+    }
+  }
+  
+  return compiled;
 }
 
 // =============================================================================
@@ -40,9 +114,10 @@ interface SlideRendererProps {
   slide: SlideContent;
   isActive: boolean;
   index: number;
+  components: Record<string, React.ComponentType<any>>;
 }
 
-function SlideRenderer({ slide, isActive, index }: SlideRendererProps): JSX.Element {
+function SlideRenderer({ slide, isActive, index, components }: SlideRendererProps): JSX.Element {
   if (slide.error || !slide.source) {
     return (
       <SlideWrapper index={index} isActive={isActive}>
@@ -62,7 +137,7 @@ function SlideRenderer({ slide, isActive, index }: SlideRendererProps): JSX.Elem
   
   return (
     <SlideWrapper index={index} isActive={isActive}>
-      <MDXRemote {...slide.source} components={mdxComponents} />
+      <MDXRemote {...slide.source} components={components} />
     </SlideWrapper>
   );
 }
@@ -78,6 +153,13 @@ export default function DynamicSlidesPage(): JSX.Element {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [sourcePath, setSourcePath] = useState<string>('');
+  const [runtimeComponents, setRuntimeComponents] = useState<Record<string, React.ComponentType<any>>>({});
+
+  // Merge base components with runtime-compiled generated components
+  const allComponents = useMemo(() => ({
+    ...mdxComponents,
+    ...runtimeComponents,
+  }), [runtimeComponents]);
 
   // Build path from params
   const outputPath = Array.isArray(params.path) ? params.path.join('/') : params.path || '';
@@ -110,6 +192,13 @@ export default function DynamicSlidesPage(): JSX.Element {
         console.log(`Loaded ${data.slides.length} slides from ${data.source}`);
         setSlides(data.slides);
         setSourcePath(data.source);
+        
+        // Compile generated components from state.json at runtime
+        if (data.generatedComponents && Object.keys(data.generatedComponents).length > 0) {
+          console.log(`[path] Found ${Object.keys(data.generatedComponents).length} generated component(s)`);
+          const compiled = compileGeneratedComponents(data.generatedComponents);
+          setRuntimeComponents(compiled);
+        }
         setLoading(false);
       } catch (err) {
         console.error('Failed to load slides:', err);
@@ -192,6 +281,7 @@ export default function DynamicSlidesPage(): JSX.Element {
           slide={slide}
           index={index}
           isActive={index === currentSlide}
+          components={allComponents}
         />
       ))}
       <SlideNavigation

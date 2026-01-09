@@ -1,14 +1,5 @@
 'use client';
 
-/**
- * MDXProvider Component
- * 
- * Provides the component mapping for MDX rendering.
- * Maps MDX JSX elements to our semantic React components.
- * 
- * This is the bridge between MDX content and React components.
- */
-
 import React, { type ReactNode } from 'react';
 import { MDXProvider as BaseMDXProvider } from '@mdx-js/react';
 

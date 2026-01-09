@@ -123,6 +123,12 @@ class PipelineState(BaseModel):
         description="Generated slide JSONs"
     )
     
+    # Generated components (from codegen step)
+    generated_components: Dict[str, Dict[str, Any]] = Field(
+        default_factory=dict,
+        description="Generated React components keyed by component ID"
+    )
+    
     # Timestamps
     created_at: str = Field(
         default_factory=lambda: datetime.now().isoformat()

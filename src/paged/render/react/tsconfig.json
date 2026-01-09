@@ -20,7 +20,7 @@
     ],
     "paths": {
       "@/*": ["./*"],
-      "@/components/*": ["./components/*"],
+      "@/library/*": ["components/*"],
       "@/themes/*": ["./themes/*"],
       "@/utils/*": ["./utils/*"]
     },

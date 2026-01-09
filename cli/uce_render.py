@@ -360,6 +360,7 @@ def cli(
                     user_instruction=instruction,
                     project=project,
                     mdx_theme=mdx_theme,
+                    force_rerun=force_rerun,
                 )
             
             click.echo(f"\n{'='*50}")

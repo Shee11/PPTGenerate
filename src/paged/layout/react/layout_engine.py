@@ -499,9 +499,9 @@ Display: 6 words | Heading: 8 | Body: 25 | List item: 10 words"""
         """Provide compact layout constraints."""
         return """# LAYOUT CONSTRAINTS
 
-## LAYOUT-WIDGET COMPATIBILITY
-| Widget | cover | split | stacked | grid | fullbleed | dashboard | timeline |
-|--------|-------|-------|---------|------|-----------|-----------|----------|
+## LAYOUT-COMPONENT COMPATIBILITY
+| Component | cover | split | stacked | grid | fullbleed | dashboard | timeline |
+|-----------|-------|-------|---------|------|-----------|-----------|----------|
 | Heading | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 | Text | ✅ | ✅ | ✅ | ⚠️ | ✅ | ❌ | ✅ |
 | SmartList | ❌ | ✅ | ✅ | ⚠️ | ❌ | ❌ | ❌ |

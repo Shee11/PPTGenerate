@@ -664,11 +664,33 @@ class ReactMDXRenderer:
         """
         # Direct MDX passthrough if available (new LLM output format)
         if slide.get("mdx"):
-            return slide["mdx"]
+            mdx = slide["mdx"]
+
+            def replace_invent_component(match):
+                attrs = match.group(1)
+                name_match = re.search(r'name\s*=\s*["\'](\w+)["\']', attrs)
+                if name_match:
+                    component_name = name_match.group(1)
+                    # Force self-closing tag with the extracted name and original attributes
+                    return f"<{component_name} {attrs}/>"
+                return match.group(0)
+
+            # Match <InventComponent ... /> or <InventComponent ... > ... </InventComponent>
+            # Assumes the body is empty/whitespace as per codegen logic
+            pattern = r'<InventComponent\s+([\s\S]*?)(?:/>|>\s*</InventComponent>)'
+            return re.sub(pattern, replace_invent_component, mdx)
         
         # Legacy widget-to-MDX conversion (fallback for old state.json format)
         layout = slide.get("layout", "default")
         widgets = slide.get("widgets", {})
+        # Backwards-compat: older/partial states may store widgets as a list.
+        # Normalize to the dict-of-slots shape expected by the renderer.
+        if widgets is None:
+            widgets = {}
+        elif isinstance(widgets, list):
+            widgets = {"content": widgets} if widgets else {}
+        elif not isinstance(widgets, dict):
+            widgets = {}
         theme = slide.get("theme", self.theme)
         
         # Map layout to component
@@ -993,6 +1015,7 @@ class ReactMDXRenderer:
         """
         slides = state.get("slides", [])
         presentation = state.get("presentation", {})
+        generated_components = state.get("generated_components", {})
         
         # MDX header with imports
         header_lines = [
@@ -1007,12 +1030,21 @@ class ReactMDXRenderer:
             "",
         ]
         
+        # Add imports for generated components
+        if generated_components:
+            header_lines.append("// Generated Components")
+            for comp_id, comp_data in generated_components.items():
+                comp_name = comp_data.get("name", "")
+                if comp_name:
+                    header_lines.append(f"import {{ {comp_name} }} from './generated_components/{comp_name}';")
+            header_lines.append("")
+        
         # Render each slide
         slide_sections = []
         for i, slide in enumerate(slides):
-            slide_mdx = self.render_slide(slide)
             slide_sections.append(f"{{/* Slide {i + 1} */}}")
-            slide_sections.append(slide_mdx)
+            # render_slide handles both raw state and pre-existing MDX (with transformations)
+            slide_sections.append(self.render_slide(slide))
             slide_sections.append("")
         
         return "\n".join(header_lines + slide_sections)

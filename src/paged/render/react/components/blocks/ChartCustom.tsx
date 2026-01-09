@@ -513,9 +513,9 @@ const ScatterParadigm: React.FC<ParadigmProps> = ({ data, colors, showGrid, Shap
   }));
   
   // Custom shape renderer
-  const renderShape = (props: any) => {
+  const renderShape = (props: any): React.ReactElement => {
     const { cx, cy, payload } = props;
-    if (typeof cx !== 'number' || typeof cy !== 'number') return null;
+    if (typeof cx !== 'number' || typeof cy !== 'number') return <g />;
     const colorIndex = scatterData.findIndex(d => d.label === payload?.label);
     return (
       <ShapeComponent 

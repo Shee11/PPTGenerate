@@ -1,6 +1,8 @@
 """LLM client utilities for Azure OpenAI integration."""
 import os
 import time
+import json
+from datetime import datetime
 from functools import lru_cache
 from typing import Optional
 from openai import AzureOpenAI
@@ -14,7 +16,11 @@ load_dotenv()
 @lru_cache(maxsize=1)
 def get_llm_client() -> AzureOpenAI:
     """
-    Get singleton Azure OpenAI client instance using Azure CLI credentials.
+    Get singleton Azure OpenAI client instance.
+
+    Auth methods (in priority order):
+    1) API key via `AZURE_OPENAI_API_KEY`
+    2) Azure CLI credential via `az login`
     
     Returns:
         AzureOpenAI: Configured client instance
@@ -31,17 +37,24 @@ def get_llm_client() -> AzureOpenAI:
             "AZURE_OPENAI_ENDPOINT must be set"
         )
     
-    # Use Azure CLI credentials with token provider
+    api_key = os.getenv("AZURE_OPENAI_API_KEY")
+    if api_key:
+        return AzureOpenAI(
+            azure_endpoint=endpoint,
+            api_key=api_key,
+            api_version=api_version,
+        )
+
     credential = AzureCliCredential()
     token_provider = get_bearer_token_provider(
         credential,
-        "https://cognitiveservices.azure.com/.default"
+        "https://cognitiveservices.azure.com/.default",
     )
-    
+
     return AzureOpenAI(
         azure_endpoint=endpoint,
         azure_ad_token_provider=token_provider,
-        api_version=api_version
+        api_version=api_version,
     )
 
 
@@ -81,6 +94,15 @@ def call_llm(
     """
     client = get_llm_client()
     
+    # Apply UI prompt overrides if set (from ui.py when running steps)
+    override_sys = os.getenv("LLM_OVERRIDE_SYSTEM_PROMPT")
+    if override_sys and override_sys.strip():
+        system_prompt = override_sys.strip()
+    
+    override_user = os.getenv("LLM_OVERRIDE_USER_PROMPT")
+    if override_user and override_user.strip():
+        user_prompt = override_user.strip()
+    
     # Prepare API call parameters
     params = {
         "model": deployment,
@@ -111,6 +133,26 @@ def call_llm(
     last_exception = None
     for attempt in range(max_retries + 1):
         try:
+            trace_file = os.getenv("LLM_TRACE_FILE")
+            trace_step = os.getenv("LLM_TRACE_STEP")
+            if trace_file:
+                try:
+                    sent_record = {
+                        "ts": datetime.utcnow().isoformat() + "Z",
+                        "step": trace_step,
+                        "event": "sent",
+                        "deployment": deployment,
+                        "attempt": attempt,
+                        "system_prompt": system_prompt,
+                        "user_prompt": user_prompt,
+                        "response_format": response_format,
+                    }
+                    with open(trace_file, "a", encoding="utf-8") as f:
+                        f.write(json.dumps(sent_record, ensure_ascii=False) + "\n")
+                except Exception:
+                    # Tracing must never break generation.
+                    pass
+
             response = client.chat.completions.create(**params)
             content = response.choices[0].message.content
             
@@ -121,6 +163,23 @@ def call_llm(
                 logger.error(f"Full response: {response}")
                 raise ValueError(f"LLM returned empty content. Finish reason: {response.choices[0].finish_reason}")
             
+            if trace_file:
+                try:
+                    record = {
+                        "ts": datetime.utcnow().isoformat() + "Z",
+                        "step": trace_step,
+                        "event": "response",
+                        "deployment": deployment,
+                        "attempt": attempt,
+                        "response": content,
+                        "response_format": response_format,
+                    }
+                    with open(trace_file, "a", encoding="utf-8") as f:
+                        f.write(json.dumps(record, ensure_ascii=False) + "\n")
+                except Exception:
+                    # Tracing must never break generation.
+                    pass
+
             return content
         except TypeError as e:
             # If max_reasoning_tokens is not supported, retry without it
