@@ -5,12 +5,13 @@
  * Maps semantic meaning (start, end, database, decision) to visual styles.
  */
 
-import type { Stylesheet } from 'cytoscape';
+// import type { StylesheetCSS } from 'cytoscape';
 
 /**
  * Base diagram theme - professional, clean aesthetic
  */
-export const diagramTheme: Stylesheet[] = [
+// Use 'any' to avoid type issues with different cytoscape versions
+export const diagramTheme: any[] = [
   // ==========================================================================
   // Global Node Styles
   // ==========================================================================
@@ -313,7 +314,7 @@ export const diagramTheme: Stylesheet[] = [
 /**
  * Dark theme variant
  */
-export const diagramThemeDark: Stylesheet[] = [
+export const diagramThemeDark: any[] = [
   // Override base styles for dark mode
   {
     selector: 'node',

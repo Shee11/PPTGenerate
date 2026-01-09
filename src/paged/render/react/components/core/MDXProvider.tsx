@@ -29,6 +29,12 @@ import { SmartList } from '@/components/blocks/SmartList';
 import { ChartBar } from '@/components/blocks/ChartBar';
 import { ChartLine } from '@/components/blocks/ChartLine';
 import { ChartPie } from '@/components/blocks/ChartPie';
+import { ChartArea } from '@/components/blocks/ChartArea';
+import { ChartBubble } from '@/components/blocks/ChartBubble';
+import { ChartRadar } from '@/components/blocks/ChartRadar';
+import { ChartPolar } from '@/components/blocks/ChartPolar';
+import { ChartCustom } from '@/components/blocks/ChartCustom';
+import { BarStats } from '@/components/blocks/BarStats';
 import { MetricGroup, Metric } from '@/components/blocks/MetricGroup';
 import { BigNum } from '@/components/blocks/BigNum';
 import { TableData } from '@/components/blocks/TableData';
@@ -81,6 +87,12 @@ export const mdxComponents = {
   ChartBar,
   ChartLine,
   ChartPie,
+  ChartArea,
+  ChartBubble,
+  ChartRadar,
+  ChartPolar,
+  ChartCustom,
+  BarStats,
   MetricGroup,
   BigNum,
   TableData,

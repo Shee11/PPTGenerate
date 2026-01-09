@@ -11,6 +11,9 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { MDXRemote, MDXRemoteSerializeResult } from 'next-mdx-remote';
 import { mdxComponents } from '@/components/core/MDXProvider';
 import { SlideContainer, SlideWrapper, SlideNavigation } from '@/components/core';
+import { useTheme } from '@/components/core/ThemeContext';
+import { ThemeSelector } from '@/components/core/ThemeSelector';
+import type { ThemeName } from '@/utils/types';
 
 // =============================================================================
 // Types
@@ -76,6 +79,9 @@ export default function SlidesPage(): JSX.Element {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [outputPath, setOutputPath] = useState<string>('golden_set_mdx');
+  
+  // Get theme setter from context to apply theme from state.json
+  const { setTheme } = useTheme();
 
   // Get path from URL query parameter - runs on mount and when URL changes
   useEffect(() => {
@@ -105,8 +111,16 @@ export default function SlidesPage(): JSX.Element {
           throw new Error('No slides found in response');
         }
 
-        console.log(`Loaded ${data.slides.length} slides from ${data.source} (path: ${outputPath})`);
+        console.log(`Loaded ${data.slides.length} slides from ${data.source} (path: ${outputPath}, theme: ${data.theme})`);
         setSlides(data.slides);
+        
+        // Apply theme from state.json (set by --mdx-theme CLI flag)
+        const validThemes: ThemeName[] = ['business', 'cyber', 'minimal', 'academic', 'creative', 'duolingo', 'dark'];
+        if (data.theme && validThemes.includes(data.theme as ThemeName)) {
+          setTheme(data.theme as ThemeName);
+          console.log(`Applied theme: ${data.theme}`);
+        }
+        
         setLoading(false);
       } catch (err) {
         console.error('Failed to load slides:', err);
@@ -180,6 +194,9 @@ export default function SlidesPage(): JSX.Element {
         totalSlides={slides.length}
         onSlideChange={setCurrentSlide}
       />
+      
+      {/* Theme selector - toggle with Shift+T to override theme */}
+      <ThemeSelector />
     </SlideContainer>
   );
 }

@@ -69,6 +69,8 @@ export interface ChartBarProps {
   height?: Size;
   /** Optional integrated callout */
   callout?: CalloutData;
+  /** Bar orientation: vertical (default) or horizontal (barStats style) */
+  orientation?: 'vertical' | 'horizontal';
 }
 
 // =============================================================================
@@ -121,12 +123,14 @@ function getClusterKeys(data: ChartDataPoint[]): { key1: string; key2: string; l
  * 
  * Renders a responsive bar chart with theme-aware colors.
  * Automatically detects clustered data (before/after) and renders grouped bars.
+ * Supports both vertical (default) and horizontal (barStats) orientations.
  * 
  * @param data - Array of { label, value } or { label, before, after } objects
  * @param title - Optional chart title
  * @param subtitle - Optional chart subtitle
  * @param height - Chart height (sm, md, lg, full)
  * @param callout - Optional integrated callout
+ * @param orientation - Bar orientation: 'vertical' (default) or 'horizontal'
  */
 export function ChartBar({
   data,
@@ -134,8 +138,10 @@ export function ChartBar({
   subtitle,
   height = 'md',
   callout,
+  orientation = 'vertical',
 }: ChartBarProps): JSX.Element {
   const chartHeight = heightMap[height] || heightMap.md;
+  const isHorizontal = orientation === 'horizontal';
   
   // Determine callout class based on intent
   const calloutClass = callout 
@@ -167,24 +173,47 @@ export function ChartBar({
         <ResponsiveContainer width="100%" height={chartHeight}>
           <BarChart
             data={validData}
-            margin={{ top: 10, right: 10, left: 0, bottom: 5 }}
+            layout={isHorizontal ? 'vertical' : 'horizontal'}
+            margin={{ top: 10, right: 10, left: isHorizontal ? 80 : 0, bottom: 5 }}
           >
             <CartesianGrid 
               strokeDasharray="3 3" 
               stroke="var(--theme-border)"
-              vertical={false}
+              vertical={isHorizontal}
+              horizontal={!isHorizontal}
             />
-            <XAxis 
-              dataKey="label" 
-              tick={{ fill: 'var(--theme-text-muted)', fontSize: 12 }}
-              axisLine={{ stroke: 'var(--theme-border)' }}
-              tickLine={false}
-            />
-            <YAxis 
-              tick={{ fill: 'var(--theme-text-muted)', fontSize: 12 }}
-              axisLine={false}
-              tickLine={false}
-            />
+            {isHorizontal ? (
+              <>
+                <XAxis 
+                  type="number"
+                  tick={{ fill: 'var(--theme-text-muted)', fontSize: 12 }}
+                  axisLine={{ stroke: 'var(--theme-border)' }}
+                  tickLine={false}
+                />
+                <YAxis 
+                  type="category"
+                  dataKey="label"
+                  tick={{ fill: 'var(--theme-text-muted)', fontSize: 12 }}
+                  axisLine={false}
+                  tickLine={false}
+                  width={80}
+                />
+              </>
+            ) : (
+              <>
+                <XAxis 
+                  dataKey="label" 
+                  tick={{ fill: 'var(--theme-text-muted)', fontSize: 12 }}
+                  axisLine={{ stroke: 'var(--theme-border)' }}
+                  tickLine={false}
+                />
+                <YAxis 
+                  tick={{ fill: 'var(--theme-text-muted)', fontSize: 12 }}
+                  axisLine={false}
+                  tickLine={false}
+                />
+              </>
+            )}
             <Tooltip
               contentStyle={{
                 backgroundColor: 'var(--theme-surface)',

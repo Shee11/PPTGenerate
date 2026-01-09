@@ -34,42 +34,6 @@ export interface BigNumProps {
 }
 
 // =============================================================================
-// Styles
-// =============================================================================
-
-const styles = {
-  container: {
-    textAlign: 'center' as const,
-    padding: '32px 24px',
-    background: 'var(--surface)',
-    borderRadius: '12px',
-    margin: '8px 0',
-  },
-  value: {
-    fontSize: '64px',
-    fontWeight: 800,
-    color: 'var(--accent)',
-    lineHeight: 1.1,
-  },
-  label: {
-    fontSize: '20px',
-    fontWeight: 600,
-    color: 'var(--text)',
-    marginTop: '8px',
-  },
-  sublabel: {
-    fontSize: '16px',
-    color: 'var(--muted)',
-    marginTop: '4px',
-  },
-  icon: {
-    fontSize: '32px',
-    marginBottom: '8px',
-    opacity: 0.8,
-  },
-};
-
-// =============================================================================
 // Component
 // =============================================================================
 
@@ -80,32 +44,33 @@ export function BigNum({
   icon,
   accentColor 
 }: BigNumProps): JSX.Element {
-  const valueStyle = accentColor 
-    ? { ...styles.value, color: accentColor }
-    : styles.value;
-
+  
   return (
-    <div className="big-num" style={styles.container}>
+    <div className="big-num">
       {icon && (
-        <div style={styles.icon} aria-hidden="true">
+        <div className="big-num-icon" aria-hidden="true">
           {icon}
         </div>
       )}
-      <div className="big-num-value" style={valueStyle}>
+      <div 
+        className="big-num-value"
+        style={accentColor ? { color: accentColor } : undefined}
+      >
         {value}
       </div>
       {label && (
-        <div className="big-num-label" style={styles.label}>
+        <div className="big-num-label">
           {label}
         </div>
       )}
       {sublabel && (
-        <div className="big-num-sublabel" style={styles.sublabel}>
+        <div className="big-num-sublabel">
           {sublabel}
         </div>
       )}
     </div>
   );
 }
+
 
 export default BigNum;

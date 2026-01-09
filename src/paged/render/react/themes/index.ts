@@ -6,6 +6,7 @@
  */
 
 import type { ThemeDefinition, ThemeName, VibeLevel } from '@/utils/types';
+import { baseTheme } from './base';
 import { businessTheme } from './business';
 import { cyberTheme } from './cyber';
 import { minimalTheme } from './minimal';
@@ -30,6 +31,7 @@ import {
 
 /** All available themes */
 export const themes: Record<ThemeName, ThemeDefinition> = {
+  base: baseTheme,
   business: businessTheme,
   cyber: cyberTheme,
   minimal: minimalTheme,
@@ -73,7 +75,7 @@ export function getVibeMultiplier(vibe: VibeLevel): number {
 
 /** Generate CSS custom properties from a theme definition */
 export function themeToCSSVariables(theme: ThemeDefinition): Record<string, string> {
-  return {
+  const variables: Record<string, string> = {
     // Colors
     '--theme-bg': theme.colors.bg,
     '--theme-surface': theme.colors.surface,
@@ -105,10 +107,32 @@ export function themeToCSSVariables(theme: ThemeDefinition): Record<string, stri
     '--theme-spacing-margin': theme.spacing.margin,
     
     // Visuals
-    '--theme-radius': theme.visuals.radius,
-    '--theme-shadow': theme.visuals.shadow,
+    '--theme-radius': typeof theme.visuals.radius === 'string' ? theme.visuals.radius : theme.visuals.radius.md,
+    '--theme-radius-sm': typeof theme.visuals.radius === 'string' ? theme.visuals.radius : theme.visuals.radius.sm,
+    '--theme-radius-md': typeof theme.visuals.radius === 'string' ? theme.visuals.radius : theme.visuals.radius.md,
+    '--theme-radius-lg': typeof theme.visuals.radius === 'string' ? theme.visuals.radius : theme.visuals.radius.lg,
+    '--theme-radius-xl': typeof theme.visuals.radius === 'string' ? theme.visuals.radius : (theme.visuals.radius.xl || theme.visuals.radius.lg),
+    '--theme-radius-full': typeof theme.visuals.radius === 'string' ? '9999px' : (theme.visuals.radius.full || '9999px'),
+
+    '--theme-shadow': typeof theme.visuals.shadow === 'string' ? theme.visuals.shadow : theme.visuals.shadow.md,
+    '--theme-shadow-sm': typeof theme.visuals.shadow === 'string' ? theme.visuals.shadow : theme.visuals.shadow.sm,
+    '--theme-shadow-md': typeof theme.visuals.shadow === 'string' ? theme.visuals.shadow : theme.visuals.shadow.md,
+    '--theme-shadow-lg': typeof theme.visuals.shadow === 'string' ? theme.visuals.shadow : theme.visuals.shadow.lg,
+    
     '--theme-border-width': theme.visuals.borderWidth,
   };
+
+  // Component Overrides
+  if (theme.components?.metricCard) {
+    if (theme.components.metricCard.radius) {
+      variables['--comp-metric-card-radius'] = theme.components.metricCard.radius;
+    }
+    if (theme.components.metricCard.bg) {
+      variables['--comp-metric-card-bg'] = theme.components.metricCard.bg;
+    }
+  }
+
+  return variables;
 }
 
 /** Convert CSS variables to inline style string */
