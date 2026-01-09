@@ -41,10 +41,26 @@ export const businessTheme: ThemeDefinition = {
     margin: '1rem',
   },
   visuals: {
-    radius: '0.5rem',
-    shadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+    radius: {
+      sm: '2px',
+      md: '6px',
+      lg: '8px',
+      xl: '12px',
+      full: '9999px',
+    },
+    shadow: {
+      sm: '0 1px 2px rgba(0, 0, 0, 0.05)',
+      md: '0 1px 3px rgba(0, 0, 0, 0.1)',
+      lg: '0 4px 6px rgba(0, 0, 0, 0.1)',
+      none: 'none',
+    },
     borderWidth: '1px',
   },
+  components: {
+    metricCard: {
+      radius: '0.5rem',
+    }
+  }
 };
 
 export default businessTheme;

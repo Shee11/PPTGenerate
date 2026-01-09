@@ -61,27 +61,19 @@ export function ImageBlock({
   fit = 'contain',
   rounded = true,
 }: ImageBlockProps): JSX.Element {
-  // Size styles
-  const sizeStyles: Record<Size, React.CSSProperties> = {
-    sm: { maxWidth: '50%', maxHeight: '200px' },
-    md: { maxWidth: '75%', maxHeight: '300px' },
-    lg: { maxWidth: '100%', maxHeight: '400px' },
-    full: { width: '100%', height: 'auto' },
-  };
   
   return (
     <figure 
       className={`image-block image-${size}`}
       data-size={size}
     >
-      <div className="image-wrapper" style={sizeStyles[size]}>
+      <div className="image-wrapper">
         <img
           src={src}
           alt={alt}
           className={`image-content ${rounded ? 'image-rounded' : ''}`}
           style={{ 
-            objectFit: fit,
-            borderRadius: rounded ? 'var(--vibe-radius)' : 0,
+            objectFit: fit
           }}
           loading="lazy"
         />
@@ -95,6 +87,7 @@ export function ImageBlock({
     </figure>
   );
 }
+
 
 // =============================================================================
 // Exports

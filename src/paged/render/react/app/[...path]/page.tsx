@@ -183,10 +183,8 @@ export default function DynamicSlidesPage(): JSX.Element {
   }
 
   return (
-    <SlideContainer 
-      currentSlide={currentSlide} 
-      onSlideChange={setCurrentSlide}
-      totalSlides={slides.length}
+    <SlideContainer
+      currentSlide={currentSlide}
     >
       {slides.map((slide, index) => (
         <SlideRenderer

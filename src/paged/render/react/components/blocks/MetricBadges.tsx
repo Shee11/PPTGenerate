@@ -37,57 +37,23 @@ export interface MetricBadgesProps {
 }
 
 // =============================================================================
-// Styles
-// =============================================================================
-
-const styles = {
-  container: {
-    display: 'flex',
-    flexWrap: 'wrap' as const,
-    gap: '10px',
-    margin: '8px 0',
-  },
-  badge: {
-    display: 'inline-flex',
-    alignItems: 'center',
-    gap: '6px',
-    padding: '8px 14px',
-    background: 'var(--surface)',
-    borderRadius: '20px',
-    border: '1px solid rgba(255,255,255,0.1)',
-    fontSize: '14px',
-  },
-  icon: {
-    fontSize: '14px',
-    opacity: 0.8,
-  },
-  label: {
-    color: 'var(--muted)',
-  },
-  value: {
-    fontWeight: 700,
-    color: 'var(--accent)',
-  },
-};
-
-// =============================================================================
 // Component
 // =============================================================================
 
 export function MetricBadges({ badges }: MetricBadgesProps): JSX.Element {
   return (
-    <div className="metric-badges" style={styles.container}>
+    <div className="metric-badges">
       {badges.map((badge, index) => (
-        <div key={index} className="metric-badge" style={styles.badge}>
+        <div key={index} className="metric-badge">
           {badge.icon && (
-            <span className="badge-icon" style={styles.icon} aria-hidden="true">
+            <span className="badge-icon" aria-hidden="true">
               {badge.icon}
             </span>
           )}
-          <span className="badge-label" style={styles.label}>
+          <span className="badge-label">
             {badge.label}
           </span>
-          <span className="badge-value" style={styles.value}>
+          <span className="badge-value">
             {badge.value}
           </span>
         </div>
@@ -97,3 +63,4 @@ export function MetricBadges({ badges }: MetricBadgesProps): JSX.Element {
 }
 
 export default MetricBadges;
+

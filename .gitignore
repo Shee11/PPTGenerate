@@ -64,3 +64,6 @@ dist/
 .next/
 out/
 slidev_build/
+
+# Claude
+.claude/

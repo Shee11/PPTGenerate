@@ -113,6 +113,7 @@ export interface CardData {
 
 /** Theme name identifiers */
 export type ThemeName = 
+  | 'base'
   | 'business' 
   | 'cyber' 
   | 'minimal' 
@@ -164,13 +165,44 @@ export interface ThemeSpacing {
   gap: string;
   padding: string;
   margin: string;
+  sm?: string;
+  md?: string;
+  lg?: string;
+  xl?: string;
 }
 
 /** Theme visual settings */
 export interface ThemeVisuals {
-  radius: string;
-  shadow: string;
+  radius: string | {
+    sm: string;
+    md: string;
+    lg: string;
+    xl: string;
+    full: string;
+  };
+  shadow: string | {
+    sm: string;
+    md: string;
+    lg: string;
+    none: string;
+  };
   borderWidth: string;
+  borderStyle?: string;
+}
+
+/** Component specific theme overrides */
+export interface ThemeComponentOverrides {
+  metricCard?: {
+    radius?: string;
+    bg?: string;
+    border?: string;
+    shadow?: string;
+  };
+  chart?: {
+    bg?: string;
+    radius?: string;
+  };
+  // Add other components as needed
 }
 
 /** Complete theme definition */
@@ -181,6 +213,7 @@ export interface ThemeDefinition {
   typography: ThemeTypography;
   spacing: ThemeSpacing;
   visuals: ThemeVisuals;
+  components?: ThemeComponentOverrides;
 }
 
 // =============================================================================
