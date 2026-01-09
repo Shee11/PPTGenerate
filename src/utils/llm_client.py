@@ -94,6 +94,15 @@ def call_llm(
     """
     client = get_llm_client()
     
+    # Apply UI prompt overrides if set (from ui.py when running steps)
+    override_sys = os.getenv("LLM_OVERRIDE_SYSTEM_PROMPT")
+    if override_sys and override_sys.strip():
+        system_prompt = override_sys.strip()
+    
+    override_user = os.getenv("LLM_OVERRIDE_USER_PROMPT")
+    if override_user and override_user.strip():
+        user_prompt = override_user.strip()
+    
     # Prepare API call parameters
     params = {
         "model": deployment,

@@ -1,0 +1,1225 @@
+```mdx
+<Slide id="slide_01" rank={1} story="HOOK" atoms={["fact_001"]}>
+  <LayoutCover theme="dark">
+    <Heading level={1}>Blend: Rewiring How We Build AI</Heading>
+    <Text variant="lead">
+      Once a year, product and design leaders align on AI direction, quality bars, and how PM roles must evolve.
+    </Text>
+    <QuoteBlock id="quote_blend_001" author="Blend 2026">
+      A focused forum to reset how we ship AI products.
+    </QuoteBlock>
+  </LayoutCover>
+</Slide>
+
+<Slide id="slide_02" rank={2} story="CONTEXT" atoms={["fact_002", "concept_001"]}>
+  <LayoutDashboard>
+    <Header>
+      <Heading level={2}>Recap is a breakout AI business driver</Heading>
+    </Header>
+    <Main>
+      <Text variant="lead">
+        Teams Recap is already one of the biggest contributors to the Copilot business, but growth must be measured in real value, not vanity usage.
+      </Text>
+      <MetricGroup id="metrics_recap_001" cols={3}>
+        <Metric value="Top 3" label="Copilot revenue driver"/>
+        <Metric value="Teams" label="Flagship AI surface"/>
+        <Metric value="Recap" label="Core meeting habit"/>
+      </MetricGroup>
+      <ChartBar
+        id="chart_value_001"
+        title="Value vs vanity metrics"
+        data={[
+          { label: "Raw recap opens", value: 100 },
+          { label: "Retained users", value: 65 },
+          { label: "Copilot attach", value: 70 },
+          { label: "Revenue impact", value: 80 }
+        ]}
+      />
+    </Main>
+    <Sidebar>
+      <SmartList
+        id="list_value_001"
+        items={[
+          "Optimize for retention and attach, not clicks",
+          "Tie Recap success directly to Copilot business impact",
+          "Use value metrics to prioritize AI investments",
+          "Retire shallow usage goals that don’t change behavior"
+        ]}
+      />
+      <Callout intent="info" title="Principle: Build for value">
+        Anchor Recap decisions on durable value signals, not large but meaningless counts.
+      </Callout>
+    </Sidebar>
+  </LayoutDashboard>
+</Slide>
+
+<Slide id="slide_03" rank={3} story="TENSION" atoms={["tension_001", "concept_002"]}>
+  <LayoutSplit ratio="2:1">
+    <Left>
+      <Heading level={2}>Four recap experiences, one confused user</Heading>
+      <ProcessStrip
+        id="process_recap_001"
+        items={[
+          "Recap AI summary",
+          "Facilitator loop notes",
+          "Copilot detailed recap",
+          "Other recap surfaces"
+        ]}
+      />
+      <Text variant="lead">
+        Today, users see multiple recap flavors with unclear differences and triggers.
+      </Text>
+      <Callout intent="warning" title="User problem">
+        Fragmented recap surfaces erode trust and make it harder to form a single recap habit.
+      </Callout>
+    </Left>
+    <Right>
+      <Heading level={2}>Unify recap with coherence and personalization</Heading>
+      <NetworkGraph
+        id="diagram_recap_001"
+        type="network"
+        direction="TB"
+        size="medium"
+        title="Coherent recap architecture"
+      >
+        <Node id="meetings" label="Meetings" className="source" />
+        <Node id="sox" label="SOX notes & storage" className="platform" />
+        <Node id="recap" label="Recap" className="experience" />
+        <Node id="facilitator" label="Facilitator" className="experience" />
+        <Node id="copilot" label="Teams Copilot" className="experience" />
+        <Edge source="meetings" target="sox" />
+        <Edge source="sox" target="recap" />
+        <Edge source="sox" target="facilitator" />
+        <Edge source="sox" target="copilot" />
+      </NetworkGraph>
+      <Text>
+        A single recap model feeds Recap, Facilitator, and Copilot, while users personalize summaries and workflows.
+      </Text>
+      <Text variant="caption">
+        SOX owns notes, conversions, and storage as the backbone for all recap experiences.
+      </Text>
+    </Right>
+  </LayoutSplit>
+</Slide>
+
+<Slide id="slide_04" rank={4} story="INSIGHT" atoms={["fact_003", "quote_001", "fact_010"]}>
+  <LayoutStacked>
+    <Heading level={2}>The model output is now the product</Heading>
+    <QuoteBlock id="quote_model_001" author="Han-yi Shaw">
+      The model output is the product.
+    </QuoteBlock>
+    <Text variant="lead">
+      Users experience reasoning quality, not wireframes—so product quality equals model and evaluation quality.
+    </Text>
+    <SmartList
+      id="list_modelproduct_001"
+      items={[
+        "Core experience: prompts, reasoning, and generated content",
+        "UI is necessary, but no longer the primary value",
+        "Specs and mockups support, but don’t define, the product",
+        "PMs must treat model behavior as the central design surface"
+      ]}
+    />
+    <Callout intent="info" title="Shift in design center">
+      Specs, mockups, and scenarios still matter, but the model’s behavior is now the focal point of product design.
+    </Callout>
+  </LayoutStacked>
+</Slide>
+
+<Slide id="slide_05" rank={5} story="METHOD" atoms={["concept_003", "fact_004", "concept_006", "fact_007"]}>
+  <LayoutDashboard>
+    <Header>
+      <Heading level={2}>Model-first, eval-first is the new product loop</Heading>
+    </Header>
+    <Main>
+      <Text variant="lead">
+        PMs must design the model’s behavior up front—defining evals, rubrics, and golden datasets before UI polish.
+      </Text>
+      <ProcessStrip
+        id="process_eval_001"
+        items={[
+          { label: "Define 5-star outputs", status: "done" },
+          { label: "Build golden datasets", status: "active" },
+          { label: "Train LLM judges", status: "pending" },
+          { label: "Monitor regressions", status: "pending" }
+        ]}
+      />
+      <TableData
+        id="table_rubric_001"
+        headers={["Dimension", "5-star definition"]}
+        rows={[
+          ["Precision", "Captures key decisions without noise"],
+          ["Brevity", "Concise, no redundant bullets"],
+          ["Organization", "Clear sections and hierarchy"],
+          ["Correctness", "Accurate facts and attributions"],
+          ["Tone", "Professional, neutral, and inclusive"]
+        ]}
+      />
+    </Main>
+    <Sidebar>
+      <SmartList
+        id="list_evalskills_001"
+        items={[
+          "Move evals from end-of-cycle to front-and-center",
+          "Use rubrics and golden sets to encode quality",
+          "Run online evals continuously pre- and post-GA",
+          "Treat eval literacy as mandatory for AI-first PMs"
+        ]}
+      />
+      <Callout intent="success" title="PM role">
+        PMs lead on defining quality bars and eval pipelines, not just writing specs.
+      </Callout>
+    </Sidebar>
+  </LayoutDashboard>
+</Slide>
+
+<Slide id="slide_06" rank={6} story="TENSION" atoms={["tension_005", "quote_002", "fact_007"]}>
+  <LayoutGrid cols={2}>
+    <Heading level={2}>We think we’re first-wave AI PMs—but we’re behind</Heading>
+    <Text variant="lead">
+      Other orgs have already converted PMs into AI-first practitioners who deeply master models, prompts, and evals.
+    </Text>
+    <CardGroup id="cards_gap_001" columns={2}>
+      <Card
+        title="Today"
+        description="Limited eval literacy; PMs depend on engineers for prompts, scores, and debugging."
+        icon="⏳"
+      />
+      <Card
+        title="Peers"
+        description="PMs directly shape prompts, run evals, and own AI quality outcomes."
+        icon="⚙️"
+      />
+      <Card
+        title="Risk"
+        description="Falling behind AI-native orgs in product quality and speed."
+        icon="⚠️"
+      />
+      <Card
+        title="Opportunity"
+        description="Upskill PMs on rubrics, online evals, and golden datasets now."
+        icon="🚀"
+      />
+    </CardGroup>
+    <Callout intent="warning" title="Urgency">
+      “I just feel like we are already behind.” — Cathy, reflecting on more advanced AI PM practices elsewhere.
+    </Callout>
+  </LayoutGrid>
+</Slide>
+
+<Slide id="slide_07" rank={7} story="ROLE_SHIFT" atoms={["concept_004", "fact_007", "concept_009"]}>
+  <LayoutSplit ratio="1:1">
+    <Left>
+      <Heading level={2}>From feature PMs to AI-first quality leaders</Heading>
+      <SmartList
+        id="list_aipm_001"
+        items={[
+          "Define what a 5-star AI output looks like",
+          "Author rubrics and golden datasets themselves",
+          "Understand tools like Prism and eval frameworks",
+          "Shape prompts and model behavior without waiting on eng"
+        ]}
+      />
+      <Callout intent="info" title="New PM identity">
+        Next-gen PMs manage for outcomes using the model as the primary lever and evals as the primary design tool.
+      </Callout>
+    </Left>
+    <Right>
+      <Heading level={2}>Outcome-first, not feature-first</Heading>
+      <StepList
+        id="steps_outcomes_001"
+        items={[
+          {
+            label: "Start from outcomes",
+            description: "Define user and business results, not feature lists."
+          },
+          {
+            label: "Map to model behavior",
+            description: "Decide how the model must behave to achieve outcomes."
+          },
+          {
+            label: "Design evals",
+            description: "Encode success in rubrics, datasets, and online evals."
+          },
+          {
+            label: "Iterate continuously",
+            description: "Tune prompts and models based on eval signals."
+          }
+        ]}
+      />
+      <Text variant="caption">
+        Specs and UX remain important, but they serve the model-outcome loop instead of leading it.
+      </Text>
+    </Right>
+  </LayoutSplit>
+</Slide>
+
+<Slide id="slide_08" rank={8} story="FLOW" atoms={["fact_004", "concept_007", "concept_010"]}>
+  <LayoutTimeline>
+    <LayoutTimeline.Item year="Before">
+      <Heading level={3}>Eval as a late-stage checkbox</Heading>
+      <Text>
+        Quality checks happen at the end of the lifecycle, with limited rubrics and no golden datasets—too late to shape the model.
+      </Text>
+    </LayoutTimeline.Item>
+    <LayoutTimeline.Item year="Now">
+      <Heading level={3}>Eval moves front-and-center</Heading>
+      <Text>
+        PMs define evals, rubrics, and golden datasets up front, training LLM judges and monitoring regressions before GA.
+      </Text>
+    </LayoutTimeline.Item>
+    <LayoutTimeline.Item year="Ship gate">
+      <Heading level={3}>AIRR: AI Readiness Review</Heading>
+      <Text>
+        New reviews require proof of evals, golden sets, and engineering hooks for continuous AI quality before features ship.
+      </Text>
+    </LayoutTimeline.Item>
+    <LayoutTimeline.Item year="Post-GA">
+      <Heading level={3}>Ninja program and online eyes-on</Heading>
+      <Text>
+        Strategic customers opt in to share real-world issues, enabling rapid iteration based on live AI behavior.
+      </Text>
+    </LayoutTimeline.Item>
+  </LayoutTimeline>
+</Slide>
+
+<Slide id="slide_09" rank={9} story="SOLUTION" atoms={["concept_005", "fact_005", "tension_002"]}>
+  <LayoutSplit ratio="2:1">
+    <Left>
+      <Heading level={2}>Teams AI Workbench: prompt-to-eval in under 30 seconds</Heading>
+      <NetworkGraph
+        id="diagram_workbench_001"
+        type="network"
+        direction="TB"
+        size="medium"
+        title="Continuous AI product-making system"
+      >
+        <Node id="pm" label="PM / Designer" className="role" />
+        <Node id="prompt" label="Prompt change" className="action" />
+        <Node id="workbench" label="AI Workbench" className="platform" />
+        <Node id="evals" label="Eval runs" className="process" />
+        <Node id="scores" label="Scores & Prism views" className="output" />
+        <Edge source="pm" target="prompt" />
+        <Edge source="prompt" target="workbench" />
+        <Edge source="workbench" target="evals" />
+        <Edge source="evals" target="scores" />
+      </NetworkGraph>
+      <Text variant="lead">
+        Any discipline can tweak prompts and see eval results in under 30 seconds, without heavy engineering dependencies.
+      </Text>
+    </Left>
+    <Right>
+      <Heading level={2}>CMDAI eval platform empowers every discipline</Heading>
+      <SmartList
+        id="list_cmdei_001"
+        items={[
+          "PMs run evals and inspect scores directly",
+          "Engineering wires hooks once, then reuses",
+          "Science partners on metrics and judges",
+          "Shared tools replace bespoke debug flows"
+        ]}
+      />
+      <Callout intent="success" title="Tension resolved">
+        Self-serve tools remove the bottleneck where PMs must go through engineers to debug bad responses or see eval scores.
+      </Callout>
+    </Right>
+  </LayoutSplit>
+</Slide>
+
+<Slide id="slide_10" rank={10} story="TRADEOFF" atoms={["tension_004", "tension_003"]}>
+  <LayoutDashboard>
+    <Header>
+      <Heading level={2}>Balancing reasoning quality, latency, and recap styles</Heading>
+    </Header>
+    <Main>
+      <Text variant="lead">
+        Deep reasoning can improve summary quality but introduces unacceptable latency for live meetings, while Catalyst and Recap each outperform the other in different scenarios.
+      </Text>
+      <ChartBar
+        id="chart_latency_001"
+        title="Latency impact of deep reasoning"
+        data={[
+          { label: "Standard reasoning", value: 3 },
+          { label: "Deep reasoning (P75)", value: 11 }
+        ]}
+      />
+      <TableData
+        id="table_recapcompare_001"
+        headers={["Scenario", "Catalyst", "Recap"]}
+        rows={[
+          ["Exec-style summary", "Often sharper and more concise", "Sometimes misses executive framing"],
+          ["Irrelevant details", "Can include extra noise", "More likely to stay on-topic"],
+          ["Consistency", "Varies by meeting", "Varies by meeting"]
+        ]}
+      />
+    </Main>
+    <Sidebar>
+      <SmartList
+        id="list_tradeoffs_001"
+        items={[
+          "Use deep reasoning selectively where latency tolerates it",
+          "Define when “executive-style” vs “lean” recap is desired",
+          "Rely on evals to characterize patterns, not anecdotes",
+          "Tune prompts to harmonize behaviors across recap systems"
+        ]}
+      />
+      <Callout intent="info" title="Design challenge">
+        Optimize recap for both acceptable in-meeting latency and consistently high-quality summaries across engines.
+      </Callout>
+    </Sidebar>
+  </LayoutDashboard>
+</Slide>
+
+<Slide id="slide_11" rank={11} story="METAPHOR" atoms={["visual_002", "fact_006", "visual_001"]}>
+  <LayoutFullBleed>
+    <Heading level={2}>Riding the AI wave with eval as your surfboard</Heading>
+    <QuoteBlock id="quote_surf_001" author="Han-yi Shaw">
+      Models are powerful, unpredictable waves; UI is just the foam. Eval is the surfboard that lets us ride instead of being crushed.
+    </QuoteBlock>
+    <Callout intent="info" title="Design metaphor">
+      Treat evals and prompts like the potter’s hands on the clay: small adjustments continuously reshape the model’s behavior into a usable, safe wave.
+    </Callout>
+  </LayoutFullBleed>
+</Slide>
+
+<Slide id="slide_12" rank={12} story="PRIORITIES" atoms={["fact_009", "concept_007", "concept_003"]}>
+  <LayoutStacked>
+    <Heading level={2}>What changes on Monday for PMs</Heading>
+    <Text variant="lead">
+      AI and fundamentals are priorities one and two; everything else is priority ten. PMs must act accordingly.
+    </Text>
+    <MetricGroup id="metrics_priorities_001" cols={3}>
+      <Metric value="P1" label="AI experiences"/>
+      <Metric value="P2" label="Reliability & A/V"/>
+      <Metric value="P10" label="Everything else"/>
+    </MetricGroup>
+    <SmartList
+      id="list_actions_001"
+      items={[
+        "Reframe specs around model behavior and evals",
+        "Define golden datasets and rubrics for key flows",
+        "Prepare for AIRR alongside UXRS and experience reviews",
+        "Invest time weekly in learning tools like Prism and Workbench"
+      ]}
+    />
+    <Callout intent="success" title="Takeaway">
+      Model-first, eval-first product development is now the core of the PM job, not a side specialization.
+    </Callout>
+  </LayoutStacked>
+</Slide>
+```
+
+---
+
+```mdx
+<Slide id="slide_01" rank={1} story="HOOK" atoms={["fact_001"]}>
+  <LayoutCover theme="dark">
+    <Heading level={1}>Blend 2026: Riding the AI Wave</Heading>
+    <Text variant="lead">
+      A once-a-year forum where product and design leaders align on AI direction, practices, and leadership for the next era of Teams and Copilot.
+    </Text>
+    <QuoteBlock id="quote_hero_001" author="Blend host">
+      Treat this as our annual reset on how we build AI products and lead AI-first teams.
+    </QuoteBlock>
+  </LayoutCover>
+</Slide>
+
+<Slide id="slide_02" rank={2} story="TENSION" atoms={["fact_002", "tension_001", "concept_002"]}>
+  <LayoutSplit ratio="2:1">
+    <Left>
+      <Heading level={2}>Recap is a hit—but the story is messy</Heading>
+      <BigNum id="stat_teams_recap_001" value="Top 3" label="Copilot contributors" trend="+Fast growth"/>
+      <Text variant="lead">
+        Teams Recap is one of the biggest contributors to the Copilot business, alongside Teams Copilot and Facilitator.
+      </Text>
+      <Callout intent="warning" title="Current problem">
+        Four different recap experiences confuse users and fragment value across Recap, Facilitator, Copilot, and other surfaces.
+      </Callout>
+    </Left>
+    <Right>
+      <Heading level={2}>Need: one coherent recap system</Heading>
+      <SmartList
+        id="list_recap_001"
+        items={[
+          "Unify recap behavior across Recap, Facilitator, and Copilot.",
+          "Let users personalize summaries and workflows to their needs.",
+          "Keep SOX as the owner of notes, conversions, and storage.",
+          "Measure success by clarity and trust, not surface count."
+        ]}
+      />
+      <Text variant="caption">
+        Goal: a single mental model for recap, with personalization instead of proliferation of entry points.
+      </Text>
+    </Right>
+  </LayoutSplit>
+</Slide>
+
+<Slide id="slide_03" rank={3} story="INSIGHT" atoms={["fact_003", "quote_001", "visual_002", "fact_006"]}>
+  <LayoutFullBleed backgroundImage="surfing-ai-wave">
+    <Heading level={2}>The model output is the product</Heading>
+    <QuoteBlock id="quote_model_product_001" author="Han-yi Shaw">
+      The model output is the product.
+    </QuoteBlock>
+    <Text variant="lead">
+      Users experience the model’s reasoning and responses, not primarily the UI. Product quality now equates to model and evaluation quality.
+    </Text>
+  </LayoutFullBleed>
+</Slide>
+
+<Slide id="slide_04" rank={4} story="INSIGHT" atoms={["concept_003", "fact_010", "visual_001"]}>
+  <LayoutStacked>
+    <Heading level={2}>Model-first, eval-first is the new product center</Heading>
+    <Text variant="lead">
+      Product development must shift so model behavior—not specs, mockups, or feature lists—becomes the core product experience.
+    </Text>
+    <SmartList
+      id="list_model_first_001"
+      items={[
+        "PMs deeply understand model capabilities and limitations.",
+        "Evals and golden datasets are defined up front, not at the end.",
+        "Model behavior is iterated continuously, like shaping clay.",
+        "UI supports the model; it is no longer the star of the show."
+      ]}
+    />
+    <Callout intent="info" title="Specs and mocks still matter">
+      Specs, mockups, and scenarios remain necessary, but they are no longer the central focal point. The model and its behavior now occupy that central role.
+    </Callout>
+  </LayoutStacked>
+</Slide>
+
+<Slide id="slide_05" rank={5} story="TENSION" atoms={["tension_005", "quote_002", "fact_009"]}>
+  <LayoutDashboard>
+    <Header>
+      <Heading level={2}>We think we’re first-wave AI PMs—but we’re behind</Heading>
+    </Header>
+    <Main>
+      <Text variant="lead">
+        Other PM orgs have already converted to AI-first practices, deeply mastering models, prompts, and evals while we still treat them as optional.
+      </Text>
+      <MetricGroup id="metrics_ai_org_001" cols={3}>
+        <Metric value="AI = #1" label="Priority" />
+        <Metric value="#1" label="Fundamentals" />
+        <Metric value="#10" label="Everything else" />
+      </MetricGroup>
+      <Text>
+        AI and fundamentals like A/V quality and reliability are both top priorities. Without rock-solid fundamentals, AI experiences cannot earn trust.
+      </Text>
+    </Main>
+    <Sidebar>
+      <QuoteBlock id="quote_urgency_001" author="Cathy">
+        I just feel like we are already behind.
+      </QuoteBlock>
+      <SmartList
+        id="list_gap_001"
+        items={[
+          "Other orgs: PMs own prompts and evals daily.",
+          "Our org: PMs still depend on eng for basic evals.",
+          "Risk: slower learning loops and weaker AI quality."
+        ]}
+      />
+      <Callout intent="warning" title="Imperative">
+        Accelerate AI PM upskilling and eval-first workflows across the org.
+      </Callout>
+    </Sidebar>
+  </LayoutDashboard>
+</Slide>
+
+<Slide id="slide_06" rank={6} story="METHOD" atoms={["fact_004", "concept_006", "fact_007", "concept_007"]}>
+  <LayoutTimeline>
+    <LayoutTimeline.Item year="Past">
+      <Heading level={3}>Eval at the end of the cycle</Heading>
+      <Text>
+        Evaluation happened late, as a final QA step. PMs focused on specs and UI, with little ownership of model behavior or quality metrics.
+      </Text>
+    </LayoutTimeline.Item>
+    <LayoutTimeline.Item year="Now">
+      <Heading level={3}>Eval moves front-and-center</Heading>
+      <Text>
+        Evals, rubrics, and golden datasets are defined up front and used continuously to train LLM judges and monitor regressions pre- and post-GA.
+      </Text>
+    </LayoutTimeline.Item>
+    <LayoutTimeline.Item year="Next">
+      <Heading level={3}>Golden datasets define “5-star” output</Heading>
+      <Text>
+        Teams encode 5-star outputs across precision, brevity, organization, correctness, and tone so eval pipelines can consistently measure and improve AI quality.
+      </Text>
+    </LayoutTimeline.Item>
+    <LayoutTimeline.Item year="Future">
+      <Heading level={3}>AIRR gates AI feature readiness</Heading>
+      <Text>
+        AI Readiness Review requires PMs to show evals, golden datasets, and engineering hooks for continuous AI quality before shipping features.
+      </Text>
+    </LayoutTimeline.Item>
+  </LayoutTimeline>
+</Slide>
+
+<Slide id="slide_07" rank={7} story="METHOD" atoms={["concept_006"]}>
+  <LayoutGrid cols={3}>
+    <Heading level={2}>What does a 5-star AI output look like?</Heading>
+    <CardGroup id="cards_rubric_001" columns={3}>
+      <Card
+        title="Precision"
+        description="Stays tightly on topic, avoids hallucinations, and includes only necessary details."
+        icon="🎯"
+      />
+      <Card
+        title="Brevity"
+        description="Communicates clearly in as few words as possible without losing meaning."
+        icon="✂️"
+      />
+      <Card
+        title="Organization"
+        description="Uses structure—sections, bullets, headings—to make content easy to scan."
+        icon="📚"
+      />
+      <Card
+        title="Correctness"
+        description="Grounded in facts, with accurate references to meeting content and context."
+        icon="✅"
+      />
+      <Card
+        title="Tone"
+        description="Matches audience and scenario, e.g., executive-ready, neutral, or collaborative."
+        icon="🎙️"
+      />
+      <Card
+        title="Consistency"
+        description="Produces similar quality for similar inputs across meetings and users."
+        icon="♻️"
+      />
+    </CardGroup>
+    <Callout intent="info" title="Purpose of golden datasets">
+      Golden datasets and rubrics encode these dimensions so LLM judges and eval pipelines can score and improve AI quality automatically.
+    </Callout>
+  </LayoutGrid>
+</Slide>
+
+<Slide id="slide_08" rank={8} story="TENSION" atoms={["tension_002", "fact_005", "concept_005"]}>
+  <LayoutSplit ratio="1:2">
+    <Left>
+      <Heading level={2}>Today: PMs are blocked on engineering</Heading>
+      <SmartList
+        id="list_blocked_pms_001"
+        items={[
+          "Limited ability to debug bad AI responses.",
+          "Hard to see eval scores in realistic contexts.",
+          "Prompt tweaks require complex, engineer-driven flows.",
+          "Iteration cycles are slow and disempowering."
+        ]}
+      />
+      <Callout intent="warning" title="Impact">
+        PMs cannot directly shape AI outcomes, slowing learning and weakening product quality.
+      </Callout>
+    </Left>
+    <Right>
+      <Heading level={2}>Tomorrow: self-serve AI workbench for everyone</Heading>
+      <Text variant="lead">
+        The Teams AI Workbench and CMDAI eval platform aim to let any discipline change prompts, run evals, and see results in under 30 seconds.
+      </Text>
+      <ProcessStrip
+        id="process_workbench_001"
+        items={[
+          { label: "Change prompt", status: "active" },
+          { label: "Run eval", status: "pending" },
+          { label: "See scores", status: "pending" }
+        ]}
+      />
+      <Text>
+        PMs, engineering, and science all gain direct levers to impact AI outcomes, without heavy engineering dependencies or bespoke debug flows.
+      </Text>
+      <Callout intent="success" title="Design goal">
+        Prompt-change-to-eval in &lt;30 seconds, so PMs can debug, iterate, and own quality directly.
+      </Callout>
+    </Right>
+  </LayoutSplit>
+</Slide>
+
+<Slide id="slide_09" rank={9} story="TENSION" atoms={["tension_004", "tension_003", "concept_010"]}>
+  <LayoutDashboard>
+    <Header>
+      <Heading level={2}>Quality vs. latency: recap trade-offs in the wild</Heading>
+    </Header>
+    <Main>
+      <Text variant="lead">
+        Deep reasoning improves recap quality but can make experiences too slow, while different recap systems behave inconsistently across meetings.
+      </Text>
+      <ChartBar
+        id="chart_latency_001"
+        title="Deep reasoning latency (P75)"
+        data={[
+          { label: "With deep reasoning", value: 11 },
+          { label: "Target in-meeting", value: 3 }
+        ]}
+      />
+      <Text>
+        Enabling deep reasoning in GPT-5.1 by default drives ~9–12s latency, which is unacceptable for live meetings even if reasoning improves.
+      </Text>
+    </Main>
+    <Sidebar>
+      <SmartList
+        id="list_recap_behavior_001"
+        items={[
+          "Catalyst sometimes produces better executive-style summaries.",
+          "In other cases, Recap avoids irrelevant details Catalyst includes.",
+          "Behavior is inconsistent across recap systems and meetings."
+        ]}
+      />
+      <Callout intent="info" title="How we resolve this">
+        Use evals and PM-driven prompt work to understand and harmonize behaviors, defining when each pattern is desirable and tuning deep reasoning usage.
+      </Callout>
+      <Text variant="caption">
+        Post-GA, a “ninja” program with online eyes-on data lets strategic customers share real-world issues for rapid iteration.
+      </Text>
+    </Sidebar>
+  </LayoutDashboard>
+</Slide>
+
+<Slide id="slide_10" rank={10} story="INSIGHT" atoms={["concept_004", "fact_007", "concept_009"]}>
+  <LayoutSplit ratio="1:1">
+    <Left>
+      <Heading level={2}>From feature PMs to AI-first quality leaders</Heading>
+      <Text variant="lead">
+        PMs are expected to become AI-native leaders who define what “5-star” looks like and directly shape model behavior.
+      </Text>
+      <SmartList
+        id="list_ai_pm_skills_001"
+        items={[
+          "Define rubrics, golden datasets, and online evals.",
+          "Understand tools like Prism and eval frameworks.",
+          "Author and refine prompts without relying on eng.",
+          "Monitor regressions pre- and post-GA as a habit."
+        ]}
+      />
+      <Callout intent="info" title="Required knowledge">
+        Lacking concepts like rubrics, online evals, and golden datasets means the org is not truly AI-first.
+      </Callout>
+    </Left>
+    <Right>
+      <Heading level={2}>Manage outcomes, not features or skills</Heading>
+      <QuoteBlock id="quote_outcomes_001" author="Han-yi Shaw">
+        Next-generation PMs must stop identifying as feature or skill PMs and instead manage for outcomes, using the model as the primary lever and evals as the primary design tool.
+      </QuoteBlock>
+      <SmartList
+        id="list_outcome_shift_001"
+        items={[
+          "Start from user outcomes and quality bars.",
+          "Use model behavior as the main tuning lever.",
+          "Design evals as the core product design artifact.",
+          "Treat UI as the foam on top of the AI wave."
+        ]}
+      />
+      <Text variant="caption">
+        The PM craft shifts from shipping features to continuously shaping AI behavior against clear, eval-backed outcome targets.
+      </Text>
+    </Right>
+  </LayoutSplit>
+</Slide>
+
+<Slide id="slide_11" rank={11} story="PRINCIPLE" atoms={["concept_001", "fact_002"]}>
+  <LayoutStacked>
+    <Heading level={2}>Build for value, not vanity metrics</Heading>
+    <Text variant="lead">
+      Recap’s success should be measured by durable value—retention, attach, and contribution to Copilot business—not just shallow usage spikes.
+    </Text>
+    <MetricGroup id="metrics_value_001" cols={3}>
+      <Metric value="Retention" label="Do users come back?" />
+      <Metric value="Attach" label="Does Recap drive Copilot?" />
+      <Metric value="Impact" label="Does it change workflows?" />
+    </MetricGroup>
+    <SmartList
+      id="list_value_principles_001"
+      items={[
+        "Avoid large but meaningless usage counts.",
+        "Tie metrics to user and business outcomes.",
+        "Prioritize depth of use over breadth alone.",
+        "Use evals to connect quality to impact."
+      ]}
+    />
+    <Callout intent="success" title="North star">
+      Success = users trust Recap and Copilot to save time, improve decisions, and become indispensable to how they work.
+    </Callout>
+  </LayoutStacked>
+</Slide>
+
+<Slide id="slide_12" rank={12} story="SUMMARY" atoms={["concept_003", "fact_006", "fact_010"]}>
+  <LayoutCover theme="light">
+    <Heading level={1}>Riding the AI wave, not drowning in it</Heading>
+    <Text variant="lead">
+      Treat the model as the product, evals as your surfboard, and UI as the foam. PMs who master eval-first, model-first craft will define the next era of Teams and Copilot.
+    </Text>
+    <QuoteBlock id="quote_surfboard_001" author="Han-yi Shaw">
+      Eval is the surfboard that lets us ride the AI wave instead of being crushed by it.
+    </QuoteBlock>
+  </LayoutCover>
+</Slide>
+```
+
+---
+
+```mdx
+<Slide id="slide_01" rank={1} story="HOOK" atoms={["fact_001"]}>
+<LayoutCover theme="dark">
+  <Heading level={1}>Blend: Our AI product inflection point</Heading>
+  <Text variant="lead">
+    Once a year, product and design leaders align on <Highlight color="primary">AI direction, practices, and leadership</Highlight> over two focused days.
+  </Text>
+  <QuoteBlock id="quote_001" author="Blend host">
+    Use this forum to reset how we build AI products, not just share status.
+  </QuoteBlock>
+</LayoutCover>
+</Slide>
+
+<Slide id="slide_02" rank={2} story="TENSION" atoms={["tension_001", "concept_002"]}>
+<LayoutSplit ratio="2:1">
+  <Left>
+    <Heading level={2}>Four recap experiences, one confused user</Heading>
+    <InventComponent
+      id="recap-surfaces-map"
+      name="SurfaceClusterMap"
+      intent="mapping recap surfaces and ownership"
+      data={{
+        "surfaces": [
+          {"id": "recap", "label": "Recap AI summary", "owner": "Meetings"},
+          {"id": "facilitator", "label": "Facilitator loop notes", "owner": "SOX"},
+          {"id": "copilot", "label": "Teams Copilot recap", "owner": "Copilot"},
+          {"id": "other", "label": "Other recap surfaces", "owner": "Various"}
+        ],
+        "problems": [
+          "Users can’t tell differences",
+          "Timing and triggers are unclear",
+          "Ownership and data flows are opaque"
+        ],
+        "target_state": {
+          "model": "Unified recap model",
+          "personalization": ["Depth", "Tone", "Format"],
+          "data_owner": "SOX for notes, conversions, storage"
+        }
+      }}
+      visual_logic={{
+        "composition": "center-focused clusters with arrows converging into a unified recap hub",
+        "primary_visual": "labeled bubbles for each surface feeding into a central recap model node",
+        "density": "detailed",
+        "animation": "fade-in-staggered for bubbles, subtle flow along arrows"
+      }}
+      theme_mapping={{
+        "accent_usage": "use distinct accents per surface; unified hub in primary-blue; SOX ownership ring in neutral-strong",
+        "spacing": "tight"
+      }}
+      notes="Render four surface bubbles around a central 'Unified recap' hub; connect each with directional arrows, and show a subtle outer band labeled 'SOX: notes, conversions, storage' to indicate ownership."
+    />
+    <Text variant="lead">
+      Today, Recap, Facilitator, Copilot, and other surfaces behave like separate products, not one coherent recap system.
+    </Text>
+    <Callout intent="warning" title="User impact">
+      Users don’t know <Highlight color="primary">which recap shows up when</Highlight> or why outputs differ.
+    </Callout>
+  </Left>
+  <Right>
+    <Heading level={2}>Target: one recap, many personalizations</Heading>
+    <SmartList
+      id="list_002"
+      items={[
+        "Single recap model powering all surfaces",
+        "Personalization for depth, tone, and structure",
+        "SOX owns notes, conversions, storage",
+        "Surfaces differ in entry points, not core logic"
+      ]}
+    />
+    <Text variant="body">
+      We keep multiple entry points but converge on a <Highlight color="success">shared recap brain</Highlight> that users can trust everywhere.
+    </Text>
+    <Text variant="caption">
+      Source: Teams recap strategy discussion.
+    </Text>
+  </Right>
+</LayoutSplit>
+</Slide>
+
+<Slide id="slide_03" rank={3} story="TENSION" atoms={["tension_005", "quote_002"]}>
+<LayoutDashboard>
+  <Header>
+    <Heading level={2}>We think we’re first-wave AI PMs… but we’re behind</Heading>
+  </Header>
+  <Main>
+    <Text variant="lead">
+      Other orgs have already <Highlight color="primary">converted to AI-first PM practices</Highlight> while we’re still experimenting.
+    </Text>
+    <QuoteBlock id="quote_002" author="Cathy">
+      I just feel like we are already behind.
+    </QuoteBlock>
+    <TableData
+      id="table_003"
+      headers={["Dimension", "Today in Teams", "Leading AI PM orgs"]}
+      rows={[
+        ["Model understanding", "Patchy, PMs rely on experts", "PMs deeply fluent in models and limits"],
+        ["Eval practice", "Ad hoc, late in cycle", "Eval-first, continuous pipelines"],
+        ["Tooling", "Heavy engineer dependency", "Self-serve workbenches for PMs"],
+        ["Identity", "Feature/skill PM mindset", "Outcome + model-lever mindset"]
+      ]}
+    />
+  </Main>
+  <Sidebar>
+    <SmartList
+      id="list_003"
+      items={[
+        "PMs not hands-on with prompts and evals",
+        "Eval literacy not yet baseline skill",
+        "Tooling optimized for engineers, not PMs",
+        "Org identity still feature-first"
+      ]}
+    />
+    <Callout intent="danger" title="Risk">
+      If we don’t transform now, <Highlight color="warning">our AI product quality and velocity</Highlight> will lag peers.
+    </Callout>
+  </Sidebar>
+</LayoutDashboard>
+</Slide>
+
+<Slide id="slide_04" rank={4} story="CONTEXT" atoms={["fact_002", "concept_001"]}>
+<LayoutGrid cols={2}>
+  <Heading level={2}>Recap is a hit—now we must build for value</Heading>
+  <Text variant="lead">
+    Recap is one of the biggest contributors to the <Highlight color="primary">Copilot business</Highlight>, but growth must be measured in impact, not vanity.
+  </Text>
+  <MetricGroup id="metrics_004" cols={2}>
+    <Metric value="Top 3" label="Copilot contributor" />
+    <Metric value="High" label="Recap adoption" />
+    <Metric value="Core" label="AI meeting value" />
+    <Metric value="Rising" label="Exec visibility" />
+  </MetricGroup>
+  <CardGroup id="cards_004" columns={2}>
+    <Card
+      title="Vanity metrics"
+      description="Raw recap counts, shallow usage, clicks without value."
+      icon="⚠️"
+    />
+    <Card
+      title="Value metrics"
+      description="Retention, attach, and contribution to Copilot revenue."
+      icon="✅"
+    />
+    <Card
+      title="North star"
+      description="Did Recap meaningfully improve the meeting outcome?"
+      icon="⭐"
+    />
+    <Card
+      title="Guardrail"
+      description="Avoid optimizing for large but meaningless numbers."
+      icon="🛑"
+    />
+  </CardGroup>
+</LayoutGrid>
+</Slide>
+
+<Slide id="slide_05" rank={5} story="INSIGHT" atoms={["concept_003", "fact_003", "quote_001", "fact_010"]}>
+<LayoutStacked>
+  <Heading level={2}>Model-first, eval-first: redefining the product</Heading>
+  <Text variant="lead">
+    In AI products, <Highlight color="primary" bold>the model output is the product</Highlight>. UI and specs support it; they’re no longer the center.
+  </Text>
+  <QuoteBlock id="quote_001_main" author="Han-yi Shaw">
+    The model output is the product.
+  </QuoteBlock>
+  <SmartList
+    id="list_005"
+    items={[
+      "Users experience reasoning and responses, not chrome",
+      "Product quality = model + eval quality",
+      "Specs and mockups support, but don’t define, the experience",
+      "PMs must deeply grasp model capabilities and limits"
+    ]}
+  />
+  <Callout intent="info" title="Model-first, eval-first in practice">
+    PMs define evals and golden datasets up front and treat <Highlight color="primary">model behavior</Highlight> as the core product surface.
+  </Callout>
+</LayoutStacked>
+</Slide>
+
+<Slide id="slide_06" rank={6} story="METAPHOR" atoms={["visual_002", "fact_006"]}>
+<LayoutFullBleed>
+  <Heading level={2}>Riding the AI wave: eval as our surfboard</Heading>
+  <QuoteBlock id="quote_006" author="Han-yi Shaw">
+    Eval is the surfboard that lets us ride the AI wave instead of being crushed by it.
+  </QuoteBlock>
+  <InventComponent
+    id="surfing-eval-metaphor"
+    name="SurfingEvalScene"
+    intent="visualizing model-eval-UI relationship"
+    data={{
+      "elements": {
+        "wave": {"label": "AI model", "properties": ["powerful", "unpredictable"]},
+        "surfboard": {"label": "Eval", "properties": ["stability", "control", "steering"]},
+        "surfer": {"label": "PM + team", "actions": ["adjust prompts", "tune rubrics"]},
+        "foam": {"label": "UI", "properties": ["thin layer", "visual polish"]}
+      },
+      "relationships": [
+        {"from": "wave", "to": "surfboard", "type": "forces"},
+        {"from": "surfboard", "to": "surfer", "type": "support"},
+        {"from": "foam", "to": "surfer", "type": "perception"}
+      ],
+      "annotations": [
+        "Eval is the primary design tool",
+        "UI can’t fix a bad wave",
+        "Small eval changes redirect the ride"
+      ]
+    }}
+    visual_logic={{
+      "composition": "center-focused scene with layered depth (wave, board, surfer, foam)",
+      "primary_visual": "stylized ocean wave carrying a labeled surfboard and surfer, with foam overlay tags",
+      "density": "balanced",
+      "animation": "subtle-pulse on surfboard label; slow parallax on wave"
+    }}
+    theme_mapping={{
+      "accent_usage": "primary-blue for wave, success-green for eval board, neutral-light for foam labels",
+      "spacing": "relaxed"
+    }}
+    notes="Ensure labels sit cleanly on each metaphor element; keep eval surfboard visually prominent so the hierarchy 'model → eval → UI' is obvious at a glance."
+  />
+</LayoutFullBleed>
+</Slide>
+
+<Slide id="slide_07" rank={7} story="INSIGHT" atoms={["concept_004", "fact_007", "fact_010"]}>
+<LayoutSplit ratio="1:1">
+  <Left>
+    <Heading level={2}>From feature PMs to AI-first quality leaders</Heading>
+    <Text variant="lead">
+      Next-generation PMs lead on <Highlight color="primary">AI quality</Highlight>, not just feature lists and specs.
+    </Text>
+    <SmartList
+      id="list_007"
+      items={[
+        "Define what a 5-star output looks like",
+        "Craft rubrics and golden datasets",
+        "Shape prompts and model behavior directly",
+        "Use tools like Prism and eval frameworks"
+      ]}
+    />
+    <Callout intent="info" title="Specs still matter">
+      Specs and mockups remain necessary, but <Highlight color="primary">model behavior</Highlight> is now the central design artifact.
+    </Callout>
+  </Left>
+  <Right>
+    <Heading level={2}>Required skills for AI-first PMs</Heading>
+    <StepList
+      id="steps_007"
+      items={[
+        {
+          label: "Eval literacy",
+          description: "Understand online evals, rubrics, golden datasets."
+        },
+        {
+          label: "Hands-on iteration",
+          description: "Change prompts and see impact quickly."
+        },
+        {
+          label: "Quality ownership",
+          description: "Own AI outcomes end-to-end, not just UI."
+        },
+        {
+          label: "Cross-discipline fluency",
+          description: "Collaborate deeply with eng and science."
+        }
+      ]}
+    />
+    <Text variant="caption">
+      Lacking these skills means we’re not truly AI-first, regardless of how many AI features we ship.
+    </Text>
+  </Right>
+</LayoutSplit>
+</Slide>
+
+<Slide id="slide_08" rank={8} story="METHOD" atoms={["concept_006", "fact_004", "concept_007"]}>
+<LayoutDashboard>
+  <Header>
+    <Heading level={2}>Eval-first: golden datasets, rubrics, and AIRR</Heading>
+  </Header>
+  <Main>
+    <Text variant="lead">
+      Eval moves from end-of-cycle checkbox to <Highlight color="primary">front-and-center product method</Highlight>.
+    </Text>
+    <ProcessStrip
+      id="process_008"
+      items={[
+        { label: "Define 5-star", status: "done" },
+        { label: "Build golden set", status: "active" },
+        { label: "Train judges", status: "pending" },
+        { label: "Monitor online", status: "pending" }
+      ]}
+    />
+    <TableData
+      id="table_008"
+      headers={["Dimension", "Example rubric question"]}
+      rows={[
+        ["Precision", "Does the recap avoid hallucinated details?"],
+        ["Brevity", "Is it concise without losing key decisions?"],
+        ["Organization", "Are topics grouped logically?"],
+        ["Correctness", "Are actions and owners accurately captured?"],
+        ["Tone", "Is the tone professional and neutral?"]
+      ]}
+    />
+  </Main>
+  <Sidebar>
+    <SmartList
+      id="list_008"
+      items={[
+        "Golden datasets encode 5-star outputs",
+        "LLM judges score against shared rubrics",
+        "AIRR gates features on eval readiness",
+        "Hooks for continuous pre- and post-GA monitoring"
+      ]}
+    />
+    <Callout intent="success" title="AIRR expectation">
+      PMs must show <Highlight color="primary">evals, golden sets, and monitoring hooks</Highlight> before shipping AI features.
+    </Callout>
+  </Sidebar>
+</LayoutDashboard>
+</Slide>
+
+<Slide id="slide_09" rank={9} story="SOLUTION" atoms={["concept_005", "fact_005", "tension_002"]}>
+<LayoutTimeline>
+  <LayoutTimeline.Item year="Today">
+    <Heading level={3}>PMs blocked by engineer-only tools</Heading>
+    <Text>
+      Debugging bad AI responses and running evals requires engineers and complex flows, slowing iteration and disempowering PMs.
+    </Text>
+    <Callout intent="warning" title="Current pain">
+      Limited self-serve access to prompts, eval scores, and realistic contexts.
+    </Callout>
+  </LayoutTimeline.Item>
+  <LayoutTimeline.Item year="Near term">
+    <Heading level={3}>CMDAI eval platform</Heading>
+    <Text>
+      Shared evaluation platform where PMs, engineering, and science can all change prompts, run evals, and see scores like Prism.
+    </Text>
+    <MetricGroup id="metrics_009" cols={2}>
+      <Metric value="<30s" label="Prompt→eval target" />
+      <Metric value="Multi" label="Disciplines enabled" />
+    </MetricGroup>
+  </LayoutTimeline.Item>
+  <LayoutTimeline.Item year="Vision">
+    <Heading level={3}>Teams AI Workbench</Heading>
+    <Text>
+      Continuous AI product-making system: any discipline can tweak prompts and see eval results in under 30 seconds.
+    </Text>
+    <SmartList
+      id="list_009"
+      items={[
+        "Realistic in-product contexts",
+        "Fast eval feedback loops",
+        "PMs directly impact outcomes"
+      ]}
+    />
+  </LayoutTimeline.Item>
+  <LayoutTimeline.Item year="Future">
+    <Heading level={3}>Self-serve, outcome-driven AI iteration</Heading>
+    <Text>
+      PMs manage for outcomes using the model as the primary lever and evals as the primary design tool, without heavy engineering dependency.
+    </Text>
+  </LayoutTimeline.Item>
+</LayoutTimeline>
+</Slide>
+
+<Slide id="slide_10" rank={10} story="METHOD" atoms={["concept_010", "tension_004", "tension_003"]}>
+<LayoutStacked>
+  <Heading level={2}>Closing the loop: online data and trade-off-aware evals</Heading>
+  <Text variant="lead">
+    Eval-first doesn’t stop at GA; we need <Highlight color="primary">online signals</Highlight> and <Highlight color="primary">trade-off-aware metrics</Highlight>.
+  </Text>
+  <ProcessStrip
+    id="process_010"
+    items={[
+      { label: "Ship with evals", status: "done" },
+      { label: "Collect eyes-on", status: "active" },
+      { label: "Analyze trade-offs", status: "pending" },
+      { label: "Refine prompts", status: "pending" },
+      { label: "Re-eval & roll out", status: "pending" }
+    ]}
+  />
+  <SmartList
+    id="list_010"
+    items={[
+      "Ninja program: strategic customers opt-in to share eyes-on data",
+      "Use real-world failures to drive rapid post-GA iteration",
+      "Balance deep reasoning quality vs. latency for live meetings",
+      "Harmonize behaviors across recap systems via evals"
+    ]}
+  />
+  <Callout intent="info" title="Designing for trade-offs">
+    Eval suites must reflect <Highlight color="primary">latency, quality, and coherence</Highlight> across Catalyst, Recap, and other systems—not just offline accuracy.
+  </Callout>
+</LayoutStacked>
+</Slide>
+
+<Slide id="slide_11" rank={11} story="PRINCIPLES" atoms={["fact_009", "concept_009", "fact_007"]}>
+<LayoutSplit ratio="2:1">
+  <Left>
+    <Heading level={2}>AI and fundamentals: both are P1</Heading>
+    <MetricGroup id="metrics_011" cols={2}>
+      <Metric value="P1" label="AI experiences" />
+      <Metric value="P1" label="A/V fundamentals" />
+      <Metric value="P10" label="Everything else" />
+      <Metric value="100%" label="Reliability bar" />
+    </MetricGroup>
+    <Text variant="lead">
+      AI magic fails if <Highlight color="primary">reliability and A/V quality</Highlight> aren’t rock solid.
+    </Text>
+    <Callout intent="success" title="Non-negotiables">
+      Fundamentals are prerequisites, not trade-offs, for great AI experiences.
+    </Callout>
+  </Left>
+  <Right>
+    <Heading level={2}>Outcome-first PM mindset</Heading>
+    <SmartList
+      id="list_011"
+      items={[
+        "Stop identifying as feature or skill PMs",
+        "Manage for outcomes, not surfaces",
+        "Use the model as the primary lever",
+        "Use evals as the primary design tool"
+      ]}
+    />
+    <Text variant="caption">
+      AI-first PMs own outcomes across fundamentals and AI, not just feature delivery.
+    </Text>
+  </Right>
+</LayoutSplit>
+</Slide>
+
+<Slide id="slide_12" rank={12} story="CLOSE" atoms={["concept_003", "visual_001"]}>
+<LayoutCover theme="light">
+  <Heading level={1}>Your new craft: shaping AI behavior</Heading>
+  <Text variant="lead">
+    Like a potter at the wheel, <Highlight color="primary">small prompt and eval changes</Highlight> can dramatically reshape our AI products.
+  </Text>
+  <InventComponent
+    id="pottery-prompt-metaphor"
+    name="PotteryPromptScene"
+    intent="reinforcing continuous shaping of model behavior"
+    data={{
+      "elements": {
+        "wheel": {"label": "Model", "state": "spinning"},
+        "hands": {"label": "PM prompts + evals", "controls": ["pressure", "angle", "timing"]},
+        "clay": {"label": "AI output", "properties": ["shape", "stability", "finish"]}
+      },
+      "micro_adjustments": [
+        {"control": "pressure", "effect": "more structure vs. more creativity"},
+        {"control": "angle", "effect": "different summary styles"},
+        {"control": "timing", "effect": "when deep reasoning is applied"}
+      ]
+    }}
+    visual_logic={{
+      "composition": "center-focused scene with circular motion emphasis",
+      "primary_visual": "potter’s wheel with hands subtly adjusting the clay form",
+      "density": "sparse",
+      "animation": "slow rotation of wheel; gentle highlight on hands when controls change"
+    }}
+    theme_mapping={{
+      "accent_usage": "primary accents on hands and control labels, neutral tones for wheel and clay",
+      "spacing": "relaxed"
+    }}
+    notes="Keep the hands and their labeled controls visually prominent to emphasize that PM prompt/eval work continuously shapes the model output."
+  />
+</LayoutCover>
+</Slide>
+```

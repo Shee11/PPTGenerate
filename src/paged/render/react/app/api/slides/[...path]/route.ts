@@ -17,12 +17,19 @@ interface Slide {
   mdx?: string;
 }
 
+interface GeneratedComponent {
+  name: string;
+  code?: string;
+  props_interface?: string;
+}
+
 interface StateJson {
   slides?: Slide[];
   presentation?: {
     theme?: string;
     title?: string;
   };
+  generated_components?: Record<string, GeneratedComponent>;
 }
 
 /**
@@ -126,12 +133,16 @@ export async function GET(
       }
     }
     
+    // Get generated components from state.json
+    const generatedComponents = stateJson.generated_components || {};
+    
     return NextResponse.json({
       slides: serializedSlides,
       slideCount: serializedSlides.length,
       source: foundPath,
       theme: stateJson.presentation?.theme || 'default',
       path: outputPath,
+      generatedComponents: generatedComponents,
     });
     
   } catch (error) {

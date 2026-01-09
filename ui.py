@@ -36,7 +36,7 @@ from contextlib import redirect_stderr, redirect_stdout
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 import gradio as gr
 
@@ -244,6 +244,8 @@ def export_progress(
     story_user: str,
     content_sys: str,
     content_user: str,
+    codegen_sys: str,
+    codegen_user: str,
 ) -> Tuple[Session, object, str]:
     """Export current progress to a JSON file and return it for download."""
     session = _ensure_session(session)
@@ -276,6 +278,7 @@ def export_progress(
             "theme": {"system": theme_sys or "", "user": theme_user or ""},
             "story": {"system": story_sys or "", "user": story_user or ""},
             "content": {"system": content_sys or "", "user": content_user or ""},
+            "codegen": {"system": codegen_sys or "", "user": codegen_user or ""},
         },
         "llm_trace": _read_all_trace(trace_path),
     }
@@ -312,6 +315,8 @@ def import_progress(progress_file):
             "",  # story user
             "",  # content sys
             "",  # content user
+            "",  # codegen sys
+            "",  # codegen user
             "",  # constitution_result
             "",  # planner_sent
             "",  # planner_resp
@@ -326,6 +331,8 @@ def import_progress(progress_file):
             "",  # story_slides_display
             "",  # content_sent
             "",  # content_resp
+            "",  # codegen_sent
+            "",  # codegen_resp
         )
     if progress_file is None:
         return _empty("")
@@ -360,7 +367,7 @@ def import_progress(progress_file):
     project = str(sess.get("project") or state_json.get("project") or "react-mdx")
     mdx_theme = str(sess.get("mdx_theme") or state_json.get("mdx_theme") or "business")
 
-    # Restore prompts
+    # Restore prompts from imported file
     prompts = payload.get("prompts") or {}
     def _p(step: str, k: str) -> str:
         v = (prompts.get(step) or {}).get(k)
@@ -376,6 +383,8 @@ def import_progress(progress_file):
     story_user = _p("story", "user")
     content_sys = _p("content", "system")
     content_user = _p("content", "user")
+    codegen_sys = _p("codegen", "system")
+    codegen_user = _p("codegen", "user")
 
     # Restore step outputs from state/trace
     state = PipelineState.load(state_path)
@@ -401,6 +410,8 @@ def import_progress(progress_file):
     story_resp = _format_llm_response(_sr("story"))
     content_sent = _format_llm_sent(_sr("content"))
     content_resp = _format_llm_response(_sr("content"))
+    codegen_sent = _format_llm_sent(_sr("codegen"))
+    codegen_resp = _format_llm_response(_sr("codegen"))
 
     theme_used_llm = bool((theme_sent or "").strip() or (theme_resp or "").strip())
     theme_result_update = gr.update(value="", visible=False)
@@ -419,7 +430,8 @@ def import_progress(progress_file):
     }
 
     atoms_map = _get_atoms_map(session)
-    story_slides_display = _render_slides_html(story_resp, atoms_map, content_mdx=content_resp)
+    generated_components = _get_generated_components(session)
+    story_slides_display = _render_slides_html(story_resp, atoms_map, content_mdx=content_resp, generated_components=generated_components)
 
     return (
         session,
@@ -439,6 +451,8 @@ def import_progress(progress_file):
         story_user,
         content_sys,
         content_user,
+        codegen_sys,
+        codegen_user,
         _constitution_text(state),
         planner_sent,
         planner_resp,
@@ -453,8 +467,9 @@ def import_progress(progress_file):
         story_slides_display,
         content_sent,
         content_resp,
+        codegen_sent,
+        codegen_resp,
     )
-
 
 def _now_id() -> str:
     return datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -763,6 +778,11 @@ def build_default_prompts(session: Session, step: str) -> Tuple[str, str, str]:
         )
         return "[note] Content prompts vary per draft slide; actual prompt is shown after execution.", cfg.system_prompt, base
 
+    if step == "codegen":
+        from src.tools.codegen import CodegenTool
+        tool = CodegenTool()
+        return "[note] Codegen generates React code for <InventComponent> tags. Run after content step.", tool.system_prompt, ""
+
     return "", "", ""
 
 
@@ -785,6 +805,8 @@ def init_session(
     str,
     str,
     str,
+    str,
+    str,
 ]:
     """Create output folder, state.json, trace file, and compute default prompts."""
     if isinstance(source_file, list):
@@ -795,6 +817,8 @@ def init_session(
         empty = ""
         return (
             empty_session,
+            empty,
+            empty,
             empty,
             empty,
             empty,
@@ -841,7 +865,7 @@ def init_session(
     }
 
     defp = {}
-    for step in ["planner", "atoms", "theme", "story", "content"]:
+    for step in ["planner", "atoms", "theme", "story", "content", "codegen"]:
         note, sys_p, user_p = build_default_prompts(session, step)
         defp[step] = (note, sys_p, user_p)
 
@@ -857,6 +881,8 @@ def init_session(
         defp["story"][2],
         defp["content"][1],
         defp["content"][2],
+        defp["codegen"][1],
+        defp["codegen"][2],
     )
 
 
@@ -978,6 +1004,36 @@ def _refresh_predefined_prompt(session: Session, step: str) -> Tuple[str, str]:
         return "", ""
 
 
+def refresh_prompt_planner(session: Session) -> Tuple[str, str]:
+    """Refresh planner prompts to built-in defaults."""
+    return _refresh_predefined_prompt(session, "planner")
+
+
+def refresh_prompt_atoms(session: Session) -> Tuple[str, str]:
+    """Refresh atoms prompts to built-in defaults."""
+    return _refresh_predefined_prompt(session, "atoms")
+
+
+def refresh_prompt_theme(session: Session) -> Tuple[str, str]:
+    """Refresh theme prompts to built-in defaults."""
+    return _refresh_predefined_prompt(session, "theme")
+
+
+def refresh_prompt_story(session: Session) -> Tuple[str, str]:
+    """Refresh story prompts to built-in defaults."""
+    return _refresh_predefined_prompt(session, "story")
+
+
+def refresh_prompt_content(session: Session) -> Tuple[str, str]:
+    """Refresh content prompts to built-in defaults."""
+    return _refresh_predefined_prompt(session, "content")
+
+
+def refresh_prompt_codegen(session: Session) -> Tuple[str, str]:
+    """Refresh codegen prompts to built-in defaults."""
+    return _refresh_predefined_prompt(session, "codegen")
+
+
 def _stream_llm_trace_updates(
     session: Session,
     step: str,
@@ -1092,6 +1148,7 @@ def run_step_todo_llm_stream_with_overrides(
 
     todo = _find_todo(state, todo_type)
     if todo is None:
+        print("Shiyi debug: run_step_todo_llm_stream_with_overrides todo is none")
         yield session, "", ""
         return
 
@@ -1107,6 +1164,7 @@ def run_step_todo_llm_stream_with_overrides(
 
     def _worker():
         try:
+            print("Shiyi debug: run_step_todo_llm_stream_with_overrides worker try")
             print(f"[UI] Starting execution for step: {step} (todo: {todo_type})")
             buf = io.StringIO()
             with redirect_stdout(buf), redirect_stderr(buf):
@@ -1122,6 +1180,8 @@ def run_step_todo_llm_stream_with_overrides(
 
     t = threading.Thread(target=_worker, daemon=True)
     t.start()
+
+    print("Shiyi debug: run_step_todo_llm_stream_with_overrides t start")
 
     pos = int(session.get("trace_pos", 0) or 0)
     records: List[dict] = []
@@ -1197,15 +1257,35 @@ def _get_atoms_map(session: Session) -> Dict[str, str]:
         return {}
 
 
+def _get_generated_components(session: Session) -> Dict[str, Dict[str, Any]]:
+    """Get generated components from state."""
+    try:
+        _, state_path, _ = _session_paths(session)
+        if not state_path.exists():
+            return {}
+        state = PipelineState.load(state_path)
+        return getattr(state, "generated_components", {}) or {}
+    except Exception:
+        return {}
+
+
 def _extract_content_layouts_and_components(content_mdx: str) -> Dict[str, Dict[str, object]]:
     """Best-effort parsing of Content step response to extract per-slide layout + component tags.
 
     The Content step returns MDX/JSX-like markup (not strict XML), so we use regex.
-    Returns: { slide_id: {"layout": str, "components": List[str]} }
+    Returns: { slide_id: {"layout": str, "components": List[str], "invented_components": List[Dict]} }
     """
     text = (content_mdx or "").strip()
     if not text:
         return {}
+
+    # Strip markdown code fences if present (```mdx ... ``` or ```jsx ... ```)
+    # The response may contain MULTIPLE fenced blocks separated by ---, so extract ALL of them
+    fence_pattern = r'```(?:mdx|jsx|xml|html)?\s*\n([\s\S]*?)\n```'
+    fence_matches = re.findall(fence_pattern, text, flags=re.IGNORECASE)
+    if fence_matches:
+        # Combine all fence block contents
+        text = "\n".join(m.strip() for m in fence_matches)
 
     slide_blocks = re.findall(r"<Slide\b([^>]*)>(.*?)</Slide>", text, flags=re.DOTALL | re.IGNORECASE)
     if not slide_blocks:
@@ -1221,10 +1301,37 @@ def _extract_content_layouts_and_components(content_mdx: str) -> Dict[str, Dict[
             continue
 
         # Layout tag (first Layout* component inside Slide)
-        m_layout = re.search(r"<(Layout[A-Za-z0-9_]*)\b", slide_body)
+        m_layout = re.search(r"<(Layout[A-Za-z0-9_\.]*)\b", slide_body)
         layout_name = (m_layout.group(1) if m_layout else "").strip()
 
+        # Extract InventComponent tags with their IDs and intents
+        # Use a more robust pattern that handles nested braces in data={{...}}
+        invented_components: List[Dict[str, str]] = []
+        invent_pattern = r'<InventComponent\s+([\s\S]*?)(?:/>|>\s*</InventComponent>)'
+        for match in re.finditer(invent_pattern, slide_body):
+            attrs_str = match.group(1)
+            comp_info: Dict[str, str] = {}
+            
+            # Extract id
+            id_match = re.search(r'id\s*=\s*["\']([^"\']+)["\']', attrs_str)
+            if id_match:
+                comp_info["id"] = id_match.group(1)
+            
+            # Extract name (new)
+            name_match = re.search(r'name\s*=\s*["\']([^"\']+)["\']', attrs_str)
+            if name_match:
+                comp_info["name"] = name_match.group(1)
+
+            # Extract intent
+            intent_match = re.search(r'intent\s*=\s*["\']([^"\']+)["\']', attrs_str)
+            if intent_match:
+                comp_info["intent"] = intent_match.group(1)
+            
+            if comp_info:
+                invented_components.append(comp_info)
+
         # Components: collect JSX tag names (capitalized). Deduplicate while preserving order.
+        # Exclude InventComponent from regular components list
         tags = re.findall(r"<([A-Z][A-Za-z0-9_]*)\b", slide_body)
         components: List[str] = []
         seen = set()
@@ -1233,22 +1340,34 @@ def _extract_content_layouts_and_components(content_mdx: str) -> Dict[str, Dict[
                 continue
             if t.startswith("Layout"):
                 continue
+            if t == "InventComponent":
+                continue
             if t not in seen:
                 seen.add(t)
                 components.append(t)
 
-        out[slide_id] = {"layout": layout_name, "components": components}
+        out[slide_id] = {
+            "layout": layout_name,
+            "components": components,
+            "invented_components": invented_components,
+        }
 
     return out
 
 
-def _render_slides_html(json_text: str, atoms_map: Dict[str, str], content_mdx: Optional[str] = None) -> str:
+def _render_slides_html(
+    json_text: str,
+    atoms_map: Dict[str, str],
+    content_mdx: Optional[str] = None,
+    generated_components: Optional[Dict[str, Dict[str, Any]]] = None,
+) -> str:
     try:
         data = json.loads(json_text)
         if not isinstance(data, list):
             return "<div style='color:gray;font-style:italic'>Waiting for valid JSON...</div>"
 
         content_info = _extract_content_layouts_and_components(content_mdx or "")
+        generated_components = generated_components or {}
 
         html = """
         <style>
@@ -1257,6 +1376,8 @@ def _render_slides_html(json_text: str, atoms_map: Dict[str, str], content_mdx: 
         .slide-table td { vertical-align: top; padding: 8px; border: 1px solid #444; color: #ccc; }
         .atom-tag { cursor: pointer; color: #60a5fa; text-decoration: underline; margin-right: 6px; display: inline-block; }
         .component-link { color: #60a5fa; text-decoration: underline; display: inline-block; }
+        .invented-pending { color: #f59e0b; font-style: italic; display: inline-block; }
+        .invented-generated { color: #10b981; text-decoration: underline; cursor: pointer; display: inline-block; }
         .atom-abstract { margin-top: 4px; padding: 6px; background: #1f2937; border-radius: 4px; color: #d1d5db; font-size: 0.9em; border-left: 3px solid #60a5fa; }
         details > summary { list-style: none; }
         details > summary::-webkit-details-marker { display: none; }
@@ -1295,15 +1416,66 @@ def _render_slides_html(json_text: str, atoms_map: Dict[str, str], content_mdx: 
             visual_design = _html.escape(str(slide.get("visual_design", "")))
             
             # Layouts + Components from Content step response
+            # 1. Try strict ID match
             content_row = content_info.get(slide_id) if slide_id else None
+
+            # 2. Try normalized ID match (e.g. "slide_1" == "slide_01")
+            if content_row is None and slide_id:
+                try:
+                    def _get_id_num(s):
+                        m = re.search(r"(\d+)$", str(s))
+                        return int(m.group(1)) if m else None
+                    
+                    s_num = _get_id_num(slide_id)
+                    if s_num is not None:
+                        for cid, crow in content_info.items():
+                            if _get_id_num(cid) == s_num:
+                                content_row = crow
+                                break
+                except Exception:
+                
+                    s_num = _get_id_num(slide_id)
+                    if s_num is not None:
+                        for cid, crow in content_info.items():
+                            if _get_id_num(cid) == s_num:
+                                content_row = crow
+                                break
+                except Exception:
+                    pass
+            
             layouts_value = ""
-            components_value = ""
+            components_list: List[str] = []
+            invented_list: List[Dict[str, str]] = []
 
             if isinstance(content_row, dict):
                 layouts_value = str(content_row.get("layout", "") or "")
                 comps = content_row.get("components")
                 if isinstance(comps, list):
-                    components_value = ", ".join(str(c) for c in comps if str(c).strip())
+                    components_list = [str(c) for c in comps if str(c).strip()]
+                invented = content_row.get("invented_components")
+                if isinstance(invented, list):
+                    invented_list = invented
+            
+            # If no content_row found but we have content_info, try to match by position
+            # This handles cases where content IDs differ from story IDs
+            if content_row is None and content_info and rank:
+                # Convert rank to int for position matching
+                try:
+                    rank_int = int(rank)
+                    # Get all content rows sorted by their ID (assumes IDs have numeric suffixes)
+                    sorted_content = sorted(content_info.items(), key=lambda x: x[0])
+                    if 0 < rank_int <= len(sorted_content):
+                        _, crow = sorted_content[rank_int - 1]
+                        if isinstance(crow, dict):
+                            layouts_value = str(crow.get("layout", "") or "")
+                            comps = crow.get("components")
+                            if isinstance(comps, list):
+                                components_list = [str(c) for c in comps if str(c).strip()]
+                            invented = crow.get("invented_components")
+                            if isinstance(invented, list):
+                                invented_list = invented
+                except (ValueError, IndexError):
+                    pass
 
             # Fallback to Story-step layout (if Content layout is unavailable)
             if not layouts_value:
@@ -1325,15 +1497,50 @@ def _render_slides_html(json_text: str, atoms_map: Dict[str, str], content_mdx: 
                     f"</a>"
                 )
 
+            # Build components HTML - regular components
             components_html = ""
-            if components_value:
-                for comp in [c.strip() for c in components_value.split(",") if c.strip()]:
-                    href = f"/component?name={quote(comp)}"
+            for comp in components_list:
+                comp = comp.strip()
+                if not comp:
+                    continue
+                href = f"/component?name={quote(comp)}"
+                components_html += (
+                    f"<div style='margin-bottom:4px'>"
+                    f"<a class='component-link' href='{href}' target='_blank'>"
+                    f"{_html.escape(comp)}"
+                    f"</a>"
+                    f"</div>"
+                )
+            
+            # Build components HTML - invented components
+            for inv in invented_list:
+                inv_id = inv.get("id", "")
+                inv_name = inv.get("name", "")
+                inv_intent = inv.get("intent", "")
+                display_name = inv_name or inv_id or inv_intent or "InventComponent"
+                
+                # Check if this component has been generated
+                if inv_id and inv_id in generated_components:
+                    # Generated - show in green and make clickable
+                    gen_data = generated_components[inv_id]
+                    # If we have a generated name, prefer it, otherwise use invented name/id
+                    gen_name = gen_data.get("name", display_name)
+                    href = f"/component?name={quote(gen_name)}"
                     components_html += (
                         f"<div style='margin-bottom:4px'>"
-                        f"<a class='component-link' href='{href}' target='_blank'>"
-                        f"{_html.escape(comp)}"
+                        f"<a class='invented-generated' href='{href}' target='_blank' title='Generated: {_html.escape(gen_name)}'>"
+                        f"✓ {_html.escape(display_name)}"
                         f"</a>"
+                        f"</div>"
+                    )
+                else:
+                    # Not yet generated - show in amber, not clickable
+                    tooltip = f"intent: {_html.escape(inv_intent)}" if inv_intent else "Awaiting codegen"
+                    components_html += (
+                        f"<div style='margin-bottom:4px'>"
+                        f"<span class='invented-pending' title='{tooltip}'>"
+                        f"⏳ {_html.escape(display_name)}"
+                        f"</span>"
                         f"</div>"
                     )
 
@@ -1374,14 +1581,15 @@ def _render_slides_html(json_text: str, atoms_map: Dict[str, str], content_mdx: 
 
 def run_step_story_and_refresh_stream(session: Session, override_system: Optional[str], override_user: Optional[str]):
     atoms_map = _get_atoms_map(session)
+    generated_components = _get_generated_components(session)
     for session, sent, resp in run_step_todo_llm_stream_with_overrides(
         session, "story", TodoType.STORY, override_system, override_user
     ):
-        table_html = _render_slides_html(resp, atoms_map)
+        table_html = _render_slides_html(resp, atoms_map, generated_components=generated_components)
         yield session, sent, resp, table_html, "", ""
 
     content_sys, content_user = _refresh_predefined_prompt(session, "content")
-    table_html = _render_slides_html(resp, atoms_map)
+    table_html = _render_slides_html(resp, atoms_map, generated_components=generated_components)
     yield session, sent, resp, table_html, content_sys, content_user
 
 
@@ -1465,7 +1673,8 @@ def run_step_content_stream(session: Session, override_system: Optional[str], ov
             records = _read_all_trace(trace_path)
             story_records = [r for r in records if r.get("step") == "story"]
             story_resp = _format_llm_response(story_records)
-            slides_html = _render_slides_html(story_resp, atoms_map, content_mdx=resp)
+            generated_components = _get_generated_components(session)
+            slides_html = _render_slides_html(story_resp, atoms_map, content_mdx=resp, generated_components=generated_components)
         except Exception:
             slides_html = ""
 
@@ -1546,6 +1755,18 @@ def run_step_content_stream_timed(session: Session, override_system: Optional[st
     for session, sent, resp, story_slides in run_step_content_stream(session, override_system, override_user):
         elapsed = f"{(time.perf_counter() - t0):.2f}s"
         yield session, sent, resp, story_slides, elapsed
+
+
+def run_step_codegen_stream(session: Session, override_system: Optional[str], override_user: Optional[str]):
+    """Stream codegen step updates."""
+    return run_step_todo_llm_stream_with_overrides(session, "codegen", TodoType.CODEGEN, override_system, override_user)
+
+
+def run_step_codegen_stream_timed(session: Session, override_system: Optional[str], override_user: Optional[str]):
+    t0 = time.perf_counter()
+    for session, sent, resp in run_step_codegen_stream(session, override_system, override_user):
+        elapsed = f"{(time.perf_counter() - t0):.2f}s"
+        yield session, sent, resp, elapsed
 
 
 def run_step_atoms_and_refresh(session: Session) -> Tuple[Session, str, str, str, str, str, str, str]:
@@ -1674,9 +1895,15 @@ def get_export_preview(session: Session) -> Tuple[Session, str]:
 
     url = f"http://127.0.0.1:3000/{output_dir.name}"
     iframe = (
-        "<div style='margin-bottom:8px'>Preview (React MDX renderer)</div>"
+        "<div style='margin-bottom:8px; display: flex; align-items: center; gap: 12px;'>"
+        "<strong>Preview (React MDX renderer)</strong> "
+        f"<a href=\"{_html.escape(url, quote=True)}\" target=\"_blank\" "
+        "style=\"display: inline-block; padding: 6px 12px; background-color: #2563eb; color: white; "
+        "text-decoration: none; border-radius: 6px; font-size: 0.9em; font-weight: 500;\">"
+        "Open Slides in New Tab ↗</a>"
+        "</div>"
         "<iframe "
-        "style='width:100%;height:85vh;min-height:900px;border:1px solid #ddd;overflow:hidden' "
+        "style='width:100%;height:85vh;min-height:900px;border:1px solid #ddd;overflow:hidden;border-radius:8px;' "
         f"src=\"{_html.escape(url, quote=True)}\"></iframe>"
     )
     return session, iframe
@@ -1765,23 +1992,27 @@ def build_ui() -> gr.Blocks:
         init_btn = gr.Button("Initialize")
 
         gr.Markdown("## 0) planner")
-        with gr.Accordion("Prompts", open=False):
-            planner_default_sys = gr.Code(
-                label="system prompt",
-                language="markdown",
-                lines=8,
-                max_lines=8,
-                elem_classes=["code-fixed"],
-                interactive=True,
-            )
-            planner_default_user = gr.Code(
-                label="user prompt",
-                language="markdown",
-                lines=8,
-                max_lines=8,
-                elem_classes=["code-fixed"],
-                interactive=True,
-            )
+        with gr.Row():
+            with gr.Column(scale=9):
+                with gr.Accordion("Prompts", open=False):
+                    planner_default_sys = gr.Code(
+                        label="system prompt",
+                        language="markdown",
+                        lines=8,
+                        max_lines=8,
+                        elem_classes=["code-fixed"],
+                        interactive=True,
+                    )
+                    planner_default_user = gr.Code(
+                        label="user prompt",
+                        language="markdown",
+                        lines=8,
+                        max_lines=8,
+                        elem_classes=["code-fixed"],
+                        interactive=True,
+                    )
+            with gr.Column(scale=1, min_width=50):
+                planner_refresh = gr.Button("🔄", elem_classes=["refresh-btn"])
         with gr.Row():
             with gr.Column(scale=9, min_width=160):
                 planner_run = gr.Button("0) Run planner")
@@ -1798,23 +2029,27 @@ def build_ui() -> gr.Blocks:
         constitution_result = gr.Textbox(label="constitution result", lines=8, max_lines=8)
 
         gr.Markdown("## 2) atoms")
-        with gr.Accordion("Prompts", open=False):
-            atoms_default_sys = gr.Code(
-                label="system prompt",
-                language="markdown",
-                lines=8,
-                max_lines=8,
-                elem_classes=["code-fixed"],
-                interactive=True,
-            )
-            atoms_default_user = gr.Code(
-                label="user prompt",
-                language="markdown",
-                lines=8,
-                max_lines=8,
-                elem_classes=["code-fixed"],
-                interactive=True,
-            )
+        with gr.Row():
+            with gr.Column(scale=9):
+                with gr.Accordion("Prompts", open=False):
+                    atoms_default_sys = gr.Code(
+                        label="system prompt",
+                        language="markdown",
+                        lines=8,
+                        max_lines=8,
+                        elem_classes=["code-fixed"],
+                        interactive=True,
+                    )
+                    atoms_default_user = gr.Code(
+                        label="user prompt",
+                        language="markdown",
+                        lines=8,
+                        max_lines=8,
+                        elem_classes=["code-fixed"],
+                        interactive=True,
+                    )
+            with gr.Column(scale=1, min_width=50):
+                atoms_refresh = gr.Button("🔄", elem_classes=["refresh-btn"])
         with gr.Row():
             with gr.Column(scale=9, min_width=160):
                 atoms_run = gr.Button("2) Run atoms")
@@ -1833,23 +2068,27 @@ def build_ui() -> gr.Blocks:
         )
 
         gr.Markdown("## 3) theme")
-        with gr.Accordion("Prompts", open=False):
-            theme_default_sys = gr.Code(
-                label="system prompt",
-                language="markdown",
-                lines=8,
-                max_lines=8,
-                elem_classes=["code-fixed"],
-                interactive=True,
-            )
-            theme_default_user = gr.Code(
-                label="user prompt",
-                language="markdown",
-                lines=8,
-                max_lines=8,
-                elem_classes=["code-fixed"],
-                interactive=True,
-            )
+        with gr.Row():
+            with gr.Column(scale=9):
+                with gr.Accordion("Prompts", open=False):
+                    theme_default_sys = gr.Code(
+                        label="system prompt",
+                        language="markdown",
+                        lines=8,
+                        max_lines=8,
+                        elem_classes=["code-fixed"],
+                        interactive=True,
+                    )
+                    theme_default_user = gr.Code(
+                        label="user prompt",
+                        language="markdown",
+                        lines=8,
+                        max_lines=8,
+                        elem_classes=["code-fixed"],
+                        interactive=True,
+                    )
+            with gr.Column(scale=1, min_width=50):
+                theme_refresh = gr.Button("🔄", elem_classes=["refresh-btn"])
         with gr.Row():
             with gr.Column(scale=9, min_width=160):
                 theme_run = gr.Button("3) Run theme")
@@ -1863,23 +2102,27 @@ def build_ui() -> gr.Blocks:
                 theme_resp = gr.Textbox(label="response", lines=8, max_lines=8, visible=True)
 
         gr.Markdown("## 4) story")
-        with gr.Accordion("Prompts", open=False):
-            story_default_sys = gr.Code(
-                label="system prompt",
-                language="markdown",
-                lines=8,
-                max_lines=8,
-                elem_classes=["code-fixed"],
-                interactive=True,
-            )
-            story_default_user = gr.Code(
-                label="user prompt",
-                language="markdown",
-                lines=8,
-                max_lines=8,
-                elem_classes=["code-fixed"],
-                interactive=True,
-            )
+        with gr.Row():
+            with gr.Column(scale=9):
+                with gr.Accordion("Prompts", open=False):
+                    story_default_sys = gr.Code(
+                        label="system prompt",
+                        language="markdown",
+                        lines=8,
+                        max_lines=8,
+                        elem_classes=["code-fixed"],
+                        interactive=True,
+                    )
+                    story_default_user = gr.Code(
+                        label="user prompt",
+                        language="markdown",
+                        lines=8,
+                        max_lines=8,
+                        elem_classes=["code-fixed"],
+                        interactive=True,
+                    )
+            with gr.Column(scale=1, min_width=50):
+                story_refresh = gr.Button("🔄", elem_classes=["refresh-btn"])
         with gr.Row():
             with gr.Column(scale=9, min_width=160):
                 story_run = gr.Button("4) Run story")
@@ -1892,23 +2135,27 @@ def build_ui() -> gr.Blocks:
                 story_resp = gr.Textbox(label="response", lines=8, max_lines=8)
 
         gr.Markdown("## 5) content")
-        with gr.Accordion("Prompts", open=False):
-            content_default_sys = gr.Code(
-                label="system prompt",
-                language="markdown",
-                lines=8,
-                max_lines=8,
-                elem_classes=["code-fixed"],
-                interactive=True,
-            )
-            content_default_user = gr.Code(
-                label="user prompt",
-                language="markdown",
-                lines=8,
-                max_lines=8,
-                elem_classes=["code-fixed"],
-                interactive=True,
-            )
+        with gr.Row():
+            with gr.Column(scale=9):
+                with gr.Accordion("Prompts", open=False):
+                    content_default_sys = gr.Code(
+                        label="system prompt",
+                        language="markdown",
+                        lines=8,
+                        max_lines=8,
+                        elem_classes=["code-fixed"],
+                        interactive=True,
+                    )
+                    content_default_user = gr.Code(
+                        label="user prompt",
+                        language="markdown",
+                        lines=8,
+                        max_lines=8,
+                        elem_classes=["code-fixed"],
+                        interactive=True,
+                    )
+            with gr.Column(scale=1, min_width=50):
+                content_refresh = gr.Button("🔄", elem_classes=["refresh-btn"])
         with gr.Row():
             with gr.Column(scale=9, min_width=160):
                 content_run = gr.Button("5) Run content")
@@ -1923,8 +2170,41 @@ def build_ui() -> gr.Blocks:
         gr.Markdown("### Slides")
         story_slides_display = gr.HTML(label="Slides")
 
-        gr.Markdown("## 6) export")
-        export_run = gr.Button("6) Run export")
+        gr.Markdown("## 6) codegen")
+        with gr.Row():
+            with gr.Column(scale=9):
+                with gr.Accordion("Prompts", open=False):
+                    codegen_default_sys = gr.Code(
+                        label="system prompt",
+                        language="markdown",
+                        lines=8,
+                        max_lines=8,
+                        elem_classes=["code-fixed"],
+                        interactive=True,
+                    )
+                    codegen_default_user = gr.Code(
+                        label="user prompt",
+                        language="markdown",
+                        lines=8,
+                        max_lines=8,
+                        elem_classes=["code-fixed"],
+                        interactive=True,
+                    )
+            with gr.Column(scale=1, min_width=50):
+                codegen_refresh = gr.Button("🔄", elem_classes=["refresh-btn"])
+        with gr.Row():
+            with gr.Column(scale=9, min_width=160):
+                codegen_run = gr.Button("6) Run codegen")
+            with gr.Column(scale=1, min_width=60):
+                codegen_timer = gr.HTML(value="", elem_id="codegen_timer")
+        with gr.Row():
+            with gr.Column():
+                codegen_sent = gr.Textbox(label="call", lines=8, max_lines=8)
+            with gr.Column():
+                codegen_resp = gr.Textbox(label="response", lines=8, max_lines=8)
+
+        gr.Markdown("## 7) export")
+        export_run = gr.Button("7) Run export")
         export_preview_btn = gr.Button("Preview")
         export_preview_link = gr.HTML(label="preview")
         output_files = gr.Files(label="produced files")
@@ -1951,6 +2231,8 @@ def build_ui() -> gr.Blocks:
                 story_default_user,
                 content_default_sys,
                 content_default_user,
+                codegen_default_sys,
+                codegen_default_user,
             ],
         )
 
@@ -1968,6 +2250,8 @@ def build_ui() -> gr.Blocks:
                 story_default_user,
                 content_default_sys,
                 content_default_user,
+                codegen_default_sys,
+                codegen_default_user,
             ],
             outputs=[session_state, export_progress_download, export_progress_done],
         )
@@ -2025,6 +2309,8 @@ def build_ui() -> gr.Blocks:
                 story_default_user,
                 content_default_sys,
                 content_default_user,
+                codegen_default_sys,
+                codegen_default_user,
                 constitution_result,
                 planner_sent,
                 planner_resp,
@@ -2039,6 +2325,8 @@ def build_ui() -> gr.Blocks:
                 story_slides_display,
                 content_sent,
                 content_resp,
+                codegen_sent,
+                codegen_resp,
             ],
         )
 
@@ -2096,6 +2384,12 @@ def build_ui() -> gr.Blocks:
             outputs=[session_state, content_sent, content_resp, story_slides_display, content_timer],
         )
 
+        codegen_run.click(
+            fn=run_step_codegen_stream_timed,
+            inputs=[session_state, codegen_default_sys, codegen_default_user],
+            outputs=[session_state, codegen_sent, codegen_resp, codegen_timer],
+        )
+
         export_run.click(
             fn=run_step_export,
             inputs=[session_state],
@@ -2108,6 +2402,43 @@ def build_ui() -> gr.Blocks:
             outputs=[session_state, export_preview_link],
         )
 
+        # Refresh prompt buttons - re-populate with built-in defaults
+        planner_refresh.click(
+            fn=refresh_prompt_planner,
+            inputs=[session_state],
+            outputs=[planner_default_sys, planner_default_user],
+        )
+
+        atoms_refresh.click(
+            fn=refresh_prompt_atoms,
+            inputs=[session_state],
+            outputs=[atoms_default_sys, atoms_default_user],
+        )
+
+        theme_refresh.click(
+            fn=refresh_prompt_theme,
+            inputs=[session_state],
+            outputs=[theme_default_sys, theme_default_user],
+        )
+
+        story_refresh.click(
+            fn=refresh_prompt_story,
+            inputs=[session_state],
+            outputs=[story_default_sys, story_default_user],
+        )
+
+        content_refresh.click(
+            fn=refresh_prompt_content,
+            inputs=[session_state],
+            outputs=[content_default_sys, content_default_user],
+        )
+
+        codegen_refresh.click(
+            fn=refresh_prompt_codegen,
+            inputs=[session_state],
+            outputs=[codegen_default_sys, codegen_default_user],
+        )
+
     return demo
 
 
@@ -2115,6 +2446,16 @@ if __name__ == "__main__":
     from fastapi import FastAPI
     from fastapi.responses import HTMLResponse
     import uvicorn
+    import signal
+    import sys
+
+    # Force exit on Ctrl+C without waiting for connections to close
+    def _force_exit(signum, frame):
+        print("\nShutting down...")
+        sys.exit(0)
+
+    signal.signal(signal.SIGINT, _force_exit)
+    signal.signal(signal.SIGTERM, _force_exit)
 
     demo = build_ui()
     app = FastAPI()

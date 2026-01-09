@@ -26,7 +26,7 @@ from pydantic import BaseModel, Field
 
 from src.generation.todo.models import (
     TodoItem, TodoQueue, TodoType, TodoStatus,
-    ConstitutionPatch, AtomsParams, ThemeParams, StoryParams, ContentParams, ExportParams
+    ConstitutionPatch, AtomsParams, ThemeParams, StoryParams, ContentParams, CodegenParams, ExportParams
 )
 from src.common.tool_protocol import get_all_descriptions, get_all_descriptions_structured
 from src.utils.llm_client import call_llm
@@ -251,25 +251,33 @@ You have access to these tools:
 1. Only include tools that are needed for the user's request
 2. Respect tool dependencies - read each tool's "requires" field
 3. If atoms already exist and user just wants to change theme/style, skip atoms extraction
-4. If slides already exist and user wants refinement, only run content + export
-5. Always include export at the end if content changes
+4. If slides already exist and user wants refinement, only run content + codegen + export
+5. Always include codegen and export at the end if content changes (codegen is required to process invented components)
 6. Read each tool's description and examples carefully
-7. **CRITICAL**: For LAYOUT fixes (overflow, cutoff, empty slot, whitespace issues), ONLY run content + export. Do NOT run story - story changes atom assignments which makes layout worse. Layout issues are fixed by regenerating layouts, not by changing content.
-8. **CRITICAL**: If slides have state="draft" and instruction mentions layout/overflow/cutoff fixes, run content → export ONLY.
+7. **CRITICAL**: For LAYOUT fixes (overflow, cutoff, empty slot, whitespace issues), ONLY run content + codegen + export. Do NOT run story - story changes atom assignments which makes layout worse. Layout issues are fixed by regenerating layouts, not by changing content.
+8. **CRITICAL**: If slides have state="draft" and instruction mentions layout/overflow/cutoff fixes, run content → codegen → export ONLY.
 
 ## Output Format:
 Return a JSON array of todo items. Each item has:
 - id: unique string identifier
-- type: one of "constitution", "atoms", "theme", "story", "content", "export"
+- type: one of "constitution", "atoms", "theme", "story", "content", "codegen", "export"
 - params: tool-specific parameters (object) - read tool's args_description!
 - depends_on: array of todo ids this depends on (optional)
 
 ## Tool Pipeline:
+- constiution: Sets up rules/style/tone (optional)
+- atoms: Extracts atomic content (requires source)
+- theme: Generates/selects theme (optional)
 - story: Plans narrative arc, assigns atoms to draft slides (depends on atoms)
 - content: Generates layouts and widgets for draft slides (depends on story)
-- When creating slides from scratch: atoms → story → content → export
-- When refining existing slides: story (to update draft) → content → export
-- **For LAYOUT issues (overflow/cutoff/empty/whitespace)**: content → export ONLY (no story!)
+- codegen: Generates React code for <InventComponent> tags (depends on content)
+- export: Renders final presentation (required at end)
+
+Common flows:
+- Create from scratch: atoms → story → content → codegen → export
+- Refine existing: story (to update draft) → content → codegen → export
+- Fix layout/visuals: content → codegen → export
+- **For LAYOUT issues (overflow/cutoff/empty/whitespace)**: content → codegen → export ONLY (no story!)
 
 Refer to each tool's examples for proper JSON format.
 
@@ -508,12 +516,21 @@ def _create_fallback_queue(state: "PipelineState") -> TodoQueue:
         status=TodoStatus.PENDING,
     ))
     
+    # Add codegen (generate React code for invented components - optional, runs if InventComponent exists)
+    queue.add(TodoItem(
+        id="codegen",
+        type=TodoType.CODEGEN,
+        params=CodegenParams(),
+        depends_on=["content"],
+        status=TodoStatus.PENDING,
+    ))
+    
     # Add export
     queue.add(TodoItem(
         id="export",
         type=TodoType.EXPORT,
         params=ExportParams(),
-        depends_on=["content"],
+        depends_on=["codegen"],
         status=TodoStatus.PENDING,
     ))
     

@@ -93,9 +93,42 @@ Follow the draft slide's `story` and `visual_design` fields exactly:
 - AVOID: sparse pages that look like work-in-progress
 - If content is limited, use simpler layout (LayoutStacked) rather than leave gaps
 
+# NEW CAPABILITY: DESIGN-DRIVEN COMPONENT INVENTION
+Invent new component of predefined ones are not ideal. You **MUST** invent at least one component.
+When inventing a component, you must provide a "Visual Blueprint" that the downstream Codegen Step (Step 5.5) can translate into pixel-perfect React code.
+
+## How to Declare an Invented Component
+<InventComponent
+  id="unique-kebab-case-id"
+  name="PascalCaseName"
+  intent="verbal-noun describing purpose"
+  data={{ 
+    /* Minimal but structured data */ 
+  }}
+  visual_logic={{
+    composition: "e.g., center-focused, radial, split-comparison, hierarchical-tree",
+    primary_visual: "e.g., abstract-waves, connection-lines, glowing-nodes",
+    density: "sparse | balanced | detailed",
+    animation: "e.g., drawing-path, fade-in-staggered, subtle-pulse"
+  }}
+  theme_mapping={{
+    accent_usage: "e.g., use primary-blue for 'AI model' nodes, warning-amber for 'unstable' states",
+    spacing: "tight | relaxed"
+  }}
+  notes="Specific guidance on layout behavior (e.g., 'Ensure labels don't overlap lines')"
+/>
+
+## CRITICAL RULES FOR INVENTION
+1. **Metaphorical Consistency**: If the story uses a metaphor (like the 'Surfing' wave/surfboard/foam metaphor), the `<InventComponent>` must prioritize visualizing that metaphor over raw data tables.
+2. **Standard Alignment**: Invented components must share the same padding, border-radius, and font-weight ratios as predefined components to ensure the deck feels like a single system.
+3. **No 'Empty Boxes'**: Do not invent a component for a single text string. Invent components for multi-dimensional data, complex flows, or emotional/metaphorical visual aids.
+4. **Data Contract**: The `data` prop must be a stable schema that a React component can map to (no unstructured prose inside the JSON).
+
 {layout_docs}
 
-{layout_constraints}"""
+{layout_constraints}
+
+"""
 
 
 def render_slide_generation_prompt(

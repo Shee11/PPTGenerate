@@ -1,0 +1,28 @@
+<Slide id="demo-01" rank={1} story="Minimal demo for InventComponent codegen" atoms={[]}>
+
+<InventComponent
+  id="surfing-wave-metric"
+  name="SurfingWaveMetric"
+  intent="show wave-like momentum with two KPIs"
+  data={{
+    title: "Momentum",
+    primaryLabel: "Adoption",
+    primaryValue: "71% → 80%",
+    secondaryLabel: "Latency",
+    secondaryValue: "240ms → 180ms",
+    footnote: "Last 30 days"
+  }}
+  visual_logic={{
+    composition: "radial",
+    primary_visual: "abstract-waves",
+    density: "balanced",
+    animation: "drawing-path"
+  }}
+  theme_mapping={{
+    accent_usage: "use primary-blue for adoption wave; success-emerald for improvement; warning-amber only if regression",
+    spacing: "relaxed"
+  }}
+  notes="Use framer-motion to animate a wave path; keep labels readable; avoid overlap"
+/>
+
+</Slide>

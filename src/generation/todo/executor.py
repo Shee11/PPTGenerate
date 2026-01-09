@@ -53,6 +53,7 @@ class TodoExecutor:
             TodoType.THEME: "theme",
             TodoType.STORY: "story",
             TodoType.CONTENT: "content",
+            TodoType.CODEGEN: "codegen",
             TodoType.EXPORT: "export",
         }
     
@@ -129,7 +130,8 @@ class TodoExecutor:
             tool_kwargs["output_dir"] = self.output_dir
         
         tool = get_tool(tool_name, **tool_kwargs)
-        
+        print(f"Shiyi debug: Executing todo {todo.id} with tool {tool_name}")
+
         # Mark started and persist
         todo.mark_started()
         self._persist_state(state)

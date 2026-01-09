@@ -26,12 +26,19 @@ interface Slide {
   mdx?: string;
 }
 
+interface GeneratedComponent {
+  name: string;
+  code?: string;
+  props_interface?: string;
+}
+
 interface StateJson {
   slides?: Slide[];
   presentation?: {
     theme?: string;
     title?: string;
   };
+  generated_components?: Record<string, GeneratedComponent>;
 }
 
 /**
@@ -139,11 +146,16 @@ export async function GET() {
       }
     }
     
+    // Return generated components with full code for runtime loading
+    // These are stored in state.json (same lifecycle as slides)
+    const generatedComponents = stateJson.generated_components || {};
+    
     return NextResponse.json({
       slides: serializedSlides,
       slideCount: slides.length,
       source: foundPath,
       theme: stateJson.presentation?.theme || 'business',
+      generatedComponents: generatedComponents,
     });
     
   } catch (err) {

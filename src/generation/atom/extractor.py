@@ -50,21 +50,11 @@ def extract_atoms(
     if config is None:
         config = get_atom_extraction_config()
 
-    # ENV OVERRIDE: Check for UI prompt overrides
-    # These environment variables are set by ui.py when running specific steps
-    import os
-    override_sys = os.getenv("LLM_OVERRIDE_SYSTEM_PROMPT")
-    if override_sys and override_sys.strip():
-        config.system_prompt = override_sys.strip()
-        print(f"[atoms] Using overridden system prompt from UI")
+    # Note: UI prompt overrides are now handled centrally in call_llm()
+    # via LLM_OVERRIDE_SYSTEM_PROMPT and LLM_OVERRIDE_USER_PROMPT env vars
 
     # Render user prompt from source with intent guidance
     user_prompt = render_atom_extraction_prompt(source, intent_guidance)
-    
-    override_user = os.getenv("LLM_OVERRIDE_USER_PROMPT")
-    if override_user and override_user.strip():
-        user_prompt = override_user.strip()
-        print(f"[atoms] Using overridden user prompt from UI")
     
     # Setup cache
     cache = GenerationCache(Path(".cache/atoms"))

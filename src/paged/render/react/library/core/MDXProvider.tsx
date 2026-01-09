@@ -38,6 +38,7 @@ import { CardGroup, Card } from '@/library/blocks/CardGroup';
 import { NetworkGraph, Node, Edge, Group } from '@/library/blocks/NetworkGraph';
 import { StepList } from '@/library/blocks/StepList';
 import { ProcessStrip } from '@/library/blocks/ProcessStrip';
+import { InventComponent } from '@/library/blocks/InventComponent';
 
 // Import L3 Primitive Components
 import { Heading } from '@/library/primitives/Heading';
@@ -109,6 +110,9 @@ export const mdxComponents = {
   Text,
   Callout,
   Highlight,
+  
+  // Special
+  InventComponent,
 };
 
 // =============================================================================
