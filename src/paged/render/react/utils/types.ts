@@ -39,7 +39,22 @@ export type TextVariant = 'default' | 'lead' | 'caption' | 'code';
 // DATA TYPES
 // =============================================================================
 
-/** Chart data point - supports single value or clustered (before/after) */
+/**
+ * Supported chart types for MDX rendering
+ * Extended chart types: area, bar, barStats, bubble, doughnut, pie, line, polarArea, radar
+ */
+export type ChartType =
+  | 'area'        // Area chart (filled line)
+  | 'bar'         // Vertical bar chart
+  | 'barStats'    // Horizontal bar chart with stats/labels
+  | 'bubble'      // Bubble/scatter chart with size dimension
+  | 'doughnut'    // Doughnut (ring) chart
+  | 'pie'         // Pie chart
+  | 'line'        // Line chart (existing)
+  | 'polarArea'   // Polar area chart (radial segments)
+  | 'radar';      // Radar/spider chart
+
+/** Chart data point - supports single value, clustered (before/after), and bubble (x/y/size) */
 export interface ChartDataPoint {
   label: string;
   value?: number;
@@ -50,6 +65,14 @@ export interface ChartDataPoint {
   /** Alternative naming for clustered charts */
   current?: number;
   target?: number;
+  /** For bubble charts: X coordinate */
+  x?: number;
+  /** For bubble charts: Y coordinate */
+  y?: number;
+  /** For bubble charts: Bubble size */
+  size?: number;
+  /** Override color for this data point */
+  color?: string;
 }
 
 /** Metric data for MetricGroup */

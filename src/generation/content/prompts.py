@@ -32,6 +32,11 @@ def _build_system_prompt(project: str = "slidev") -> str:
     
     layout_docs = engine.get_layout_prompt()
     layout_constraints = engine.get_layout_constrain()
+    
+    # Get chart documentation if available (React engine has it)
+    chart_docs = ""
+    if hasattr(engine, 'get_chart_prompt'):
+        chart_docs = engine.get_chart_prompt()
 
     return f"""You are a LAYOUT DESIGNER. Convert story drafts into MDX slides.
 
@@ -57,7 +62,7 @@ Follow the draft slide's `story` and `visual_design` fields exactly:
 # CONTENT MAPPING
 - HEADLINE → `<Heading>`
 - NARRATIVE → `<Text variant="lead">` or `<SmartList>`
-- EVIDENCE (numbers) → `<MetricGroup>`, `<BigNum>`, `<ChartBar>`
+- EVIDENCE (numbers) → `<MetricGroup>`, `<BigNum>`, Charts
 - EVIDENCE (branching graphs) → `<NetworkGraph>` with JSX children (Node, Edge, Group)
 - EVIDENCE (linear flows) → `<ProcessStrip>` for A→B→C sequences
 - TAKEAWAY → `<Callout>` or `<Text variant="caption">`
@@ -92,6 +97,8 @@ Follow the draft slide's `story` and `visual_design` fields exactly:
 - Never leave gaps/holes - content should flow continuously
 - AVOID: sparse pages that look like work-in-progress
 - If content is limited, use simpler layout (LayoutStacked) rather than leave gaps
+
+{chart_docs}
 
 {layout_docs}
 

@@ -33,6 +33,8 @@ interface StateJson {
     theme?: string;
     title?: string;
   };
+  /** React theme name from CLI --mdx-theme */
+  mdx_theme?: string;
 }
 
 /**
@@ -156,7 +158,7 @@ export async function GET(request: Request) {
       slides: serializedSlides,
       slideCount: slides.length,
       source: foundPath,
-      theme: stateJson.presentation?.theme || 'business',
+      theme: stateJson.mdx_theme || stateJson.presentation?.theme || 'business',
     });
     
   } catch (err) {
