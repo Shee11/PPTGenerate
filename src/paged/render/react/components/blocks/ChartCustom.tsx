@@ -142,11 +142,14 @@ function getThemeColors(colorScheme?: string): {
   // For multi-color gradients, we use theme-derived colors
   // These use color-mix to create variations from theme colors
   const gradientColors: Record<string, string[]> = {
-    // Default: uses theme primary with opacity variations
+    // Default: uses theme primary with variations for multi-segment charts
     default: [
       'var(--theme-primary)',
-      'color-mix(in srgb, var(--theme-primary) 70%, var(--theme-accent, var(--theme-primary)))',
-      'var(--theme-accent, var(--theme-primary))',
+      'color-mix(in srgb, var(--theme-primary) 85%, var(--theme-accent, var(--theme-secondary)))',
+      'color-mix(in srgb, var(--theme-primary) 70%, var(--theme-accent, var(--theme-secondary)))',
+      'var(--theme-accent, var(--theme-secondary))',
+      'color-mix(in srgb, var(--theme-accent, var(--theme-secondary)) 80%, var(--theme-primary))',
+      'color-mix(in srgb, var(--theme-accent, var(--theme-secondary)) 60%, var(--theme-primary))',
     ],
     // Rainbow uses semantic colors from theme
     rainbow: [
@@ -931,35 +934,80 @@ const RoseParadigm: React.FC<ParadigmProps> = ({ data, colors }) => {
 };
 
 /**
- * Funnel Chart
+ * Funnel Chart - Inverted triangle with horizontal sections
+ * Uses theme colors for fill, text, and borders
  */
 const FunnelParadigm: React.FC<ParadigmProps> = ({ data, colors, showValues }) => {
-  const maxValue = Math.max(...data.map(d => d.value));
+  // Sort data by value descending (largest at top)
   const sortedData = [...data].sort((a, b) => b.value - a.value);
+  const maxValue = sortedData[0]?.value || 1;
+  const totalHeight = 240;
+  const topWidth = 280;
+  const bottomWidth = 60;
+  const sectionHeight = totalHeight / sortedData.length;
+  
+  // Calculate the width at each level (linear taper from top to bottom)
+  const getWidthAtLevel = (level: number) => {
+    const ratio = level / sortedData.length;
+    return topWidth - (topWidth - bottomWidth) * ratio;
+  };
   
   return (
-    <div className="flex flex-col items-center gap-2 p-4">
-      {sortedData.map((item, index) => {
-        const widthPercent = (item.value / maxValue) * 100;
-        return (
-          <div
-            key={item.label}
-            className="relative flex items-center justify-center transition-all hover:scale-105"
-            style={{
-              width: `${widthPercent}%`,
-              minWidth: '60px',
-              height: '40px',
-              backgroundColor: colors.gradient[index % colors.gradient.length],
-              clipPath: 'polygon(5% 0%, 95% 0%, 100% 100%, 0% 100%)',
-              borderRadius: '4px',
-            }}
-          >
-            <span className="text-xs font-medium text-white drop-shadow">
-              {item.label}{showValues ? `: ${item.value}` : ''}
-            </span>
-          </div>
-        );
-      })}
+    <div className="flex flex-col items-center p-4">
+      <svg 
+        width={topWidth + 40} 
+        height={totalHeight + 20} 
+        viewBox={`0 0 ${topWidth + 40} ${totalHeight + 20}`}
+        className="overflow-visible"
+      >
+        {sortedData.map((item, index) => {
+          const topY = index * sectionHeight;
+          const bottomY = (index + 1) * sectionHeight;
+          const topWidthAtLevel = getWidthAtLevel(index);
+          const bottomWidthAtLevel = getWidthAtLevel(index + 1);
+          const centerX = (topWidth + 40) / 2;
+          
+          // Create trapezoid path for this section
+          const path = `
+            M ${centerX - topWidthAtLevel / 2} ${topY + 10}
+            L ${centerX + topWidthAtLevel / 2} ${topY + 10}
+            L ${centerX + bottomWidthAtLevel / 2} ${bottomY + 10}
+            L ${centerX - bottomWidthAtLevel / 2} ${bottomY + 10}
+            Z
+          `;
+          
+          const percentage = ((item.value / maxValue) * 100).toFixed(0);
+          
+          return (
+            <g key={item.label}>
+              {/* Section fill - uses theme gradient colors */}
+              <path
+                d={path}
+                fill={colors.gradient[index % colors.gradient.length]}
+                stroke={colors.border}
+                strokeWidth="1"
+                className="transition-opacity hover:opacity-80"
+              />
+              {/* Label - uses contrasting color for readability */}
+              <text
+                x={centerX}
+                y={topY + sectionHeight / 2 + 10}
+                textAnchor="middle"
+                dominantBaseline="middle"
+                className="text-xs font-medium"
+                style={{ 
+                  fontSize: '11px',
+                  fill: 'white',
+                  filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.5))',
+                }}
+              >
+                {item.label}
+                {showValues && ` (${percentage}%)`}
+              </text>
+            </g>
+          );
+        })}
+      </svg>
     </div>
   );
 };
