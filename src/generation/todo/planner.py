@@ -26,7 +26,7 @@ from pydantic import BaseModel, Field
 
 from src.generation.todo.models import (
     TodoItem, TodoQueue, TodoType, TodoStatus,
-    ConstitutionPatch, AtomsParams, ThemeParams, StoryParams, ContentParams, ExportParams
+    ConstitutionPatch, AtomsParams, ThemeParams, StoryParams, ContentParams, CodegenParams, ExportParams
 )
 from src.common.tool_protocol import get_all_descriptions, get_all_descriptions_structured
 from src.utils.llm_client import call_llm
@@ -203,6 +203,7 @@ def slice_state_for_planner(state: "PipelineState") -> Dict[str, Any]:
                 "slide_number": i + 1,
                 "layout": layout,
                 "title": title[:50] if title else "",  # Truncate long titles
+                "state": slide.get("state", "active"),  # draft or active
             })
         context["slides"] = {
             "count": len(state.slides),
@@ -249,23 +250,28 @@ You have access to these tools:
    - Story: Generate slides directly from source using SCQA framework
    - Both should depend only on constitution (they can run in parallel)
 4. If atoms already exist and user just wants to change theme/style, skip atoms extraction
-5. If slides already exist and user wants refinement, only run content + export
-6. Always include export at the end if content changes
-7. Read each tool's description and examples carefully
+5. If slides already exist and user wants refinement, only run content + codegen + export
+6. Whenever the content tool is included in the pipeline (especially in mode="generate"), ALWAYS include codegen immediately after it.
+7. Always include export at the end if content changes
+8. Read each tool's description and examples carefully
 
 ## Output Format:
 Return a JSON array of todo items. Each item has:
 - id: unique string identifier
-- type: one of "constitution", "atoms", "theme", "story", "content", "export"
+- type: one of "constitution", "atoms", "theme", "story", "content", "codegen", "export"
 - params: tool-specific parameters (object) - read tool's args_description!
 - depends_on: array of todo ids this depends on (optional)
 
 ## Tool Pipeline:
 - story: Plans narrative arc. Can generate directly from source (SCQA framework) OR use atoms (for refinement). Does NOT depend on atoms for initial generation.
-- content: Generates layouts and widgets for draft slides (depends on story)
-- When creating slides from scratch: constitution → [atoms + story in parallel] → content → export
+- content: Generates layouts and widgets for draft slides (depends on story). May include <InventComponent> placeholders for custom visualizations.
+- codegen: Generates React code for <InventComponent> placeholders in content MDX. Only needed if content step produces InventComponents.
+- export: Exports slides to final format. MUST depend on codegen (not just content) because it needs generated components to replace InventComponent tags.
+- When creating slides from scratch: constitution → [atoms + story in parallel] → content → codegen → export
   (atoms and story can run simultaneously - story uses source directly, atoms extracted for future refinement)
-- When refining existing slides: story (to update draft) → content → export
+- When refining existing slides: story (to update draft) → content → codegen → export
+
+CRITICAL: export MUST have depends_on=["codegen"] (not depends_on=["content"]). Export needs codegen to finish first so it can replace InventComponent tags with generated components.
 
 Refer to each tool's examples for proper JSON format.
 
@@ -448,6 +454,12 @@ def _create_typed_params(
             slide_ids=params.get("slide_ids", []),
         )
     
+    elif todo_type == TodoType.CODEGEN:
+        return CodegenParams(
+            component_types=params.get("component_types", []),
+            instruction=params.get("instruction", params.get("user_instruction", "")),
+        )
+    
     elif todo_type == TodoType.EXPORT:
         return ExportParams(
             output_dir=params.get("output_dir", "output"),
@@ -503,12 +515,21 @@ def _create_fallback_queue(state: "PipelineState") -> TodoQueue:
         status=TodoStatus.PENDING,
     ))
     
+    # Add codegen (generate React code for invented components - optional, runs if InventComponent exists)
+    queue.add(TodoItem(
+        id="codegen",
+        type=TodoType.CODEGEN,
+        params=CodegenParams(),
+        depends_on=["content"],
+        status=TodoStatus.PENDING,
+    ))
+    
     # Add export
     queue.add(TodoItem(
         id="export",
         type=TodoType.EXPORT,
         params=ExportParams(),
-        depends_on=["content"],
+        depends_on=["codegen"],
         status=TodoStatus.PENDING,
     ))
     
