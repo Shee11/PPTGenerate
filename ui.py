@@ -114,6 +114,174 @@ def _get_component_source_html(component_name: str) -> str:
     )
 
 
+def _get_component_preview_html(component_name: str) -> str:
+    """Generate HTML page that renders a React component preview via the Next.js dev server."""
+    name = (component_name or "").strip()
+    if not name:
+        return "<h3>Missing component name</h3>"
+
+    idx = _get_component_file_index()
+    path = idx.get(name)
+    if not path or not path.exists():
+        return f"<h3>Component not found: {_html.escape(name)}</h3><p>Make sure the codegen step has completed and saved the component.</p>"
+
+    try:
+        rel = path.resolve().relative_to(Path(__file__).resolve().parent)
+        rel_str = str(rel)
+    except Exception:
+        rel_str = str(path)
+
+    # Read the component source for display
+    try:
+        content = path.read_text(encoding="utf-8")
+    except Exception as e:
+        content = f"(failed to read: {e})"
+
+    # URL-encode the component name for the preview iframe
+    name_encoded = quote(name)
+
+    # Generate an HTML page with:
+    # 1. An iframe pointing to the React dev server's component preview route
+    # 2. The component source code below for reference
+    return f"""<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>Preview: {_html.escape(name)}</title>
+    <style>
+        body {{
+            font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
+            margin: 0;
+            padding: 16px;
+            background: #0f172a;
+            color: #e5e7eb;
+        }}
+        h2 {{
+            margin-top: 0;
+            color: #f9fafb;
+        }}
+        .path {{
+            opacity: 0.6;
+            margin-bottom: 16px;
+            font-size: 14px;
+        }}
+        .preview-container {{
+            border: 1px solid #374151;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 24px;
+            background: #ffffff;
+        }}
+        .preview-header {{
+            background: #1f2937;
+            padding: 8px 12px;
+            font-size: 13px;
+            color: #9ca3af;
+            border-bottom: 1px solid #374151;
+        }}
+        .preview-frame {{
+            width: 100%;
+            height: 400px;
+            border: none;
+            background: #ffffff;
+        }}
+        .error-message {{
+            padding: 24px;
+            text-align: center;
+            color: #f87171;
+        }}
+        .source-section {{
+            margin-top: 24px;
+        }}
+        .source-header {{
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: #9ca3af;
+        }}
+        pre {{
+            white-space: pre;
+            overflow: auto;
+            background: #111827;
+            color: #e5e7eb;
+            padding: 12px;
+            border-radius: 8px;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            font-size: 12px;
+            max-height: 400px;
+        }}
+        .btn {{
+            display: inline-block;
+            padding: 6px 16px;
+            margin-right: 8px;
+            border: 1px solid #374151;
+            border-radius: 4px;
+            background: #374151;
+            color: #e5e7eb;
+            font-size: 13px;
+            cursor: pointer;
+            text-decoration: none;
+        }}
+        .btn:hover {{
+            background: #4b5563;
+        }}
+    </style>
+</head>
+<body>
+    <h2>🔍 Component Preview: {_html.escape(name)}</h2>
+    <div class="path">{_html.escape(rel_str)}</div>
+    
+    <div class="preview-container">
+        <div class="preview-header">
+            Live Preview (via React Dev Server at port 3000)
+        </div>
+        <iframe 
+            id="preview-frame"
+            class="preview-frame" 
+            src="http://127.0.0.1:3000/preview/component?name={name_encoded}"
+            onerror="handleFrameError()"
+        ></iframe>
+    </div>
+    
+    <div style="margin-bottom: 16px;">
+        <a class="btn" href="http://127.0.0.1:3000/preview/component?name={name_encoded}" target="_blank">Open in New Tab</a>
+        <a class="btn" href="/component?name={name_encoded}" target="_blank">View Source</a>
+    </div>
+    
+    <div class="source-section">
+        <div class="source-header">Component Source</div>
+        <pre><code>{_html.escape(content)}</code></pre>
+    </div>
+    
+    <script>
+        // Check if the preview iframe loaded correctly
+        const frame = document.getElementById('preview-frame');
+        frame.addEventListener('error', function() {{
+            frame.style.display = 'none';
+            const container = frame.parentElement;
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error-message';
+            errorDiv.innerHTML = 'Failed to load preview. Make sure the React dev server is running on port 3000.<br><br>' +
+                '<a class="btn" href="http://127.0.0.1:3000/preview/component?name={name_encoded}" target="_blank">Try Opening Directly</a>';
+            container.appendChild(errorDiv);
+        }});
+        
+        // Timeout fallback - if no content after 5s, show message
+        setTimeout(function() {{
+            try {{
+                // Can't access cross-origin content, but we can check if src loaded
+                if (frame.contentWindow.location.href === 'about:blank') {{
+                    throw new Error('blank');
+                }}
+            }} catch(e) {{
+                // Expected for cross-origin, that's fine
+            }}
+        }}, 5000);
+    </script>
+</body>
+</html>"""
+
+
 UI_CSS = """
 /* Force prompt/code panes to stay compact and scroll */
 .code-fixed .ace_editor { height: 220px !important; }
@@ -160,16 +328,6 @@ class OutputFiles:
     slides_mdx: Optional[Path]
     pptx_files: List[Path]
     html_files: List[Path]
-
-
-def _status_one_liner(text: str) -> str:
-    t = (text or "").strip()
-    if not t:
-        return ""
-    lines = t.splitlines()
-    if len(lines) == 1:
-        return lines[0]
-    return f"{lines[0]} … (+{len(lines) - 1} lines)"
 
 
 def _theme_change_summary(before: PipelineState, after: PipelineState) -> str:
@@ -331,8 +489,6 @@ def import_progress(progress_file):
             "",  # story_slides_display
             "",  # content_sent
             "",  # content_resp
-            "",  # codegen_sent
-            "",  # codegen_resp
         )
     if progress_file is None:
         return _empty("")
@@ -410,8 +566,6 @@ def import_progress(progress_file):
     story_resp = _format_llm_response(_sr("story"))
     content_sent = _format_llm_sent(_sr("content"))
     content_resp = _format_llm_response(_sr("content"))
-    codegen_sent = _format_llm_sent(_sr("codegen"))
-    codegen_resp = _format_llm_response(_sr("codegen"))
 
     theme_used_llm = bool((theme_sent or "").strip() or (theme_resp or "").strip())
     theme_result_update = gr.update(value="", visible=False)
@@ -466,8 +620,6 @@ def import_progress(progress_file):
         story_slides_display,
         content_sent,
         content_resp,
-        codegen_sent,
-        codegen_resp,
     )
 
 def _now_id() -> str:
@@ -582,6 +734,313 @@ def _format_llm_response(records: List[dict]) -> str:
         if resp:
             parts.append(str(resp).strip())
     return "\n\n---\n\n".join([p for p in parts if p.strip()])
+
+
+def _format_codegen_concurrent_sent(records: List[dict]) -> str:
+    """Format concurrent codegen calls - each component in its own box."""
+    if not records:
+        return ""
+    
+    # Group by component_id
+    by_component: Dict[str, List[dict]] = {}
+    for r in records:
+        comp_id = r.get("component_id", "default")
+        if comp_id not in by_component:
+            by_component[comp_id] = []
+        by_component[comp_id].append(r)
+    
+    # Format each component's calls
+    html_parts: List[str] = []
+    
+    # Style for the boxes
+    box_style = (
+        "border: 1px solid #374151; "
+        "border-radius: 8px; "
+        "padding: 12px; "
+        "margin-bottom: 12px; "
+        "background-color: #1f2937; "
+        "color: #e5e7eb; "
+        "font-family: monospace; "
+        "white-space: pre-wrap;"
+    )
+    
+    header_style = "font-weight: bold; color: #60a5fa; margin-bottom: 8px; border-bottom: 1px solid #374151; padding-bottom: 4px;"
+    
+    for comp_id in sorted(by_component.keys()):
+        comp_records = by_component[comp_id]
+        if not comp_records:
+            continue
+        
+        # Get the latest sent record for this component
+        sent_record = None
+        for r in reversed(comp_records):
+            if r.get("event") == "sent":
+                sent_record = r
+                break
+        
+        if sent_record:
+            sys_p = sent_record.get("system_prompt", "")
+            user_p = sent_record.get("user_prompt", "")
+            
+            content_html = ""
+            if comp_id != "default":
+                content_html += f"<div style='{header_style}'>{_html.escape(comp_id)}</div>"
+            
+            if sys_p:
+                content_html += f"<div style='color: #9ca3af; margin-bottom: 4px;'># System</div>"
+                content_html += f"<div>{_html.escape(sys_p)}</div>"
+            
+            if user_p:
+                if sys_p:
+                    content_html += "<br/>"
+                content_html += f"<div style='color: #9ca3af; margin-bottom: 4px;'># User</div>"
+                content_html += f"<div>{_html.escape(user_p)}</div>"
+            
+            html_parts.append(f"<div style='{box_style}'>{content_html}</div>")
+    
+    return "\n".join(html_parts) if html_parts else ""
+
+
+def _format_codegen_concurrent_resp(records: List[dict]) -> str:
+    """Format concurrent codegen responses - each component in its own box."""
+    if not records:
+        return ""
+    
+    # Group by component_id
+    by_component: Dict[str, List[dict]] = {}
+    for r in records:
+        comp_id = r.get("component_id", "default")
+        if comp_id not in by_component:
+            by_component[comp_id] = []
+        by_component[comp_id].append(r)
+    
+    # Format each component's responses
+    html_parts: List[str] = []
+    
+    # Style for the boxes (same as sent)
+    box_style = (
+        "border: 1px solid #374151; "
+        "border-radius: 8px; "
+        "padding: 12px; "
+        "margin-bottom: 12px; "
+        "background-color: #1f2937; "
+        "color: #e5e7eb; "
+        "font-family: monospace; "
+        "white-space: pre-wrap;"
+    )
+    
+    header_style = "font-weight: bold; color: #34d399; margin-bottom: 8px; border-bottom: 1px solid #374151; padding-bottom: 4px;"
+    
+    # Use formatted "Trace" log if available for general errors
+    
+    for comp_id in sorted(by_component.keys()):
+        comp_records = by_component[comp_id]
+        if not comp_records:
+            continue
+        
+        # Get the latest response for this component
+        resp_record = None
+        for r in reversed(comp_records):
+            if r.get("event") == "response":
+                resp_record = r
+                break
+        
+        if resp_record:
+            resp_text = resp_record.get("response", "")
+            
+            content_html = ""
+            if comp_id != "default":
+                content_html += f"<div style='{header_style}'>{_html.escape(comp_id)}</div>"
+            
+            content_html += f"<div>{_html.escape(resp_text)}</div>"
+            
+            html_parts.append(f"<div style='{box_style}'>{content_html}</div>")
+            
+    return "\n".join(html_parts) if html_parts else ""
+
+
+def _format_codegen_all_calls_html(records: List[dict]) -> str:
+    """Format all codegen calls as HTML with textbox-styled containers for each component."""
+    if not records:
+        return ""
+    
+    # Group by component_id
+    by_component: Dict[str, List[dict]] = {}
+    for r in records:
+        comp_id = r.get("component_id", "default")
+        if comp_id not in by_component:
+            by_component[comp_id] = []
+        by_component[comp_id].append(r)
+    
+    if not by_component:
+        return ""
+    
+    # Textbox-like styling
+    container_style = (
+        "border: 1px solid var(--border-color-primary, #374151); "
+        "border-radius: 8px; "
+        "padding: 12px; "
+        "margin-bottom: 16px; "
+        "background-color: var(--background-fill-primary, #1f2937); "
+        "color: var(--body-text-color, #e5e7eb); "
+        "font-family: var(--font-mono, ui-monospace, monospace); "
+        "font-size: 14px; "
+        "white-space: pre-wrap; "
+        "overflow-y: auto; "
+        "max-height: 200px;"
+    )
+    
+    label_style = (
+        "font-family: var(--font, ui-sans-serif, system-ui); "
+        "font-size: 14px; "
+        "font-weight: 500; "
+        "color: var(--block-label-text-color, #9ca3af); "
+        "margin-bottom: 6px;"
+    )
+    
+    html_parts: List[str] = []
+    comp_ids = sorted(by_component.keys())
+    
+    for idx, comp_id in enumerate(comp_ids):
+        comp_records = by_component[comp_id]
+        
+        # Get the latest sent record for this component
+        sent_record = None
+        for r in reversed(comp_records):
+            if r.get("event") == "sent":
+                sent_record = r
+                break
+        
+        if not sent_record:
+            continue
+        
+        sys_p = sent_record.get("system_prompt", "")
+        user_p = sent_record.get("user_prompt", "")
+        
+        # Build content
+        content_parts: List[str] = []
+        if sys_p:
+            content_parts.append(f"# System\n{_html.escape(sys_p)}")
+        if user_p:
+            content_parts.append(f"# User\n{_html.escape(user_p)}")
+        
+        content = "\n\n".join(content_parts)
+        
+        # Label with component name
+        label = f"call (component {idx + 1}: {_html.escape(comp_id)})"
+        
+        html_parts.append(
+            f"<div style='margin-bottom: 16px;'>"
+            f"<div style='{label_style}'>{label}</div>"
+            f"<div style='{container_style}'>{content}</div>"
+            f"</div>"
+        )
+    
+    return "\n".join(html_parts) if html_parts else ""
+
+
+def _format_codegen_all_responses_html(records: List[dict]) -> str:
+    """Format all codegen responses as HTML with textbox-styled containers for each component."""
+    if not records:
+        return ""
+    
+    # Group by component_id
+    by_component: Dict[str, List[dict]] = {}
+    for r in records:
+        comp_id = r.get("component_id", "default")
+        if comp_id not in by_component:
+            by_component[comp_id] = []
+        by_component[comp_id].append(r)
+    
+    if not by_component:
+        return ""
+    
+    # Textbox-like styling
+    container_style = (
+        "border: 1px solid var(--border-color-primary, #374151); "
+        "border-radius: 8px; "
+        "padding: 12px; "
+        "margin-bottom: 8px; "
+        "background-color: var(--background-fill-primary, #1f2937); "
+        "color: var(--body-text-color, #e5e7eb); "
+        "font-family: var(--font-mono, ui-monospace, monospace); "
+        "font-size: 14px; "
+        "white-space: pre-wrap; "
+        "overflow-y: auto; "
+        "max-height: 200px;"
+    )
+    
+    label_style = (
+        "font-family: var(--font, ui-sans-serif, system-ui); "
+        "font-size: 14px; "
+        "font-weight: 500; "
+        "color: var(--block-label-text-color, #9ca3af); "
+        "margin-bottom: 6px;"
+    )
+    
+    button_style = (
+        "padding: 4px 12px; "
+        "margin-right: 8px; "
+        "border: 1px solid var(--border-color-primary, #374151); "
+        "border-radius: 4px; "
+        "background-color: var(--button-secondary-background-fill, #374151); "
+        "color: var(--button-secondary-text-color, #e5e7eb); "
+        "font-family: var(--font, ui-sans-serif, system-ui); "
+        "font-size: 13px; "
+        "cursor: pointer; "
+        "transition: background-color 0.2s;"
+    )
+    
+    html_parts: List[str] = []
+    comp_ids = sorted(by_component.keys())
+    
+    for idx, comp_id in enumerate(comp_ids):
+        comp_records = by_component[comp_id]
+        
+        # Get the latest response for this component
+        resp_record = None
+        for r in reversed(comp_records):
+            if r.get("event") == "response":
+                resp_record = r
+                break
+        
+        if not resp_record:
+            continue
+        
+        resp_text = resp_record.get("response", "")
+        content = _html.escape(resp_text)
+        
+        # Label with component name
+        label = f"response (component {idx + 1}: {_html.escape(comp_id)})"
+        
+        # URL-encode component name for the preview link
+        comp_name_encoded = quote(comp_id)
+        
+        # Preview button - opens component preview in new tab
+        preview_button = (
+            f"<button style='{button_style}' "
+            f"onclick=\"window.open('/component-preview?name={comp_name_encoded}', '_blank')\" "
+            f"onmouseover=\"this.style.backgroundColor='#4b5563'\" "
+            f"onmouseout=\"this.style.backgroundColor='var(--button-secondary-background-fill, #374151)'\">Preview</button>"
+        )
+        
+        # View Source button - opens component source viewer
+        source_button = (
+            f"<button style='{button_style}' "
+            f"onclick=\"window.open('/component?name={comp_name_encoded}', '_blank')\" "
+            f"onmouseover=\"this.style.backgroundColor='#4b5563'\" "
+            f"onmouseout=\"this.style.backgroundColor='var(--button-secondary-background-fill, #374151)'\">View Source</button>"
+        )
+        
+        html_parts.append(
+            f"<div style='margin-bottom: 16px;'>"
+            f"<div style='{label_style}'>{label}</div>"
+            f"<div style='{container_style}'>{content}</div>"
+            f"<div style='margin-top: 8px;'>{preview_button}{source_button}</div>"
+            f"</div>"
+        )
+    
+    return "\n".join(html_parts) if html_parts else ""
 
 
 def _find_todo(state: PipelineState, todo_type: TodoType):
@@ -747,16 +1206,7 @@ def build_default_prompts(session: Session, step: str) -> Tuple[str, str, str]:
         return "", cfg.system_prompt, user_prompt
 
     if step == "story":
-        # Check if we should use source-based generation (generate_story_from_source)
-        # or atom-based generation (generate_story)
-        use_source = False
-        # Use source if:
-        # 1. We have source and no slides (first run source-based)
-        # 2. We have source and no atoms (source-based flow where atoms skipped)
-        if state.source and (not state.slides or not state.get_atoms()):
-            # Generate mode: use source content directly
-            # This logic mirrors StoryTool.slice()
-            use_source = True
+        use_source = True
         
         from src.generation.content import story_generator
         
@@ -969,33 +1419,6 @@ def _update_trace(session: Session) -> Tuple[Session, List[dict]]:
     return session, records
 
 
-def run_step_planner(
-    session: Session, override_system: Optional[str], override_user: Optional[str]
-) -> Tuple[Session, str, str]:
-    session = _ensure_session(session)
-    if not session.get("output_dir"):
-        return session, "", ""
-
-    output_dir, state_path, _ = _session_paths(session)
-    state = PipelineState.load(state_path)
-    instruction = str(session.get("instruction", ""))
-
-    old_env = _with_llm_env(session, "planner", override_system, override_user)
-    try:
-        buf = io.StringIO()
-        with redirect_stdout(buf), redirect_stderr(buf):
-            state.todos = plan(state, instruction)
-            state.save(state_path)
-        log = buf.getvalue().strip() or "[planner] ok"
-
-        session, records = _update_trace(session)
-        records = _filter_records_for_step(records, "planner")
-        _ = log
-        return session, _format_llm_sent(records), _format_llm_response(records)
-    finally:
-        _restore_llm_env(old_env)
-
-
 def run_step_constitution(session: Session) -> Tuple[Session, str]:
     session = _ensure_session(session)
     if not session.get("output_dir"):
@@ -1025,47 +1448,6 @@ def run_step_constitution(session: Session) -> Tuple[Session, str]:
     return session, _constitution_text(state)
 
 
-def run_step_todo_llm(
-    session: Session,
-    step: str,
-    todo_type: TodoType,
-    override_system: Optional[str],
-    override_user: Optional[str],
-) -> Tuple[Session, str, str, str]:
-    session = _ensure_session(session)
-    if not session.get("output_dir"):
-        return session, f"[{step}] Initialize first.", "", ""
-
-    output_dir, state_path, _ = _session_paths(session)
-    state = PipelineState.load(state_path)
-    instruction = str(session.get("instruction", ""))
-
-    todo = _find_todo(state, todo_type)
-    if todo is None:
-        return session, f"[{step}] todo missing (run planner first)", "", ""
-
-    executor = TodoExecutor(
-        verbose=True,
-        use_cache=bool(session.get("use_cache", True)),
-        output_dir=output_dir,
-        state_path=state_path,
-    )
-
-    old_env = _with_llm_env(session, step, override_system, override_user)
-    try:
-        buf = io.StringIO()
-        with redirect_stdout(buf), redirect_stderr(buf):
-            executor.execute_todo(todo, state, instruction)
-            state.save(state_path)
-        log = buf.getvalue().strip() or f"[{step}] ok"
-
-        session, records = _update_trace(session)
-        records = _filter_records_for_step(records, step)
-        return session, _status_one_liner(log), _format_llm_sent(records), _format_llm_response(records)
-    finally:
-        _restore_llm_env(old_env)
-
-
 def _refresh_predefined_prompt(session: Session, step: str) -> Tuple[str, str]:
     """Return (system_prompt, user_prompt) for a step based on current state.json.
 
@@ -1078,34 +1460,40 @@ def _refresh_predefined_prompt(session: Session, step: str) -> Tuple[str, str]:
         return "", ""
 
 
-def refresh_prompt_planner(session: Session) -> Tuple[str, str]:
+def refresh_prompt_planner(session: Session) -> Tuple[str, str, str, str]:
     """Refresh planner prompts to built-in defaults."""
-    return _refresh_predefined_prompt(session, "planner")
+    sys, user = _refresh_predefined_prompt(session, "planner")
+    return sys, user, "", ""
 
 
-def refresh_prompt_atoms(session: Session) -> Tuple[str, str]:
+def refresh_prompt_atoms(session: Session) -> Tuple[str, str, str, str]:
     """Refresh atoms prompts to built-in defaults."""
-    return _refresh_predefined_prompt(session, "atoms")
+    sys, user = _refresh_predefined_prompt(session, "atoms")
+    return sys, user, "", ""
 
 
-def refresh_prompt_theme(session: Session) -> Tuple[str, str]:
+def refresh_prompt_theme(session: Session) -> Tuple[str, str, str, str]:
     """Refresh theme prompts to built-in defaults."""
-    return _refresh_predefined_prompt(session, "theme")
+    sys, user = _refresh_predefined_prompt(session, "theme")
+    return sys, user, "", ""
 
 
-def refresh_prompt_story(session: Session) -> Tuple[str, str]:
+def refresh_prompt_story(session: Session) -> Tuple[str, str, str, str]:
     """Refresh story prompts to built-in defaults."""
-    return _refresh_predefined_prompt(session, "story")
+    sys, user = _refresh_predefined_prompt(session, "story")
+    return sys, user, "", ""
 
 
-def refresh_prompt_content(session: Session) -> Tuple[str, str]:
+def refresh_prompt_content(session: Session) -> Tuple[str, str, str, str]:
     """Refresh content prompts to built-in defaults."""
-    return _refresh_predefined_prompt(session, "content")
+    sys, user = _refresh_predefined_prompt(session, "content")
+    return sys, user, "", ""
 
 
-def refresh_prompt_codegen(session: Session) -> Tuple[str, str]:
+def refresh_prompt_codegen(session: Session) -> Tuple[str, str, str, str]:
     """Refresh codegen prompts to built-in defaults."""
-    return _refresh_predefined_prompt(session, "codegen")
+    sys, user = _refresh_predefined_prompt(session, "codegen")
+    return sys, user, "", ""
 
 
 def _stream_llm_trace_updates(
@@ -1126,12 +1514,6 @@ def _stream_llm_trace_updates(
     resp = _format_llm_response(step_records)
     changed = (sent != last_sent) or (resp != last_resp)
     return new_pos, sent, resp, changed
-
-
-def run_step_planner_stream(session: Session):
-    """Stream planner updates: show sent immediately, response ASAP."""
-    # Backwards-compatible default (no overrides)
-    return run_step_planner_stream_with_overrides(session, None, None)
 
 
 def run_step_planner_stream_with_overrides(
@@ -1196,11 +1578,6 @@ def run_step_planner_stream_with_overrides(
         yield session, sent, resp
     finally:
         _restore_llm_env(old_env)
-
-
-def run_step_todo_llm_stream(session: Session, step: str, todo_type: TodoType):
-    """Stream todo LLM step updates: show sent immediately, response ASAP."""
-    return run_step_todo_llm_stream_with_overrides(session, step, todo_type, None, None)
 
 
 def run_step_todo_llm_stream_with_overrides(
@@ -1451,30 +1828,6 @@ def _render_slides_from_state(session: Session) -> str:
         return f"<div style='color:red'>Error loading slides from state: {str(e)}</div>"
 
 
-def _render_slides_html(
-    json_text: str,
-    atoms_map: Dict[str, str],
-    content_mdx: Optional[str] = None,
-    generated_components: Optional[Dict[str, Dict[str, Any]]] = None,
-) -> str:
-    """Legacy function - renders from JSON text. Prefer _render_slides_from_state."""
-    try:
-        data = json.loads(json_text)
-        
-        # Handle dict wrapper (e.g. {"presentation_meta": ..., "slides": [...]})
-        if isinstance(data, dict) and "slides" in data and isinstance(data["slides"], list):
-             data = data["slides"]
-             
-        if not isinstance(data, list):
-            return "<div style='color:gray;font-style:italic'>Waiting for valid JSON...</div>"
-
-        generated_components = generated_components or {}
-        
-        return _render_slides_list_html(data, atoms_map, generated_components, content_mdx)
-    except Exception as e:
-        return f"<div style='color:red'>Error parsing slides: {str(e)}</div>"
-
-
 def _render_slides_list_html(
     slides: List[Dict[str, Any]],
     atoms_map: Dict[str, str],
@@ -1504,11 +1857,11 @@ def _render_slides_list_html(
             <tr>
             <th style="width:5%">Rank</th>
             <th style="width:20%">Story</th>
+            <th style="width:30%">Content</th>
             <th style="width:10%">Density</th>
             <th style="width:15%">Visual Design</th>
-            <th style="width:25%">Content</th>
             <th style="width:10%">Layouts</th>
-            <th style="width:15%">Components</th>
+            <th style="width:10%">Components</th>
             </tr>
         </thead>
         <tbody>
@@ -1578,11 +1931,9 @@ def _render_slides_list_html(
                     content_display += atom_html
 
             
-            # Extract layout and components from slide's MDX field (primary source)
+            # Extract layout from slide's MDX field (primary source)
             # OR fall back to content_info from legacy content_mdx parameter
             layouts_value = ""
-            components_list: List[str] = []
-            invented_list: List[Dict[str, str]] = []
             
             # Primary: Extract from slide's mdx field
             slide_mdx = slide.get("mdx", "")
@@ -1591,37 +1942,6 @@ def _render_slides_list_html(
                 m_layout = re.search(r"<(Layout[A-Za-z0-9_\.]*)\b", slide_mdx)
                 if m_layout:
                     layouts_value = m_layout.group(1)
-                
-                # Extract InventComponent tags
-                invent_pattern = r'<InventComponent\s+([\s\S]*?)(?:/>|>\s*</InventComponent>)'
-                for match in re.finditer(invent_pattern, slide_mdx):
-                    attrs_str = match.group(1)
-                    comp_info: Dict[str, str] = {}
-                    
-                    id_match = re.search(r'id\s*=\s*["\']([^"\']+)["\']', attrs_str)
-                    if id_match:
-                        comp_info["id"] = id_match.group(1)
-                    
-                    name_match = re.search(r'name\s*=\s*["\']([^"\']+)["\']', attrs_str)
-                    if name_match:
-                        comp_info["name"] = name_match.group(1)
-                    
-                    intent_match = re.search(r'intent\s*=\s*["\']([^"\']+)["\']', attrs_str)
-                    if intent_match:
-                        comp_info["intent"] = intent_match.group(1)
-                    
-                    if comp_info:
-                        invented_list.append(comp_info)
-                
-                # Extract regular components (capitalized tags, excluding layouts and InventComponent)
-                tags = re.findall(r"<([A-Z][A-Za-z0-9_]*)\b", slide_mdx)
-                seen = set()
-                for t in tags:
-                    if t.startswith("Layout") or t == "InventComponent":
-                        continue
-                    if t not in seen:
-                        seen.add(t)
-                        components_list.append(t)
             
             # Fallback: Try content_info if mdx extraction didn't work
             if not layouts_value and content_info:
@@ -1645,12 +1965,6 @@ def _render_slides_list_html(
                 
                 if isinstance(content_row, dict):
                     layouts_value = str(content_row.get("layout", "") or "")
-                    comps = content_row.get("components")
-                    if isinstance(comps, list):
-                        components_list = [str(c) for c in comps if str(c).strip()]
-                    invented = content_row.get("invented_components")
-                    if isinstance(invented, list):
-                        invented_list = invented
             
             layout_html = ""
             if layouts_value:
@@ -1664,62 +1978,15 @@ def _render_slides_list_html(
             else:
                  layout_html = "<span style='opacity:0.3'>-</span>"
 
-            # Build components HTML - regular components
-            components_html = ""
-            for comp in components_list:
-                comp = comp.strip()
-                if not comp:
-                    continue
-                href = f"/component?name={quote(comp)}"
-                components_html += (
-                    f"<div style='margin-bottom:4px'>"
-                    f"<a class='component-link' href='{href}' target='_blank'>"
-                    f"{_html.escape(comp)}"
-                    f"</a>"
-                    f"</div>"
-                )
-            
-            # Build components HTML - invented components
-            for inv in invented_list:
-                inv_id = inv.get("id", "")
-                inv_name = inv.get("name", "")
-                inv_intent = inv.get("intent", "")
-                display_name = inv_name or inv_id or inv_intent or "InventComponent"
-                
-                # Check if this component has been generated
-                if inv_id and inv_id in generated_components:
-                    # Generated - show in green and make clickable
-                    gen_data = generated_components[inv_id]
-                    # If we have a generated name, prefer it, otherwise use invented name/id
-                    gen_name = gen_data.get("name", display_name)
-                    href = f"/component?name={quote(gen_name)}"
-                    components_html += (
-                        f"<div style='margin-bottom:4px'>"
-                        f"<a class='invented-generated' href='{href}' target='_blank' title='Generated: {_html.escape(gen_name)}'>"
-                        f"✓ {_html.escape(display_name)}"
-                        f"</a>"
-                        f"</div>"
-                    )
-                else:
-                    # Not yet generated - show in amber, not clickable
-                    tooltip = f"intent: {_html.escape(inv_intent)}" if inv_intent else "Awaiting codegen"
-                    components_html += (
-                        f"<div style='margin-bottom:4px'>"
-                        f"<span class='invented-pending' title='{tooltip}'>"
-                        f"⏳ {_html.escape(display_name)}"
-                        f"</span>"
-                        f"</div>"
-                    )
-
             html += f"""
             <tr>
                 <td>{rank}</td>
                 <td>{story}</td>
+                <td>{content_display}</td>
                 <td>{density}</td>
                 <td>{visual_design}</td>
-                <td>{content_display}</td>
                 <td>{layout_html}</td>
-                <td>{components_html}</td>
+                <td></td>
             </tr>
             """
 
@@ -1881,28 +2148,102 @@ def run_step_content_stream_timed(session: Session, override_system: Optional[st
 
 
 def run_step_codegen_stream(session: Session, override_system: Optional[str], override_user: Optional[str]):
-    """Stream codegen step updates."""
-    return run_step_todo_llm_stream_with_overrides(session, "codegen", TodoType.CODEGEN, override_system, override_user)
+    """Stream codegen step updates with support for concurrent component generation."""
+    session = _ensure_session(session)
+    if not session.get("output_dir"):
+        yield session, "", ""
+        return
+
+    output_dir, state_path, trace_path = _session_paths(session)
+    state = PipelineState.load(state_path)
+    instruction = str(session.get("instruction", ""))
+
+    todo = _find_todo(state, TodoType.CODEGEN)
+    if todo is None:
+        yield session, "", ""
+        return
+
+    executor = TodoExecutor(
+        verbose=True,
+        use_cache=bool(session.get("use_cache", True)),
+        output_dir=output_dir,
+        state_path=state_path,
+    )
+
+    old_env = _with_llm_env(session, "codegen", override_system, override_user)
+    result: dict = {"done": False, "log": "", "exc": None}
+
+    def _worker():
+        try:
+            executor.execute_todo(todo, state, instruction)
+            state.save(state_path)
+            result["log"] = "[codegen] ok"
+        except Exception as e:  # noqa: BLE001
+            result["exc"] = e
+        finally:
+            result["done"] = True
+
+    t = threading.Thread(target=_worker, daemon=True)
+    t.start()
+
+    pos = int(session.get("trace_pos", 0) or 0)
+    records: List[dict] = []
+    calls_html = ""
+    resp_html = ""
+    yield session, calls_html, resp_html
+
+    try:
+        while not result["done"]:
+            # Read new trace records
+            new_pos, new_records = _read_new_trace(trace_path, pos)
+            if new_records:
+                records.extend(new_records)
+                pos = new_pos
+            
+            # Filter for codegen step
+            step_records = _filter_records_for_step(records, "codegen")
+            
+            # Use dynamic HTML formatting for all components
+            new_calls_html = _format_codegen_all_calls_html(step_records)
+            new_resp_html = _format_codegen_all_responses_html(step_records)
+            
+            if new_calls_html != calls_html or new_resp_html != resp_html:
+                calls_html, resp_html = new_calls_html, new_resp_html
+            
+            yield session, calls_html, resp_html
+            time.sleep(0.2)
+
+        # Final read
+        new_pos, new_records = _read_new_trace(trace_path, pos)
+        if new_records:
+            records.extend(new_records)
+            pos = new_pos
+        
+        step_records = _filter_records_for_step(records, "codegen")
+        calls_html = _format_codegen_all_calls_html(step_records)
+        resp_html = _format_codegen_all_responses_html(step_records)
+
+        session["trace_pos"] = pos
+
+        # Show tool log if no responses
+        tool_log = result.get("log", "").strip()
+        if tool_log and (not resp_html or len(resp_html) < 50):
+            log_html = f"<div style='padding: 12px; color: #9ca3af;'>{_html.escape(tool_log)}</div>"
+            if resp_html:
+                resp_html = f"{resp_html}\n{log_html}"
+            else:
+                resp_html = log_html
+
+        yield session, calls_html, resp_html
+    finally:
+        _restore_llm_env(old_env)
 
 
 def run_step_codegen_stream_timed(session: Session, override_system: Optional[str], override_user: Optional[str]):
     t0 = time.perf_counter()
-    for session, sent, resp in run_step_codegen_stream(session, override_system, override_user):
+    for session, calls_html, resp_html in run_step_codegen_stream(session, override_system, override_user):
         elapsed = f"{(time.perf_counter() - t0):.2f}s"
-        yield session, sent, resp, elapsed
-
-
-def run_step_atoms_and_refresh(session: Session) -> Tuple[Session, str, str, str, str, str, str, str]:
-    session, log, sent, resp = run_step_todo_llm(session, "atoms", TodoType.ATOMS, None, None)
-    story_sys, story_user = _refresh_predefined_prompt(session, "story")
-    content_sys, content_user = _refresh_predefined_prompt(session, "content")
-    return session, log, sent, resp, story_sys, story_user, content_sys, content_user
-
-
-def run_step_story_and_refresh(session: Session) -> Tuple[Session, str, str, str, str, str]:
-    session, log, sent, resp = run_step_todo_llm(session, "story", TodoType.STORY, None, None)
-    content_sys, content_user = _refresh_predefined_prompt(session, "content")
-    return session, log, sent, resp, content_sys, content_user
+        yield session, calls_html, resp_html, elapsed
 
 
 def run_step_export(session: Session) -> Tuple[Session, List[str], str]:
@@ -2114,9 +2455,18 @@ def build_ui() -> gr.Blocks:
 
         init_btn = gr.Button("Initialize")
 
-        gr.Markdown("## 0) planner")
         with gr.Row():
             with gr.Column(scale=9):
+                 gr.Markdown("## 0) planner")
+            with gr.Column(scale=1, min_width=50):
+                planner_refresh = gr.Button("🔄", elem_classes=["refresh-btn"])
+            with gr.Column(scale=1, min_width=50):
+                planner_run = gr.Button("Run")
+            with gr.Column(scale=1, min_width=60):
+                planner_timer = gr.HTML(value="", elem_id="planner_timer")
+
+        with gr.Row():
+            with gr.Column(scale=10):
                 with gr.Accordion("Prompts", open=False):
                     planner_default_sys = gr.Code(
                         label="system prompt",
@@ -2134,26 +2484,37 @@ def build_ui() -> gr.Blocks:
                         elem_classes=["code-fixed"],
                         interactive=True,
                     )
-            with gr.Column(scale=1, min_width=50):
-                planner_refresh = gr.Button("🔄", elem_classes=["refresh-btn"])
-        with gr.Row():
-            with gr.Column(scale=9, min_width=160):
-                planner_run = gr.Button("0) Run planner")
-            with gr.Column(scale=1, min_width=60):
-                planner_timer = gr.HTML(value="", elem_id="planner_timer")
         with gr.Row():
             with gr.Column():
                 planner_sent = gr.Textbox(label="call", lines=8, max_lines=8)
             with gr.Column():
                 planner_resp = gr.Textbox(label="response", lines=8, max_lines=8)
 
-        gr.Markdown("## 1) constitution")
-        constitution_run = gr.Button("1) Run constitution")
-        constitution_result = gr.Textbox(label="constitution result", lines=8, max_lines=8)
-
-        gr.Markdown("## 2) atoms")
         with gr.Row():
             with gr.Column(scale=9):
+                 gr.Markdown("## 1) constitution")
+            with gr.Column(scale=1, min_width=50):
+                # Placeholder for refresh alignment
+                pass
+            with gr.Column(scale=1, min_width=50):
+                constitution_run = gr.Button("Run")
+            with gr.Column(scale=1, min_width=60):
+                # Placeholder for timer alignment
+                pass
+        constitution_result = gr.Textbox(label="constitution result", lines=8, max_lines=8)
+
+        with gr.Row():
+            with gr.Column(scale=9):
+                 gr.Markdown("## 2) atoms")
+            with gr.Column(scale=1, min_width=50):
+                atoms_refresh = gr.Button("🔄", elem_classes=["refresh-btn"])
+            with gr.Column(scale=1, min_width=50):
+                atoms_run = gr.Button("Run")
+            with gr.Column(scale=1, min_width=60):
+                atoms_timer = gr.HTML(value="", elem_id="atoms_timer")
+
+        with gr.Row():
+            with gr.Column(scale=10):
                 with gr.Accordion("Prompts", open=False):
                     atoms_default_sys = gr.Code(
                         label="system prompt",
@@ -2171,13 +2532,6 @@ def build_ui() -> gr.Blocks:
                         elem_classes=["code-fixed"],
                         interactive=True,
                     )
-            with gr.Column(scale=1, min_width=50):
-                atoms_refresh = gr.Button("🔄", elem_classes=["refresh-btn"])
-        with gr.Row():
-            with gr.Column(scale=9, min_width=160):
-                atoms_run = gr.Button("2) Run atoms")
-            with gr.Column(scale=1, min_width=60):
-                atoms_timer = gr.HTML(value="", elem_id="atoms_timer")
         with gr.Row():
             with gr.Column():
                 atoms_sent = gr.Textbox(label="call", lines=8, max_lines=8)
@@ -2190,9 +2544,18 @@ def build_ui() -> gr.Blocks:
             wrap=True,
         )
 
-        gr.Markdown("## 3) theme")
         with gr.Row():
             with gr.Column(scale=9):
+                 gr.Markdown("## 3) theme")
+            with gr.Column(scale=1, min_width=50):
+                theme_refresh = gr.Button("🔄", elem_classes=["refresh-btn"])
+            with gr.Column(scale=1, min_width=50):
+                theme_run = gr.Button("Run")
+            with gr.Column(scale=1, min_width=60):
+                theme_timer = gr.HTML(value="", elem_id="theme_timer")
+
+        with gr.Row():
+            with gr.Column(scale=10):
                 with gr.Accordion("Prompts", open=False):
                     theme_default_sys = gr.Code(
                         label="system prompt",
@@ -2210,13 +2573,6 @@ def build_ui() -> gr.Blocks:
                         elem_classes=["code-fixed"],
                         interactive=True,
                     )
-            with gr.Column(scale=1, min_width=50):
-                theme_refresh = gr.Button("🔄", elem_classes=["refresh-btn"])
-        with gr.Row():
-            with gr.Column(scale=9, min_width=160):
-                theme_run = gr.Button("3) Run theme")
-            with gr.Column(scale=1, min_width=60):
-                theme_timer = gr.HTML(value="", elem_id="theme_timer")
         theme_result = gr.Textbox(label="theme result (no LLM)", lines=6, max_lines=6, visible=False)
         with gr.Row():
             with gr.Column():
@@ -2224,9 +2580,18 @@ def build_ui() -> gr.Blocks:
             with gr.Column():
                 theme_resp = gr.Textbox(label="response", lines=8, max_lines=8, visible=True)
 
-        gr.Markdown("## 4) story")
         with gr.Row():
             with gr.Column(scale=9):
+                 gr.Markdown("## 4) story")
+            with gr.Column(scale=1, min_width=50):
+                story_refresh = gr.Button("🔄", elem_classes=["refresh-btn"])
+            with gr.Column(scale=1, min_width=50):
+                story_run = gr.Button("Run")
+            with gr.Column(scale=1, min_width=60):
+                story_timer = gr.HTML(value="", elem_id="story_timer")
+
+        with gr.Row():
+            with gr.Column(scale=10):
                 with gr.Accordion("Prompts", open=False):
                     story_default_sys = gr.Code(
                         label="system prompt",
@@ -2244,22 +2609,24 @@ def build_ui() -> gr.Blocks:
                         elem_classes=["code-fixed"],
                         interactive=True,
                     )
-            with gr.Column(scale=1, min_width=50):
-                story_refresh = gr.Button("🔄", elem_classes=["refresh-btn"])
-        with gr.Row():
-            with gr.Column(scale=9, min_width=160):
-                story_run = gr.Button("4) Run story")
-            with gr.Column(scale=1, min_width=60):
-                story_timer = gr.HTML(value="", elem_id="story_timer")
         with gr.Row():
             with gr.Column():
                 story_sent = gr.Textbox(label="call", lines=8, max_lines=8)
             with gr.Column():
                 story_resp = gr.Textbox(label="response", lines=8, max_lines=8)
 
-        gr.Markdown("## 5) content")
         with gr.Row():
             with gr.Column(scale=9):
+                 gr.Markdown("## 5) content")
+            with gr.Column(scale=1, min_width=50):
+                content_refresh = gr.Button("🔄", elem_classes=["refresh-btn"])
+            with gr.Column(scale=1, min_width=50):
+                content_run = gr.Button("Run")
+            with gr.Column(scale=1, min_width=60):
+                content_timer = gr.HTML(value="", elem_id="content_timer")
+
+        with gr.Row():
+            with gr.Column(scale=10):
                 with gr.Accordion("Prompts", open=False):
                     content_default_sys = gr.Code(
                         label="system prompt",
@@ -2277,13 +2644,6 @@ def build_ui() -> gr.Blocks:
                         elem_classes=["code-fixed"],
                         interactive=True,
                     )
-            with gr.Column(scale=1, min_width=50):
-                content_refresh = gr.Button("🔄", elem_classes=["refresh-btn"])
-        with gr.Row():
-            with gr.Column(scale=9, min_width=160):
-                content_run = gr.Button("5) Run content")
-            with gr.Column(scale=1, min_width=60):
-                content_timer = gr.HTML(value="", elem_id="content_timer")
         with gr.Row():
             with gr.Column():
                 content_sent = gr.Textbox(label="call", lines=8, max_lines=8)
@@ -2293,9 +2653,18 @@ def build_ui() -> gr.Blocks:
         gr.Markdown("### Slides")
         story_slides_display = gr.HTML(label="Slides")
 
-        gr.Markdown("## 6) codegen")
         with gr.Row():
             with gr.Column(scale=9):
+                 gr.Markdown("## 6) codegen")
+            with gr.Column(scale=1, min_width=50):
+                codegen_refresh = gr.Button("🔄", elem_classes=["refresh-btn"])
+            with gr.Column(scale=1, min_width=50):
+                codegen_run = gr.Button("Run")
+            with gr.Column(scale=1, min_width=60):
+                codegen_timer = gr.HTML(value="", elem_id="codegen_timer")
+
+        with gr.Row():
+            with gr.Column(scale=10):
                 with gr.Accordion("Prompts", open=False):
                     codegen_default_sys = gr.Code(
                         label="system prompt",
@@ -2313,21 +2682,24 @@ def build_ui() -> gr.Blocks:
                         elem_classes=["code-fixed"],
                         interactive=True,
                     )
-            with gr.Column(scale=1, min_width=50):
-                codegen_refresh = gr.Button("🔄", elem_classes=["refresh-btn"])
-        with gr.Row():
-            with gr.Column(scale=9, min_width=160):
-                codegen_run = gr.Button("6) Run codegen")
-            with gr.Column(scale=1, min_width=60):
-                codegen_timer = gr.HTML(value="", elem_id="codegen_timer")
         with gr.Row():
             with gr.Column():
-                codegen_sent = gr.Textbox(label="call", lines=8, max_lines=8)
+                gr.Markdown("**Calls**")
+                codegen_calls_html = gr.HTML(value="", label="calls")
             with gr.Column():
-                codegen_resp = gr.Textbox(label="response", lines=8, max_lines=8)
+                gr.Markdown("**Responses**")
+                codegen_resp_html = gr.HTML(value="", label="responses")
 
-        gr.Markdown("## 7) export")
-        export_run = gr.Button("7) Run export")
+        with gr.Row():
+            with gr.Column(scale=9):
+                 gr.Markdown("## 7) export")
+            with gr.Column(scale=1, min_width=50):
+                pass
+            with gr.Column(scale=1, min_width=50):
+                export_run = gr.Button("Run")
+            with gr.Column(scale=1, min_width=60):
+                pass
+
         export_preview_btn = gr.Button("Preview")
         export_preview_link = gr.HTML(label="preview")
         output_files = gr.Files(label="produced files")
@@ -2448,8 +2820,6 @@ def build_ui() -> gr.Blocks:
                 story_slides_display,
                 content_sent,
                 content_resp,
-                codegen_sent,
-                codegen_resp,
             ],
         )
 
@@ -2510,7 +2880,7 @@ def build_ui() -> gr.Blocks:
         codegen_run.click(
             fn=run_step_codegen_stream_timed,
             inputs=[session_state, codegen_default_sys, codegen_default_user],
-            outputs=[session_state, codegen_sent, codegen_resp, codegen_timer],
+            outputs=[session_state, codegen_calls_html, codegen_resp_html, codegen_timer],
         )
 
         export_run.click(
@@ -2529,37 +2899,37 @@ def build_ui() -> gr.Blocks:
         planner_refresh.click(
             fn=refresh_prompt_planner,
             inputs=[session_state],
-            outputs=[planner_default_sys, planner_default_user],
+            outputs=[planner_default_sys, planner_default_user, planner_sent, planner_resp],
         )
 
         atoms_refresh.click(
             fn=refresh_prompt_atoms,
             inputs=[session_state],
-            outputs=[atoms_default_sys, atoms_default_user],
+            outputs=[atoms_default_sys, atoms_default_user, atoms_sent, atoms_resp],
         )
 
         theme_refresh.click(
             fn=refresh_prompt_theme,
             inputs=[session_state],
-            outputs=[theme_default_sys, theme_default_user],
+            outputs=[theme_default_sys, theme_default_user, theme_sent, theme_resp],
         )
 
         story_refresh.click(
             fn=refresh_prompt_story,
             inputs=[session_state],
-            outputs=[story_default_sys, story_default_user],
+            outputs=[story_default_sys, story_default_user, story_sent, story_resp],
         )
 
         content_refresh.click(
             fn=refresh_prompt_content,
             inputs=[session_state],
-            outputs=[content_default_sys, content_default_user],
+            outputs=[content_default_sys, content_default_user, content_sent, content_resp],
         )
 
         codegen_refresh.click(
             fn=refresh_prompt_codegen,
             inputs=[session_state],
-            outputs=[codegen_default_sys, codegen_default_user],
+            outputs=[codegen_default_sys, codegen_default_user, codegen_calls_html, codegen_resp_html],
         )
 
     return demo
@@ -2586,6 +2956,10 @@ if __name__ == "__main__":
     @app.get("/component", response_class=HTMLResponse)
     def component_viewer(name: str = ""):
         return HTMLResponse(_get_component_source_html(name))
+
+    @app.get("/component-preview", response_class=HTMLResponse)
+    def component_preview(name: str = ""):
+        return HTMLResponse(_get_component_preview_html(name))
 
     app = gr.mount_gradio_app(app, demo, path="/")
     uvicorn.run(app, host="127.0.0.1", port=7860)

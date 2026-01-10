@@ -12,12 +12,13 @@ from __future__ import annotations
 import os
 import re
 import json
+import asyncio
 from pathlib import Path
 from typing import TYPE_CHECKING, Optional, List, Dict, Any, ClassVar
 from pydantic import Field
 
 from src.common.tool_protocol import LLMTool, ToolContext, ToolPatch, register_tool
-from src.utils.llm_client import call_llm
+from src.utils.llm_client import call_llm, call_llm_async
 
 if TYPE_CHECKING:
     from src.generation.state import PipelineState
@@ -40,12 +41,12 @@ class CodegenPatch(ToolPatch):
     """Patch containing generated component code."""
     generated_components: Dict[str, Dict[str, Any]] = Field(
         default_factory=dict,
-        description="Map of component_id -> {name, code, props_interface}"
+        description="Map of component_id -> {name, code, props_interface, mdx_usage}"
     )
+    # mdx_usage is the replacement string provided by LLM (e.g. <MyComp />)
 
 
 def _extract_invent_components_from_mdx(mdx_text: str) -> List[Dict[str, Any]]:
-    print("Shiyi DEBUG: _extract_invent_components_from_mdx called")
     """Extract all InventComponent specs from MDX text (content step output)."""
     if not mdx_text:
         return []
@@ -96,29 +97,29 @@ def _extract_invent_components_from_mdx(mdx_text: str) -> List[Dict[str, Any]]:
                 component["name"] = name_match.group(1)
 
             # Extract intent
-            intent_match = re.search(r'intent\s*=\s*["\']([^"\']+)["\']', attrs_str)
+            intent_match = re.search(r'intent\s*=\s*"([^"]+)"', attrs_str, re.DOTALL)
             if intent_match:
-                component["intent"] = intent_match.group(1)
+                component["intent"] = intent_match.group(1).strip()
             
-            # Extract data
-            data_match = re.search(r'data\s*=\s*\{\{([\s\S]*?)\}\}', attrs_str)
-            if data_match:
-                component["data"] = data_match.group(1).strip()
+            # Extract visual_metaphor
+            visual_metaphor_match = re.search(r'visual_metaphor\s*=\s*"([^"]+)"', attrs_str, re.DOTALL)
+            if visual_metaphor_match:
+                component["visual_metaphor"] = visual_metaphor_match.group(1).strip()
 
-            # Extract visual_logic
-            visual_logic_match = re.search(r'visual_logic\s*=\s*\{\{([\s\S]*?)\}\}', attrs_str)
-            if visual_logic_match:
-                component["visual_logic"] = visual_logic_match.group(1).strip()
-
-            # Extract theme_mapping
-            theme_mapping_match = re.search(r'theme_mapping\s*=\s*\{\{([\s\S]*?)\}\}', attrs_str)
-            if theme_mapping_match:
-                component["theme_mapping"] = theme_mapping_match.group(1).strip()
+            # Extract idea_size
+            idea_size_match = re.search(r'idea_size\s*=\s*["\']([^"\']+)["\']', attrs_str)
+            if idea_size_match:
+                component["idea_size"] = idea_size_match.group(1).strip()
             
-            # Extract notes
-            notes_match = re.search(r'notes\s*=\s*["\']([^"\']+)["\']', attrs_str)
-            if notes_match:
-                component["notes"] = notes_match.group(1)
+            # Extract space_allocation
+            space_allocation_match = re.search(r'space_allocation\s*=\s*"([^"]+)"', attrs_str, re.DOTALL)
+            if space_allocation_match:
+                component["space_allocation"] = space_allocation_match.group(1).strip()
+            
+            # Extract note
+            note_match = re.search(r'note\s*=\s*"([^"]+)"', attrs_str, re.DOTALL)
+            if note_match:
+                component["note"] = note_match.group(1).strip()
             
             # Upsert into map (latest occurrence wins)
             components_map[comp_id] = component
@@ -186,8 +187,8 @@ def _validate_and_fix_component_code(
     fixed_code = code.strip()
     fixed_props = props_interface.strip()
 
-    # 1. Remove disallowed imports, keep only react / framer-motion / lucide-react
-    allowed_modules = {"react", "framer-motion", "lucide-react"}
+    # 1. Remove disallowed imports, keep only react / framer-motion
+    allowed_modules = {"react", "framer-motion"}
     import_line_re = re.compile(r'^\s*import\s+.*?from\s+["\']([^"\']+)["\'];?\s*$', re.MULTILINE)
     kept_lines: list[str] = []
     removed_count = 0
@@ -208,11 +209,9 @@ def _validate_and_fix_component_code(
     # 1.1 Auto-inject missing allowed imports if referenced
     has_react_import = bool(re.search(r"^\s*import\s+.*from\s+['\"]react['\"]", fixed_code, re.MULTILINE))
     has_motion_import = bool(re.search(r"^\s*import\s+.*from\s+['\"]framer-motion['\"]", fixed_code, re.MULTILINE))
-    has_lucide_import = bool(re.search(r"^\s*import\s+.*from\s+['\"]lucide-react['\"]", fixed_code, re.MULTILINE))
 
     needs_react = bool(re.search(r"\bReact\.", fixed_code))
     needs_motion = bool(re.search(r"<\s*motion\b|\bmotion\.", fixed_code))
-    needs_lucide = bool(re.search(r"\bLucide\.", fixed_code))
 
     import_inserts: list[str] = []
     if needs_react and not has_react_import:
@@ -221,9 +220,6 @@ def _validate_and_fix_component_code(
     if needs_motion and not has_motion_import:
         import_inserts.append("import { motion } from 'framer-motion';")
         fixes.append("Added missing framer-motion import")
-    if needs_lucide and not has_lucide_import:
-        import_inserts.append("import * as Lucide from 'lucide-react';")
-        fixes.append("Added missing lucide-react import")
 
     if import_inserts:
         fixed_code = "\n".join(import_inserts) + "\n\n" + fixed_code
@@ -301,111 +297,27 @@ class CodegenTool(LLMTool[CodegenContext, CodegenPatch]):
         '{"id": "codegen", "type": "codegen", "params": {}, "depends_on": ["content"]}',
     ]
     
-    system_prompt: ClassVar[str] = """Role: Expert UI Engineering & Design System Implementer
-You are a React/TypeScript component generator specialized in Generative UI. Your goal is to translate abstract design intents into pixel-perfect, professional-grade React components that look like they were built by a top-tier design team.
+    system_prompt: ClassVar[str] = """
+# Role
+You are a World-Class Presentation Designer and UI Engineer. Your goal is to translate an abstract `<InventComponent>` tag into a **high-impact, infographic-style** React component specifically desgined for a block in a presentation deck.
 
-# INPUT SCHEMA
-You will receive an <InventComponent> definition containing:
-- data: Raw content.
-- visual_logic: Composition and animation instructions.
-- theme_mapping: Color and spacing intent.
-- notes: Specific functional requirements.
-
-# STYLE DICTIONARY (THE "CONSTITUTION")
-To ensure consistency with predefined components, you MUST use these standard tokens via Tailwind CSS:
-
-- Spacing: Use p-6 or p-8 for containers. Gap between items should be gap-4 or gap-6.
-- Radius: Large containers use rounded-2xl or rounded-3xl.
-- Typography:
-    - Value/Big Numbers: text-4xl font-bold tracking-tight.
-    - Labels: text-sm font-medium uppercase tracking-wider text-slate-500.
-- Shadows: Use shadow-xl shadow-slate-200/50 for cards.
-- Borders: Use border border-slate-100.
-
-# VISUAL LOGIC INTERPRETATION
-Composition:
-- radial: Use absolute positioning with sin/cos or CSS conic-gradient.
-- split-comparison: Use grid-cols-2 with a center divider.
-- hierarchical-tree: Use Flexbox with SVG lines for connectors.
-
-Metaphor Handling:
-- If the intent involves "Waves" or "Surfing," use framer-motion for fluid, organic path animations.
-
-# THEME-AWARE COLORS
-- Primary: text-blue-600 / bg-blue-500
-- Success: text-emerald-600 / bg-emerald-500
-- Warning: text-amber-600 / bg-amber-500
-- Use theme_mapping to decide which color goes where.
-
-# OUTPUT FORMAT
-Return a JSON object with this structure:
-
+# Output Format
+Return a JSON object:
 {
-  "components": [
-    {
-      "id": "component_id",
-      "name": "ComponentName",
-            "props_interface": "export interface ComponentNameProps { ... }",
-            "code": "import React from 'react';\nimport { motion } from 'framer-motion';\nimport * as Lucide from 'lucide-react';\n\nexport const ComponentName: React.FC<ComponentNameProps> = ({ ... }) => { ... }"
-    }
-  ]
+  "mdx_replacement": "<ComponentName />",
+  "component": {
+    "id": "original-invent-id",
+    "name": "PascalCaseName",
+    "props_interface": "export interface ComponentNameProps {}",
+    "code": "import React from 'react';\nimport { motion } from 'framer-motion';\n\nexport const ComponentName: React.FC = () => {\n  // Implementation logic...\n}"
+  }
 }
 
-# RULES (STRICT)
-1. No External Imports: Only use react, framer-motion, and lucide-react.
-2. Accessibility: Add aria-label to interactive elements and icons.
-3. Responsive: All components must be container-aware (use w-full h-full).
-4. Empty States: If data is empty, return a graceful null or a minimal Skeleton loader.
-5. Do NOT put the props interface in the code field; put it ONLY in props_interface.
-6. Do NOT duplicate definitions between props_interface and code fields.
-
-# CRITICAL: PROPS STRUCTURE
-The MDX calls components using spread syntax: `<ComponentName {...{ key1: value1, key2: value2 }} />`
-This means the data object keys become TOP-LEVEL props, NOT wrapped in a "data" prop.
-
-WRONG (do NOT generate this):
-```tsx
-interface Props { data: { before: X; after: Y } }  // ❌ Wrapped in "data"
-const Comp = ({ data }) => { ... data.before ... }
-```
-
-CORRECT (generate this instead):
-```tsx
-interface Props { before: X; after: Y; title?: string }  // ✅ Flat top-level props
-const Comp = ({ before, after, title }) => { ... before ... }
-```
-
-Always destructure the data object keys directly as component props.
-
-# COMPONENT RULES
-1. Use TypeScript with proper typing
-2. Use functional components with React.FC<PropsType>
-3. Use Tailwind CSS for styling (assume it's available)
-4. Keep components self-contained and reusable
-5. Handle edge cases (empty data, missing props with defaults)
-6. Use semantic HTML elements
-7. Include basic accessibility attributes (aria-label, role, etc.)
-8. Export the component as a named export
-9. Props interface should DIRECTLY match the data={{...}} keys from the InventComponent (flat, not wrapped)
-
-# STYLE GUIDELINES
-- Use modern React patterns (hooks if needed)
-- Prefer composition over complexity
-- Keep rendering logic simple and readable
-- Use consistent naming: PascalCase for components, camelCase for props
-- Provide sensible default values for optional props
-
-# EXAMPLE OUTPUT
-Given an InventComponent with `data={{ before: {...}, after: {...} }}`:
-
-{
-  "components": [{
-    "id": "comparison_01",
-    "name": "BeforeAfterComparison",
-    "props_interface": "export interface BeforeAfterComparisonProps {\\n  before: { focus: string; value: number };\\n  after: { focus: string; value: number };\\n  title?: string;\\n}",
-    "code": "export const BeforeAfterComparison: React.FC<BeforeAfterComparisonProps> = ({ before, after, title = 'Comparison' }) => {\\n  if (!before || !after) return null;\\n  return (\\n    <div className=\\"p-6 rounded-2xl border border-slate-100\\">\\n      <h3>{title}</h3>\\n      <div className=\\"grid grid-cols-2 gap-4\\">\\n        <div>{before.focus}: {before.value}</div>\\n        <div>{after.focus}: {after.value}</div>\\n      </div>\\n    </div>\\n  );\\n};"
-  }]
-}
+# Rules
+- Only use `react`, `framer-motion`.
+- Components must be container-aware (`w-full h-full`).
+- The code must be a complete, self-contained TypeScript file string.
+- **Interactive Elements**: If a component is clickable/selectable, do NOT use a check icon to show state. Instead, change the text color to `emerald-500` (green) to indicate the active/selected state.
 """
     
     def slice(self, state: "PipelineState", params: Optional[Dict[str, Any]] = None) -> CodegenContext:
@@ -456,18 +368,29 @@ Given an InventComponent with `data={{ before: {...}, after: {...} }}`:
                     intent_match = re.search(r'intent\s*=\s*["\']([^"\']+)["\']', attrs_str)
                     if intent_match:
                         component["intent"] = intent_match.group(1)
+                    
+                    # Extract new format attributes
+                    visual_metaphor_match = re.search(r'visual_metaphor\s*=\s*"([^"]+)"', attrs_str, re.DOTALL)
+                    if visual_metaphor_match:
+                        component["visual_metaphor"] = visual_metaphor_match.group(1).strip()
+
+                    idea_size_match = re.search(r'idea_size\s*=\s*["\']([^"\']+)["\']', attrs_str)
+                    if idea_size_match:
+                        component["idea_size"] = idea_size_match.group(1).strip()
+                    
+                    space_allocation_match = re.search(r'space_allocation\s*=\s*"([^"]+)"', attrs_str, re.DOTALL)
+                    if space_allocation_match:
+                        component["space_allocation"] = space_allocation_match.group(1).strip()
                         
-                    # Extract data
+                    # Legacy format support
                     data_match = re.search(r'data\s*=\s*\{\{([\s\S]*?)\}\}', attrs_str)
                     if data_match:
                         component["data"] = data_match.group(1).strip()
 
-                    # Extract visual_logic
                     visual_logic_match = re.search(r'visual_logic\s*=\s*\{\{([\s\S]*?)\}\}', attrs_str)
                     if visual_logic_match:
                         component["visual_logic"] = visual_logic_match.group(1).strip()
 
-                    # Extract theme_mapping
                     theme_mapping_match = re.search(r'theme_mapping\s*=\s*\{\{([\s\S]*?)\}\}', attrs_str)
                     if theme_mapping_match:
                         component["theme_mapping"] = theme_mapping_match.group(1).strip()
@@ -500,75 +423,135 @@ Given an InventComponent with `data={{ before: {...}, after: {...} }}`:
         context: CodegenContext,
         user_instruction: str,
     ) -> CodegenPatch:
-        """Generate React code for invented components - one LLM call per component."""
+        """Generate React code for invented components - concurrent LLM calls."""
         if not context.invented_components:
             print("[codegen] No invented components found, skipping")
             return CodegenPatch(generated_components={})
         
-        print(f"[codegen] Generating code for {len(context.invented_components)} components")
+        print(f"[codegen] Generating code for {len(context.invented_components)} components concurrently")
         
-        import os
-        deployment = os.getenv('AZURE_OPENAI_DEPLOYMENT', 'gpt-4o')
-        
-        generated = {}
-        
-        # Make one LLM call per component
-        for i, comp in enumerate(context.invented_components, 1):
-            comp_id = comp.get("id", f"component_{i}")
-            print(f"[codegen] ({i}/{len(context.invented_components)}) Generating: {comp_id}")
-            
-            # Build component-specific user prompt
-            user_prompt = self._build_single_component_prompt(comp, context.existing_components, user_instruction)
-            
-            try:
-                response = call_llm(
-                    system_prompt=self.system_prompt,
-                    user_prompt=user_prompt,
-                    deployment=deployment,
-                    temperature=0.3,
-                    max_tokens=4000,
-                    response_format="json",
-                )
-                
-                # Parse response
-                data = json.loads(response)
-                
-                # Handle both single component and array format
-                comp_data = data
-                if "components" in data and isinstance(data["components"], list):
-                    comp_data = data["components"][0] if data["components"] else {}
-                
-                if comp_data:
-                    raw_code = comp_data.get("code", "")
-                    raw_props = comp_data.get("props_interface", "")
-                    comp_name = comp_data.get("name", comp_id)
-                    
-                    # Validate and fix common issues
-                    fixed_code, fixed_props, fixes = _validate_and_fix_component_code(
-                        raw_code, raw_props, comp_name
-                    )
-                    
-                    if fixes:
-                        print(f"[codegen] Fixes applied to {comp_name}:")
-                        for fix in fixes:
-                            print(f"[codegen]   - {fix}")
-                    
-                    generated[comp_id] = {
-                        "name": comp_name,
-                        "props_interface": fixed_props,
-                        "code": fixed_code,
-                    }
-                    print(f"[codegen] Generated: {comp_name}")
-                else:
-                    print(f"[codegen] Warning: Empty response for {comp_id}")
-                    
-            except json.JSONDecodeError as e:
-                print(f"[codegen] Failed to parse JSON for {comp_id}: {e}")
-            except Exception as e:
-                print(f"[codegen] Error generating {comp_id}: {e}")
+        # Run async generation in a new event loop
+        try:
+            loop = asyncio.get_event_loop()
+            if loop.is_running():
+                # If we're already in an event loop, create a new one
+                import concurrent.futures
+                with concurrent.futures.ThreadPoolExecutor() as pool:
+                    generated = pool.submit(
+                        lambda: asyncio.run(self._generate_all_async(context, user_instruction))
+                    ).result()
+            else:
+                generated = loop.run_until_complete(self._generate_all_async(context, user_instruction))
+        except RuntimeError:
+            # No event loop, create one
+            generated = asyncio.run(self._generate_all_async(context, user_instruction))
         
         print(f"[codegen] Generated {len(generated)} components total")
         return CodegenPatch(generated_components=generated)
+    
+    async def _generate_all_async(self, context: CodegenContext, user_instruction: str) -> Dict[str, Dict[str, Any]]:
+        """Generate all components concurrently."""
+        deployment = os.getenv('AZURE_OPENAI_DEPLOYMENT', 'gpt-4o')
+        
+        # Create tasks for all components
+        tasks = []
+        for i, comp in enumerate(context.invented_components, 1):
+            comp_id = comp.get("id", f"component_{i}")
+            task = self._generate_component_async(
+                comp, comp_id, i, len(context.invented_components),
+                context.existing_components, user_instruction, deployment
+            )
+            tasks.append((comp_id, task))
+        
+        # Run all tasks concurrently
+        results = await asyncio.gather(*[task for _, task in tasks], return_exceptions=True)
+        
+        # Collect successful results
+        generated = {}
+        for (comp_id, _), result in zip(tasks, results):
+            if isinstance(result, Exception):
+                print(f"[codegen] Error generating {comp_id}: {result}")
+            elif result is not None:
+                generated[comp_id] = result
+        
+        return generated
+    
+    async def _generate_component_async(
+        self,
+        comp: Dict[str, Any],
+        comp_id: str,
+        index: int,
+        total: int,
+        existing_components: List[str],
+        user_instruction: str,
+        deployment: str
+    ) -> Optional[Dict[str, Any]]:
+        """Generate a single component asynchronously."""
+        print(f"[codegen] ({index}/{total}) Starting: {comp_id}")
+        
+        # Build component-specific user prompt
+        user_prompt = self._build_single_component_prompt(comp, existing_components, user_instruction)
+        
+        try:
+            response = await call_llm_async(
+                system_prompt=self.system_prompt,
+                user_prompt=user_prompt,
+                deployment=deployment,
+                temperature=0.3,
+                max_tokens=4000,
+                response_format="json",
+                component_id=comp_id,  # Pass component ID for tracing
+            )
+            
+            # Parse response
+            data = json.loads(response)
+            
+            mdx_replacement = data.get("mdx_replacement", "")
+            
+            # Handle new component-nested format or legacy formats
+            comp_data = data
+            if "component" in data and isinstance(data["component"], dict):
+                comp_data = data["component"]
+            elif "components" in data and isinstance(data["components"], list):
+                comp_data = data["components"][0] if data["components"] else {}
+            elif "code" in data:
+                comp_data = data
+            else:
+                comp_data = {}
+            
+            if comp_data:
+                raw_code = comp_data.get("code", "")
+                raw_props = comp_data.get("props_interface", "")
+                comp_name = comp_data.get("name", comp_id)
+                
+                # Validate and fix common issues
+                fixed_code, fixed_props, fixes = _validate_and_fix_component_code(
+                    raw_code, raw_props, comp_name
+                )
+                
+                if fixes:
+                    print(f"[codegen] Fixes applied to {comp_name}:")
+                    for fix in fixes:
+                        print(f"[codegen]   - {fix}")
+                
+                print(f"[codegen] ({index}/{total}) Completed: {comp_name}")
+                
+                return {
+                    "name": comp_name,
+                    "props_interface": fixed_props,
+                    "code": fixed_code,
+                    "mdx_usage": mdx_replacement
+                }
+            else:
+                print(f"[codegen] Warning: Empty response for {comp_id}")
+                return None
+                
+        except json.JSONDecodeError as e:
+            print(f"[codegen] Failed to parse JSON for {comp_id}: {e}")
+            return None
+        except Exception as e:
+            print(f"[codegen] Error generating {comp_id}: {e}")
+            raise
     
     def _build_single_component_prompt(
         self, 
@@ -576,47 +559,33 @@ Given an InventComponent with `data={{ before: {...}, after: {...} }}`:
         existing_components: List[str],
         user_instruction: str
     ) -> str:
-        """Build user prompt for a single component."""
+        """
+        Build user prompt for a single bespoke presentation component.
+        Focuses on Design Brief rather than Data Schema.
+        """
         lines = [
-            "Generate a React component for this specification:",
+            f"### DESIGN BRIEF FOR COMPONENT: {comp.get('id', 'unknown')}",
             "",
-            f"## Component ID: {comp.get('id', 'unknown')}",
+            f"**1. Target Component Name:** {comp.get('name', 'BespokeComponent')}",
+            f"**2. Narrative Intent & Content:** {comp.get('intent', 'N/A')}",
+            f"**3. Visual Metaphor:** {comp.get('visual_metaphor', 'N/A')}",
+            f"**4. Idea Size: {comp.get('idea_size', 'N/A')}",
+            "",
         ]
         
-        if comp.get('name'):
-            lines.append(f"## Target Component Name: {comp['name']}")
-
-        lines.extend([
-            f"- Intent: {comp.get('intent', 'N/A')}",
-            "",
-            "## InventComponent Input",
-            "data:",
-            comp.get('data', "{}"),
-            "",
-            "visual_logic:",
-            comp.get('visual_logic', "{}"),
-            "",
-            "theme_mapping:",
-            comp.get('theme_mapping', "{}"),
-        ])
-        
         if comp.get('notes'):
-            lines.append(f"- Notes: {comp['notes']}")
-        
-        lines.append(f"- Slide context: {comp.get('slide_id', 'unknown')}")
-        lines.append("")
-        lines.append(f"Existing components for reference (don't duplicate): {', '.join(existing_components)}")
+            lines.append(f"   - Implementation Notes: {comp['notes']}")
         
         if user_instruction:
-            lines.append(f"\nAdditional guidance: {user_instruction}")
+            lines.append(f"\n**Additional User Guidance:** {user_instruction}")
         
-        lines.append("")
-        
-        if comp.get('name'):
-            lines.append(f"CRITICAL: The component MUST be exported as named export '{comp['name']}'")
-            
-        lines.append("Return a JSON with: id, name, props_interface, code")
-        
+        lines.extend([
+            "",
+            "---",
+            f"**CRITICAL:** Export as named export '{comp.get('name', 'BespokeComponent')}'.",
+            "**REQUIRED JSON OUTPUT:** { \"mdx_replacement\": \"<ComponentName />\", \"component\": { \"id\", \"name\", \"props_interface\", \"code\" } }"
+        ])
+    
         return "\n".join(lines)
     
     def apply(self, state: "PipelineState", patch: CodegenPatch) -> None:

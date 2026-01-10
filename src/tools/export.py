@@ -394,6 +394,13 @@ class ExportTool(DirectTool[ExportContext, ExportPatch]):
                         return full_tag  # Keep original if not generated
                     
                     comp_data = generated_components[comp_id]
+                    
+                    # 1. Prefer explicit mdx_usage from LLM (most robust)
+                    mdx_usage = comp_data.get("mdx_usage")
+                    if mdx_usage:
+                        return mdx_usage
+                    
+                    # 2. Fallback to regex reconstruction if no explicit usage found
                     # Use the generated name, or fall back to comp_data['name']
                     comp_name = comp_data.get("name", "")
                     

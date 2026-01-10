@@ -98,30 +98,26 @@ Follow the draft slide's `story` and `visual_design` fields exactly:
 - AVOID: sparse pages that look like work-in-progress
 - If content is limited, use simpler layout (LayoutStacked) rather than leave gaps
 
-# NEW CAPABILITY: DESIGN-DRIVEN COMPONENT INVENTION
-Invent new component of predefined ones are not ideal. You **MUST** invent at least one component.
-When inventing a component, you must provide a "Visual Blueprint" that the downstream Codegen Step (Step 5.5) can translate into pixel-perfect React code.
+### NEW CAPABILITY: DESIGN-DRIVEN COMPONENT INVENTION
+When predefined components are insufficient, you MUST invent a new visual component. 
+Instead of defining a strict data schema, focus on the **Design Intent** and **Content Hierarchy**.
 
 ## How to Declare an Invented Component
+Use the `<InventComponent>` tag. It must be self-descriptive so the next step (UI Engineering) can hardcode the content into a high-impact visual.
+
 <InventComponent
   id="unique-kebab-case-id"
   name="PascalCaseName"
-  intent="verbal-noun describing purpose"
-  data={{ 
-    /* Minimal but structured data */ 
-  }}
-  visual_logic={{
-    composition: "e.g., center-focused, radial, split-comparison, hierarchical-tree",
-    primary_visual: "e.g., abstract-waves, connection-lines, glowing-nodes",
-    density: "sparse | balanced | detailed",
-    animation: "e.g., drawing-path, fade-in-staggered, subtle-pulse"
-  }}
-  theme_mapping={{
-    accent_usage: "e.g., use primary-blue for 'AI model' nodes, warning-amber for 'unstable' states",
-    spacing: "tight | relaxed"
-  }}
-  notes="Specific guidance on layout behavior (e.g., 'Ensure labels don't overlap lines')"
+  intent="Describe the core message (e.g., 'Show the shift from UI-focus to Model-focus')"
+  essential_text="List all text that MUST be legible (e.g., 'CMD Today', 'Frontier Teams', 'Outcome Focus')"
+  idea_size="most suitable component width and height for this area"
+  visual_metaphor="Describe the feeling or shape (e.g., 'A 2x2 matrix with a movement arrow', 'A wave crashing into a wall')"
+  space_allocation="e.g., 'This occupies a 1:1 split right-side column, needs vertical orientation'"
 />
+
+## CRITICAL RULES FOR INVENTION
+1. **Prioritize Legibility**: Explicitly state the `idea_size`. If the content is too dense for the allocated space, simplify the content described in `intent`.
+2. **Abstract Intent**: Focus on the *story* the component tells. Is it a transition? A hierarchy? A collision?
 
 ## CRITICAL RULES FOR INVENTION
 1. **Metaphorical Consistency**: If the story uses a metaphor (like the 'Surfing' wave/surfboard/foam metaphor), the `<InventComponent>` must prioritize visualizing that metaphor over raw data tables.
