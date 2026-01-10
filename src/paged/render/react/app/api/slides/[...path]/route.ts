@@ -29,6 +29,7 @@ interface StateJson {
     theme?: string;
     title?: string;
   };
+  mdx_theme?: string;
   generated_components?: Record<string, GeneratedComponent>;
 }
 
@@ -141,7 +142,7 @@ export async function GET(
       slides: serializedSlides,
       slideCount: serializedSlides.length,
       source: foundPath,
-      theme: stateJson.presentation?.theme || 'default',
+      theme: stateJson.mdx_theme || stateJson.presentation?.theme || 'business',
       path: outputPath,
       generatedComponents: generatedComponents,
     });

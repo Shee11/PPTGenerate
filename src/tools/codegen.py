@@ -298,8 +298,28 @@ Generate a simple and clean ppt block:
 - Only use `react`, `framer-motion`.
 - Avoid long text or redundant words
 - Fit into `space`, center gravity, friendly font size, responsive
-- Transparent background
 - No need to add component title
+
+# Theming
+Use CSS variables for styling
+
+Colors:
+- `var(--theme-primary)`: Main brand color
+- `var(--theme-secondary)`: Supplemental color
+- `var(--theme-accent)`: Highlight color
+- `var(--theme-text)`: Main text color
+- `var(--theme-text-muted)`: Secondary text color
+- `var(--theme-border)`: Border color
+- `var(--theme-surface)`: Card/container background
+
+Typography:
+- `var(--theme-font-display)`: Headings font
+- `var(--theme-font-body)`: Body text font
+- `var(--theme-font-mono)`: Code/data font
+
+Visuals:
+- `var(--theme-radius)`: Border radius for cards/buttons
+- `var(--theme-shadow)`: Box shadow for elevation
 
 # Output Format
 Return a JSON object:

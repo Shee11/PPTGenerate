@@ -12,6 +12,7 @@ import { useParams } from 'next/navigation';
 import { MDXRemote, MDXRemoteSerializeResult } from 'next-mdx-remote';
 import { mdxComponents } from '@/components/core/MDXProvider';
 import { SlideContainer, SlideWrapper, SlideNavigation } from '@/components/core';
+import { useTheme } from '@/components/core/ThemeContext';
 import { transform } from 'sucrase';
 import * as FramerMotion from 'framer-motion';
 import * as Lucide from 'lucide-react';
@@ -155,6 +156,9 @@ export default function DynamicSlidesPage(): JSX.Element {
   const [sourcePath, setSourcePath] = useState<string>('');
   const [runtimeComponents, setRuntimeComponents] = useState<Record<string, React.ComponentType<any>>>({});
 
+  // Get theme setter from context
+  const { setTheme } = useTheme();
+
   // Merge base components with runtime-compiled generated components
   const allComponents = useMemo(() => ({
     ...mdxComponents,
@@ -193,6 +197,16 @@ export default function DynamicSlidesPage(): JSX.Element {
         setSlides(data.slides);
         setSourcePath(data.source);
         
+        // Apply theme from state.json
+        if (data.theme) {
+          // Verify it's a valid theme before setting
+          const validThemes = ['business', 'cyber', 'minimal', 'academic', 'creative', 'duolingo', 'dark'];
+          if (validThemes.includes(data.theme)) {
+            setTheme(data.theme as any);
+            console.log(`[path] Applied theme: ${data.theme}`);
+          }
+        }
+
         // Compile generated components from state.json at runtime
         if (data.generatedComponents && Object.keys(data.generatedComponents).length > 0) {
           console.log(`[path] Found ${Object.keys(data.generatedComponents).length} generated component(s)`);
