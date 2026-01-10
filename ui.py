@@ -2526,7 +2526,7 @@ def run_step_codegen_stream_timed(session: Session, override_system: Optional[st
         yield session, calls_html, resp_html, elapsed
 
 
-def run_step_export(session: Session) -> Tuple[Session, List[str], str]:
+def run_step_export(session: Session, mdx_theme_val: str = None) -> Tuple[Session, List[str], str]:
     session = _ensure_session(session)
     if not session.get("output_dir"):
         return session, [], "[error] Initialize first."
@@ -2534,6 +2534,14 @@ def run_step_export(session: Session) -> Tuple[Session, List[str], str]:
     output_dir, state_path, _ = _session_paths(session)
     state = PipelineState.load(state_path)
     instruction = str(session.get("instruction", ""))
+
+    # Update theme from UI if provided
+    if mdx_theme_val:
+        state.mdx_theme = mdx_theme_val
+        # Also update session to keep track
+        session["mdx_theme"] = mdx_theme_val
+        # Save state so executor sees the new theme
+        state.save(state_path)
 
     todo = _find_todo(state, TodoType.EXPORT)
     if todo is None:
@@ -3165,7 +3173,7 @@ def build_ui() -> gr.Blocks:
 
         export_run.click(
             fn=run_step_export,
-            inputs=[session_state],
+            inputs=[session_state, mdx_theme],
             outputs=[session_state, output_files, export_preview],
         )
 

@@ -19,6 +19,7 @@ from pydantic import Field
 
 from src.common.tool_protocol import LLMTool, ToolContext, ToolPatch, register_tool
 from src.utils.llm_client import call_llm, call_llm_async
+from src.generation.theme.css_variables import THEME_CSS_VARIABLES_SECTION
 
 if TYPE_CHECKING:
     from src.generation.state import PipelineState
@@ -297,30 +298,10 @@ Generate a simple and clean ppt block:
 
 - Only use `react`, `framer-motion`.
 - Avoid long text or redundant words
-- Fit into `space`, center gravity, friendly font size, responsive
-- No need to add component title
+- Fit into `space`, center gravity, responsive
+- Do not add component title
 
-# Theming
-Use CSS variables for styling
-
-Colors:
-- `var(--theme-primary)`: Main brand color
-- `var(--theme-secondary)`: Supplemental color
-- `var(--theme-accent)`: Highlight color
-- `var(--theme-text)`: Main text color
-- `var(--theme-text-muted)`: Secondary text color
-- `var(--theme-border)`: Border color
-- `var(--theme-surface)`: Card/container background
-
-Typography:
-- `var(--theme-font-display)`: Headings font
-- `var(--theme-font-body)`: Body text font
-- `var(--theme-font-mono)`: Code/data font
-
-Visuals:
-- `var(--theme-radius)`: Border radius for cards/buttons
-- `var(--theme-shadow)`: Box shadow for elevation
-
+""" + THEME_CSS_VARIABLES_SECTION + """
 # Output Format
 Return a JSON object:
 {
