@@ -98,32 +98,19 @@ Follow the draft slide's `story` and `visual_design` fields exactly:
 - AVOID: sparse pages that look like work-in-progress
 - If content is limited, use simpler layout (LayoutStacked) rather than leave gaps
 
-### NEW CAPABILITY: DESIGN-DRIVEN COMPONENT INVENTION
+### COMPONENT INVENTION
 When predefined components are insufficient, you MUST invent a new visual component. 
-Instead of defining a strict data schema, focus on the **Design Intent** and **Content Hierarchy**.
 
 ## How to Declare an Invented Component
 Use the `<InventComponent>` tag. It must be self-descriptive so the next step (UI Engineering) can hardcode the content into a high-impact visual.
 
 <InventComponent
-  id="unique-kebab-case-id"
-  name="PascalCaseName"
-  intent="Describe the core message (e.g., 'Show the shift from UI-focus to Model-focus')"
-  essential_text="List all text that MUST be legible (e.g., 'CMD Today', 'Frontier Teams', 'Outcome Focus')"
-  idea_size="most suitable component width and height for this area"
-  visual_metaphor="Describe the feeling or shape (e.g., 'A 2x2 matrix with a movement arrow', 'A wave crashing into a wall')"
-  space_allocation="e.g., 'This occupies a 1:1 split right-side column, needs vertical orientation'"
+  id="unique_component_id"
+  name="PascalCaseComponentName"
+  intent="The story this component needs to tell"
+  raw_story="the original content sections for this component"
+  space="space reserved for this component, width * height (the slide page size is 1920 * 1080 pixels)"
 />
-
-## CRITICAL RULES FOR INVENTION
-1. **Prioritize Legibility**: Explicitly state the `idea_size`. If the content is too dense for the allocated space, simplify the content described in `intent`.
-2. **Abstract Intent**: Focus on the *story* the component tells. Is it a transition? A hierarchy? A collision?
-
-## CRITICAL RULES FOR INVENTION
-1. **Metaphorical Consistency**: If the story uses a metaphor (like the 'Surfing' wave/surfboard/foam metaphor), the `<InventComponent>` must prioritize visualizing that metaphor over raw data tables.
-2. **Standard Alignment**: Invented components must share the same padding, border-radius, and font-weight ratios as predefined components to ensure the deck feels like a single system.
-3. **No 'Empty Boxes'**: Do not invent a component for a single text string. Invent components for multi-dimensional data, complex flows, or emotional/metaphorical visual aids.
-4. **Data Contract**: The `data` prop must be a stable schema that a React component can map to (no unstructured prose inside the JSON).
 
 {chart_docs}
 

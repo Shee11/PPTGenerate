@@ -81,7 +81,7 @@ def _extract_invent_components_from_mdx(mdx_text: str) -> List[Dict[str, Any]]:
         for match in re.finditer(invent_pattern, slide_body):
             attrs_str = match.group(1)
             
-            # Extract id (REQUIRED)
+            # Extract id (required)
             id_match = re.search(r'id\s*=\s*["\']([^"\']+)["\']', attrs_str)
             comp_id = id_match.group(1) if id_match else f"invented_{slide_id}_{len(components_map)}"
             
@@ -90,36 +90,31 @@ def _extract_invent_components_from_mdx(mdx_text: str) -> List[Dict[str, Any]]:
                 "id": comp_id,
                 "raw": match.group(0),
             }
-            
-            # Extract name (REQUIRED per new prompt)
-            name_match = re.search(r'name\s*=\s*["\']([^"\']+)["\']', attrs_str)
-            if name_match:
-                component["name"] = name_match.group(1)
 
             # Extract intent
             intent_match = re.search(r'intent\s*=\s*"([^"]+)"', attrs_str, re.DOTALL)
             if intent_match:
                 component["intent"] = intent_match.group(1).strip()
             
-            # Extract visual_metaphor
-            visual_metaphor_match = re.search(r'visual_metaphor\s*=\s*"([^"]+)"', attrs_str, re.DOTALL)
-            if visual_metaphor_match:
-                component["visual_metaphor"] = visual_metaphor_match.group(1).strip()
+            # Extract name (optional, generate if missing)
+            name_match = re.search(r'name\s*=\s*["\']([^"\']+)["\']', attrs_str)
+            if name_match:
+                component["name"] = name_match.group(1)
+            else:   
+                # Generate PascalCase name: Invented{SlideID}{Index}
+                # Ensure slide_id part is alphanumeric and capitalized
+                clean_sid = re.sub(r'[^a-zA-Z0-9]', '', slide_id) or "Slide"
+                component["name"] = f"Invented{clean_sid.capitalize()}{len(components_map)}"
+            
+            # Extract raw_story
+            raw_story_match = re.search(r'raw_story\s*=\s*"([^"]+)"', attrs_str, re.DOTALL)
+            if raw_story_match:
+                component["raw_story"] = raw_story_match.group(1).strip()
 
-            # Extract idea_size
-            idea_size_match = re.search(r'idea_size\s*=\s*["\']([^"\']+)["\']', attrs_str)
-            if idea_size_match:
-                component["idea_size"] = idea_size_match.group(1).strip()
-            
-            # Extract space_allocation
-            space_allocation_match = re.search(r'space_allocation\s*=\s*"([^"]+)"', attrs_str, re.DOTALL)
-            if space_allocation_match:
-                component["space_allocation"] = space_allocation_match.group(1).strip()
-            
-            # Extract note
-            note_match = re.search(r'note\s*=\s*"([^"]+)"', attrs_str, re.DOTALL)
-            if note_match:
-                component["note"] = note_match.group(1).strip()
+            # Extract space
+            space_match = re.search(r'space\s*=\s*["\']([^"\']+)["\']', attrs_str)
+            if space_match:
+                component["space"] = space_match.group(1).strip()
             
             # Upsert into map (latest occurrence wins)
             components_map[comp_id] = component
@@ -298,8 +293,13 @@ class CodegenTool(LLMTool[CodegenContext, CodegenPatch]):
     ]
     
     system_prompt: ClassVar[str] = """
-# Role
-You are a World-Class Presentation Designer and UI Engineer. Your goal is to translate an abstract `<InventComponent>` tag into a **high-impact, infographic-style** React component specifically desgined for a block in a presentation deck.
+Generate a simple and clean ppt block:
+
+- Only use `react`, `framer-motion`.
+- Avoid long text or redundant words
+- Fit into `space`, center gravity, friendly font size, responsive
+- Transparent background
+- No need to add component title
 
 # Output Format
 Return a JSON object:
@@ -309,19 +309,17 @@ Return a JSON object:
     "id": "original-invent-id",
     "name": "PascalCaseName",
     "props_interface": "export interface ComponentNameProps {}",
-    "code": "import React from 'react';\nimport { motion } from 'framer-motion';\n\nexport const ComponentName: React.FC = () => {\n  // Implementation logic...\n}"
+    "code": "import React from 'react';
+import { motion } from 'framer-motion';
+
+export const ComponentName: React.FC = () => {
+  // Implementation logic...
+}"
   }
 }
-
-# Rules
-- Only use `react`, `framer-motion`.
-- Components must be container-aware (`w-full h-full`).
-- The code must be a complete, self-contained TypeScript file string.
-- **Interactive Elements**: If a component is clickable/selectable, do NOT use a check icon to show state. Instead, change the text color to `emerald-500` (green) to indicate the active/selected state.
 """
     
     def slice(self, state: "PipelineState", params: Optional[Dict[str, Any]] = None) -> CodegenContext:
-        print("Shiyi DEBUG: CodegenTool.slice called")
         """Extract invented components from content step MDX output."""
         params = params or {}
         
@@ -358,42 +356,30 @@ Return a JSON object:
                         "id": comp_id,
                         "raw": match.group(0),
                     }
-                    
-                    # Extract name
-                    name_match = re.search(r'name\s*=\s*["\']([^"\']+)["\']', attrs_str)
-                    if name_match:
-                        component["name"] = name_match.group(1)
 
                     # Extract intent
                     intent_match = re.search(r'intent\s*=\s*["\']([^"\']+)["\']', attrs_str)
                     if intent_match:
                         component["intent"] = intent_match.group(1)
+
+                    # Extract name (optional, generate if missing)
+                    name_match = re.search(r'name\s*=\s*["\']([^"\']+)["\']', attrs_str)
+                    if name_match:
+                        component["name"] = name_match.group(1)
+                    else:   
+                        # Generate PascalCase name: Invented{SlideID}{Index}
+                        # Ensure slide_id part is alphanumeric and capitalized
+                        clean_sid = re.sub(r'[^a-zA-Z0-9]', '', slide_id) or "Slide"
+                        component["name"] = f"Invented{clean_sid.capitalize()}{len(invented)}"
                     
                     # Extract new format attributes
-                    visual_metaphor_match = re.search(r'visual_metaphor\s*=\s*"([^"]+)"', attrs_str, re.DOTALL)
-                    if visual_metaphor_match:
-                        component["visual_metaphor"] = visual_metaphor_match.group(1).strip()
+                    raw_story_match = re.search(r'raw_story\s*=\s*"([^"]+)"', attrs_str, re.DOTALL)
+                    if raw_story_match:
+                        component["raw_story"] = raw_story_match.group(1).strip()
 
-                    idea_size_match = re.search(r'idea_size\s*=\s*["\']([^"\']+)["\']', attrs_str)
-                    if idea_size_match:
-                        component["idea_size"] = idea_size_match.group(1).strip()
-                    
-                    space_allocation_match = re.search(r'space_allocation\s*=\s*"([^"]+)"', attrs_str, re.DOTALL)
-                    if space_allocation_match:
-                        component["space_allocation"] = space_allocation_match.group(1).strip()
-                        
-                    # Legacy format support
-                    data_match = re.search(r'data\s*=\s*\{\{([\s\S]*?)\}\}', attrs_str)
-                    if data_match:
-                        component["data"] = data_match.group(1).strip()
-
-                    visual_logic_match = re.search(r'visual_logic\s*=\s*\{\{([\s\S]*?)\}\}', attrs_str)
-                    if visual_logic_match:
-                        component["visual_logic"] = visual_logic_match.group(1).strip()
-
-                    theme_mapping_match = re.search(r'theme_mapping\s*=\s*\{\{([\s\S]*?)\}\}', attrs_str)
-                    if theme_mapping_match:
-                        component["theme_mapping"] = theme_mapping_match.group(1).strip()
+                    space_match = re.search(r'space\s*=\s*["\']([^"\']+)["\']', attrs_str)
+                    if space_match:
+                        component["space"] = space_match.group(1).strip()
                         
                     invented.append(component)
             
@@ -564,27 +550,12 @@ Return a JSON object:
         Focuses on Design Brief rather than Data Schema.
         """
         lines = [
-            f"### DESIGN BRIEF FOR COMPONENT: {comp.get('id', 'unknown')}",
-            "",
-            f"**1. Target Component Name:** {comp.get('name', 'BespokeComponent')}",
-            f"**2. Narrative Intent & Content:** {comp.get('intent', 'N/A')}",
-            f"**3. Visual Metaphor:** {comp.get('visual_metaphor', 'N/A')}",
-            f"**4. Idea Size: {comp.get('idea_size', 'N/A')}",
+            f"**Name:** {comp.get('name', 'N/A')}",
+            f"**Intent:** {comp.get('intent', 'N/A')}",
+            f"**Raw Story:** {comp.get('raw_story', 'N/A')}",
+            f"**Space(width*height):** {comp.get('space', 'N/A')}",
             "",
         ]
-        
-        if comp.get('notes'):
-            lines.append(f"   - Implementation Notes: {comp['notes']}")
-        
-        if user_instruction:
-            lines.append(f"\n**Additional User Guidance:** {user_instruction}")
-        
-        lines.extend([
-            "",
-            "---",
-            f"**CRITICAL:** Export as named export '{comp.get('name', 'BespokeComponent')}'.",
-            "**REQUIRED JSON OUTPUT:** { \"mdx_replacement\": \"<ComponentName />\", \"component\": { \"id\", \"name\", \"props_interface\", \"code\" } }"
-        ])
     
         return "\n".join(lines)
     

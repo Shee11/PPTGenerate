@@ -114,7 +114,7 @@ def _get_component_source_html(component_name: str) -> str:
     )
 
 
-def _get_component_preview_html(component_name: str) -> str:
+def _get_component_preview_html(component_name: str, run_id: Optional[str] = None) -> str:
     """Generate HTML page that renders a React component preview via the Next.js dev server."""
     name = (component_name or "").strip()
     if not name:
@@ -137,8 +137,13 @@ def _get_component_preview_html(component_name: str) -> str:
     except Exception as e:
         content = f"(failed to read: {e})"
 
-    # URL-encode the component name for the preview iframe
+    # URL-encode parameters
     name_encoded = quote(name)
+    
+    # Construct iframe src
+    iframe_src = f"http://127.0.0.1:3000/preview/component?name={name_encoded}"
+    if run_id:
+        iframe_src += f"&path={quote(run_id)}"
 
     # Generate an HTML page with:
     # 1. An iframe pointing to the React dev server's component preview route
@@ -238,13 +243,13 @@ def _get_component_preview_html(component_name: str) -> str:
         <iframe 
             id="preview-frame"
             class="preview-frame" 
-            src="http://127.0.0.1:3000/preview/component?name={name_encoded}"
+            src="{iframe_src}"
             onerror="handleFrameError()"
         ></iframe>
     </div>
     
     <div style="margin-bottom: 16px;">
-        <a class="btn" href="http://127.0.0.1:3000/preview/component?name={name_encoded}" target="_blank">Open in New Tab</a>
+        <a class="btn" href="{iframe_src}" target="_blank">Open in New Tab</a>
         <a class="btn" href="/component?name={name_encoded}" target="_blank">View Source</a>
     </div>
     
@@ -262,7 +267,7 @@ def _get_component_preview_html(component_name: str) -> str:
             const errorDiv = document.createElement('div');
             errorDiv.className = 'error-message';
             errorDiv.innerHTML = 'Failed to load preview. Make sure the React dev server is running on port 3000.<br><br>' +
-                '<a class="btn" href="http://127.0.0.1:3000/preview/component?name={name_encoded}" target="_blank">Try Opening Directly</a>';
+                '<a class="btn" href="{iframe_src}" target="_blank">Try Opening Directly</a>';
             container.appendChild(errorDiv);
         }});
         
@@ -860,7 +865,7 @@ def _format_codegen_concurrent_resp(records: List[dict]) -> str:
 
 
 def _format_codegen_all_calls_html(records: List[dict]) -> str:
-    """Format all codegen calls as HTML with textbox-styled containers for each component."""
+    """Format all codegen calls as HTML with editable textareas and regenerate buttons."""
     if not records:
         return ""
     
@@ -875,27 +880,39 @@ def _format_codegen_all_calls_html(records: List[dict]) -> str:
     if not by_component:
         return ""
     
-    # Textbox-like styling
-    container_style = (
-        "border: 1px solid var(--border-color-primary, #374151); "
-        "border-radius: 8px; "
-        "padding: 12px; "
-        "margin-bottom: 16px; "
-        "background-color: var(--background-fill-primary, #1f2937); "
-        "color: var(--body-text-color, #e5e7eb); "
-        "font-family: var(--font-mono, ui-monospace, monospace); "
-        "font-size: 14px; "
-        "white-space: pre-wrap; "
-        "overflow-y: auto; "
-        "max-height: 200px;"
-    )
-    
+    # Styling
     label_style = (
         "font-family: var(--font, ui-sans-serif, system-ui); "
         "font-size: 14px; "
         "font-weight: 500; "
         "color: var(--block-label-text-color, #9ca3af); "
         "margin-bottom: 6px;"
+    )
+    
+    textarea_style = (
+        "width: 100%; "
+        "min-height: 150px; "
+        "border: 1px solid var(--border-color-primary, #374151); "
+        "border-radius: 8px; "
+        "padding: 12px; "
+        "background-color: var(--background-fill-primary, #1f2937); "
+        "color: var(--body-text-color, #e5e7eb); "
+        "font-family: var(--font-mono, ui-monospace, monospace); "
+        "font-size: 13px; "
+        "resize: vertical;"
+    )
+    
+    button_style = (
+        "padding: 6px 12px; "
+        "margin-top: 8px; "
+        "border: 1px solid var(--border-color-primary, #374151); "
+        "border-radius: 4px; "
+        "background-color: var(--button-primary-background-fill, #2563eb); "
+        "color: var(--button-primary-text-color, #ffffff); "
+        "font-family: var(--font, ui-sans-serif, system-ui); "
+        "font-size: 13px; "
+        "cursor: pointer; "
+        "transition: background-color 0.2s;"
     )
     
     html_parts: List[str] = []
@@ -917,29 +934,210 @@ def _format_codegen_all_calls_html(records: List[dict]) -> str:
         sys_p = sent_record.get("system_prompt", "")
         user_p = sent_record.get("user_prompt", "")
         
-        # Build content
+        # Build content for display and editing
         content_parts: List[str] = []
         if sys_p:
-            content_parts.append(f"# System\n{_html.escape(sys_p)}")
+            content_parts.append(f"# System\n{sys_p}")
         if user_p:
-            content_parts.append(f"# User\n{_html.escape(user_p)}")
+            content_parts.append(f"# User\n{user_p}")
         
         content = "\n\n".join(content_parts)
         
         # Label with component name
         label = f"call (component {idx + 1}: {_html.escape(comp_id)})"
         
-        html_parts.append(
-            f"<div style='margin-bottom: 16px;'>"
-            f"<div style='{label_style}'>{label}</div>"
-            f"<div style='{container_style}'>{content}</div>"
-            f"</div>"
-        )
+        # Use a unique ID for the textarea
+        textarea_id = f"codegen_call_{comp_id.replace('-', '_')}"
+        status_id = f"codegen_status_{comp_id.replace('-', '_')}"
+        
+        html_parts.append(f"""
+<div style='margin-bottom: 16px;'>
+    <div style='{label_style}'>{label}</div>
+    <textarea id="{textarea_id}" style="{textarea_style}">{_html.escape(content)}</textarea>
+    <button style="{button_style}" 
+            onclick="regenerateComponent('{comp_id}', '{textarea_id}', '{status_id}')"
+            onmouseover="this.style.backgroundColor='#1d4ed8'"
+            onmouseout="this.style.backgroundColor='#2563eb'">
+        🔄 Regenerate
+    </button>
+    <span id="{status_id}" style="margin-left: 10px; color: #9ca3af; font-size: 12px;"></span>
+</div>
+        """)
     
-    return "\n".join(html_parts) if html_parts else ""
+    # Add JavaScript for regeneration
+    script = """
+<script>
+function regenerateComponent(compId, textareaId, statusId) {
+    const textarea = document.getElementById(textareaId);
+    const status = document.getElementById(statusId);
+    const content = textarea.value;
+    
+    status.textContent = '⏳ Generating...';
+    status.style.color = '#60a5fa';
+    
+    // Parse system and user prompts
+    let systemPrompt = '';
+    let userPrompt = '';
+    
+    const parts = content.split(/\n\n+/);
+    for (let i = 0; i < parts.length; i++) {
+        const part = parts[i].trim();
+        if (part.startsWith('# System')) {
+            systemPrompt = part.substring(8).trim();
+        } else if (part.startsWith('# User')) {
+            userPrompt = part.substring(6).trim();
+        }
+    }
+    
+    // Call backend API
+    fetch('/regenerate-component', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            component_id: compId,
+            system_prompt: systemPrompt,
+            user_prompt: userPrompt
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            status.textContent = '✓ Generated! Refresh to see preview.';
+            status.style.color = '#34d399';
+        } else {
+            status.textContent = '✗ Error: ' + (data.error || 'Unknown error');
+            status.style.color = '#f87171';
+        }
+    })
+    .catch(error => {
+        status.textContent = '✗ Request failed: ' + error;
+        status.style.color = '#f87171';
+    });
+}
+</script>
+    """
+    
+    return ("\n".join(html_parts) + script) if html_parts else ""
 
 
-def _format_codegen_all_responses_html(records: List[dict]) -> str:
+def _get_codegen_call_data(component_id: str, session: Session) -> Optional[Dict[str, Any]]:
+    """Extract codegen call data for a specific component from trace."""
+    trace_file = session.get("trace_file")
+    if not trace_file or not os.path.exists(trace_file):
+        return None
+    
+    try:
+        with open(trace_file, 'r', encoding='utf-8') as f:
+            for line in f:
+                line = line.strip()
+                if not line:
+                    continue
+                try:
+                    record = json.loads(line)
+                    if (record.get("step") == "codegen" and 
+                        record.get("component_id") == component_id and
+                        record.get("event") == "sent"):
+                        return record
+                except json.JSONDecodeError:
+                    continue
+    except Exception:
+        pass
+    
+    return None
+
+
+def regenerate_single_component(
+    component_id: str,
+    system_prompt: str,
+    user_prompt: str,
+    session: Session
+) -> Dict[str, Any]:
+    """Regenerate a single component with custom prompts."""
+    try:
+        if not session.get("output_dir"):
+            return {"success": False, "error": "No active session"}
+        
+        output_dir, state_path, _ = _session_paths(session)
+        state = PipelineState.load(state_path)
+        
+        # Import codegen tool
+        from src.tools.codegen import CodegenTool
+        from src.utils.llm_client import call_llm
+        
+        tool = CodegenTool(verbose=True)
+        
+        # Get deployment
+        deployment = os.getenv('AZURE_OPENAI_DEPLOYMENT', 'gpt-4o')
+        
+        # Call LLM
+        response = call_llm(
+            system_prompt=system_prompt,
+            user_prompt=user_prompt,
+            deployment=deployment,
+            temperature=0.3,
+            max_tokens=4000,
+            response_format="json",
+            component_id=component_id,
+        )
+        
+        # Parse response
+        data = json.loads(response)
+        
+        # Handle different response formats
+        comp_data = data
+        if "component" in data and isinstance(data["component"], dict):
+            comp_data = data["component"]
+        elif "components" in data and isinstance(data["components"], list):
+            comp_data = data["components"][0] if data["components"] else {}
+        elif "code" in data:
+            comp_data = data
+        else:
+            comp_data = {}
+        
+        if not comp_data:
+            return {"success": False, "error": "Empty component data in LLM response"}
+        
+        # Validate and fix code
+        from src.tools.codegen import _validate_and_fix_component_code
+        
+        raw_code = comp_data.get("code", "")
+        raw_props = comp_data.get("props_interface", "")
+        comp_name = comp_data.get("name", component_id)
+        
+        fixed_code, fixed_props, fixes = _validate_and_fix_component_code(
+            raw_code, raw_props, comp_name
+        )
+        
+        # Update state
+        if not hasattr(state, 'generated_components'):
+            state.generated_components = {}
+        
+        state.generated_components[component_id] = {
+            "name": comp_name,
+            "props_interface": fixed_props,
+            "code": fixed_code,
+            "mdx_usage": data.get("mdx_replacement", f"<{comp_name} />")
+        }
+        
+        # Save state
+        state.save(state_path)
+        
+        return {
+            "success": True,
+            "component_name": comp_name,
+            "fixes": fixes
+        }
+        
+    except Exception as e:
+        import traceback
+        return {
+            "success": False,
+            "error": str(e),
+            "traceback": traceback.format_exc()
+        }
+
+
+def _format_codegen_all_responses_html(records: List[dict], run_id: Optional[str] = None) -> str:
     """Format all codegen responses as HTML with textbox-styled containers for each component."""
     if not records:
         return ""
@@ -1016,10 +1214,22 @@ def _format_codegen_all_responses_html(records: List[dict]) -> str:
         # URL-encode component name for the preview link
         comp_name_encoded = quote(comp_id)
         
-        # Preview button - opens component preview in new tab
+        # Prepare params for Next.js preview
+        # Strip output/ prefix from run_id if present to match path convention
+        clean_run_id = run_id
+        if clean_run_id and clean_run_id.startswith("output/"):
+            clean_run_id = clean_run_id[len("output/"):]
+            
+        # Build query params for direct Next.js access
+        # Uses 'path' instead of 'run_id' and points to port 3000
+        preview_query = f"name={comp_name_encoded}"
+        if clean_run_id:
+            preview_query += f"&path={quote(clean_run_id)}"
+        
+        # Preview button - opens component preview in new tab (Direct Next.js Link)
         preview_button = (
             f"<button style='{button_style}' "
-            f"onclick=\"window.open('/component-preview?name={comp_name_encoded}', '_blank')\" "
+            f"onclick=\"window.open('http://localhost:3000/preview/component?{preview_query}', '_blank')\" "
             f"onmouseover=\"this.style.backgroundColor='#4b5563'\" "
             f"onmouseout=\"this.style.backgroundColor='var(--button-secondary-background-fill, #374151)'\">Preview</button>"
         )
@@ -1740,6 +1950,7 @@ def _extract_content_layouts_and_components(content_mdx: str) -> Dict[str, Dict[
         return {}
 
     out: Dict[str, Dict[str, object]] = {}
+    comp_count = 0
 
     for slide_attrs, slide_body in slide_blocks:
         # Slide id
@@ -1760,23 +1971,25 @@ def _extract_content_layouts_and_components(content_mdx: str) -> Dict[str, Dict[
             attrs_str = match.group(1)
             comp_info: Dict[str, str] = {}
             
-            # Extract id
+            # Extract id (optional)
             id_match = re.search(r'id\s*=\s*["\']([^"\']+)["\']', attrs_str)
-            if id_match:
-                comp_info["id"] = id_match.group(1)
+            comp_info["id"] = id_match.group(1) if id_match else f"invented_{slide_id}_{comp_count}"
             
-            # Extract name (new)
+            # Extract name (optional)
             name_match = re.search(r'name\s*=\s*["\']([^"\']+)["\']', attrs_str)
             if name_match:
                 comp_info["name"] = name_match.group(1)
+            else:
+                 clean_sid = re.sub(r'[^a-zA-Z0-9]', '', slide_id) or "Slide"
+                 comp_info["name"] = f"Invented{clean_sid.capitalize()}{comp_count}"
 
             # Extract intent
             intent_match = re.search(r'intent\s*=\s*["\']([^"\']+)["\']', attrs_str)
             if intent_match:
                 comp_info["intent"] = intent_match.group(1)
             
-            if comp_info:
-                invented_components.append(comp_info)
+            invented_components.append(comp_info)
+            comp_count += 1
 
         # Components: collect JSX tag names (capitalized). Deduplicate while preserving order.
         # Exclude InventComponent from regular components list
@@ -1823,7 +2036,11 @@ def _render_slides_from_state(session: Session) -> str:
         atoms_map = _get_atoms_map(session)
         generated_components = state.generated_components or {}
         
-        return _render_slides_list_html(slides, atoms_map, generated_components)
+        # Extract run_id from output_dir
+        output_dir = session.get("output_dir", "")
+        run_id = Path(output_dir).name if output_dir else ""
+        
+        return _render_slides_list_html(slides, atoms_map, generated_components, run_id=run_id)
     except Exception as e:
         return f"<div style='color:red'>Error loading slides from state: {str(e)}</div>"
 
@@ -1833,10 +2050,17 @@ def _render_slides_list_html(
     atoms_map: Dict[str, str],
     generated_components: Dict[str, Dict[str, Any]],
     content_mdx: Optional[str] = None,
+    run_id: str = "",
 ) -> str:
     """Core renderer for slides list. Used by both state-based and legacy JSON-based rendering."""
     try:
         content_info = _extract_content_layouts_and_components(content_mdx or "") if content_mdx else {}
+
+        # Build set of names for generated components (for fast lookup)
+        gen_names = set()
+        for gc in generated_components.values():
+            if isinstance(gc, dict) and "name" in gc:
+                gen_names.add(gc["name"])
 
         html = """
         <style>
@@ -1867,6 +2091,7 @@ def _render_slides_list_html(
         <tbody>
         """
         
+        comp_count = 0
         for slide in slides:
             if not isinstance(slide, dict):
                 continue
@@ -1934,9 +2159,9 @@ def _render_slides_list_html(
             # Extract layout from slide's MDX field (primary source)
             # OR fall back to content_info from legacy content_mdx parameter
             layouts_value = ""
+            slide_mdx = slide.get("mdx", "")
             
             # Primary: Extract from slide's mdx field
-            slide_mdx = slide.get("mdx", "")
             if slide_mdx:
                 # Extract layout tag
                 m_layout = re.search(r"<(Layout[A-Za-z0-9_\.]*)\b", slide_mdx)
@@ -1978,6 +2203,61 @@ def _render_slides_list_html(
             else:
                  layout_html = "<span style='opacity:0.3'>-</span>"
 
+            # Parse components for this slide
+            comps_display_list = []
+            
+            # Use slide_mdx if available, otherwise try fallback mapping (not implemented fully for components)
+            if slide_mdx:
+                # 1. Check for InventComponent (pending or generated)
+                for m in re.finditer(r'<InventComponent\s+([\s\S]*?)(?:/>|>\s*</InventComponent>)', slide_mdx):
+                    attrs = m.group(1)
+                    
+                    # Logic to determine component name, matching codegen.py auto-generation
+                    c_name = ""
+                    name_m = re.search(r'name\s*=\s*["\']([^"\']+)["\']', attrs)
+                    if name_m:
+                        c_name = name_m.group(1).strip()
+                    else:
+                        # Auto-generate name based on slide ID and global index
+                        # Must match codegen.py: Invented{SlideID}{Index}
+                        clean_sid = re.sub(r'[^a-zA-Z0-9]', '', slide_id) or "Slide"
+                        # We need a global index of components.
+                        # Since we don't have the global context easily here without a separate pass,
+                        # we'll approximate or we need to pass a context object.
+                        # EDIT: We added `comp_count` outside the loop.
+                        c_name = f"Invented{clean_sid.capitalize()}{comp_count}"
+                    
+                    comp_count += 1
+
+                    if c_name in gen_names:
+                         # Generated -> Link to preview
+                         href = f"/component-preview?name={quote(c_name)}&run_id={quote(run_id)}"
+                         comps_display_list.append(f"<a class='invented-generated' href='{href}' target='_blank'>{_html.escape(c_name)}</a>")
+                    else:
+                         # Pending -> Gray
+                         comps_display_list.append(f"<span class='invented-pending'>{_html.escape(c_name)}</span>")
+
+                # 2. Check for regular Component tags
+                # Exclude Layout, Slide, InventComponent
+                reg_tags = re.findall(r"<([A-Z][A-Za-z0-9_]*)\b", slide_mdx)
+                seen_tags = set()
+                for t in reg_tags:
+                    if t in ["Slide", "InventComponent"] or t.startswith("Layout"):
+                        continue
+                    if t in seen_tags:
+                        continue
+                    seen_tags.add(t)
+                    
+                    if t in gen_names:
+                         # Generated -> Link to preview
+                         href = f"/component-preview?name={quote(t)}&run_id={quote(run_id)}"
+                         comps_display_list.append(f"<a class='invented-generated' href='{href}' target='_blank'>{_html.escape(t)}</a>")
+                    else:
+                         # Predefined -> Plain text
+                         comps_display_list.append(f"<span>{_html.escape(t)}</span>")
+
+            comps_html = ", ".join(comps_display_list)
+
             html += f"""
             <tr>
                 <td>{rank}</td>
@@ -1986,7 +2266,7 @@ def _render_slides_list_html(
                 <td>{density}</td>
                 <td>{visual_design}</td>
                 <td>{layout_html}</td>
-                <td></td>
+                <td>{comps_html}</td>
             </tr>
             """
 
@@ -2205,7 +2485,7 @@ def run_step_codegen_stream(session: Session, override_system: Optional[str], ov
             
             # Use dynamic HTML formatting for all components
             new_calls_html = _format_codegen_all_calls_html(step_records)
-            new_resp_html = _format_codegen_all_responses_html(step_records)
+            new_resp_html = _format_codegen_all_responses_html(step_records, run_id=session.get("output_dir"))
             
             if new_calls_html != calls_html or new_resp_html != resp_html:
                 calls_html, resp_html = new_calls_html, new_resp_html
@@ -2221,7 +2501,7 @@ def run_step_codegen_stream(session: Session, override_system: Optional[str], ov
         
         step_records = _filter_records_for_step(records, "codegen")
         calls_html = _format_codegen_all_calls_html(step_records)
-        resp_html = _format_codegen_all_responses_html(step_records)
+        resp_html = _format_codegen_all_responses_html(step_records, run_id=session.get("output_dir"))
 
         session["trace_pos"] = pos
 
@@ -2936,8 +3216,8 @@ def build_ui() -> gr.Blocks:
 
 
 if __name__ == "__main__":
-    from fastapi import FastAPI
-    from fastapi.responses import HTMLResponse
+    from fastapi import FastAPI, Request
+    from fastapi.responses import HTMLResponse, JSONResponse
     import uvicorn
     import signal
     import sys
@@ -2958,8 +3238,53 @@ if __name__ == "__main__":
         return HTMLResponse(_get_component_source_html(name))
 
     @app.get("/component-preview", response_class=HTMLResponse)
-    def component_preview(name: str = ""):
-        return HTMLResponse(_get_component_preview_html(name))
+    def component_preview(name: str = "", run_id: Optional[str] = None):
+        return HTMLResponse(_get_component_preview_html(name, run_id))
+    
+    @app.post("/regenerate-component")
+    async def regenerate_component_endpoint(request: Request):
+        """API endpoint to regenerate a single component."""
+        try:
+            body = await request.json()
+            component_id = body.get("component_id", "")
+            system_prompt = body.get("system_prompt", "")
+            user_prompt = body.get("user_prompt", "")
+            
+            # Get current session from global state (simplified)
+            # In production, you'd want proper session management
+            # For now, we'll use a global session variable or file-based approach
+            
+            # Try to find the most recent session
+            output_dirs = sorted(
+                [d for d in Path("output").glob("*") if d.is_dir()],
+                key=lambda x: x.stat().st_mtime,
+                reverse=True
+            )
+            
+            if not output_dirs:
+                return JSONResponse({"success": False, "error": "No output directory found"})
+            
+            output_dir = output_dirs[0]
+            state_path = output_dir / "state.json"
+            trace_file = output_dir / "llm_trace.jsonl"
+            
+            session = {
+                "output_dir": str(output_dir),
+                "trace_file": str(trace_file) if trace_file.exists() else None
+            }
+            
+            result = regenerate_single_component(
+                component_id, system_prompt, user_prompt, session
+            )
+            
+            return JSONResponse(result)
+        except Exception as e:
+            import traceback
+            return JSONResponse({
+                "success": False,
+                "error": str(e),
+                "traceback": traceback.format_exc()
+            })
 
     app = gr.mount_gradio_app(app, demo, path="/")
     uvicorn.run(app, host="127.0.0.1", port=7860)

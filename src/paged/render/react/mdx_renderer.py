@@ -650,7 +650,7 @@ class ReactMDXRenderer:
         
         return result
     
-    def render_slide(self, slide: Dict[str, Any]) -> str:
+    def render_slide(self, slide: Dict[str, Any], comp_index: int = 0) -> tuple[str, int]:
         """Render a single slide to MDX.
         
         If the slide has an 'mdx' field, return it directly (LLM-generated MDX).
@@ -658,27 +658,37 @@ class ReactMDXRenderer:
         
         Args:
             slide: Slide dictionary with layout and widgets, or mdx field
+            comp_index: Running index for component name generation
             
         Returns:
-            MDX string for the slide
+            Tuple of (MDX string, next_comp_index)
         """
         # Direct MDX passthrough if available (new LLM output format)
         if slide.get("mdx"):
             mdx = slide["mdx"]
+            current_index = comp_index
+            slide_id = slide.get("id", "Slide")
 
             def replace_invent_component(match):
+                nonlocal current_index
                 attrs = match.group(1)
+                
+                # Check if name is present
                 name_match = re.search(r'name\s*=\s*["\'](\w+)["\']', attrs)
                 if name_match:
                     component_name = name_match.group(1)
-                    # Force self-closing tag with the extracted name and original attributes
-                    return f"<{component_name} {attrs}/>"
-                return match.group(0)
+                else:
+                    # Generate name: Invented{SlideID}{Index}
+                    clean_sid = re.sub(r'[^a-zA-Z0-9]', '', str(slide_id)) or "Slide"
+                    component_name = f"Invented{clean_sid.capitalize()}{current_index}"
+                
+                current_index += 1
+                return f"<{component_name} {attrs}/>"
 
             # Match <InventComponent ... /> or <InventComponent ... > ... </InventComponent>
-            # Assumes the body is empty/whitespace as per codegen logic
             pattern = r'<InventComponent\s+([\s\S]*?)(?:/>|>\s*</InventComponent>)'
-            return re.sub(pattern, replace_invent_component, mdx)
+            updated_mdx = re.sub(pattern, replace_invent_component, mdx)
+            return updated_mdx, current_index
         
         # Legacy widget-to-MDX conversion (fallback for old state.json format)
         layout = slide.get("layout", "default")
@@ -1002,7 +1012,7 @@ class ReactMDXRenderer:
             self.indent_level -= 1
             lines.append('</LayoutSplit>')
         
-        return "\n".join(lines)
+        return "\n".join(lines), comp_index
     
     def render_state(self, state: Dict[str, Any]) -> str:
         """Render complete presentation state to MDX.
@@ -1041,10 +1051,13 @@ class ReactMDXRenderer:
         
         # Render each slide
         slide_sections = []
+        comp_index = 0
         for i, slide in enumerate(slides):
             slide_sections.append(f"{{/* Slide {i + 1} */}}")
             # render_slide handles both raw state and pre-existing MDX (with transformations)
-            slide_sections.append(self.render_slide(slide))
+            mdx, next_index = self.render_slide(slide, comp_index)
+            slide_sections.append(mdx)
+            comp_index = next_index
             slide_sections.append("")
         
         return "\n".join(header_lines + slide_sections)
