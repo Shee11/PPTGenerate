@@ -44,6 +44,7 @@ from src.generation.state import PipelineState
 from src.generation.todo.executor import TodoExecutor
 from src.generation.todo.models import TodoType
 from src.generation.todo.planner import plan
+from src.generation.theme.prompts import get_theme_creation_config
 
 
 _COMPONENT_FILE_INDEX: Optional[Dict[str, Path]] = None
@@ -1392,28 +1393,18 @@ def build_default_prompts(session: Session, step: str) -> Tuple[str, str, str]:
         return "", cfg.system_prompt, user_prompt
 
     if step == "theme":
-        lower = instruction.lower()
-        create_keywords = ["create theme", "generate theme", "new theme", "custom theme", "make theme"]
-        style_keywords = ["dark theme", "light theme", "neon", "pastel", "vibrant", "colorful", "minimal"]
-        if not (any(k in lower for k in create_keywords) or any(k in lower for k in style_keywords)):
-            return "[note] Theme likely loads existing/default theme (no LLM).", "", ""
-
         from src.generation.theme.prompts import get_theme_creation_config, render_theme_creation_prompt
 
-        c = state.get_constitution()
-        guidance = ""
-        if c and getattr(c, "style_rules", None):
-            guidance = "\n".join(c.style_rules)
-        if c and getattr(c, "tone", None):
-            guidance = (guidance + f"\nTone: {c.tone}").strip()
-
         cfg = get_theme_creation_config()
-        user_prompt = render_theme_creation_prompt(
-            user_instruction=instruction,
-            base_theme=None,
-            intent_guidance=guidance,
+        # Generate prompt for validation/logging but don't force it into UI
+        # to avoid overwriting user's manual edits.
+        _ = render_theme_creation_prompt(
+            user_instruction=instruction or "Create a professional theme",
+            base_theme_source=None,
+            new_theme_name="custom_theme_preview"
         )
-        return "", cfg.system_prompt, user_prompt
+        return "", cfg.system_prompt, None
+
 
     if step == "story":
         use_source = True
@@ -2293,12 +2284,12 @@ def run_step_theme_stream(session: Session, override_system: Optional[str], over
     """Theme can be LLM or non-LLM; if no LLM, show what changed instead."""
     session = _ensure_session(session)
     if not session.get("output_dir"):
-        yield session, gr.update(value="[error] Initialize first.", visible=True), gr.update(value="", visible=False), gr.update(value="", visible=False)
+        yield session, gr.update(value="[error] Initialize first.", visible=True), gr.update(value="", visible=False), gr.update(value="", visible=False), gr.update()
         return
 
     _, state_path, _ = _session_paths(session)
     if not state_path.exists():
-        yield session, gr.update(value="[error] state.json missing (Initialize first)", visible=True), gr.update(value="", visible=False), gr.update(value="", visible=False)
+        yield session, gr.update(value="[error] state.json missing (Initialize first)", visible=True), gr.update(value="", visible=False), gr.update(value="", visible=False), gr.update()
         return
 
     before = PipelineState.load(state_path)
@@ -2315,17 +2306,25 @@ def run_step_theme_stream(session: Session, override_system: Optional[str], over
             gr.update(value="", visible=False),
             gr.update(value=sent, visible=True),
             gr.update(value=resp, visible=True),
+            gr.update(),
         )
 
     after = PipelineState.load(state_path)
     summary = _theme_change_summary(before, after)
     used_llm = bool((last_sent or "").strip() or (last_resp or "").strip())
+    
+    # Don't update mdx_theme dropdown with generated theme IDs
+    # mdx_theme is for React MDX presentation themes (business, cyber, etc.)
+    # active_theme_id is for custom generated themes (separate concept)
+    # The dropdown has a fixed list of choices and will error on custom IDs
+    
     if used_llm:
         yield (
             session,
             gr.update(value="", visible=False),
             gr.update(value=last_sent, visible=True),
             gr.update(value=last_resp, visible=True),
+            gr.update(),  # Don't update dropdown
         )
     else:
         yield (
@@ -2333,6 +2332,7 @@ def run_step_theme_stream(session: Session, override_system: Optional[str], over
             gr.update(value=summary, visible=True),
             gr.update(value="", visible=False),
             gr.update(value="", visible=False),
+            gr.update(),  # Don't update dropdown
         )
 
 
@@ -2415,9 +2415,9 @@ def run_step_story_and_refresh_stream_timed(session: Session, override_system: O
 
 def run_step_theme_stream_timed(session: Session, override_system: Optional[str], override_user: Optional[str]):
     t0 = time.perf_counter()
-    for session, theme_result, sent, resp in run_step_theme_stream(session, override_system, override_user):
+    for session, theme_result, sent, resp, _ in run_step_theme_stream(session, override_system, override_user):
         elapsed = f"{(time.perf_counter() - t0):.2f}s"
-        yield session, theme_result, sent, resp, elapsed
+        yield session, theme_result, sent, resp, elapsed, gr.update()  # Don't update dropdown
 
 
 def run_step_content_stream_timed(session: Session, override_system: Optional[str], override_user: Optional[str]):
@@ -2535,12 +2535,22 @@ def run_step_export(session: Session, mdx_theme_val: str = None) -> Tuple[Sessio
     state = PipelineState.load(state_path)
     instruction = str(session.get("instruction", ""))
 
-    # Update theme from UI if provided
-    if mdx_theme_val:
+    # Update theme from UI only if user explicitly selected a value
+    # When dropdown is None/unselected, preserve existing theme (generated or default)
+    if mdx_theme_val is not None and mdx_theme_val != "":
+        # User explicitly selected a dropdown theme - it should override any generated theme
         state.mdx_theme = mdx_theme_val
-        # Also update session to keep track
         session["mdx_theme"] = mdx_theme_val
-        # Save state so executor sees the new theme
+        
+        # Clear custom generated theme since user chose a preset
+        state.active_theme_id = None
+        
+        # Update all slides to use the dropdown theme
+        for slide in (state.slides or []):
+            if "parameters" not in slide:
+                slide["parameters"] = {}
+            slide["parameters"]["theme"] = mdx_theme_val
+        
         state.save(state_path)
 
     todo = _find_todo(state, TodoType.EXPORT)
@@ -2735,11 +2745,11 @@ def build_ui() -> gr.Blocks:
             output_name = gr.Textbox(label="Output name (under output/)", value=f"ui_run_{_now_id()}")
             project = gr.Dropdown(label="Project", choices=["react-mdx", "slidev"], value="react-mdx")
             mdx_theme = gr.Dropdown(
-                label="MDX theme (react-mdx)",
+                label="MDX theme (react-mdx) - leave unselected to use generated theme",
                 choices=["base", "business", "cyber", "minimal", "academic", "creative", "duolingo", "dark"],
-                value="business",
+                value=None,
             )
-            use_cache = gr.Checkbox(label="Use cache", value=True)
+            use_cache = gr.Checkbox(label="Use cache", value=False)
 
         init_btn = gr.Button("Initialize")
 
@@ -2847,6 +2857,7 @@ def build_ui() -> gr.Blocks:
                 with gr.Accordion("Prompts", open=False):
                     theme_default_sys = gr.Code(
                         label="system prompt",
+                        value=get_theme_creation_config().system_prompt,
                         language="markdown",
                         lines=8,
                         max_lines=8,
@@ -3142,7 +3153,7 @@ def build_ui() -> gr.Blocks:
         theme_run.click(
             fn=run_step_theme_stream_timed,
             inputs=[session_state, theme_default_sys, theme_default_user],
-            outputs=[session_state, theme_result, theme_sent, theme_resp, theme_timer],
+            outputs=[session_state, theme_result, theme_sent, theme_resp, theme_timer, mdx_theme],
         )
 
         story_run.click(

@@ -106,9 +106,9 @@ class PipelineState(BaseModel):
     )
     
     # MDX theme for react-mdx exports
-    mdx_theme: str = Field(
-        default="business",
-        description="MDX theme for react-mdx export: business, cyber, minimal, academic, creative, duolingo, dark"
+    mdx_theme: Optional[str] = Field(
+        default=None,
+        description="MDX theme for react-mdx export: business, cyber, minimal, academic, creative, duolingo, dark. None means use generated theme."
     )
     
     # Extracted atoms
@@ -250,23 +250,14 @@ class PipelineState(BaseModel):
     
     def set_active_theme(self, theme_id: str):
         """Set the active theme."""
-        if theme_id not in self.themes:
-            raise ValueError(f"Theme '{theme_id}' not in registry")
+        # Note: theme_id might be a built-in TS theme (not in self.themes) 
+        # or a custom generated theme (in self.themes)
         self.active_theme_id = theme_id
         self._touch()
     
     def load_default_themes(self):
-        """Load default themes from assets/themes directory."""
-        themes_dir = Path(__file__).parent.parent.parent / "assets" / "themes"
-        if themes_dir.exists():
-            for theme_file in themes_dir.glob("*.json"):
-                try:
-                    with open(theme_file, 'r', encoding='utf-8') as f:
-                        theme = json.load(f)
-                        if 'id' in theme:
-                            self.themes[theme['id']] = theme
-                except (json.JSONDecodeError, IOError):
-                    pass
+        """Deprecated: Built-in themes are now managed in TypeScript."""
+        pass
     
     # === ATOMS METHODS ===
     

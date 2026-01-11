@@ -43,6 +43,7 @@ export const themes: Record<ThemeName, ThemeDefinition> = {
 
 /** Get a theme by name, with fallback to business */
 export function getTheme(name: ThemeName): ThemeDefinition {
+  console.log('[THEME DEBUG] getTheme called with:', name);
   return themes[name] || themes.business;
 }
 

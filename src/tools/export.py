@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import shutil
 from pathlib import Path
+from datetime import datetime
 from typing import TYPE_CHECKING, Optional, List, Dict, Any, ClassVar
 from pydantic import Field
 
@@ -93,8 +94,20 @@ class ExportTool(DirectTool[ExportContext, ExportPatch]):
             from src.common.asset_manager import AssetManager
             theme = AssetManager.get_theme(theme_id)
         
-        # Get MDX theme from params, state, or default to "business"
-        mdx_theme = params.get("mdx_theme") or getattr(state, "mdx_theme", "business")
+        # Get MDX theme from params, state, or active_theme_id
+        # Priority:
+        # 1. params['mdx_theme'] (explicit instruction)
+        # 2. state.active_theme_id (custom generated theme)
+        # 3. state.mdx_theme (dropdown selection)
+        # 4. "business" (fallback)
+        mdx_theme = params.get("mdx_theme")
+        if not mdx_theme:
+            # If custom theme exists, use it as the MDX theme
+            if getattr(state, "active_theme_id", None):
+                mdx_theme = state.active_theme_id
+            else:
+                # Otherwise use dropdown selection or default
+                mdx_theme = getattr(state, "mdx_theme", None) or "business"
         
         # Get generated components from state
         generated_components = getattr(state, "generated_components", {}) or {}
@@ -247,11 +260,27 @@ class ExportTool(DirectTool[ExportContext, ExportPatch]):
             state.slides = processed_slides
             self._log("Updated state.slides with processed MDX (InventComponent tags replaced)")
         
-        # Build state dict for renderer
+        # Determine effective theme for preview
+        # If custom theme exists, use it; otherwise use mdx_theme from context
+        effective_mdx_theme = context.mdx_theme
+        self._log(f"[DEBUG] Initial effective_mdx_theme from context: {effective_mdx_theme}")
+        self._log(f"[DEBUG] state is None: {state is None}, state.active_theme_id: {getattr(state, 'active_theme_id', 'N/A')}")
+        if state is not None and state.active_theme_id:
+            effective_mdx_theme = state.active_theme_id
+            # CRITICAL: Update state.mdx_theme so when executor persists state later, it has the correct value
+            state.mdx_theme = effective_mdx_theme
+            self._log(f"Using custom generated theme for preview: {effective_mdx_theme}")
+        else:
+            self._log(f"[DEBUG] No custom theme - using context.mdx_theme: {context.mdx_theme}")
+        
+        # Build state dict for renderer (include theme data for preview)
         state_dict = {
             "slides": processed_slides, 
-            "presentation": {"theme": context.mdx_theme},
-            "generated_components": context.generated_components or {}
+            "presentation": {"theme": effective_mdx_theme},
+            "generated_components": context.generated_components or {},
+            "mdx_theme": effective_mdx_theme,
+            "active_theme_id": getattr(state, "active_theme_id", None) if state else None,
+            "themes": getattr(state, "themes", {}) if state else {},
         }
         
         # Create renderer with theme
@@ -325,7 +354,14 @@ class ExportTool(DirectTool[ExportContext, ExportPatch]):
         state_json_path = output_path.parent / "state.json"
         with open(state_json_path, 'w', encoding='utf-8') as f:
             json.dump(state_dict, f, indent=2, ensure_ascii=False)
-        self._log(f"Saved state.json")
+        self._log(f"Saved state.json (active_theme_id: {state_dict.get('active_theme_id', 'None')})")
+        
+        # Export generated custom theme to TypeScript file if available
+        if state is not None and state.active_theme_id:
+            active_theme = state.themes.get(state.active_theme_id)
+            if active_theme:
+                self._export_theme_to_typescript(active_theme, output_path.parent)
+                self._log(f"Exported custom theme to TypeScript: {state.active_theme_id}.ts")
         
         if not build_html:
             self._log("Skipping HTML build (MDX only)")
@@ -434,6 +470,74 @@ class ExportTool(DirectTool[ExportContext, ExportPatch]):
             processed_slides.append(slide_copy)
         
         return processed_slides
+    
+    def _export_theme_to_typescript(self, theme_data: Dict[str, Any], output_dir: Path) -> None:
+        """Export theme as TypeScript file with type definitions.
+        
+        Args:
+            theme_data: Theme dictionary from state
+            output_dir: Output directory (same as slides.mdx parent)
+        """
+        theme_id = theme_data.get('id', 'custom_theme')
+        theme_file = output_dir / f"{theme_id}.ts"
+        
+        # New format (ThemeDefinition)
+        # Ensure name matches filename ID and displayName exists
+        adapted_theme = theme_data.copy()
+        adapted_theme['name'] = theme_id
+        if 'displayName' not in adapted_theme:
+            adapted_theme['displayName'] = theme_data.get('name', theme_id)
+        
+        ts_content = f"""/**
+ * Generated Custom Theme: {theme_id}
+ */
+
+import type {{ ThemeDefinition }} from '@/utils/types';
+
+export const {theme_id}: ThemeDefinition = {self._theme_to_typescript_object(adapted_theme, indent=0)};
+
+export default {theme_id};
+"""
+        
+        theme_file.write_text(ts_content, encoding='utf-8')
+    
+    def _theme_to_typescript_object(self, obj: Any, indent: int = 0) -> str:
+        """Convert theme object to TypeScript object literal.
+        
+        Args:
+            obj: Object to convert (dict, list, or primitive)
+            indent: Current indentation level
+            
+        Returns:
+            TypeScript object literal as string
+        """
+        ind = '  ' * indent
+        next_ind = '  ' * (indent + 1)
+        
+        if isinstance(obj, dict):
+            if not obj:
+                return '{}'
+            lines = ['{']
+            for key, value in obj.items():
+                ts_value = self._theme_to_typescript_object(value, indent + 1)
+                lines.append(f'{next_ind}{key}: {ts_value},')
+            lines.append(f'{ind}}}')
+            return '\n'.join(lines)
+        elif isinstance(obj, list):
+            if not obj:
+                return '[]'
+            items = [self._theme_to_typescript_object(item, indent + 1) for item in obj]
+            return '[' + ', '.join(items) + ']'
+        elif isinstance(obj, str):
+            # Escape quotes and newlines
+            escaped = obj.replace('\\', '\\\\').replace('"', '\\"').replace('\n', '\\n')
+            return f'"{escaped}"'
+        elif isinstance(obj, bool):
+            return 'true' if obj else 'false'
+        elif obj is None:
+            return 'null'
+        else:
+            return str(obj)
     
     def _export_json(self, context: ExportContext, output_path: Path) -> None:
         """Export raw slide JSON for debugging."""

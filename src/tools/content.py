@@ -68,6 +68,9 @@ MODES:
 1. mode="generate": Process all draft slides
 2. mode="refine": Re-generate specific slides (keeps story/visual_design)
 
+INSTRUCTION:
+DO NOT include theming/color requirements - those are handled by the Theme tool.
+
 The story, atoms, and visual_design are PRESERVED from the draft.
 Only layout and widgets are generated."""
 

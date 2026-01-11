@@ -21,6 +21,7 @@ import logging
 import os
 import re
 from enum import Enum
+import sys
 from typing import TYPE_CHECKING, Optional, List, Dict, Any
 from pydantic import BaseModel, Field
 
@@ -252,8 +253,9 @@ You have access to these tools:
 4. If atoms already exist and user just wants to change theme/style, skip atoms extraction
 5. If slides already exist and user wants refinement, only run content + codegen + export
 6. Whenever the content tool is included in the pipeline (especially in mode="generate"), ALWAYS include codegen immediately after it.
-7. Always include export at the end if content changes
-8. Read each tool's description and examples carefully
+7. DO NOT include theming/color requirements to content tool instructions.
+8. Always include export at the end if content changes
+9. Read each tool's description and examples carefully
 
 ## Output Format:
 Return a JSON array of todo items. Each item has:
@@ -419,8 +421,11 @@ def _create_typed_params(
         )
     
     elif todo_type == TodoType.THEME:
+        # Handle both 'theme_id' and 'base_theme_id' from LLM response
+        theme_id = params.get("base_theme_id") or params.get("theme_id")
+        print("Shiyi Theme Params:", theme_id, params.get("color_keywords"), params.get("generate_new"), file=sys.__stdout__)
         return ThemeParams(
-            base_theme_id=params.get("base_theme_id", state.active_theme_id),
+            base_theme_id=theme_id or state.active_theme_id,
             color_keywords=params.get("color_keywords"),
             generate_new=params.get("generate_new", False),
         )

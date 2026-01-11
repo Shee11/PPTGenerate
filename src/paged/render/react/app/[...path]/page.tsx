@@ -16,6 +16,7 @@ import { useTheme } from '@/components/core/ThemeContext';
 import { transform } from 'sucrase';
 import * as FramerMotion from 'framer-motion';
 import * as Lucide from 'lucide-react';
+import type { ThemeDefinition, ThemeName, ThemeColors, ThemeTypography, ThemeSpacing, ThemeVisuals } from '@/utils/types';
 
 // =============================================================================
 // Types
@@ -39,9 +40,89 @@ interface ApiResponse {
   slideCount: number;
   source: string;
   theme: string;
+  customTheme?: any;
   path: string;
   generatedComponents?: Record<string, GeneratedComponent>;
   error?: string;
+}
+
+// =============================================================================
+// Theme Adapter
+// =============================================================================
+
+/** Adapt a generated (Python/JSON) theme to the React ThemeDefinition structure */
+function adaptCustomTheme(generated: any): ThemeDefinition | null {
+  if (!generated || !generated.id) return null;
+
+  // Validate theme has required nested structure
+  if (!generated.colors || typeof generated.colors !== 'object') {
+    throw new Error(
+      `Invalid theme format: theme '${generated.id}' is missing 'colors' object. ` +
+      `Expected nested structure: { colors: {...}, typography: {...}, spacing: {...}, visuals: {...} }. ` +
+      `Theme may need to be regenerated with updated backend.`
+    );
+  }
+
+  if (!generated.typography || typeof generated.typography !== 'object') {
+    throw new Error(
+      `Invalid theme format: theme '${generated.id}' is missing 'typography' object. ` +
+      `Theme may need to be regenerated.`
+    );
+  }
+
+  if (!generated.spacing || typeof generated.spacing !== 'object') {
+    throw new Error(
+      `Invalid theme format: theme '${generated.id}' is missing 'spacing' object. ` +
+      `Theme may need to be regenerated.`
+    );
+  }
+
+  if (!generated.visuals || typeof generated.visuals !== 'object') {
+    throw new Error(
+      `Invalid theme format: theme '${generated.id}' is missing 'visuals' object. ` +
+      `Theme may need to be regenerated.`
+    );
+  }
+
+  return {
+    name: (generated.name || generated.id) as ThemeName,
+    displayName: generated.displayName || generated.name || generated.id,
+    colors: {
+      bg: generated.colors.bg || '#ffffff',
+      surface: generated.colors.surface || '#f8fafc',
+      primary: generated.colors.primary || '#2563eb',
+      secondary: generated.colors.secondary || '#64748b',
+      accent: generated.colors.accent || '#f59e0b',
+      text: generated.colors.text || '#0f172a',
+      textMuted: generated.colors.textMuted || '#475569',
+      border: generated.colors.border || '#e2e8f0',
+      info: generated.colors.info || '#0ea5e9',
+      warning: generated.colors.warning || '#f59e0b',
+      success: generated.colors.success || '#10b981',
+      danger: generated.colors.danger || '#ef4444',
+    },
+    typography: {
+      fontDisplay: generated.typography.fontDisplay || 'sans-serif',
+      fontBody: generated.typography.fontBody || 'sans-serif',
+      fontMono: generated.typography.fontMono || 'monospace',
+      sizeDisplay: generated.typography.sizeDisplay || '60px',
+      sizeHeading: generated.typography.sizeHeading || '40px',
+      sizeBody: generated.typography.sizeBody || '18px',
+      sizeCaption: generated.typography.sizeCaption || '14px',
+      lineHeight: generated.typography.lineHeight || '1.5',
+      letterSpacing: generated.typography.letterSpacing || '-0.02em',
+    },
+    spacing: {
+      gap: generated.spacing.gap || '24px',
+      padding: generated.spacing.padding || '32px',
+      margin: generated.spacing.margin || '32px',
+    },
+    visuals: {
+      radius: generated.visuals.radius || '8px',
+      shadow: generated.visuals.shadow || '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+      borderWidth: generated.visuals.borderWidth || '1px',
+    },
+  };
 }
 
 // =============================================================================
@@ -157,7 +238,7 @@ export default function DynamicSlidesPage(): JSX.Element {
   const [runtimeComponents, setRuntimeComponents] = useState<Record<string, React.ComponentType<any>>>({});
 
   // Get theme setter from context
-  const { setTheme } = useTheme();
+  const { setTheme, setCustomTheme } = useTheme();
 
   // Merge base components with runtime-compiled generated components
   const allComponents = useMemo(() => ({
@@ -197,6 +278,17 @@ export default function DynamicSlidesPage(): JSX.Element {
         setSlides(data.slides);
         setSourcePath(data.source);
         
+        // Apply custom theme if available (Prioritize custom generated theme)
+        if (data.customTheme) {
+          const adapted = adaptCustomTheme(data.customTheme);
+          if (adapted) {
+            setCustomTheme(adapted);
+            console.log(`[path] Applied custom generated theme: ${adapted.name}`);
+          }
+        } else {
+          setCustomTheme(null);
+        }
+
         // Apply theme from state.json
         if (data.theme) {
           // Verify it's a valid theme before setting
