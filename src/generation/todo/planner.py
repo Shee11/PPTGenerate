@@ -217,7 +217,7 @@ def slice_state_for_planner(state: "PipelineState") -> Dict[str, Any]:
         context["slides"] = {"count": 0, "has_slides": False, "items": []}
     
     # Theme info
-    context["active_theme"] = state.active_theme_id
+    context["active_theme"] = state.active_theme
     context["available_themes"] = list(state.themes.keys()) if state.themes else []
     
     # Constitution
@@ -425,7 +425,7 @@ def _create_typed_params(
         theme_id = params.get("base_theme_id") or params.get("theme_id")
         print("Shiyi Theme Params:", theme_id, params.get("color_keywords"), params.get("generate_new"), file=sys.__stdout__)
         return ThemeParams(
-            base_theme_id=theme_id or state.active_theme_id,
+            base_theme_id=theme_id or state.active_theme,
             color_keywords=params.get("color_keywords"),
             generate_new=params.get("generate_new", False),
         )

@@ -29,7 +29,7 @@ interface StateJson {
     theme?: string;
     title?: string;
   };
-  mdx_theme?: string;
+  active_theme?: string;
   themes?: Record<string, any>;
   generated_components?: Record<string, GeneratedComponent>;
 }
@@ -143,8 +143,8 @@ export async function GET(
     console.log(`[THEME DEBUG] Loaded ${serializedSlides.length} slides from ${foundPath}`);
     
     // Determine theme and check for custom theme definition
-    const themeId = stateJson.mdx_theme || stateJson.presentation?.theme || 'business';
-    console.log('[THEME DEBUG] themeId:', themeId, 'mdx_theme:', stateJson.mdx_theme, 'presentation.theme:', stateJson.presentation?.theme);
+    const themeId = stateJson.active_theme || stateJson.presentation?.theme || 'business';
+    console.log('[THEME DEBUG] themeId:', themeId, 'active_theme:', stateJson.active_theme, 'presentation.theme:', stateJson.presentation?.theme);
     let customTheme = null;
     if (stateJson.themes && stateJson.themes[themeId]) {
       customTheme = stateJson.themes[themeId];

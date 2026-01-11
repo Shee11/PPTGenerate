@@ -27,7 +27,7 @@ class ExportContext(ToolContext):
     slides: List[Dict[str, Any]] = Field(default_factory=list)
     theme: Optional[Dict[str, Any]] = None
     project: str = Field(default="slidev", description="Project style: slidev, duolingo, or react-mdx")
-    mdx_theme: str = Field(default="business", description="MDX theme for react-mdx export")
+    active_theme: str = Field(default="business", description="Active theme ID (preset or custom)")
     generated_components: Dict[str, Dict[str, Any]] = Field(
         default_factory=dict,
         description="Generated React components from codegen step"
@@ -94,20 +94,14 @@ class ExportTool(DirectTool[ExportContext, ExportPatch]):
             from src.common.asset_manager import AssetManager
             theme = AssetManager.get_theme(theme_id)
         
-        # Get MDX theme from params, state, or active_theme_id
+        # Get active theme from params, state.active_theme
         # Priority:
-        # 1. params['mdx_theme'] (explicit instruction)
-        # 2. state.active_theme_id (custom generated theme)
-        # 3. state.mdx_theme (dropdown selection)
-        # 4. "business" (fallback)
-        mdx_theme = params.get("mdx_theme")
-        if not mdx_theme:
-            # If custom theme exists, use it as the MDX theme
-            if getattr(state, "active_theme_id", None):
-                mdx_theme = state.active_theme_id
-            else:
-                # Otherwise use dropdown selection or default
-                mdx_theme = getattr(state, "mdx_theme", None) or "business"
+        # 1. params['active_theme'] (explicit instruction)
+        # 2. state.active_theme (persisted theme ID)
+        # 3. "business" (fallback)
+        active_theme = params.get("active_theme")
+        if not active_theme:
+            active_theme = getattr(state, "active_theme", None) or "business"
         
         # Get generated components from state
         generated_components = getattr(state, "generated_components", {}) or {}
@@ -116,7 +110,7 @@ class ExportTool(DirectTool[ExportContext, ExportPatch]):
             slides=slides,
             theme=theme,
             project=state.project or "slidev",
-            mdx_theme=mdx_theme,
+            active_theme=active_theme,
             generated_components=generated_components,
         )
     
@@ -261,30 +255,27 @@ class ExportTool(DirectTool[ExportContext, ExportPatch]):
             self._log("Updated state.slides with processed MDX (InventComponent tags replaced)")
         
         # Determine effective theme for preview
-        # If custom theme exists, use it; otherwise use mdx_theme from context
-        effective_mdx_theme = context.mdx_theme
-        self._log(f"[DEBUG] Initial effective_mdx_theme from context: {effective_mdx_theme}")
-        self._log(f"[DEBUG] state is None: {state is None}, state.active_theme_id: {getattr(state, 'active_theme_id', 'N/A')}")
-        if state is not None and state.active_theme_id:
-            effective_mdx_theme = state.active_theme_id
-            # CRITICAL: Update state.mdx_theme so when executor persists state later, it has the correct value
-            state.mdx_theme = effective_mdx_theme
-            self._log(f"Using custom generated theme for preview: {effective_mdx_theme}")
+        # If custom theme exists, use it; otherwise use active_theme from context
+        effective_theme = context.active_theme
+        self._log(f"[DEBUG] Initial active_theme from context: {effective_theme}")
+        self._log(f"[DEBUG] state is None: {state is None}, state.active_theme: {getattr(state, 'active_theme', 'N/A')}")
+        if state is not None and state.active_theme:
+            effective_theme = state.active_theme
+            self._log(f"Using persisted theme for preview: {effective_theme}")
         else:
-            self._log(f"[DEBUG] No custom theme - using context.mdx_theme: {context.mdx_theme}")
+            self._log(f"[DEBUG] No active theme - using context.active_theme: {context.active_theme}")
         
         # Build state dict for renderer (include theme data for preview)
         state_dict = {
             "slides": processed_slides, 
-            "presentation": {"theme": effective_mdx_theme},
+            "presentation": {"theme": effective_theme},
             "generated_components": context.generated_components or {},
-            "mdx_theme": effective_mdx_theme,
-            "active_theme_id": getattr(state, "active_theme_id", None) if state else None,
+            "active_theme": getattr(state, "active_theme", None) if state else None,
             "themes": getattr(state, "themes", {}) if state else {},
         }
         
         # Create renderer with theme
-        renderer = ReactMDXRenderer(output_dir=output_path.parent, theme=context.mdx_theme)
+        renderer = ReactMDXRenderer(output_dir=output_path.parent, theme=effective_theme)
         
         # Generate MDX
         mdx_content = renderer.render_state(state_dict)
@@ -354,14 +345,14 @@ class ExportTool(DirectTool[ExportContext, ExportPatch]):
         state_json_path = output_path.parent / "state.json"
         with open(state_json_path, 'w', encoding='utf-8') as f:
             json.dump(state_dict, f, indent=2, ensure_ascii=False)
-        self._log(f"Saved state.json (active_theme_id: {state_dict.get('active_theme_id', 'None')})")
+        self._log(f"Saved state.json (active_theme: {state_dict.get('active_theme', 'None')})")
         
         # Export generated custom theme to TypeScript file if available
-        if state is not None and state.active_theme_id:
-            active_theme = state.themes.get(state.active_theme_id)
+        if state is not None and state.active_theme:
+            active_theme = state.themes.get(state.active_theme)
             if active_theme:
                 self._export_theme_to_typescript(active_theme, output_path.parent)
-                self._log(f"Exported custom theme to TypeScript: {state.active_theme_id}.ts")
+                self._log(f"Exported custom theme to TypeScript: {state.active_theme}.ts")
         
         if not build_html:
             self._log("Skipping HTML build (MDX only)")

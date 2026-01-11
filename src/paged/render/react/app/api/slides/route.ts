@@ -40,8 +40,7 @@ interface StateJson {
     title?: string;
   };
 
-  /** React theme name from CLI --mdx-theme */
-  mdx_theme?: string;
+  active_theme?: string;
   generated_components?: Record<string, GeneratedComponent>;
 }
 
@@ -170,7 +169,7 @@ export async function GET(request: Request) {
       slides: serializedSlides,
       slideCount: slides.length,
       source: foundPath,
-      theme: stateJson.mdx_theme || stateJson.presentation?.theme || 'business',
+      theme: stateJson.active_theme || stateJson.presentation?.theme || 'business',
       generatedComponents: generatedComponents,
     });
     

@@ -337,16 +337,16 @@ class OutputFiles:
 
 
 def _theme_change_summary(before: PipelineState, after: PipelineState) -> str:
-    before_active = getattr(before, "active_theme_id", None)
-    after_active = getattr(after, "active_theme_id", None)
+    before_active = getattr(before, "active_theme", None)
+    after_active = getattr(after, "active_theme", None)
     before_count = len(getattr(before, "themes", None) or {})
     after_count = len(getattr(after, "themes", None) or {})
 
     lines: List[str] = []
     if before_active != after_active:
-        lines.append(f"active_theme_id: {before_active or '(none)'} → {after_active or '(none)'}")
+        lines.append(f"active_theme: {before_active or '(none)'} → {after_active or '(none)'}")
     else:
-        lines.append(f"active_theme_id: {after_active or '(none)'}")
+        lines.append(f"active_theme: {after_active or '(none)'}")
 
     if before_count != after_count:
         lines.append(f"themes: {before_count} → {after_count}")
@@ -364,9 +364,9 @@ def _theme_change_summary(before: PipelineState, after: PipelineState) -> str:
 
 
 def _theme_summary_from_state(state: PipelineState) -> str:
-    active = getattr(state, "active_theme_id", None)
+    active = getattr(state, "active_theme", None)
     themes = getattr(state, "themes", None) or {}
-    lines: List[str] = [f"active_theme_id: {active or '(none)'}", f"themes: {len(themes)}"]
+    lines: List[str] = [f"active_theme: {active or '(none)'}", f"themes: {len(themes)}"]
     if active and themes.get(active):
         t = themes.get(active) or {}
         name = (t.get("name") or "").strip()
@@ -433,7 +433,7 @@ def export_progress(
             "instruction": str(session.get("instruction", "")),
             "use_cache": bool(session.get("use_cache", True)),
             "project": str(state_json.get("project") or ""),
-            "mdx_theme": str(state_json.get("mdx_theme") or ""),
+            "active_theme": str(state_json.get("active_theme") or ""),
         },
         "state": state_json,
         "prompts": {
@@ -467,7 +467,7 @@ def import_progress(progress_file):
             "",  # instruction_text
             "",  # output_name
             "react-mdx",  # project
-            "business",  # mdx_theme
+            "business",  # active_theme
             True,  # use_cache
             "",  # planner sys
             "",  # planner user
@@ -527,7 +527,7 @@ def import_progress(progress_file):
     instruction = str(sess.get("instruction") or "")
     use_cache = bool(sess.get("use_cache", True))
     project = str(sess.get("project") or state_json.get("project") or "react-mdx")
-    mdx_theme = str(sess.get("mdx_theme") or state_json.get("mdx_theme") or "business")
+    active_theme = str(sess.get("active_theme") or state_json.get("active_theme") or "business")
 
     # Restore prompts from imported file
     prompts = payload.get("prompts") or {}
@@ -598,7 +598,7 @@ def import_progress(progress_file):
         instruction,
         str(out_dir.name),
         project,
-        mdx_theme,
+        active_theme,
         bool(use_cache),
         planner_sys,
         planner_user,
@@ -1516,7 +1516,7 @@ def init_session(
     instruction_text: str,
     output_name: str,
     project: str,
-    mdx_theme: str,
+    active_theme: str,
     use_cache: bool,
 ) -> Tuple[
     Session,
@@ -1573,7 +1573,7 @@ def init_session(
     state.load_default_themes()
     state.set_source(copied_source)
     state.project = project
-    state.mdx_theme = mdx_theme
+    state.active_theme = active_theme
     state.save(output_dir / "state.json")
 
     trace_path = output_dir / "llm_trace.jsonl"
@@ -2313,10 +2313,9 @@ def run_step_theme_stream(session: Session, override_system: Optional[str], over
     summary = _theme_change_summary(before, after)
     used_llm = bool((last_sent or "").strip() or (last_resp or "").strip())
     
-    # Don't update mdx_theme dropdown with generated theme IDs
-    # mdx_theme is for React MDX presentation themes (business, cyber, etc.)
-    # active_theme_id is for custom generated themes (separate concept)
+    # Don't update active_theme dropdown with generated theme IDs (leave it separate)
     # The dropdown has a fixed list of choices and will error on custom IDs
+
     
     if used_llm:
         yield (
@@ -2526,7 +2525,7 @@ def run_step_codegen_stream_timed(session: Session, override_system: Optional[st
         yield session, calls_html, resp_html, elapsed
 
 
-def run_step_export(session: Session, mdx_theme_val: str = None) -> Tuple[Session, List[str], str]:
+def run_step_export(session: Session, active_theme_val: str = None) -> Tuple[Session, List[str], str]:
     session = _ensure_session(session)
     if not session.get("output_dir"):
         return session, [], "[error] Initialize first."
@@ -2537,19 +2536,16 @@ def run_step_export(session: Session, mdx_theme_val: str = None) -> Tuple[Sessio
 
     # Update theme from UI only if user explicitly selected a value
     # When dropdown is None/unselected, preserve existing theme (generated or default)
-    if mdx_theme_val is not None and mdx_theme_val != "":
-        # User explicitly selected a dropdown theme - it should override any generated theme
-        state.mdx_theme = mdx_theme_val
-        session["mdx_theme"] = mdx_theme_val
-        
-        # Clear custom generated theme since user chose a preset
-        state.active_theme_id = None
+    if active_theme_val is not None and active_theme_val != "":
+        # User explicitly selected a dropdown theme - it is the active theme
+        state.active_theme = active_theme_val
+        session["active_theme"] = active_theme_val
         
         # Update all slides to use the dropdown theme
         for slide in (state.slides or []):
             if "parameters" not in slide:
                 slide["parameters"] = {}
-            slide["parameters"]["theme"] = mdx_theme_val
+            slide["parameters"]["theme"] = active_theme_val
         
         state.save(state_path)
 
@@ -2744,8 +2740,8 @@ def build_ui() -> gr.Blocks:
         with gr.Row():
             output_name = gr.Textbox(label="Output name (under output/)", value=f"ui_run_{_now_id()}")
             project = gr.Dropdown(label="Project", choices=["react-mdx", "slidev"], value="react-mdx")
-            mdx_theme = gr.Dropdown(
-                label="MDX theme (react-mdx) - leave unselected to use generated theme",
+            active_theme = gr.Dropdown(
+                label="Active Theme (preset) - leave unselected to use generated theme",
                 choices=["base", "business", "cyber", "minimal", "academic", "creative", "duolingo", "dark"],
                 value=None,
             )
@@ -3012,7 +3008,7 @@ def build_ui() -> gr.Blocks:
 
         init_btn.click(
             fn=init_session,
-            inputs=[source_state, instruction_text, output_name, project, mdx_theme, use_cache],
+            inputs=[source_state, instruction_text, output_name, project, active_theme, use_cache],
             outputs=[
                 session_state,
                 planner_default_sys,
@@ -3091,7 +3087,7 @@ def build_ui() -> gr.Blocks:
                 instruction_text,
                 output_name,
                 project,
-                mdx_theme,
+                active_theme,
                 use_cache,
                 planner_default_sys,
                 planner_default_user,
@@ -3153,7 +3149,7 @@ def build_ui() -> gr.Blocks:
         theme_run.click(
             fn=run_step_theme_stream_timed,
             inputs=[session_state, theme_default_sys, theme_default_user],
-            outputs=[session_state, theme_result, theme_sent, theme_resp, theme_timer, mdx_theme],
+            outputs=[session_state, theme_result, theme_sent, theme_resp, theme_timer, active_theme],
         )
 
         story_run.click(
@@ -3184,7 +3180,7 @@ def build_ui() -> gr.Blocks:
 
         export_run.click(
             fn=run_step_export,
-            inputs=[session_state, mdx_theme],
+            inputs=[session_state, active_theme],
             outputs=[session_state, output_files, export_preview],
         )
 

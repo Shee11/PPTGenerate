@@ -78,7 +78,7 @@ class PipelineRunner:
         user_instruction: str,
         state: Optional["PipelineState"] = None,
         project: str = "slidev",
-        mdx_theme: str = "business",
+        active_theme: str = "business",
         force_rerun: bool = False,
     ) -> "PipelineState":
         """Run full pipeline from source.
@@ -88,7 +88,7 @@ class PipelineRunner:
             user_instruction: User's natural language instruction
             state: Optional existing state (for incremental updates)
             project: Export project type (slidev, duolingo, react-mdx)
-            mdx_theme: Theme for react-mdx export
+            active_theme: Theme for react-mdx export
         
         Returns:
             Final pipeline state
@@ -116,7 +116,7 @@ class PipelineRunner:
         
         # Set project and theme
         state.project = project
-        state.mdx_theme = mdx_theme
+        state.active_theme = active_theme
         
         # Check if state already has pending todos - if so, skip planning
         # This makes state.json the source of truth

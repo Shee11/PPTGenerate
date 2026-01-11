@@ -136,7 +136,7 @@ class TodoExecutor:
         if state.atoms is not None and "atoms" not in todos_in_queue:
             completed_ids.add("atoms")
             completed_ids.add("atoms_existing")  # For refinement dependencies
-        if state.themes and state.active_theme_id and "theme" not in todos_in_queue:
+        if state.themes and state.active_theme and "theme" not in todos_in_queue:
             completed_ids.add("theme")
             completed_ids.add("theme_existing")  # For refinement dependencies
         if state.slides and len(state.slides) > 0:

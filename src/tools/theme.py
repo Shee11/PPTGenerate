@@ -56,7 +56,7 @@ class ThemeTool(DirectTool[ThemeContext, ThemePatch]):
         "style_keywords (professional, creative, minimal, bold)",
     ]
     requires: ClassVar[List[str]] = ["constitution"]
-    produces: ClassVar[List[str]] = ["themes", "active_theme_id"]
+    produces: ClassVar[List[str]] = ["themes", "active_theme"]
     examples: ClassVar[List[str]] = [
         '{"id": "theme", "type": "theme", "params": {}, "depends_on": ["constitution"]}',
         '{"id": "theme", "type": "theme", "params": {"theme_id": "minimal_dark_v1"}}',
@@ -85,7 +85,7 @@ class ThemeTool(DirectTool[ThemeContext, ThemePatch]):
 
         return ThemeContext(
             available_themes=available,
-            current_theme_id=state.active_theme_id,
+            current_theme_id=state.active_theme,
             theme_id=theme_id,
             base_theme_id=base_theme_id,
             generate_new=generate_new,

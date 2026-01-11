@@ -93,22 +93,16 @@ class PipelineState(BaseModel):
         description="Theme registry keyed by theme ID"
     )
     
-    # Active theme ID
-    active_theme_id: Optional[str] = Field(
+    # Active theme ID (preset or custom)
+    active_theme: Optional[str] = Field(
         default=None,
-        description="Currently active theme ID"
+        description="Active theme identifier (e.g., 'business' or 'theme_gen_123')"
     )
     
     # Project selection for export (slidev, duolingo, or react-mdx)
     project: str = Field(
         default="slidev",
         description="Project style for export: 'slidev' (default), 'duolingo', or 'react-mdx'"
-    )
-    
-    # MDX theme for react-mdx exports
-    mdx_theme: Optional[str] = Field(
-        default=None,
-        description="MDX theme for react-mdx export: business, cyber, minimal, academic, creative, duolingo, dark. None means use generated theme."
     )
     
     # Extracted atoms
@@ -243,16 +237,16 @@ class PipelineState(BaseModel):
         return self.themes.get(theme_id)
     
     def get_active_theme(self) -> Optional[Dict[str, Any]]:
-        """Get the currently active theme."""
-        if self.active_theme_id:
-            return self.themes.get(self.active_theme_id)
+        """Get the currently active theme (if it exists in custom themes)."""
+        if self.active_theme:
+            return self.themes.get(self.active_theme)
         return None
     
     def set_active_theme(self, theme_id: str):
         """Set the active theme."""
         # Note: theme_id might be a built-in TS theme (not in self.themes) 
         # or a custom generated theme (in self.themes)
-        self.active_theme_id = theme_id
+        self.active_theme = theme_id
         self._touch()
     
     def load_default_themes(self):
@@ -324,7 +318,7 @@ class PipelineState(BaseModel):
         self.constitution = None
         self.atoms = None
         self.slides = None
-        self.active_theme_id = None
+        self.active_theme = None
         self.source = source
         self._touch()
     
@@ -352,8 +346,8 @@ class PipelineState(BaseModel):
         
         # Themes
         lines.append(f"  Themes: {len(self.themes)} available")
-        if self.active_theme_id:
-            lines.append(f"  Active theme: {self.active_theme_id}")
+        if self.active_theme:
+            lines.append(f"  Active theme: {self.active_theme}")
         
         # Atoms
         if self.atoms:

@@ -181,7 +181,7 @@ def main():
     
     state = {
         "project": "react-mdx",
-        "mdx_theme": theme,
+        "active_theme": theme,
         "slides": slides,
         "generated_components": generated_components
     }
