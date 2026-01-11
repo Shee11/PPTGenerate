@@ -234,7 +234,6 @@ class TodoExecutor:
         }
         if tool_name == "export":
             tool_kwargs["output_dir"] = self.output_dir
-        
         tool = get_tool(tool_name, **tool_kwargs)
 
         # Mark started and persist
@@ -243,6 +242,7 @@ class TodoExecutor:
         self._log(f"▶ {todo.type.value}: {todo.id}")
         
         # Notify status change for UI update
+        print(f"📢 Todo {todo.id} started - triggering callback (callback={self.on_status_change is not None})")
         if self.on_status_change:
             self.on_status_change(state)
         
@@ -267,6 +267,7 @@ class TodoExecutor:
             self._persist_state(state)
             self._log(f"✓ {todo.type.value}: {todo.id}")
             
+            print(f"📢 Todo {todo.id} completed - triggering callback (callback={self.on_status_change is not None})")
             # Notify status change for UI update
             if self.on_status_change:
                 self.on_status_change(state)

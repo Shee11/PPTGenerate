@@ -21,7 +21,6 @@ import logging
 import os
 import re
 from enum import Enum
-import sys
 from typing import TYPE_CHECKING, Optional, List, Dict, Any
 from pydantic import BaseModel, Field
 
@@ -421,9 +420,7 @@ def _create_typed_params(
         )
     
     elif todo_type == TodoType.THEME:
-        # Handle both 'theme_id' and 'base_theme_id' from LLM response
         theme_id = params.get("base_theme_id") or params.get("theme_id")
-        print("Shiyi Theme Params:", theme_id, params.get("color_keywords"), params.get("generate_new"), file=sys.__stdout__)
         return ThemeParams(
             base_theme_id=theme_id or state.active_theme,
             color_keywords=params.get("color_keywords"),

@@ -43,7 +43,6 @@ def create_theme(
         
     Returns:
         Generated Theme object
-
         
     Raises:
         ValueError: If theme generation fails
@@ -76,32 +75,14 @@ def create_theme(
     # Get config
     config = get_theme_creation_config()
     
-    # Extract keywords for naming and emphasis
-    import re
-    # Look for explicit keywords first
-    keywords = []
-    
-    if keywords_list:
-        # Use provided keywords directly
-        keywords.extend(keywords_list)
-    else:
-        # Try to find specific style/color mentions
-        matches = re.findall(r'(?:style|color|theme):\s*([a-zA-Z0-9]+)', user_instruction.lower())
-        keywords.extend(matches)
-        
-        if not keywords:
-            # Fallback to sanitizing the whole instruction if no explicit keywords found
-            safe_instruction = re.sub(r'[^a-zA-Z0-9\s]', '', user_instruction.lower())
-            words = safe_instruction.split()
-            # Filter out common stop words
-            stop_words = {'create', 'a', 'the', 'with', 'and', 'or', 'for', 'theme', 'slides'}
-            keywords = [w for w in words if w not in stop_words]
+    # Use provided keywords or empty list
+    keywords = keywords_list or []
 
-    # Generate a descriptive ID suggestion based on instruction if not provided
+    # Generate a descriptive ID suggestion based on keywords if not provided
     if new_theme_id:
         new_theme_name = new_theme_id
     else:
-        short_desc = "_".join(keywords[:4]) # Take first 4 meaningful words
+        short_desc = "_".join(keywords[:4]) if keywords else "custom"
         new_theme_name = f"theme_{short_desc}"
 
     # Render prompt
@@ -175,12 +156,7 @@ def customize_theme(
         >>> theme = customize_theme("corp_modern_v1", "make the accent color red")
         >>> print(theme.accent_color)  # e.g., "#ef4444"
     """
-    # Get base theme
-    base_theme_source = _get_builtin_theme_source(base_theme_id)
-    if not base_theme_source:
-        # Fallback to business if not found
-        logger.warning(f"Base theme {base_theme_id} not found, using business")
-        base_theme_source = _get_builtin_theme_source("business")
+    base_theme_source = _get_builtin_theme_source(base_theme_id) or _get_builtin_theme_source("business")
     
     # Check cache
     cache_key = None
@@ -237,8 +213,6 @@ def customize_theme(
 
 
 def _get_builtin_theme_source(theme_id: str) -> Optional[str]:
-    import sys
-    print("Shiyi, get built-in theme source called with theme_id:", theme_id, file=sys.stderr)
     """Get source code of a built-in theme by ID.
     
     Args:

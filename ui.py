@@ -661,16 +661,14 @@ def _collect_outputs(output_dir: Path) -> OutputFiles:
 
 
 def _as_downloadable_files(files: OutputFiles) -> List[str]:
-    out: List[str] = []
+    result = []
     if files.state_json:
-        out.append(str(files.state_json))
+        result.append(str(files.state_json))
     if files.slides_mdx:
-        out.append(str(files.slides_mdx))
-    for p in files.pptx_files:
-        out.append(str(p))
-    for p in files.html_files:
-        out.append(str(p))
-    return out
+        result.append(str(files.slides_mdx))
+    result.extend(str(p) for p in files.pptx_files)
+    result.extend(str(p) for p in files.html_files)
+    return result
 
 
 def _read_mdx_preview(output_dir: Path, max_chars: int = 12000) -> str:
@@ -706,40 +704,26 @@ def _read_new_trace(trace_path: Path, from_pos: int) -> Tuple[int, List[dict]]:
 
 
 def _filter_records_for_step(records: List[dict], step: str) -> List[dict]:
-    tagged = [r for r in records if r.get("step") == step]
-    return tagged if tagged else records
+    return [r for r in records if r.get("step") == step] or records
 
 
 def _format_llm_sent(records: List[dict]) -> str:
     if not records:
         return ""
-    parts: List[str] = []
+    parts = []
     for r in records:
-        sys_p = r.get("system_prompt")
-        user_p = r.get("user_prompt")
+        sys_p = r.get("system_prompt", "")
+        user_p = r.get("user_prompt", "")
         if sys_p or user_p:
-            parts.append(
-                "\n".join(
-                    [
-                        "# System",
-                        sys_p or "",
-                        "\n# User",
-                        user_p or "",
-                    ]
-                ).strip()
-            )
-    return "\n\n---\n\n".join([p for p in parts if p.strip()])
+            parts.append(f"# System\n{sys_p}\n\n# User\n{user_p}".strip())
+    return "\n\n---\n\n".join(filter(str.strip, parts))
 
 
 def _format_llm_response(records: List[dict]) -> str:
     if not records:
         return ""
-    parts: List[str] = []
-    for r in records:
-        resp = r.get("response")
-        if resp:
-            parts.append(str(resp).strip())
-    return "\n\n---\n\n".join([p for p in parts if p.strip()])
+    parts = [str(r["response"]).strip() for r in records if r.get("response")]
+    return "\n\n---\n\n".join(parts)
 
 
 def _format_codegen_concurrent_sent(records: List[dict]) -> str:
@@ -1570,7 +1554,7 @@ def init_session(
     instruction = instruction.strip() or "Generate slides."
 
     state = PipelineState()
-    state.load_default_themes()
+
     state.set_source(copied_source)
     state.project = project
     state.active_theme = active_theme

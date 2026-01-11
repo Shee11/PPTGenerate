@@ -249,10 +249,6 @@ class PipelineState(BaseModel):
         self.active_theme = theme_id
         self._touch()
     
-    def load_default_themes(self):
-        """Deprecated: Built-in themes are now managed in TypeScript."""
-        pass
-    
     # === ATOMS METHODS ===
     
     def set_atoms(self, atoms: AtomCollection):

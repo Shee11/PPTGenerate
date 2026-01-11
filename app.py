@@ -224,7 +224,6 @@ async def run_generation_async(
             state = PipelineState.load(state_path)
         else:
             state = PipelineState()
-            state.load_default_themes()
         
         state.set_source(source_path)
         
@@ -374,16 +373,8 @@ async def apply_theme_async(
         # Load state and update theme
         state = PipelineState.load(state_path)
         
-        # Ensure themes are loaded
-        if not state.themes:
-            state.load_default_themes()
-        
-        # Set active theme (validates theme exists)
-        try:
-            state.set_active_theme(theme_id)
-        except ValueError:
-            state.load_default_themes()
-            state.set_active_theme(theme_id)
+        # Set active theme
+        state.set_active_theme(theme_id)
         
         # Update slides' parameters.theme (this is what export uses)
         if state.slides:

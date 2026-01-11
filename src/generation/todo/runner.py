@@ -102,14 +102,12 @@ class PipelineRunner:
             if self.verbose:
                 _safe_print(f"🧹 --force-rerun: ignoring existing state at {state_path}")
             state = PipelineState()
-            state.load_default_themes()
         elif state is None and state_path.exists():
             if self.verbose:
                 _safe_print(f"📂 Loading existing state from {state_path}")
             state = PipelineState.load(state_path)
         elif state is None:
             state = PipelineState()
-            state.load_default_themes()
         
         # Set source
         state.set_source(source_path)

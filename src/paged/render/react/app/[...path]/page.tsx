@@ -52,36 +52,18 @@ interface ApiResponse {
 
 /** Adapt a generated (Python/JSON) theme to the React ThemeDefinition structure */
 function adaptCustomTheme(generated: any): ThemeDefinition | null {
-  if (!generated || !generated.id) return null;
+  if (!generated?.id) return null;
 
   // Validate theme has required nested structure
-  if (!generated.colors || typeof generated.colors !== 'object') {
-    throw new Error(
-      `Invalid theme format: theme '${generated.id}' is missing 'colors' object. ` +
-      `Expected nested structure: { colors: {...}, typography: {...}, spacing: {...}, visuals: {...} }. ` +
-      `Theme may need to be regenerated with updated backend.`
-    );
-  }
-
-  if (!generated.typography || typeof generated.typography !== 'object') {
-    throw new Error(
-      `Invalid theme format: theme '${generated.id}' is missing 'typography' object. ` +
-      `Theme may need to be regenerated.`
-    );
-  }
-
-  if (!generated.spacing || typeof generated.spacing !== 'object') {
-    throw new Error(
-      `Invalid theme format: theme '${generated.id}' is missing 'spacing' object. ` +
-      `Theme may need to be regenerated.`
-    );
-  }
-
-  if (!generated.visuals || typeof generated.visuals !== 'object') {
-    throw new Error(
-      `Invalid theme format: theme '${generated.id}' is missing 'visuals' object. ` +
-      `Theme may need to be regenerated.`
-    );
+  const requiredFields = ['colors', 'typography', 'spacing', 'visuals'];
+  for (const field of requiredFields) {
+    if (!generated[field] || typeof generated[field] !== 'object') {
+      throw new Error(
+        `Invalid theme format: theme '${generated.id}' is missing '${field}' object. ` +
+        `Expected nested structure: { colors: {...}, typography: {...}, spacing: {...}, visuals: {...} }. ` +
+        `Theme may need to be regenerated with updated backend.`
+      );
+    }
   }
 
   return {
@@ -289,14 +271,11 @@ export default function DynamicSlidesPage(): JSX.Element {
           setCustomTheme(null);
         }
 
-        // Apply theme from state.json
-        if (data.theme) {
-          // Verify it's a valid theme before setting
-          const validThemes = ['business', 'cyber', 'minimal', 'academic', 'creative', 'duolingo', 'dark'];
-          if (validThemes.includes(data.theme)) {
-            setTheme(data.theme as any);
-            console.log(`[path] Applied theme: ${data.theme}`);
-          }
+        // Apply theme from state.json (only if valid)
+        const validThemes = ['business', 'cyber', 'minimal', 'academic', 'creative', 'duolingo', 'dark'];
+        if (data.theme && validThemes.includes(data.theme)) {
+          setTheme(data.theme as any);
+          console.log(`[path] Applied theme: ${data.theme}`);
         }
 
         // Compile generated components from state.json at runtime
@@ -320,28 +299,17 @@ export default function DynamicSlidesPage(): JSX.Element {
   const handleKeyDown = useCallback((event: KeyboardEvent) => {
     if (loading) return;
     
-    switch (event.key) {
-      case 'ArrowRight':
-      case 'ArrowDown':
-      case ' ':
-      case 'PageDown':
-        event.preventDefault();
-        setCurrentSlide(prev => Math.min(prev + 1, slides.length - 1));
-        break;
-      case 'ArrowLeft':
-      case 'ArrowUp':
-      case 'PageUp':
-        event.preventDefault();
-        setCurrentSlide(prev => Math.max(prev - 1, 0));
-        break;
-      case 'Home':
-        event.preventDefault();
-        setCurrentSlide(0);
-        break;
-      case 'End':
-        event.preventDefault();
-        setCurrentSlide(slides.length - 1);
-        break;
+    const { key } = event;
+    const isNext = ['ArrowRight', 'ArrowDown', ' ', 'PageDown'].includes(key);
+    const isPrev = ['ArrowLeft', 'ArrowUp', 'PageUp'].includes(key);
+    
+    if (isNext || isPrev || key === 'Home' || key === 'End') {
+      event.preventDefault();
+      
+      if (isNext) setCurrentSlide(prev => Math.min(prev + 1, slides.length - 1));
+      else if (isPrev) setCurrentSlide(prev => Math.max(prev - 1, 0));
+      else if (key === 'Home') setCurrentSlide(0);
+      else if (key === 'End') setCurrentSlide(slides.length - 1);
     }
   }, [loading, slides.length]);
 

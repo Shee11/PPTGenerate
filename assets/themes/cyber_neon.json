@@ -1,0 +1,53 @@
+{
+  "id": "cyber_neon",
+  "name": "Cyber Neon",
+  "description": "Bold cyberpunk theme with neon accents on dark background, perfect for tech and gaming presentations",
+  "margin_x": "50px",
+  "margin_y": "40px",
+  "gutter": "24px",
+  "header_footer": {
+    "header_height": "15%",
+    "footer_height": "10%",
+    "header_position": "centered",
+    "footer_position": "centered",
+    "header_decoration": "glow",
+    "footer_decoration": "none"
+  },
+  "sequence_pattern": "section_break",
+  "typography": {
+    "h1": {
+      "size": 72,
+      "weight": "black",
+      "line_height": 1.0
+    },
+    "h2": {
+      "size": 48,
+      "weight": "bold",
+      "line_height": 1.1
+    },
+    "h3": {
+      "size": 32,
+      "weight": "semibold",
+      "line_height": 1.2
+    },
+    "body": {
+      "size": 20,
+      "weight": "regular",
+      "line_height": 1.6
+    },
+    "caption": {
+      "size": 16,
+      "weight": "light",
+      "line_height": 1.5
+    }
+  },
+  "primary_color": "#00f0ff",
+  "secondary_color": "#ff00ff",
+  "accent_color": "#ffff00",
+  "background_color": "#0a0a1a",
+  "text_color": "#ffffff",
+  "primary_background": "#141428",
+  "secondary_background": "#0a0a1a",
+  "font_family": "JetBrains Mono, monospace",
+  "heading_font": "Orbitron, sans-serif"
+}

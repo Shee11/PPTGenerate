@@ -38,20 +38,11 @@ def get_llm_client() -> AzureOpenAI:
             "AZURE_OPENAI_ENDPOINT must be set"
         )
     
-    api_key = os.getenv("AZURE_OPENAI_API_KEY")
-    if api_key:
-        return AzureOpenAI(
-            azure_endpoint=endpoint,
-            api_key=api_key,
-            api_version=api_version,
-        )
-
     credential = AzureCliCredential()
     token_provider = get_bearer_token_provider(
         credential,
-        "https://cognitiveservices.azure.com/.default",
+        "https://cognitiveservices.azure.com/.default"
     )
-
     return AzureOpenAI(
         azure_endpoint=endpoint,
         azure_ad_token_provider=token_provider,
@@ -83,25 +74,24 @@ def get_async_llm_client() -> AsyncAzureOpenAI:
             "AZURE_OPENAI_ENDPOINT must be set"
         )
     
+    # Common parameters
+    params = {
+        "azure_endpoint": endpoint,
+        "api_version": api_version,
+    }
+    
+    # Use API key if available, otherwise Azure CLI credential
     api_key = os.getenv("AZURE_OPENAI_API_KEY")
     if api_key:
-        return AsyncAzureOpenAI(
-            azure_endpoint=endpoint,
-            api_key=api_key,
-            api_version=api_version,
+        params["api_key"] = api_key
+    else:
+        credential = AzureCliCredential()
+        params["azure_ad_token_provider"] = get_bearer_token_provider(
+            credential,
+            "https://cognitiveservices.azure.com/.default",
         )
-
-    credential = AzureCliCredential()
-    token_provider = get_bearer_token_provider(
-        credential,
-        "https://cognitiveservices.azure.com/.default",
-    )
-
-    return AsyncAzureOpenAI(
-        azure_endpoint=endpoint,
-        azure_ad_token_provider=token_provider,
-        api_version=api_version,
-    )
+    
+    return AsyncAzureOpenAI(**params)
 
 
 def call_llm(

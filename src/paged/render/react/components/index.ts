@@ -13,9 +13,5 @@ export * from './layouts';
 // L2 Blocks
 export * from './blocks';
 
-// L3 Primitives
+// L3 Atoms
 export * from './atoms';
-
-// Note: Generated components are NOT exported here.
-// They are loaded at runtime from state.json to avoid
-// affecting git commits or other pipeline runs.

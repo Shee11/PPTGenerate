@@ -91,20 +91,19 @@ def render_theme_creation_prompt(
     Returns:
         Formatted user prompt
     """
-    parts = []
-
-    # User instruction
-    parts.append(f"# User Request:\n{user_instruction}")
+    parts = [f"# User Request:\n{user_instruction}"]
     
     if keywords:
         parts.append(f"## keywords: {', '.join(keywords)}\nEnsure the theme visuals reflect these concepts.")
-
+    
     if new_theme_name:
         parts.append(f"Please name the new theme: {new_theme_name}")
-
+    
     if base_theme_source:
-        parts.append(f"## Base Theme Reference (TypeScript)\n```typescript\n{base_theme_source}\n```")
-        parts.append("Note: The base theme is provided in TypeScript for reference. Please output the new theme as valid JSON matching the schema.")
+        parts.extend([
+            f"## Base Theme Reference (TypeScript)\n```typescript\n{base_theme_source}\n```",
+            "Note: The base theme is provided in TypeScript for reference. Please output the new theme as valid JSON matching the schema."
+        ])
     
     return "\n\n".join(parts)
 
@@ -127,16 +126,17 @@ def render_theme_customization_prompt(
     if base_theme_source:
         parts.append(f"## Current Theme Reference (TypeScript)\n```typescript\n{base_theme_source}\n```")
     
-    parts.append(f"## Requested Modifications\n{modifications}")
-    
-    parts.append("""## Instructions
+    parts.extend([
+        f"## Requested Modifications\n{modifications}",
+        """## Instructions
 1. Start with the current theme as base
 2. Apply the requested modifications
 3. Ensure color harmony is maintained after changes
 4. Keep the same structure - only change values
 5. Generate a new unique ID for the modified theme (e.g., original_id + "_custom")
 
-Return ONLY the complete modified theme as valid JSON matching the schema.""")
+Return ONLY the complete modified theme as valid JSON matching the schema."""
+    ])
     
     return "\n\n".join(parts)
 
