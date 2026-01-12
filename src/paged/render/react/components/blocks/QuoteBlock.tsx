@@ -71,19 +71,32 @@ export function QuoteBlock({
     <figure 
       className={`quote-block ${sizeClass} quote-${variant}`}
       data-variant={variant}
+      style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem' }}
     >
-      <blockquote className="quote-text">
-        <span className="quote-mark quote-open">"</span>
-        {children}
-        <span className="quote-mark quote-close">"</span>
-      </blockquote>
-      
-      {hasAttribution && (
-        <figcaption className="quote-attribution">
-          {author && <cite className="quote-author">— {author}</cite>}
-          {source && <span className="quote-source">{source}</span>}
-        </figcaption>
-      )}
+      <span 
+        className="quote-icon"
+        style={{ 
+          fontSize: '3rem', 
+          lineHeight: 1,
+          flexShrink: 0,
+          opacity: 0.5,
+          color: 'var(--theme-text-muted)'
+        }}
+      >
+        "
+      </span>
+      <div style={{ flex: 1 }}>
+        <blockquote className="quote-text" style={{ margin: 0 }}>
+          {children}
+        </blockquote>
+        
+        {hasAttribution && (
+          <figcaption className="quote-attribution">
+            {author && <cite className="quote-author">— {author}</cite>}
+            {source && <span className="quote-source">{source}</span>}
+          </figcaption>
+        )}
+      </div>
     </figure>
   );
 }
