@@ -92,6 +92,7 @@ export function getResponsiveDiagramTheme(containerWidth: number, containerHeigh
       'shape': 'round-rectangle',
       'font-family': 'Inter, system-ui, -apple-system, sans-serif',
       'font-size': `${fontSize}px`,
+      'font-weight': 'normal',
       'color': '#1e293b',
       'width': nodeSize.width,
       'height': 'label',  // Auto-size height to fit wrapped text content
@@ -135,7 +136,7 @@ export function getResponsiveDiagramTheme(containerWidth: number, containerHeigh
       'border-color': '#e2e8f0',
       'border-style': 'dashed',
       'border-width': 2,
-      'font-weight': 'bold',
+      'font-weight': '600',  // Semi-bold instead of bold
       'font-size': `${parentFontSize}px`,
       'padding': `${Math.max(16, nodeSize.padding * 2)}px`,
       'shape': 'round-rectangle',
