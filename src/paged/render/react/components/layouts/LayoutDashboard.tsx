@@ -1,3 +1,5 @@
+"use client";
+
 /**
  * LayoutDashboard Component (L1 Layout)
  * 
@@ -20,7 +22,7 @@
  * ```
  */
 
-import React, { type ReactNode, Children, isValidElement } from 'react';
+import React, { type ReactNode, Children, isValidElement, useEffect, useRef } from 'react';
 import type { ThemeName, VibeLevel } from '@/utils/types';
 
 // =============================================================================
@@ -53,13 +55,21 @@ Header.displayName = 'Header';
 
 /** Dashboard Main Content Slot */
 export function Main({ children }: DashboardSlotProps): JSX.Element {
-  return <div className="dashboard-main">{children}</div>;
+  return (
+    <div className="dashboard-main">
+      <div className="dashboard-main-content">{children}</div>
+    </div>
+  );
 }
 Main.displayName = 'Main';
 
 /** Dashboard Sidebar Slot */
 export function Sidebar({ children }: DashboardSlotProps): JSX.Element {
-  return <div className="dashboard-sidebar">{children}</div>;
+  return (
+    <div className="dashboard-sidebar">
+      <div className="dashboard-sidebar-inner">{children}</div>
+    </div>
+  );
 }
 Sidebar.displayName = 'Sidebar';
 
@@ -89,6 +99,40 @@ export function LayoutDashboard({
   theme,
   vibe,
 }: LayoutDashboardProps): JSX.Element {
+  const bodyRef = useRef<HTMLDivElement>(null);
+
+  // Measure main content height and sync to sidebar
+  useEffect(() => {    
+    const updateHeight = () => {
+      if (bodyRef.current) {
+        const mainContent = bodyRef.current.querySelector('.dashboard-main-content');
+        const sidebarInner = bodyRef.current.querySelector('.dashboard-sidebar-inner');
+        
+        if (mainContent && sidebarInner) {
+          const height = mainContent.scrollHeight;
+          (sidebarInner as HTMLElement).style.height = `${height}px`;
+        }
+      }
+    };
+
+    // Initial measure
+    updateHeight();
+    
+    // Re-measure on window resize
+    window.addEventListener('resize', updateHeight);
+    
+    // Use MutationObserver to catch content changes
+    const observer = new MutationObserver(updateHeight);
+    if (bodyRef.current) {
+      observer.observe(bodyRef.current, { childList: true, subtree: true });
+    }
+    
+    return () => {
+      window.removeEventListener('resize', updateHeight);
+      observer.disconnect();
+    };
+  }, [children]);
+  
   // Extract slots from children
   let header: ReactNode = null;
   let main: ReactNode = null;
@@ -129,7 +173,7 @@ export function LayoutDashboard({
       data-vibe={vibe}
     >
       {header}
-      <div className="dashboard-body">
+      <div className="dashboard-body" ref={bodyRef}>
         {main}
         {sidebar}
       </div>
