@@ -498,15 +498,53 @@ li {
 .smart-list-block {
   display: flex;
   flex-direction: column;
+  text-align: left;
 }
 
 .smart-list-block ul,
 .smart-list-block ol {
   margin: 0;
+  padding-left: 2rem;
+  list-style-position: outside;
 }
 
-.smart-list-block li {
-  margin: 0.5rem 0;
+.smart-list {
+  margin: 0;
+  padding-left: 2rem;
+  text-align: left;
+}
+
+.smart-list-item {
+  margin: 0.75rem 0;
+  font-size: 1.5rem;
+  line-height: 1.5;
+  color: var(--theme-text, #1e293b);
+  display: list-item;
+  padding-left: 0.5rem;
+}
+
+/* Unordered list bullets */
+.smart-list:not(.smart-list-ordered) {
+  list-style-type: disc;
+}
+
+/* Ordered list numbers */
+.smart-list-ordered {
+  list-style-type: decimal;
+}
+
+/* Icon support for custom markers */
+.smart-list-item .smart-list-icon {
+  margin-right: 0.625rem;
+  font-size: 1.25rem;
+}
+
+.smart-list-item .smart-list-text {
+  color: var(--theme-text, #1e293b);
+}
+
+.smart-list-item .smart-list-content {
+  display: inline-block;
 }
 
 /* =============================================================================
@@ -519,6 +557,42 @@ li {
   border-left: 5px solid;
   margin: 0.625rem 0;
   font-size: 1.375rem;
+  
+  /* Fix: Use flexbox for proper icon/content layout */
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 0.625rem;
+  
+  /* Fix: Enforce left alignment by default */
+  text-align: left;
+}
+
+/* Configurable alignment support */
+.callout[data-align="center"] {
+  text-align: center;
+}
+
+.callout[data-align="right"] {
+  text-align: right;
+}
+
+.callout-icon {
+  flex-shrink: 0;
+  font-size: 1.375rem;
+  line-height: 1.25;
+  margin-top: 0.125rem;
+}
+
+.callout-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.callout-body {
+  line-height: 1.5;
 }
 
 .callout.info {
