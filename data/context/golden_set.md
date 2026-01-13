@@ -1,4 +1,4 @@
-# **Next‑Gen Speech & Interpreter — LT Executive Review**
+# Next-Gen Speech & Interpreter — LT Executive Review
 
 **December 25, 2025**
 
@@ -13,73 +13,58 @@ We are converging Teams speech experiences (Interpreter, Captions/Transcription)
 *   Multilingual STT eliminates setup friction (auto language detection + code‑switch tolerance), reducing gibberish and unlocking bilingual meetings for global customers.
 *   Admin Center usage reporting (CFR) and metering integration lay the foundation for enterprise governance and value articulation (tenant adoption, meeting types, language pairs).
 
+
 ## **Top Customer Pain Points (Why this matters)**
 
-*   Accuracy on technical terms, names, numbers/units; translations perceived as too literal in simultaneous mode
-*   Latency and meeting flow in SIM, especially alignment with shared content; first‑sentence delay sensitivity
-*   Tone/naturalness in JP/KR; occasional gender/voice mismatches where voice simulation is off
-*   Cross‑tenant/guest licensing clarity and interpreted audio not captured in recordings
+*	Accuracy on technical terms, names, numbers/units; translations perceived as too literal in simultaneous mode
+*	Latency and meeting flow in SIM, esp. alignment with shared content; first‑sentence delay sensitivity
+*	Tone/naturalness in JP/KR; occasional gender/voice mismatches where voice simulation is off
+*	Cross‑tenant/guest licensing clarity and interpreted audio not captured in recordings
+
 
 ## **Latest Progress (FY26 H1)**
 
 ### **Interpreter (SIM + TBT)**
-
-*   **SIM**
-    *   Semantic mode enabled in lower rings
-    *   TTS acceleration (1.2×–1.35×) reduces accumulated translated audio latency
-    *   Reliability \~99%+
-    *   Calling & MTR: SIM enabled across rings; CSS meeting‑level license check live
-*   **TBT**
-    *   R0 available
-    *   Early JP/KR customer/GBB feedback shows strong accuracy and clearer turn‑taking
-    *   Known limits: 25 concurrent sessions and some edge‑case behaviors
+*	SIM: Semantic mode enabled in lower rings; TTS acceleration (1.2×–1.35×) reduces accumulated translated audio latency; reliability ~99%+.
+*	Calling & MTR: SIM enabled across rings; CSS meeting‑level license check live for first support group.
+*	TBT: R0 available; early JP/KR customer/GBB feedback shows strong accuracy and clearer turn‑taking; known limits include 25 concurrent sessions and edge‑case behaviors under complex turns.
 
 ### **Multilingual STT**
-
-*   Unified multi‑recognizer endpoint with auto language detection
-*   9 languages enabled in preview
-*   R0/R1 completed; ongoing adaptation, phrase‑hint, segmentation tuning
+* Unified multi‑recognizer endpoint with auto language detection; 9 languages enabled in preview; R0/R1 completed; ongoing adaptation, phrase‑hint and segmentation tuning.
 
 ### **Transcript Enricher**
+*	R4 rollout at 50% for EN/JP and 10% for FR/DE/PT/ES; 1.8M+ meetings weekly enhanced; strong online reliability; scenario‑driven correction metrics (Project Sync, Enterprise Review, Stakeholder Forums).
+*	In‑meeting enrichment architecture aligned; R0 target January 2026; multilingual support planned for CY2026 Q1.
 
-*   R4 rollout at 50% for EN/JP; 10% for FR/DE/PT/ES
-*   1.8M+ meetings weekly enhanced
-*   Strong online reliability
-*   Alignment with in‑meeting enrichment architecture
-*   Multilingual support planned CY2026 Q1
-
-### **Transcription++**
-
-*   Enterprise understanding layer
-*   Tiered model stack + grounding/enrichment
-*   Global/custom dictionaries + dynamic vocabulary
-*   Governance‑by‑design, multilingual by default
+### **Transcription++**:
+*	Elevating transcription into an enterprise understanding layer: tiered model stack, stronger grounding/enrichment (global + custom dictionaries, dynamic vocabulary), governance‑by‑design, multilingual by default.
 
 ## **Improvements Plan (Next 1–2 Quarters)**
 
-*   Expand TBT capacity, stabilize edge cases
-*   UX cues for turn etiquette
-*   Evaluation pipeline for accuracy/tone/flow
-*   GA multilingual STT (Tier‑1 focus); improved code‑switching
-*   Enricher GA for Tier‑1 + multilingual extension; tenant auto‑dictionary
-*   Admin Center usage dashboard preview (target Mar 31, 2026)
-*   First‑sentence telemetry, segmentation improvements, pipeline tuning
+*	Expand TBT capacity, stabilize edge‑cases; UX cues for turn etiquette; evaluation pipeline for accuracy/tone/flow
+*	GA multilingual STT (Tier‑1 focus) with improved code‑switching and segmentation; continue adaptation + biasing
+*	Enricher GA completion for Tier‑1 + multilingual extension; integrate tenant auto‑dictionary (SLPv2) and dynamic vocabulary
+*	Admin Center usage dashboard public preview (target Mar 31, 2026) and metering validation
+*	Latency work: first‑sentence telemetry, segmentation improvements and end‑to‑end pipeline tuning
+
 
 ## **Vision & Strategy (6–12 months)**
 
-*   Unified speech stack for Captions/Transcription/Interpreter
-*   Entity accuracy as north star (global + custom dictionaries, dynamic vocabulary, Enricher)
-*   Strengthened governance, quality gates, ringed rollout
-*   Broaden language coverage (zh‑TW, NL, VI, TH) + market‑specific tone tuning for JP/KR
-*   Offline/fast catch‑up transcription exploration
-*   Recording parity for interpreted audio (multi‑track options)
+*	Unify speech stack for Captions/Transcription/Interpreter; multilingual by default; simplify pipelines and schemas
+*	Make entity accuracy the north star: global + custom dictionaries, dynamic vocabulary, and Enricher in/after meeting
+*	Strengthen governance: metering, admin reporting, quality gates and ringed rollout discipline
+*	Broaden language coverage (e.g., zh‑TW, NL, VI, TH) and market‑specific tone quality (JP/KR) to win competitive head‑to‑head
+*	Explore offline/fast catch‑up transcription to reduce CoGS while preserving enterprise experience bars
+*	Recording parity for interpreted audio (multi‑track options) to unlock multilingual recap and compliance scenarios
+
 
 ## **Risks & Asks to LT**
 
-*   GPU capacity and substrate LLM onboarding timelines for real‑time models
-*   SPOF/error‑handling maturity and incident monitoring
-*   CFR data cooking ownership and latency
-*   Responsible AI guardrails for harassment/misgendering; tone control improvements in JP/KR
+*	GPU capacity and substrate LLM onboarding timelines for real‑time models; maintain fallback paths with compliance controls
+*	SPOF/error‑handling maturity and incident monitoring alignment across rings and environments
+*	Admin reporting CFR data cooking ownership and data latency; align IDEAs + PM on contracts
+*	Responsible AI: guardrails for harassment/misgendering risks; tone control improvements in JP/KR
+
 
 ## **KPI Snapshot (Latest Interpreter Signals)**
 
@@ -92,6 +77,7 @@ We are converging Teams speech experiences (Interpreter, Captions/Transcription)
 | E2E Reliability       | **99.38% (+0.2% MoM)** |
 | CSAT                  | **71% (−2% MoM)**      |
 
+
 # 🚀 **Next‑Gen Speech Intelligence in Teams (6–12 Month Vision & Strategy)**
 
 *A unified vision for real‑time multilingual understanding across meetings, calls, and future AI agents.*
@@ -99,121 +85,146 @@ We are converging Teams speech experiences (Interpreter, Captions/Transcription)
 ## **1. Where We Are Today — Latest Progress**
 
 ### **1.1 Simultaneous Interpreter (SIM) — Quality, Stability, User Experience**
+Recent engineering syncs show major progress in model quality, latency, UX, and name/entity adaptation:
 
 #### **Model Quality Improvements**
 
-*   Semantic Mode rollout (Ring 0) → better long‑segment coherence
-*   Phrase segmentation fix for readability
-*   Name adaptation + global dictionary integration under testing (JP‑EN recall <50%, improving)
+*	**Semantic Mode** advancing through controlled rollout (Ring 0). Enables better long‑segment coherence and semantic‑level translation.
+*	**Phrase segmentation fix** to prevent splitting common phrases across segments, improving readability.
+*	**Name adaptation and global dictionary** integration entering end‑to‑end testing, though recall still below expectation ( < 50% in JP‑EN), with plans to incorporate both source+target language signals.
 
 #### **Phi‑4 Model & LLM‑based Improvements**
 
-*   Phi‑4‑based streaming translation exploration
-*   Early results show improved semantic preservation
-*   Stronger long‑segment reasoning complementing ST streaming
+*	Teams and Speech are exploring **Phi‑4‑based streaming translation** for SIM; early results indicate better semantic preservation in some scenarios.
+*	Internal discussions validate Phi‑4’s value especially in **long‑segment semantic reasoning**, complementing ST‑based streaming models.
+
 
 #### **Latency & UX Enhancements**
 
-*   Speedup mode product‑enabled
-*   Audio prefix to mask first‑turn RTT
-*   Auto‑update spoken language detection shipped with multilingual STT
+*	**Speedup mode** now product‑enabled.
+*	**Audio prefix (“audio introduction before first translation”)** added to mask first‑turn RTT and reduce user‑perceived latency.
+*	**Auto‑update spoken language detection** shipped with the multilingual STT rollout, reducing mis‑detect and eliminating forced manual switching. (via multilingual STT rollout notes)
 
-#### **Customer Pain Points**
 
-*   Slow first translation → addressed by audio prefix
-*   Improper segmentation → LM‑based segmentation scoring
-*   Name mistranslation → global dictionary training
-*   Rare harassment/tone issues (gender defaults) → Responsible AI tracking
+#### **Customer Pain Points (from recent meetings)**
 
-### **1.2 Turn‑by‑Turn Interpreter (TBT)**
+*	**Slow first translation turn**, especially in bilingual meetings. Addressed by audio prefix.
+*	**Improper segmentation** causing semantic breaks → being fixed through LM‑based segmentation scoring.
+*	**Name mistranslation** still common (JP/EN especially). Global dictionary model under training; cluster issues being escalated.
+*	**Harassment / tone issues** observed in extremely rare cases due to gender defaults in ST model → tracking under Responsible AI.
+
+
+### **1.2 Turn‑by‑Turn Interpreter (TBT) — Major Accuracy & User Control Upgrade**
+TBT is progressing quickly and now available in internal validation container form:
 
 #### **TBT Improvements**
 
-*   Core client/backend integration nearly complete
-*   Reduces translation overlap
-*   Clarifies speaker identity
-*   Better for structured discussions (board meetings, lectures)
+*	**Core client/backend integration nearly complete; internal validation ongoing.**
+*	TBT fixes core SIM pain points:
+  *	Reduces translation overlap
+  *	Clarifies who is speaking
+  *	Handles structured discussions better (e.g., board meetings, lectures)
 
-#### **Model Stack**
 
-*   GPT‑4o‑realtime + Azure Voice Live API
-*   Improved semantic and tone accuracy
+#### **Model Stack for TBT**
+
+* **GPT‑4o‑realtime** Uses + **Azure Voice Live API**, producing notably improved semantic and tone accuracy per vNext evaluation.
 
 #### **Customer Relevance**
 
-*   Designed for formal meetings, public sector (e.g., Welsh Gov), enterprise high‑stakes conversations
+* TBT designed to support **formal customer meetings, public sector (Welsh gov), and high‑stakes enterprise conversations** needing turn precision. (Human‑interp fallback pressure from Welsh Gov noted).
 
 ## **2. Transcription Quality — Multilingual STT, Entity Enrichment, Live Captions**
 
-### **2.1 Multilingual STT Model**
+### **2.1 Multilingual STT Model — Now Released to Ring 0 & Ring 1**
 
-*   Deployment completed for R0/R1
-*   Auto language detection simplifies setup
-*   Phrase hint fix for >800ms freeze
-*   Entity recall improvements (65.42 → 74.76 Type II)
+* **Full deployment completed** last week for Ring 0 and Ring 1.
+* **Automatic language detection** reduces manual friction; major simplification for multilingual meetings.
+* **Observed improvements**:
+  * Phrase hint fix mitigates freeze >800ms.
+  * Entity accuracy improved significantly in batch S2S:
+    * Entity recall increased **65.42 → 74.76** (Type II) in PPE tests.
 
-### **2.2 Transcript Enricher**
 
-**Real‑time Enricher**
+### **2.2 Transcription Enricher — Real‑time and Post‑Meeting**
 
-*   Fixes name entity errors in‑meeting
-*   Supports Recap AI, Copilot grounding, Facilitator skills
+* **Real-time enricher** now refining misrecognized **name entities** during meetings.
+* Supports downstream AI features like:
+  * Facilitator skills
+  * Recap AI
+  * Copilot grounding
+* **Post-meeting enricher** launched earlier (R4), showing measurable benefit:
+  * Overall transcription inaccuracy reduced **19.5% → 12.3%** (↓37%).
+  * Domain entity errors ↓34%.
+  * Accent/dialect issues ↓31%.
+  * Corresponding **CSAT increased from 42.95% → 62.32%**.
 
-**Post‑meeting Enricher**
-
-*   Inaccuracy reduced 19.5% → 12.3% (↓37%)
-*   Entity errors ↓34%
-*   Accent/dialect issues ↓31%
-*   CSAT improved 42.95% → 62.32%
 
 ### **2.3 Entity Correction (Global/Custom Dictionary)**
 
-*   Tier‑1 custom dictionary GA
-*   Global dictionary integration pending cluster fix
-*   Multilingual entity recall improving (\~50% JP/EN)
+* Tier‑1 custom dictionary fully GA.
+* Global dictionary under integration; dataset pending cluster issues.
+* Early multilingual entity adaptation recalls still improving (current ~50% for JP/EN).
 
-### **2.4 zh‑TW Transcription & Captioning**
 
-*   Treated same as zh‑CN; STT updates completed
-*   Internal testing planned
-*   Cantonese issues tracked under Tier‑2 language expansion
+### **2.4 zh‑TW (Traditional Chinese) Transcription & Captioning**
+
+* **ZHTW treated same as ZHCN**; STT updates completed, with internal testing planned.
+* Issues in some locales still being debugged (e.g. Cantonese) — tracked as part of Tier‑2 language expansion.
+
 
 ## **3. Cross‑Cutting Approaches — Models, Evaluation, Infrastructure**
 
 ### **3.1 Unified Evaluation — LLM‑Based End‑to‑End Metrics**
+You drove significant progress in evolving eval from model‑only to **end‑to‑end user‑perceived quality**:
+* Now using **LLM-as-judge** metrics for transcription & interpreter.
+* Produces consistent semantic, tone, latency, and entity scores across models.
+* Enables apples‑to‑apples evaluation of:
+  * ST
+  * Semantic
+  * Phi
+  * GPT‑4o real-time
+  * TBT pipeline
+  * Multilingual STT
 
-*   LLM‑as‑judge for transcription & interpreter
-*   Produces semantic, tone, latency, entity scores
-*   Enables consistent evaluation across: ST, Semantic, Phi, GPT‑4o realtime, TBT, Multilingual STT
-*   Accelerates iteration, reduces human cost, improves rollout decisions
+#### Business Value
+
+* Accelerates iteration cycles
+* Reduces human eval cost
+* Improves decision accuracy for model rollouts
+* Enables transparent tradeoff reporting to LT
 
 ### **3.2 GPU Infrastructure & Multi‑Recognizer**
+To support next‑gen model families:
+* Multi‑recognizer platform coming **January 2026** for Teams.
+* Allows hot‑switch between STS and LRM/LLM‑based models.
+* Foundational for **Phi‑4, LLM multimodal**, and **unified multilingual models**.
+* Simplifies pipeline and unlocks faster experimentation.
 
-*   Multi‑recognizer platform coming Jan 2026
-*   Hot‑switch between STS and LRM/LLM models
-*   Foundational for Phi‑4, LLM multimodal, unified multilingual models
-*   Simplifies pipeline and boosts experimentation
 
 ## **4. North Star — 6–12 Month Vision**
 
 ### **1. Achieve >80% CSAT Interpreter Experience**
+Anchored in vNext success criteria
+* SIM for fluid conversations
+* TBT for clarity in structured discussions
+* Automatic mode switching based on meeting context (future vision)
 
-*   SIM for fluid conversations
-*   TBT for structured clarity
-*   Future: automatic mode switching
+### **2. Deploy Unified Multilingual Model (Transcription + Interpretation)**
 
-### **2. Unified Multilingual Model**
+* Speech team direction: unified multilingual model to simplify architecture and improve consistency.
+* Explore **Phi‑4 multimodal** & GPT‑4o for high‑value scenarios.
 
-*   Speech team direction: unified transcription + interpretation
-*   Explore Phi‑4 multimodal & GPT‑4o
 
 ### **3. Real‑Time Quality Enhancement Layer**
 
-*   Entity enrichment
-*   Latency mitigation
-*   Biasing + adaptation across languages
+* Entity enrichment
+* Latency mitigation (audio prefix, segmentation improvements)
+* Biasing + adaptation framework (global/custom dictionary) that works across languages
+
 
 ### **4. End‑to‑End Reliability Across Global Meetings**
 
-*   Resource expansion (10→20 environments)
-*   Robust error handling + retry logic
+* Resource expansion (10→20 environments being evaluated).
+* Robust error handling for Voice Life API, retry logic, and controller integration.
+

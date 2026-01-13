@@ -20,32 +20,32 @@
   --theme-text: #0f172a;
   --theme-text-muted: #475569;
   --theme-border: #e2e8f0;
-  
+
   /* Intent colors */
   --theme-info: #0ea5e9;
   --theme-warning: #f59e0b;
   --theme-success: #10b981;
   --theme-danger: #ef4444;
-  
+
   /* Typography - larger for presentations */
   --theme-font-display: 'Inter', system-ui, -apple-system, sans-serif;
   --theme-font-body: 'Inter', system-ui, -apple-system, sans-serif;
   --theme-font-mono: 'JetBrains Mono', ui-monospace, monospace;
-  
+
   --theme-size-display: 80px;
   --theme-size-heading: 56px;
   --theme-size-subheading: 42px;
   --theme-size-body: 32px;
   --theme-size-caption: 24px;
-  
+
   --theme-line-height: 1.5;
   --theme-letter-spacing: -0.02em;
-  
+
   /* Spacing - generous for presentations */
   --theme-spacing-gap: 36px;
   --theme-spacing-padding: 80px;
   --theme-spacing-margin: 32px;
-  
+
   /* Visuals */
   --theme-radius: 12px;
   --theme-radius-sm: 4px;
@@ -53,12 +53,12 @@
   --theme-radius-lg: 16px;
   --theme-radius-xl: 24px;
   --theme-radius-full: 9999px;
-  
+
   --theme-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   --theme-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
   --theme-shadow-md: 0 4px 20px rgba(0, 0, 0, 0.08);
   --theme-shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.12);
-  
+
   --theme-border-width: 1px;
 
   /* =============================================================================
@@ -129,7 +129,7 @@ body {
   overflow: hidden;
   box-shadow: 0 25px 80px rgba(0, 0, 0, 0.5);
   border-radius: 4px;
-  
+
   /* Scale to fit 95% of viewport while maintaining aspect ratio */
   --scale-x: calc(95vw / 1920);
   --scale-y: calc(95vh / 1080);
@@ -241,7 +241,8 @@ body {
   height: 100%;
   gap: var(--theme-spacing-gap);
   padding: var(--theme-spacing-padding);
-  align-items: center; /* Vertically center content */
+  align-items: start; /* Top-align left and right columns with each other */
+  align-content: center; /* Center the row vertically on the page */
 }
 
 .layout-split-left,
@@ -249,8 +250,8 @@ body {
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
-  justify-content: center; /* Center content vertically within column */
-  height: 100%;
+  justify-content: flex-start; /* Top-align content within each column */
+  height: auto; /* Allow natural height instead of forcing 100% */
   max-height: 100%;
 }
 
@@ -539,7 +540,7 @@ body {
 
 /* Accent highlight - secondary/decorative */
 .highlight-accent {
-  background: linear-gradient(135deg, 
+  background: linear-gradient(135deg,
     color-mix(in srgb, var(--theme-primary) 15%, transparent),
     color-mix(in srgb, var(--theme-secondary) 15%, transparent)
   );
@@ -683,22 +684,14 @@ body {
   z-index: 1;
 }
 
-/* Position items along the timeline using nth-child */
-.layout-timeline .timeline-item:nth-child(1) { left: 2%; }
-.layout-timeline .timeline-item:nth-child(2) { left: 20%; }
-.layout-timeline .timeline-item:nth-child(3) { left: 38%; }
-.layout-timeline .timeline-item:nth-child(4) { left: 56%; }
-.layout-timeline .timeline-item:nth-child(5) { left: 74%; }
-.layout-timeline .timeline-item:nth-child(6) { left: 88%; }
-
 /* Alternating positioning: odd items go UP, even items go DOWN */
 .layout-timeline .timeline-item:nth-child(odd) {
-  bottom: calc(50% + 8px);
+  bottom: calc(50% + 20px);
   flex-direction: column-reverse;
 }
 
 .layout-timeline .timeline-item:nth-child(even) {
-  top: calc(50% + 8px);
+  top: calc(50% + 20px);
 }
 
 /* The circle node on the timeline */
@@ -716,14 +709,14 @@ body {
 
 /* Circle position for odd (top) items - circle at bottom of content */
 .layout-timeline .timeline-item:nth-child(odd)::before {
-  bottom: -30px;
+  bottom: -42px;
   left: 50%;
   transform: translateX(-50%);
 }
 
 /* Circle position for even (bottom) items - circle at top of content */
 .layout-timeline .timeline-item:nth-child(even)::before {
-  top: -30px;
+  top: -42px;
   left: 50%;
   transform: translateX(-50%);
 }
@@ -733,7 +726,7 @@ body {
   content: '';
   position: absolute;
   width: 2px;
-  height: 16px;
+  height: 28px;
   background: var(--theme-primary);
   left: 50%;
   transform: translateX(-50%);
@@ -742,55 +735,67 @@ body {
 
 /* Connector for odd (top) items */
 .layout-timeline .timeline-item:nth-child(odd)::after {
-  bottom: -14px;
+  bottom: -26px;
 }
 
 /* Connector for even (bottom) items */
 .layout-timeline .timeline-item:nth-child(even)::after {
-  top: -14px;
+  top: -26px;
 }
 
 /* Year label styling */
 .layout-timeline .timeline-year {
-  font-size: 0.8rem;
+  font-size: 1.5rem;
   font-weight: 700;
   color: var(--theme-primary);
   letter-spacing: 0.05em;
   background: color-mix(in srgb, var(--theme-primary) 12%, var(--theme-bg));
-  padding: 3px 10px;
+  padding: 6px 14px;
   border-radius: 10px;
-  margin-bottom: 6px;
+  margin-bottom: 14px;
 }
 
 /* Year at bottom for odd items (content reversed) */
 .layout-timeline .timeline-item:nth-child(odd) .timeline-year {
   margin-bottom: 0;
-  margin-top: 6px;
+  margin-top: 14px;
 }
 
 /* Content box */
 .layout-timeline .timeline-content {
   text-align: center;
+  width: 100%;
   padding: 10px 14px;
   background: color-mix(in srgb, var(--theme-primary) 5%, var(--theme-bg));
   border-radius: 10px;
   border: 1px solid color-mix(in srgb, var(--theme-primary) 15%, transparent);
   box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+
+  /* Prevent horizontal overflow (no truncation) */
+  overflow-wrap: anywhere;
+  word-break: normal;
 }
 
 .layout-timeline .timeline-content h3,
 .layout-timeline .timeline-content [class*="heading-"] {
-  font-size: 0.95rem;
-  margin-bottom: 3px;
+  font-size: 2.0rem;
+  margin-bottom: 10px;
   color: var(--theme-text);
 }
 
-.layout-timeline .timeline-content p,
-.layout-timeline .timeline-content .text-body {
-  font-size: 0.8rem;
-  color: var(--theme-text-muted);
-  margin: 0;
+.layout-timeline .timeline-content .text-default {
+  font-size: 1.5rem;
+  color: var(--theme-text);
+  margin: 0 0 10px 0;
   line-height: 1.35;
+}
+
+.layout-timeline .timeline-content .text-caption {
+  display: block;
+  color: var(--theme-text-muted);
+  margin-top: 4px;
+  line-height: 1.25;
+  font-size: 1.2rem;
 }
 
 /* Highlighted item */
@@ -1103,7 +1108,7 @@ body {
   .slide-navigation {
     display: none;
   }
-  
+
   .slide {
     break-after: page;
     height: auto;
