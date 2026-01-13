@@ -84,7 +84,7 @@ export function TableData({
   title,
   subtitle,
   size = 'md',
-  striped = true,
+  striped = false,
   headerHighlight = true,
   callout,
   footer,
