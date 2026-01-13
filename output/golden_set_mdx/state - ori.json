@@ -1,0 +1,2183 @@
+{
+  "todos": {
+    "todos": [
+      {
+        "id": "constitution",
+        "type": "constitution",
+        "status": "completed",
+        "params": {
+          "style_rules": [
+            "optimize content for leadership team review",
+            "be concise and insight-focused"
+          ],
+          "content_exclusions": [],
+          "content_requirements": [],
+          "slide_count_target": null,
+          "slide_count_max": null,
+          "layout_preferences": [],
+          "audience": null,
+          "purpose": null,
+          "tone": "professional",
+          "target_slides": 11,
+          "selected_theme": null,
+          "selected_vibe": null
+        },
+        "created_at": "2026-01-09T17:25:08.804840",
+        "started_at": "2026-01-09T17:29:11.143291",
+        "completed_at": "2026-01-09T17:29:11.157888",
+        "error": null,
+        "depends_on": []
+      },
+      {
+        "id": "atoms",
+        "type": "atoms",
+        "status": "completed",
+        "params": {
+          "source_path": "/home/shuowan/code/gggg/data/context/golden_set.md",
+          "content_type": "text/markdown",
+          "extraction_prompt": ""
+        },
+        "created_at": "2026-01-09T17:25:08.805341",
+        "started_at": "2026-01-09T17:31:11.983008",
+        "completed_at": "2026-01-09T17:31:59.622230",
+        "error": null,
+        "depends_on": [
+          "constitution"
+        ]
+      },
+      {
+        "id": "story",
+        "type": "story",
+        "status": "completed",
+        "params": {
+          "mode": "generate",
+          "instruction": "",
+          "slide_count": 11,
+          "atom_filter": null
+        },
+        "created_at": "2026-01-09T17:25:08.805565",
+        "started_at": "2026-01-09T17:31:11.990430",
+        "completed_at": "2026-01-09T17:31:57.931973",
+        "error": null,
+        "depends_on": [
+          "constitution"
+        ]
+      },
+      {
+        "id": "theme",
+        "type": "theme",
+        "status": "completed",
+        "params": {
+          "theme_id": null,
+          "visual_guidance": "",
+          "tone": "professional",
+          "generate_new": false
+        },
+        "created_at": "2026-01-09T17:25:08.805746",
+        "started_at": "2026-01-09T17:31:11.991805",
+        "completed_at": "2026-01-09T17:31:12.025019",
+        "error": null,
+        "depends_on": [
+          "constitution"
+        ]
+      },
+      {
+        "id": "content",
+        "type": "content",
+        "status": "pending",
+        "params": {
+          "mode": "generate",
+          "instruction": "",
+          "slide_ids": []
+        },
+        "created_at": "2026-01-09T17:25:08.805917",
+        "started_at": null,
+        "completed_at": null,
+        "error": null,
+        "depends_on": [
+          "story",
+          "theme"
+        ]
+      },
+      {
+        "id": "export",
+        "type": "export",
+        "status": "pending",
+        "params": {
+          "layout_engine": "slidev",
+          "output_format": "html",
+          "output_path": null
+        },
+        "created_at": "2026-01-09T17:25:08.806091",
+        "started_at": null,
+        "completed_at": null,
+        "error": null,
+        "depends_on": [
+          "content"
+        ]
+      }
+    ]
+  },
+  "source": {
+    "path": "/home/shuowan/code/gggg/data/context/golden_set.md",
+    "content_hash": "065f8ae5d80b7220",
+    "content_type": "text/markdown"
+  },
+  "constitution": {
+    "style_rules": [
+      "Start with a title slide",
+      "Balance content density"
+    ],
+    "content_exclusions": [],
+    "content_requirements": [],
+    "slide_count_target": null,
+    "slide_count_max": null,
+    "layout_preferences": [],
+    "audience": null,
+    "purpose": null,
+    "tone": null,
+    "target_slides": 11,
+    "selected_theme": null,
+    "selected_vibe": null
+  },
+  "themes": {
+    "slate_professional": {
+      "id": "slate_professional",
+      "name": "Slate Professional",
+      "description": "Clean and neutral slate gray theme, versatile for any business or academic presentation",
+      "margin_x": "55px",
+      "margin_y": "45px",
+      "gutter": "24px",
+      "header_footer": {
+        "header_height": "12%",
+        "footer_height": "8%",
+        "header_position": "fixed_top_left",
+        "footer_position": "fixed_bottom_left",
+        "header_decoration": "underline_subtle",
+        "footer_decoration": "none"
+      },
+      "sequence_pattern": "alternating_background",
+      "typography": {
+        "h1": {
+          "size": 54,
+          "weight": "bold",
+          "line_height": 1.15
+        },
+        "h2": {
+          "size": 38,
+          "weight": "semibold",
+          "line_height": 1.2
+        },
+        "h3": {
+          "size": 26,
+          "weight": "medium",
+          "line_height": 1.3
+        },
+        "body": {
+          "size": 17,
+          "weight": "regular",
+          "line_height": 1.6
+        },
+        "caption": {
+          "size": 13,
+          "weight": "regular",
+          "line_height": 1.5
+        }
+      },
+      "primary_color": "#475569",
+      "secondary_color": "#64748b",
+      "accent_color": "#0ea5e9",
+      "background_color": "#ffffff",
+      "text_color": "#1e293b",
+      "primary_background": "#f8fafc",
+      "secondary_background": "#ffffff",
+      "font_family": "IBM Plex Sans, sans-serif",
+      "heading_font": "IBM Plex Sans, sans-serif"
+    },
+    "business_professional": {
+      "id": "business_professional",
+      "name": "Business Professional",
+      "description": "Clean corporate theme with navy blue primary and professional styling",
+      "margin_x": "48px",
+      "margin_y": "36px",
+      "gutter": "24px",
+      "header_footer": {
+        "header_height": "12%",
+        "footer_height": "8%",
+        "header_position": "fixed_top_left",
+        "footer_position": "fixed_bottom_left",
+        "header_decoration": "accent_line",
+        "footer_decoration": "none"
+      },
+      "sequence_pattern": "consistent",
+      "typography": {
+        "h1": {
+          "size": 56,
+          "weight": "bold",
+          "line_height": 1.1
+        },
+        "h2": {
+          "size": 40,
+          "weight": "semibold",
+          "line_height": 1.2
+        },
+        "h3": {
+          "size": 28,
+          "weight": "medium",
+          "line_height": 1.3
+        },
+        "body": {
+          "size": 18,
+          "weight": "regular",
+          "line_height": 1.6
+        },
+        "caption": {
+          "size": 14,
+          "weight": "regular",
+          "line_height": 1.4
+        }
+      },
+      "primary_color": "#0F4C81",
+      "secondary_color": "#2D5F8B",
+      "accent_color": "#E67E22",
+      "background_color": "#FAFBFC",
+      "text_color": "#1A202C",
+      "primary_background": "#FFFFFF",
+      "secondary_background": "#F5F7F9",
+      "font_family": "Inter, Segoe UI, system-ui, sans-serif",
+      "heading_font": "Inter, Segoe UI, system-ui, sans-serif",
+      "colors": {
+        "primary": "#0F4C81",
+        "accent": "#E67E22",
+        "success": "#27AE60",
+        "warning": "#F39C12",
+        "danger": "#E74C3C",
+        "bg_base": "#FAFBFC",
+        "bg_surface": "#FFFFFF",
+        "bg_elevated": "#F5F7F9",
+        "text": "#1A202C",
+        "text_muted": "#4A5568",
+        "text_dim": "#718096",
+        "border": "#E1E5E9",
+        "border_subtle": "#EDF2F7"
+      },
+      "shadows": {
+        "sm": "0 1px 3px rgba(0,0,0,0.08)",
+        "md": "0 4px 12px rgba(0,0,0,0.1)",
+        "lg": "0 8px 24px rgba(0,0,0,0.12)",
+        "glow": "0 0 20px rgba(15,76,129,0.15)"
+      },
+      "radii": {
+        "sm": "4px",
+        "md": "8px",
+        "lg": "12px",
+        "xl": "16px"
+      }
+    },
+    "corp_modern_v1": {
+      "id": "corp_modern_v1",
+      "margin_x": "40px",
+      "margin_y": "30px",
+      "gutter": "20px",
+      "header_footer": {
+        "header_height": "15%",
+        "footer_height": "10%",
+        "header_position": "fixed_top_left",
+        "footer_position": "fixed_bottom_left",
+        "header_decoration": "underline_accent",
+        "footer_decoration": "none"
+      },
+      "sequence_pattern": "alternating_background",
+      "typography": {
+        "h1": {
+          "size": 60,
+          "weight": "bold",
+          "line_height": 1.1
+        },
+        "h2": {
+          "size": 40,
+          "weight": "medium",
+          "line_height": 1.2
+        },
+        "h3": {
+          "size": 28,
+          "weight": "medium",
+          "line_height": 1.3
+        },
+        "body": {
+          "size": 18,
+          "weight": "regular",
+          "line_height": 1.5
+        },
+        "caption": {
+          "size": 14,
+          "weight": "regular",
+          "line_height": 1.4
+        }
+      },
+      "primary_color": "#2563eb",
+      "secondary_color": "#64748b",
+      "accent_color": "#f59e0b",
+      "background_color": "#ffffff",
+      "text_color": "#1e293b",
+      "primary_background": "#f8fafc",
+      "secondary_background": "#ffffff",
+      "font_family": "Inter, system-ui, sans-serif",
+      "heading_font": "Inter, system-ui, sans-serif"
+    },
+    "duolingo_v1": {
+      "id": "duolingo_v1",
+      "name": "Duolingo",
+      "description": "Playful, gamified style inspired by Duolingo's UI - bright green, friendly, encouraging",
+      "margin_x": "48px",
+      "margin_y": "36px",
+      "gutter": "24px",
+      "header_footer": {
+        "header_height": "12%",
+        "footer_height": "8%",
+        "header_position": "fixed_top_center",
+        "footer_position": "fixed_bottom_center",
+        "header_decoration": "none",
+        "footer_decoration": "progress_dots"
+      },
+      "sequence_pattern": "playful_alternating",
+      "typography": {
+        "h1": {
+          "size": 56,
+          "weight": "800",
+          "line_height": 1.15,
+          "letter_spacing": "-0.02em"
+        },
+        "h2": {
+          "size": 36,
+          "weight": "700",
+          "line_height": 1.25,
+          "letter_spacing": "-0.01em"
+        },
+        "h3": {
+          "size": 24,
+          "weight": "700",
+          "line_height": 1.35
+        },
+        "body": {
+          "size": 18,
+          "weight": "600",
+          "line_height": 1.6
+        },
+        "caption": {
+          "size": 14,
+          "weight": "600",
+          "line_height": 1.5
+        }
+      },
+      "primary_color": "#58CC02",
+      "secondary_color": "#1CB0F6",
+      "accent_color": "#FF9600",
+      "background_color": "#ffffff",
+      "text_color": "#3C3C3C",
+      "font_family": "'Nunito', system-ui, sans-serif",
+      "heading_font": "'Nunito', system-ui, sans-serif",
+      "border_radius": "16px",
+      "vibe": "duolingo"
+    },
+    "cyber_neon": {
+      "id": "cyber_neon",
+      "name": "Cyber Neon",
+      "description": "Bold cyberpunk theme with neon accents on dark background, perfect for tech and gaming presentations",
+      "margin_x": "50px",
+      "margin_y": "40px",
+      "gutter": "24px",
+      "header_footer": {
+        "header_height": "15%",
+        "footer_height": "10%",
+        "header_position": "centered",
+        "footer_position": "centered",
+        "header_decoration": "glow",
+        "footer_decoration": "none"
+      },
+      "sequence_pattern": "section_break",
+      "typography": {
+        "h1": {
+          "size": 72,
+          "weight": "black",
+          "line_height": 1.0
+        },
+        "h2": {
+          "size": 48,
+          "weight": "bold",
+          "line_height": 1.1
+        },
+        "h3": {
+          "size": 32,
+          "weight": "semibold",
+          "line_height": 1.2
+        },
+        "body": {
+          "size": 20,
+          "weight": "regular",
+          "line_height": 1.6
+        },
+        "caption": {
+          "size": 16,
+          "weight": "light",
+          "line_height": 1.5
+        }
+      },
+      "primary_color": "#00f0ff",
+      "secondary_color": "#ff00ff",
+      "accent_color": "#ffff00",
+      "background_color": "#0a0a1a",
+      "text_color": "#ffffff",
+      "primary_background": "#141428",
+      "secondary_background": "#0a0a1a",
+      "font_family": "JetBrains Mono, monospace",
+      "heading_font": "Orbitron, sans-serif"
+    },
+    "forest_nature": {
+      "id": "forest_nature",
+      "name": "Forest Nature",
+      "description": "Organic and earthy green theme, perfect for sustainability, health, and nature topics",
+      "margin_x": "55px",
+      "margin_y": "45px",
+      "gutter": "26px",
+      "header_footer": {
+        "header_height": "14%",
+        "footer_height": "10%",
+        "header_position": "fixed_top_left",
+        "footer_position": "fixed_bottom_right",
+        "header_decoration": "none",
+        "footer_decoration": "leaf_accent"
+      },
+      "sequence_pattern": "alternating_background",
+      "typography": {
+        "h1": {
+          "size": 60,
+          "weight": "bold",
+          "line_height": 1.1
+        },
+        "h2": {
+          "size": 42,
+          "weight": "semibold",
+          "line_height": 1.2
+        },
+        "h3": {
+          "size": 28,
+          "weight": "medium",
+          "line_height": 1.3
+        },
+        "body": {
+          "size": 18,
+          "weight": "regular",
+          "line_height": 1.65
+        },
+        "caption": {
+          "size": 14,
+          "weight": "regular",
+          "line_height": 1.5
+        }
+      },
+      "primary_color": "#22c55e",
+      "secondary_color": "#16a34a",
+      "accent_color": "#84cc16",
+      "background_color": "#f0fdf4",
+      "text_color": "#14532d",
+      "primary_background": "#dcfce7",
+      "secondary_background": "#f0fdf4",
+      "font_family": "Lato, sans-serif",
+      "heading_font": "Merriweather, serif"
+    },
+    "handdrawn_v1": {
+      "id": "handdrawn_v1",
+      "name": "Handdrawn",
+      "description": "Sketchy, pastel, friendly aesthetic with handwritten fonts and soft colors",
+      "margin_x": "48px",
+      "margin_y": "40px",
+      "gutter": "24px",
+      "header_footer": {
+        "header_height": "12%",
+        "footer_height": "8%",
+        "header_position": "fixed_top_left",
+        "footer_position": "fixed_bottom_center",
+        "header_decoration": "none",
+        "footer_decoration": "none"
+      },
+      "sequence_pattern": "pastel_rotation",
+      "typography": {
+        "h1": {
+          "size": 56,
+          "weight": "600",
+          "line_height": 1.2
+        },
+        "h2": {
+          "size": 40,
+          "weight": "500",
+          "line_height": 1.3
+        },
+        "h3": {
+          "size": 28,
+          "weight": "500",
+          "line_height": 1.35
+        },
+        "body": {
+          "size": 20,
+          "weight": "400",
+          "line_height": 1.6
+        },
+        "caption": {
+          "size": 16,
+          "weight": "400",
+          "line_height": 1.5
+        }
+      },
+      "primary_color": "#FFB5BA",
+      "secondary_color": "#A8D8EA",
+      "accent_color": "#B5EAD7",
+      "background_color": "#FFFEF9",
+      "text_color": "#4A4A4A",
+      "primary_background": "#FFFEF9",
+      "secondary_background": "#FFF9F0",
+      "success_color": "#B5EAD7",
+      "warning_color": "#FFEAA7",
+      "danger_color": "#FFB5BA",
+      "font_family": "'Nunito', sans-serif",
+      "heading_font": "'Caveat', cursive",
+      "accent_font": "'Patrick Hand', cursive",
+      "border_radius": "12px",
+      "card_radius": "16px",
+      "button_radius": "20px",
+      "vibe": "playful",
+      "decorations": {
+        "sketchy_borders": true,
+        "doodles": true,
+        "paper_texture": true,
+        "stickers": true,
+        "highlights": true
+      },
+      "colors": {
+        "pink": "#FFB5BA",
+        "pink_light": "#FFD4D8",
+        "pink_dark": "#E8969C",
+        "blue": "#A8D8EA",
+        "blue_light": "#C5E8F2",
+        "blue_dark": "#7EC8E3",
+        "green": "#B5EAD7",
+        "green_light": "#D4F5E9",
+        "green_dark": "#8EDABE",
+        "yellow": "#FFEAA7",
+        "yellow_light": "#FFF3C4",
+        "yellow_dark": "#F9D871",
+        "purple": "#DCD6F7",
+        "purple_light": "#EBE7FA",
+        "purple_dark": "#C4B8F0",
+        "orange": "#FFCFB3",
+        "orange_light": "#FFE0CF",
+        "orange_dark": "#FFB088",
+        "bg": "#FFFEF9",
+        "bg_paper": "#FFF9F0",
+        "bg_cream": "#FAF6F0",
+        "text": "#4A4A4A",
+        "text_light": "#6B6B6B",
+        "text_dark": "#2D2D2D"
+      }
+    },
+    "editorial_v1": {
+      "id": "editorial_v1",
+      "name": "Editorial",
+      "description": "Elegant, serif-based magazine style with sophisticated neutrals and gold accents",
+      "margin_x": "56px",
+      "margin_y": "48px",
+      "gutter": "32px",
+      "header_footer": {
+        "header_height": "10%",
+        "footer_height": "6%",
+        "header_position": "fixed_top_center",
+        "footer_position": "fixed_bottom_center",
+        "header_decoration": "hairline",
+        "footer_decoration": "hairline"
+      },
+      "sequence_pattern": "editorial_flow",
+      "typography": {
+        "h1": {
+          "size": 48,
+          "weight": "400",
+          "line_height": 1.15,
+          "letter_spacing": "-0.01em"
+        },
+        "h2": {
+          "size": 32,
+          "weight": "400",
+          "line_height": 1.25,
+          "letter_spacing": "-0.005em"
+        },
+        "h3": {
+          "size": 24,
+          "weight": "400",
+          "line_height": 1.35
+        },
+        "body": {
+          "size": 18,
+          "weight": "400",
+          "line_height": 1.8
+        },
+        "caption": {
+          "size": 14,
+          "weight": "400",
+          "line_height": 1.5,
+          "font_style": "italic"
+        }
+      },
+      "primary_color": "#c9a962",
+      "secondary_color": "#1e3a5f",
+      "accent_color": "#722f37",
+      "background_color": "#f8f6f3",
+      "text_color": "#4a4a4a",
+      "primary_background": "#f8f6f3",
+      "secondary_background": "#ffffff",
+      "success_color": "#4a7c59",
+      "warning_color": "#c9a962",
+      "danger_color": "#722f37",
+      "font_family": "'Cormorant Garamond', 'Georgia', serif",
+      "heading_font": "'Playfair Display', 'Georgia', serif",
+      "accent_font": "'Source Serif 4', 'Georgia', serif",
+      "border_radius": "2px",
+      "card_radius": "0px",
+      "button_radius": "0px",
+      "vibe": "classic",
+      "decorations": {
+        "corner_frames": true,
+        "hairline_dividers": true,
+        "drop_caps": true,
+        "ornaments": true,
+        "image_frames": true
+      },
+      "colors": {
+        "black": "#1a1a1a",
+        "charcoal": "#2d2d2d",
+        "slate": "#4a4a4a",
+        "gold": "#c9a962",
+        "gold_light": "#e6c984",
+        "navy": "#1e3a5f",
+        "burgundy": "#722f37",
+        "cream": "#f8f6f3",
+        "white": "#ffffff",
+        "light": "#e8e8e8",
+        "muted": "#f5f5f5",
+        "border": "#d4d4d4",
+        "text_dark": "#1a1a1a",
+        "text": "#4a4a4a",
+        "text_light": "#7a7a7a"
+      }
+    },
+    "minimal_dark_v1": {
+      "id": "minimal_dark_v1",
+      "margin_x": "60px",
+      "margin_y": "40px",
+      "gutter": "24px",
+      "header_footer": {
+        "header_height": "20%",
+        "footer_height": "10%",
+        "header_position": "centered",
+        "footer_position": "centered",
+        "header_decoration": "none",
+        "footer_decoration": "none"
+      },
+      "sequence_pattern": "section_break",
+      "typography": {
+        "h1": {
+          "size": 72,
+          "weight": "black",
+          "line_height": 1.0
+        },
+        "h2": {
+          "size": 48,
+          "weight": "bold",
+          "line_height": 1.1
+        },
+        "h3": {
+          "size": 32,
+          "weight": "semibold",
+          "line_height": 1.2
+        },
+        "body": {
+          "size": 20,
+          "weight": "light",
+          "line_height": 1.6
+        },
+        "caption": {
+          "size": 16,
+          "weight": "light",
+          "line_height": 1.5
+        }
+      },
+      "primary_color": "#ffffff",
+      "secondary_color": "#94a3b8",
+      "accent_color": "#06b6d4",
+      "background_color": "#0f172a",
+      "text_color": "#f1f5f9",
+      "primary_background": "#1e293b",
+      "secondary_background": "#0f172a",
+      "font_family": "Helvetica Neue, Arial, sans-serif",
+      "heading_font": "Helvetica Neue, Arial, sans-serif"
+    },
+    "ocean_deep": {
+      "id": "ocean_deep",
+      "name": "Ocean Deep",
+      "description": "Calm and professional deep blue theme, great for corporate and financial presentations",
+      "margin_x": "60px",
+      "margin_y": "50px",
+      "gutter": "28px",
+      "header_footer": {
+        "header_height": "12%",
+        "footer_height": "8%",
+        "header_position": "fixed_top_left",
+        "footer_position": "fixed_bottom_left",
+        "header_decoration": "underline_accent",
+        "footer_decoration": "none"
+      },
+      "sequence_pattern": "section_break",
+      "typography": {
+        "h1": {
+          "size": 56,
+          "weight": "bold",
+          "line_height": 1.15
+        },
+        "h2": {
+          "size": 40,
+          "weight": "semibold",
+          "line_height": 1.2
+        },
+        "h3": {
+          "size": 28,
+          "weight": "medium",
+          "line_height": 1.3
+        },
+        "body": {
+          "size": 18,
+          "weight": "regular",
+          "line_height": 1.6
+        },
+        "caption": {
+          "size": 14,
+          "weight": "light",
+          "line_height": 1.5
+        }
+      },
+      "primary_color": "#0ea5e9",
+      "secondary_color": "#06b6d4",
+      "accent_color": "#22d3ee",
+      "background_color": "#0c1929",
+      "text_color": "#f0f9ff",
+      "primary_background": "#0f2744",
+      "secondary_background": "#0c1929",
+      "font_family": "Source Sans Pro, sans-serif",
+      "heading_font": "Montserrat, sans-serif"
+    },
+    "royal_purple": {
+      "id": "royal_purple",
+      "name": "Royal Purple",
+      "description": "Elegant and luxurious purple theme, ideal for premium brands and creative agencies",
+      "margin_x": "60px",
+      "margin_y": "50px",
+      "gutter": "28px",
+      "header_footer": {
+        "header_height": "14%",
+        "footer_height": "10%",
+        "header_position": "centered",
+        "footer_position": "centered",
+        "header_decoration": "gradient_line",
+        "footer_decoration": "none"
+      },
+      "sequence_pattern": "section_break",
+      "typography": {
+        "h1": {
+          "size": 68,
+          "weight": "bold",
+          "line_height": 1.05
+        },
+        "h2": {
+          "size": 46,
+          "weight": "semibold",
+          "line_height": 1.15
+        },
+        "h3": {
+          "size": 30,
+          "weight": "medium",
+          "line_height": 1.25
+        },
+        "body": {
+          "size": 18,
+          "weight": "regular",
+          "line_height": 1.6
+        },
+        "caption": {
+          "size": 14,
+          "weight": "light",
+          "line_height": 1.5
+        }
+      },
+      "primary_color": "#a855f7",
+      "secondary_color": "#8b5cf6",
+      "accent_color": "#f472b6",
+      "background_color": "#1e1033",
+      "text_color": "#faf5ff",
+      "primary_background": "#2e1a47",
+      "secondary_background": "#1e1033",
+      "font_family": "Poppins, sans-serif",
+      "heading_font": "Cormorant Garamond, serif"
+    },
+    "warm_sunset": {
+      "id": "warm_sunset",
+      "name": "Warm Sunset",
+      "description": "Warm and inviting theme with sunset colors, ideal for creative and lifestyle presentations",
+      "margin_x": "50px",
+      "margin_y": "40px",
+      "gutter": "24px",
+      "header_footer": {
+        "header_height": "15%",
+        "footer_height": "10%",
+        "header_position": "fixed_top_left",
+        "footer_position": "fixed_bottom_right",
+        "header_decoration": "none",
+        "footer_decoration": "none"
+      },
+      "sequence_pattern": "alternating_background",
+      "typography": {
+        "h1": {
+          "size": 64,
+          "weight": "bold",
+          "line_height": 1.1
+        },
+        "h2": {
+          "size": 44,
+          "weight": "semibold",
+          "line_height": 1.2
+        },
+        "h3": {
+          "size": 30,
+          "weight": "medium",
+          "line_height": 1.3
+        },
+        "body": {
+          "size": 18,
+          "weight": "regular",
+          "line_height": 1.6
+        },
+        "caption": {
+          "size": 14,
+          "weight": "regular",
+          "line_height": 1.5
+        }
+      },
+      "primary_color": "#f97316",
+      "secondary_color": "#ec4899",
+      "accent_color": "#fbbf24",
+      "background_color": "#fffbeb",
+      "text_color": "#451a03",
+      "primary_background": "#fef3c7",
+      "secondary_background": "#fffbeb",
+      "font_family": "Nunito, sans-serif",
+      "heading_font": "Playfair Display, serif"
+    }
+  },
+  "active_theme_id": "corp_modern_v1",
+  "project": "react-mdx",
+  "mdx_theme": "business",
+  "atoms": {
+    "id": "atoms_065f8ae5d80b7220",
+    "model": "FactAtom",
+    "contexts": [
+      {
+        "id": "concept_001",
+        "rank": 1,
+        "state": "draft",
+        "abstract": "Teams speech experiences are converging onto a unified multilingual stack.",
+        "source_ref": {
+          "source_id": "065f8ae5d80b7220",
+          "file_path": "/home/shuowan/code/gggg/data/context/golden_set.md",
+          "offset": 0,
+          "length": 330,
+          "line_number": null
+        },
+        "visual": "architecture",
+        "created_at": "2026-01-09T09:31:59.618898",
+        "metadata": {},
+        "text": "Teams speech experiences (Interpreter, Captions/Transcription) are being converged onto a unified, multilingual stack with stronger entity accuracy and reliability.",
+        "concept_type": "strategy",
+        "supporting_facts": [
+          "fact_001",
+          "fact_002",
+          "fact_003"
+        ]
+      },
+      {
+        "id": "concept_002",
+        "rank": 2,
+        "state": "draft",
+        "abstract": "Turn‑by‑Turn Interpreter is introduced to fix SIM accuracy and flow gaps.",
+        "source_ref": {
+          "source_id": "065f8ae5d80b7220",
+          "file_path": "/home/shuowan/code/gggg/data/context/golden_set.md",
+          "offset": 330,
+          "length": 520,
+          "line_number": null
+        },
+        "visual": "flow",
+        "created_at": "2026-01-09T09:31:59.619132",
+        "metadata": {},
+        "text": "Turn‑by‑Turn (TBT) Interpreter is being introduced to solve accuracy and meeting flow gaps in interactive and structured meetings, reducing translation overlap and clarifying who is speaking.",
+        "concept_type": "solution",
+        "supporting_facts": [
+          "fact_004",
+          "fact_005",
+          "fact_006"
+        ]
+      },
+      {
+        "id": "fact_001",
+        "rank": 3,
+        "state": "draft",
+        "abstract": "Multilingual STT has shipped to R0/R1 with auto language detection.",
+        "source_ref": {
+          "source_id": "065f8ae5d80b7220",
+          "file_path": "/home/shuowan/code/gggg/data/context/golden_set.md",
+          "offset": 850,
+          "length": 420,
+          "line_number": null
+        },
+        "visual": "diagram",
+        "created_at": "2026-01-09T09:31:59.619253",
+        "metadata": {},
+        "text": "Multilingual STT has shipped to Ring 0 and Ring 1 with a unified multi‑recognizer endpoint and automatic language detection, eliminating setup friction and enabling bilingual meetings.",
+        "category": "status"
+      },
+      {
+        "id": "fact_002",
+        "rank": 4,
+        "state": "draft",
+        "abstract": "Transcript Enricher is correcting high‑value meetings at scale.",
+        "source_ref": {
+          "source_id": "065f8ae5d80b7220",
+          "file_path": "/home/shuowan/code/gggg/data/context/golden_set.md",
+          "offset": 1270,
+          "length": 420,
+          "line_number": null
+        },
+        "visual": "chart",
+        "created_at": "2026-01-09T09:31:59.619356",
+        "metadata": {},
+        "text": "Transcript Enricher is correcting names and domain entities in high‑value meetings at scale, with R4 rollout at 50% for EN/JP and 10% for FR/DE/PT/ES and 1.8M+ meetings weekly enhanced.",
+        "category": "status"
+      },
+      {
+        "id": "fact_003",
+        "rank": 5,
+        "state": "draft",
+        "abstract": "Batch S2S display models improved readability across Tier‑1 locales.",
+        "source_ref": {
+          "source_id": "065f8ae5d80b7220",
+          "file_path": "/home/shuowan/code/gggg/data/context/golden_set.md",
+          "offset": 1690,
+          "length": 220,
+          "line_number": null
+        },
+        "visual": "before-after",
+        "created_at": "2026-01-09T09:31:59.619382",
+        "metadata": {},
+        "text": "Batch speech‑to‑speech (S2S) display models have raised transcript readability across Tier‑1 locales without increasing cost of goods sold (CoGS).",
+        "category": "status"
+      },
+      {
+        "id": "tension_001",
+        "rank": 6,
+        "state": "draft",
+        "abstract": "Customers see accuracy issues on technical terms, names, and numbers.",
+        "source_ref": {
+          "source_id": "065f8ae5d80b7220",
+          "file_path": "/home/shuowan/code/gggg/data/context/golden_set.md",
+          "offset": 1910,
+          "length": 260,
+          "line_number": null
+        },
+        "visual": "list",
+        "created_at": "2026-01-09T09:31:59.619493",
+        "metadata": {},
+        "text": "Customers report accuracy issues on technical terms, names, and numbers/units, and perceive translations as too literal in simultaneous mode.",
+        "tension_type": "problem",
+        "resolution_hint": "Invest in entity enrichment, global/custom dictionaries, and semantic translation modes."
+      },
+      {
+        "id": "tension_002",
+        "rank": 7,
+        "state": "draft",
+        "abstract": "Latency and flow issues in SIM affect meeting experience.",
+        "source_ref": {
+          "source_id": "065f8ae5d80b7220",
+          "file_path": "/home/shuowan/code/gggg/data/context/golden_set.md",
+          "offset": 2170,
+          "length": 260,
+          "line_number": null
+        },
+        "visual": "flow",
+        "created_at": "2026-01-09T09:31:59.619594",
+        "metadata": {},
+        "text": "Latency and meeting flow in simultaneous interpretation, especially alignment with shared content and sensitivity to first‑sentence delay, are key customer pain points.",
+        "tension_type": "problem",
+        "resolution_hint": "Use TTS acceleration, audio prefix, segmentation improvements, and TBT mode to mitigate perceived latency."
+      },
+      {
+        "id": "tension_003",
+        "rank": 8,
+        "state": "draft",
+        "abstract": "Tone and gender/voice mismatches in JP/KR raise RAI concerns.",
+        "source_ref": {
+          "source_id": "065f8ae5d80b7220",
+          "file_path": "/home/shuowan/code/gggg/data/context/golden_set.md",
+          "offset": 2430,
+          "length": 260,
+          "line_number": null
+        },
+        "visual": "none",
+        "created_at": "2026-01-09T09:31:59.619620",
+        "metadata": {},
+        "text": "Tone and naturalness issues in Japanese and Korean, along with occasional gender/voice mismatches where voice simulation is off, create user dissatisfaction and Responsible AI risks.",
+        "tension_type": "problem",
+        "resolution_hint": "Improve tone control and voice selection for JP/KR and add guardrails against misgendering and harassment."
+      },
+      {
+        "id": "fact_004",
+        "rank": 9,
+        "state": "draft",
+        "abstract": "SIM semantic mode and TTS acceleration improve quality and latency.",
+        "source_ref": {
+          "source_id": "065f8ae5d80b7220",
+          "file_path": "/home/shuowan/code/gggg/data/context/golden_set.md",
+          "offset": 2690,
+          "length": 330,
+          "line_number": null
+        },
+        "visual": "chart",
+        "created_at": "2026-01-09T09:31:59.619641",
+        "metadata": {},
+        "text": "Simultaneous Interpreter (SIM) has semantic mode enabled in lower rings and TTS acceleration (1.2×–1.35×) to reduce accumulated translated audio latency, with reliability around 99%+.",
+        "category": "status"
+      },
+      {
+        "id": "fact_005",
+        "rank": 10,
+        "state": "draft",
+        "abstract": "TBT R0 is available with strong JP/KR feedback but 25‑session limit.",
+        "source_ref": {
+          "source_id": "065f8ae5d80b7220",
+          "file_path": "/home/shuowan/code/gggg/data/context/golden_set.md",
+          "offset": 3020,
+          "length": 420,
+          "line_number": null
+        },
+        "visual": "table",
+        "created_at": "2026-01-09T09:31:59.619663",
+        "metadata": {},
+        "text": "Turn‑by‑Turn Interpreter Ring 0 is available; early Japanese and Korean customer and GBB feedback shows strong accuracy and clearer turn‑taking, with known limits including 25 concurrent sessions and edge‑case behaviors under complex turns.",
+        "category": "status"
+      },
+      {
+        "id": "fact_006",
+        "rank": 11,
+        "state": "draft",
+        "abstract": "SIM latency mitigations include speedup mode and audio prefix.",
+        "source_ref": {
+          "source_id": "065f8ae5d80b7220",
+          "file_path": "/home/shuowan/code/gggg/data/context/golden_set.md",
+          "offset": 4700,
+          "length": 420,
+          "line_number": null
+        },
+        "visual": "flow",
+        "created_at": "2026-01-09T09:31:59.619684",
+        "metadata": {},
+        "text": "Latency and UX enhancements for SIM include speedup mode, an audio prefix before the first translation to mask round‑trip time, and auto‑update spoken language detection via multilingual STT.",
+        "category": "architecture"
+      },
+      {
+        "id": "concept_003",
+        "rank": 12,
+        "state": "draft",
+        "abstract": "Transcription++ elevates transcription into an enterprise understanding layer.",
+        "source_ref": {
+          "source_id": "065f8ae5d80b7220",
+          "file_path": "/home/shuowan/code/gggg/data/context/golden_set.md",
+          "offset": 3650,
+          "length": 360,
+          "line_number": null
+        },
+        "visual": "architecture",
+        "created_at": "2026-01-09T09:31:59.619707",
+        "metadata": {},
+        "text": "Transcription++ aims to elevate transcription into an enterprise understanding layer with a tiered model stack, stronger grounding and enrichment (global and custom dictionaries, dynamic vocabulary), governance‑by‑design, and multilingual by default.",
+        "concept_type": "vision",
+        "supporting_facts": [
+          "fact_002",
+          "fact_009"
+        ]
+      },
+      {
+        "id": "concept_004",
+        "rank": 13,
+        "state": "draft",
+        "abstract": "Real‑time quality layer focuses on entity enrichment and latency mitigation.",
+        "source_ref": {
+          "source_id": "065f8ae5d80b7220",
+          "file_path": "/home/shuowan/code/gggg/data/context/golden_set.md",
+          "offset": 8420,
+          "length": 320,
+          "line_number": null
+        },
+        "visual": "architecture",
+        "created_at": "2026-01-09T09:31:59.619728",
+        "metadata": {},
+        "text": "A real‑time quality enhancement layer is being built around entity enrichment, latency mitigation (audio prefix, segmentation improvements), and a biasing/adaptation framework using global and custom dictionaries across languages.",
+        "concept_type": "solution",
+        "supporting_facts": [
+          "fact_006",
+          "fact_009",
+          "fact_010"
+        ]
+      },
+      {
+        "id": "fact_007",
+        "rank": 14,
+        "state": "draft",
+        "abstract": "Admin Center reporting and metering enable governance and value articulation.",
+        "source_ref": {
+          "source_id": "065f8ae5d80b7220",
+          "file_path": "/home/shuowan/code/gggg/data/context/golden_set.md",
+          "offset": 2110,
+          "length": 260,
+          "line_number": null
+        },
+        "visual": "dashboard",
+        "created_at": "2026-01-09T09:31:59.619749",
+        "metadata": {},
+        "text": "Admin Center usage reporting (CFR) and metering integration are underway to provide visibility into tenant adoption, meeting types, and language pairs, laying the foundation for enterprise governance and value articulation.",
+        "category": "status"
+      },
+      {
+        "id": "concept_005",
+        "rank": 15,
+        "state": "draft",
+        "abstract": "Unified evaluation uses LLM‑as‑judge for end‑to‑end quality metrics.",
+        "source_ref": {
+          "source_id": "065f8ae5d80b7220",
+          "file_path": "/home/shuowan/code/gggg/data/context/golden_set.md",
+          "offset": 6760,
+          "length": 420,
+          "line_number": null
+        },
+        "visual": "flow",
+        "created_at": "2026-01-09T09:31:59.619768",
+        "metadata": {},
+        "text": "Unified evaluation now uses LLM‑as‑judge metrics for transcription and interpreter, producing consistent semantic, tone, latency, and entity scores across models and enabling apples‑to‑apples comparisons and faster iteration.",
+        "concept_type": "method",
+        "supporting_facts": []
+      },
+      {
+        "id": "concept_006",
+        "rank": 16,
+        "state": "draft",
+        "abstract": "Multi‑recognizer platform enables hot‑switching between model families.",
+        "source_ref": {
+          "source_id": "065f8ae5d80b7220",
+          "file_path": "/home/shuowan/code/gggg/data/context/golden_set.md",
+          "offset": 7180,
+          "length": 320,
+          "line_number": null
+        },
+        "visual": "architecture",
+        "created_at": "2026-01-09T09:31:59.619790",
+        "metadata": {},
+        "text": "A multi‑recognizer platform coming January 2026 for Teams will allow hot‑switching between STS and LRM/LLM‑based models, simplifying pipelines and enabling faster experimentation with Phi‑4, multimodal LLMs, and unified multilingual models.",
+        "concept_type": "infrastructure",
+        "supporting_facts": []
+      },
+      {
+        "id": "tension_004",
+        "rank": 17,
+        "state": "draft",
+        "abstract": "GPU capacity and LLM onboarding timelines are key risks.",
+        "source_ref": {
+          "source_id": "065f8ae5d80b7220",
+          "file_path": "/home/shuowan/code/gggg/data/context/golden_set.md",
+          "offset": 4760,
+          "length": 260,
+          "line_number": null
+        },
+        "visual": "timeline",
+        "created_at": "2026-01-09T09:31:59.619810",
+        "metadata": {},
+        "text": "GPU capacity and substrate LLM onboarding timelines for real‑time models pose risks, requiring maintained fallback paths with compliance controls.",
+        "tension_type": "risk",
+        "resolution_hint": "Secure GPU allocations, stage LLM onboarding, and harden fallback paths with compliance guardrails."
+      },
+      {
+        "id": "tension_005",
+        "rank": 18,
+        "state": "draft",
+        "abstract": "Admin reporting data ownership and latency need alignment.",
+        "source_ref": {
+          "source_id": "065f8ae5d80b7220",
+          "file_path": "/home/shuowan/code/gggg/data/context/golden_set.md",
+          "offset": 5020,
+          "length": 260,
+          "line_number": null
+        },
+        "visual": "none",
+        "created_at": "2026-01-09T09:31:59.619830",
+        "metadata": {},
+        "text": "Admin reporting CFR data cooking ownership and data latency require alignment between IDEAs and PM on contracts, creating a governance and accountability gap.",
+        "tension_type": "problem",
+        "resolution_hint": "Clarify ownership, SLAs, and contracts for CFR data pipelines between engineering and PM."
+      },
+      {
+        "id": "tension_006",
+        "rank": 19,
+        "state": "draft",
+        "abstract": "Responsible AI risks include harassment and misgendering.",
+        "source_ref": {
+          "source_id": "065f8ae5d80b7220",
+          "file_path": "/home/shuowan/code/gggg/data/context/golden_set.md",
+          "offset": 5280,
+          "length": 260,
+          "line_number": null
+        },
+        "visual": "none",
+        "created_at": "2026-01-09T09:31:59.619848",
+        "metadata": {},
+        "text": "Responsible AI risks include harassment and misgendering due to tone and gender defaults in speech translation models, particularly in JP/KR, requiring guardrails and tone control improvements.",
+        "tension_type": "risk",
+        "resolution_hint": "Implement RAI guardrails, monitoring, and tone control features for sensitive locales."
+      },
+      {
+        "id": "concept_007",
+        "rank": 20,
+        "state": "draft",
+        "abstract": "North star is >80% CSAT for interpreter with SIM and TBT modes.",
+        "source_ref": {
+          "source_id": "065f8ae5d80b7220",
+          "file_path": "/home/shuowan/code/gggg/data/context/golden_set.md",
+          "offset": 8060,
+          "length": 260,
+          "line_number": null
+        },
+        "visual": "target",
+        "created_at": "2026-01-09T09:31:59.619866",
+        "metadata": {},
+        "text": "The north star is to achieve over 80% CSAT for interpreter experiences by using SIM for fluid conversations, TBT for structured discussions, and eventually automatic mode switching based on meeting context.",
+        "concept_type": "goal",
+        "supporting_facts": [
+          "stat_012"
+        ]
+      },
+      {
+        "id": "stat_001",
+        "rank": 21,
+        "state": "draft",
+        "abstract": "Interpreter MAU is 136k with +1.9% MoM growth.",
+        "source_ref": {
+          "source_id": "065f8ae5d80b7220",
+          "file_path": "/home/shuowan/code/gggg/data/context/golden_set.md",
+          "offset": 5520,
+          "length": 80,
+          "line_number": null
+        },
+        "visual": "big-number",
+        "created_at": "2026-01-09T09:31:59.619976",
+        "metadata": {},
+        "value": "136k",
+        "label": "Interpreter MAU",
+        "context": "Latest Interpreter KPI snapshot shows 136k monthly active users, +1.9% month‑over‑month."
+      },
+      {
+        "id": "stat_002",
+        "rank": 22,
+        "state": "draft",
+        "abstract": "Interpreter WAU is 38.3k with −2.5% WoW change.",
+        "source_ref": {
+          "source_id": "065f8ae5d80b7220",
+          "file_path": "/home/shuowan/code/gggg/data/context/golden_set.md",
+          "offset": 5600,
+          "length": 80,
+          "line_number": null
+        },
+        "visual": "chart",
+        "created_at": "2026-01-09T09:31:59.620069",
+        "metadata": {},
+        "value": "38.3k",
+        "label": "Interpreter WAU",
+        "context": "Latest Interpreter KPI snapshot shows 38.3k weekly active users, −2.5% week‑over‑week."
+      },
+      {
+        "id": "stat_003",
+        "rank": 23,
+        "state": "draft",
+        "abstract": "Monthly meeting count is 106k with +5.4% MoM growth.",
+        "source_ref": {
+          "source_id": "065f8ae5d80b7220",
+          "file_path": "/home/shuowan/code/gggg/data/context/golden_set.md",
+          "offset": 5680,
+          "length": 80,
+          "line_number": null
+        },
+        "visual": "chart",
+        "created_at": "2026-01-09T09:31:59.620090",
+        "metadata": {},
+        "value": "106k",
+        "label": "Monthly Interpreter Meeting Count",
+        "context": "Latest Interpreter KPI snapshot shows 106k monthly meetings, +5.4% month‑over‑month."
+      },
+      {
+        "id": "stat_004",
+        "rank": 24,
+        "state": "draft",
+        "abstract": ">5‑min meeting rate is 62.2% with +2.1% MoM.",
+        "source_ref": {
+          "source_id": "065f8ae5d80b7220",
+          "file_path": "/home/shuowan/code/gggg/data/context/golden_set.md",
+          "offset": 5760,
+          "length": 80,
+          "line_number": null
+        },
+        "visual": "chart",
+        "created_at": "2026-01-09T09:31:59.620109",
+        "metadata": {},
+        "value": "62.2%",
+        "label": ">5‑min Meeting Rate",
+        "context": "Latest Interpreter KPI snapshot shows 62.2% of meetings longer than 5 minutes, +2.1% month‑over‑month."
+      },
+      {
+        "id": "stat_005",
+        "rank": 25,
+        "state": "draft",
+        "abstract": "E2E reliability is 99.38% with +0.2% MoM.",
+        "source_ref": {
+          "source_id": "065f8ae5d80b7220",
+          "file_path": "/home/shuowan/code/gggg/data/context/golden_set.md",
+          "offset": 5840,
+          "length": 80,
+          "line_number": null
+        },
+        "visual": "big-number",
+        "created_at": "2026-01-09T09:31:59.620129",
+        "metadata": {},
+        "value": "99.38%",
+        "label": "E2E Interpreter Reliability",
+        "context": "Latest Interpreter KPI snapshot shows 99.38% end‑to‑end reliability, +0.2% month‑over‑month."
+      },
+      {
+        "id": "stat_006",
+        "rank": 26,
+        "state": "draft",
+        "abstract": "Interpreter CSAT is 71% with −2% MoM.",
+        "source_ref": {
+          "source_id": "065f8ae5d80b7220",
+          "file_path": "/home/shuowan/code/gggg/data/context/golden_set.md",
+          "offset": 5920,
+          "length": 80,
+          "line_number": null
+        },
+        "visual": "chart",
+        "created_at": "2026-01-09T09:31:59.620161",
+        "metadata": {},
+        "value": "71%",
+        "label": "Interpreter CSAT",
+        "context": "Latest Interpreter KPI snapshot shows 71% customer satisfaction, −2% month‑over‑month."
+      },
+      {
+        "id": "stat_007",
+        "rank": 27,
+        "state": "draft",
+        "abstract": "Multilingual STT entity recall improved from 65.42 to 74.76.",
+        "source_ref": {
+          "source_id": "065f8ae5d80b7220",
+          "file_path": "/home/shuowan/code/gggg/data/context/golden_set.md",
+          "offset": 6320,
+          "length": 120,
+          "line_number": null
+        },
+        "visual": "before-after",
+        "created_at": "2026-01-09T09:31:59.620180",
+        "metadata": {},
+        "value": "65.42 → 74.76",
+        "label": "Entity Recall (Type II, PPE tests)",
+        "context": "Observed improvements in batch S2S entity accuracy for multilingual STT."
+      },
+      {
+        "id": "stat_008",
+        "rank": 28,
+        "state": "draft",
+        "abstract": "Post‑meeting inaccuracy reduced from 19.5% to 12.3% (−37%).",
+        "source_ref": {
+          "source_id": "065f8ae5d80b7220",
+          "file_path": "/home/shuowan/code/gggg/data/context/golden_set.md",
+          "offset": 6480,
+          "length": 140,
+          "line_number": null
+        },
+        "visual": "before-after",
+        "created_at": "2026-01-09T09:31:59.620198",
+        "metadata": {},
+        "value": "19.5% → 12.3% (−37%)",
+        "label": "Overall Transcription Inaccuracy",
+        "context": "Impact of post‑meeting Transcript Enricher R4 rollout."
+      },
+      {
+        "id": "stat_009",
+        "rank": 29,
+        "state": "draft",
+        "abstract": "Domain entity errors decreased by 34% with Enricher.",
+        "source_ref": {
+          "source_id": "065f8ae5d80b7220",
+          "file_path": "/home/shuowan/code/gggg/data/context/golden_set.md",
+          "offset": 6620,
+          "length": 80,
+          "line_number": null
+        },
+        "visual": "big-number",
+        "created_at": "2026-01-09T09:31:59.620217",
+        "metadata": {},
+        "value": "34%",
+        "label": "Domain Entity Error Reduction",
+        "context": "Measured benefit from post‑meeting Transcript Enricher."
+      },
+      {
+        "id": "stat_010",
+        "rank": 30,
+        "state": "draft",
+        "abstract": "Accent/dialect issues decreased by 31% with Enricher.",
+        "source_ref": {
+          "source_id": "065f8ae5d80b7220",
+          "file_path": "/home/shuowan/code/gggg/data/context/golden_set.md",
+          "offset": 6700,
+          "length": 80,
+          "line_number": null
+        },
+        "visual": "big-number",
+        "created_at": "2026-01-09T09:31:59.620235",
+        "metadata": {},
+        "value": "31%",
+        "label": "Accent/Dialect Error Reduction",
+        "context": "Measured benefit from post‑meeting Transcript Enricher."
+      },
+      {
+        "id": "stat_011",
+        "rank": 31,
+        "state": "draft",
+        "abstract": "CSAT increased from 42.95% to 62.32% after Enricher.",
+        "source_ref": {
+          "source_id": "065f8ae5d80b7220",
+          "file_path": "/home/shuowan/code/gggg/data/context/golden_set.md",
+          "offset": 6780,
+          "length": 120,
+          "line_number": null
+        },
+        "visual": "before-after",
+        "created_at": "2026-01-09T09:31:59.620253",
+        "metadata": {},
+        "value": "42.95% → 62.32%",
+        "label": "Transcription CSAT",
+        "context": "Customer satisfaction improvement attributed to Transcript Enricher."
+      },
+      {
+        "id": "stat_012",
+        "rank": 32,
+        "state": "draft",
+        "abstract": "Target interpreter CSAT is >80% vs current 71%.",
+        "source_ref": {
+          "source_id": "065f8ae5d80b7220",
+          "file_path": "/home/shuowan/code/gggg/data/context/golden_set.md",
+          "offset": 8060,
+          "length": 120,
+          "line_number": null
+        },
+        "visual": "target",
+        "created_at": "2026-01-09T09:31:59.620270",
+        "metadata": {},
+        "value": ">80%",
+        "label": "Target Interpreter CSAT",
+        "context": "North star goal compared to current 71% CSAT."
+      },
+      {
+        "id": "quote_001",
+        "rank": 33,
+        "state": "draft",
+        "abstract": "Vision tagline: unified real‑time multilingual understanding in Teams.",
+        "source_ref": {
+          "source_id": "065f8ae5d80b7220",
+          "file_path": "/home/shuowan/code/gggg/data/context/golden_set.md",
+          "offset": 6040,
+          "length": 220,
+          "line_number": null
+        },
+        "visual": "quote-card",
+        "created_at": "2026-01-09T09:31:59.620383",
+        "metadata": {},
+        "quote": "Next‑Gen Speech Intelligence in Teams — a unified vision for real‑time multilingual understanding across meetings, calls, and future AI agents.",
+        "attribution": "",
+        "context": "Framing statement for 6–12 month vision & strategy section."
+      },
+      {
+        "id": "fact_008",
+        "rank": 34,
+        "state": "draft",
+        "abstract": "TBT uses GPT‑4o‑realtime and Azure Voice Live API for better tone.",
+        "source_ref": {
+          "source_id": "065f8ae5d80b7220",
+          "file_path": "/home/shuowan/code/gggg/data/context/golden_set.md",
+          "offset": 7320,
+          "length": 220,
+          "line_number": null
+        },
+        "visual": "architecture",
+        "created_at": "2026-01-09T09:31:59.620502",
+        "metadata": {},
+        "text": "The model stack for TBT uses GPT‑4o‑realtime plus Azure Voice Live API, producing notably improved semantic and tone accuracy per vNext evaluation.",
+        "category": "architecture"
+      },
+      {
+        "id": "fact_009",
+        "rank": 35,
+        "state": "draft",
+        "abstract": "Tier‑1 custom dictionary is GA; global dictionary under integration.",
+        "source_ref": {
+          "source_id": "065f8ae5d80b7220",
+          "file_path": "/home/shuowan/code/gggg/data/context/golden_set.md",
+          "offset": 6940,
+          "length": 260,
+          "line_number": null
+        },
+        "visual": "table",
+        "created_at": "2026-01-09T09:31:59.620525",
+        "metadata": {},
+        "text": "Tier‑1 custom dictionary is fully GA, while a global dictionary is under integration with dataset availability pending cluster issues; early multilingual entity adaptation recall is around 50% for JP/EN.",
+        "category": "status"
+      },
+      {
+        "id": "fact_010",
+        "rank": 36,
+        "state": "draft",
+        "abstract": "Vision includes unified multilingual model for transcription and interpretation.",
+        "source_ref": {
+          "source_id": "065f8ae5d80b7220",
+          "file_path": "/home/shuowan/code/gggg/data/context/golden_set.md",
+          "offset": 8320,
+          "length": 260,
+          "line_number": null
+        },
+        "visual": "architecture",
+        "created_at": "2026-01-09T09:31:59.620546",
+        "metadata": {},
+        "text": "The strategy includes deploying a unified multilingual model for both transcription and interpretation, exploring Phi‑4 multimodal and GPT‑4o for high‑value scenarios to simplify architecture and improve consistency.",
+        "category": "strategy"
+      },
+      {
+        "id": "visual_001",
+        "rank": 37,
+        "state": "draft",
+        "abstract": "Visual: KPI snapshot table for Interpreter usage and quality.",
+        "source_ref": {
+          "source_id": "065f8ae5d80b7220",
+          "file_path": "/home/shuowan/code/gggg/data/context/golden_set.md",
+          "offset": 5520,
+          "length": 480,
+          "line_number": null
+        },
+        "visual": "table",
+        "created_at": "2026-01-09T09:31:59.620661",
+        "metadata": {},
+        "description": "A KPI dashboard slide showing MAU, WAU, monthly meeting count, >5‑min meeting rate, E2E reliability, and CSAT with MoM/WoW deltas for Interpreter.",
+        "visual_category": "dashboard",
+        "related_atom": ""
+      }
+    ]
+  },
+  "slides": [
+    {
+      "id": "slide_01",
+      "rank": 1,
+      "state": "draft",
+      "story": "cover: establish the core outcome-focused vision up front",
+      "density": "minimal",
+      "visual_design": "LayoutCover: center-aligned title and subtitle, footer with presenter and date",
+      "content": {
+        "headline": "Unifying Teams speech to power multilingual AI meetings",
+        "subtitle": "From fragmented captions and interpretation to a single, reliable speech intelligence stack",
+        "category": "cover",
+        "presenters": [
+          {
+            "name": "Next‑Gen Speech & Interpreter Team",
+            "role": "Product & Engineering",
+            "org": "Teams / Language Tech"
+          }
+        ],
+        "date": "2025-12-25"
+      },
+      "atoms": [],
+      "layout": "",
+      "widgets": {}
+    },
+    {
+      "id": "slide_02",
+      "rank": 2,
+      "state": "draft",
+      "story": "Situation: anchor on current business impact and traction",
+      "density": "moderate",
+      "visual_design": "LayoutDashboard: main=MetricGroup for key KPIs, sidebar=SmartList with impact bullets",
+      "content": {
+        "headline": "Interpreter usage is growing with strong reliability but modest satisfaction",
+        "subtitle": "Interpreter is now a meaningful, stable surface shaping Copilot and Recap value",
+        "category": "Situation",
+        "speaker_intent": "Reinforce that this is a real, scaled surface with upside, not an experiment.",
+        "sections": [
+          {
+            "title": "Scale and Engagement",
+            "bullets": [
+              {
+                "text": "136k MAU (+1.9% MoM) and 106k monthly meetings (+5.4% MoM) show sustained adoption."
+              },
+              {
+                "text": ">5‑minute meetings at 62.2% (+2.1% MoM) indicate deep usage in longer, higher‑value sessions."
+              },
+              {
+                "text": "E2E reliability at 99.38% (+0.2% MoM) meets enterprise expectations for stability."
+              }
+            ]
+          },
+          {
+            "title": "Experience and Business Impact",
+            "bullets": [
+              {
+                "text": "CSAT at 71% (−2% MoM) signals value but also persistent friction in critical experiences."
+              },
+              {
+                "text": "Transcript quality directly affects Copilot and Recap DSAT; better speech lifts downstream AI satisfaction."
+              },
+              {
+                "text": "Admin reporting and metering workstreams are in progress but not yet fully exposing value to customers."
+              }
+            ]
+          }
+        ]
+      },
+      "atoms": [],
+      "layout": "smart-grid",
+      "widgets": {}
+    },
+    {
+      "id": "slide_03",
+      "rank": 3,
+      "state": "draft",
+      "story": "Complication: make the pain vivid and economically meaningful",
+      "density": "moderate",
+      "visual_design": "LayoutSplit5050: left=SmartList of pain points, right=Impact-style callouts (no chart, just concise statements)",
+      "content": {
+        "headline": "Accuracy, latency, and tone gaps are eroding trust in high‑stakes meetings",
+        "subtitle": "Current SIM and transcription limitations create a crisis of inaction for multilingual enterprises",
+        "category": "Complication",
+        "speaker_intent": "Shift the room from comfort with current reliability to urgency about experience gaps.",
+        "sections": [
+          {
+            "title": "Customer Friction in Critical Moments",
+            "bullets": [
+              {
+                "text": "Technical terms, names, and numbers/units are frequently wrong; translations feel too literal in SIM, especially for JP/KR."
+              },
+              {
+                "text": "Latency issues—slow first sentence and misaligned segments with shared content—break meeting flow."
+              },
+              {
+                "text": "Tone and gender mismatches in JP/KR, including rare harassment/misgendering risks, damage trust and brand."
+              },
+              {
+                "text": "Interpreted audio is not captured in recordings; cross‑tenant/guest licensing remains confusing for customers."
+              }
+            ]
+          },
+          {
+            "title": "Business Consequences",
+            "bullets": [
+              {
+                "text": "High‑stakes meetings (board, public sector, enterprise reviews) cannot rely on SIM alone, driving human‑interp fallback pressure."
+              },
+              {
+                "text": "Imperfect transcripts degrade Copilot/Recap grounding, inflating DSAT and limiting AI upsell potential."
+              },
+              {
+                "text": "Limited governance (usage visibility, quality reporting) makes it harder for enterprises to standardize on Teams for multilingual work."
+              }
+            ]
+          }
+        ]
+      },
+      "atoms": [],
+      "layout": "",
+      "widgets": {}
+    },
+    {
+      "id": "slide_04",
+      "rank": 4,
+      "state": "draft",
+      "story": "Question: crystallize the strategic problem and preview the answer",
+      "density": "minimal",
+      "visual_design": "LayoutStacked: top=short narrative, bottom=3-bullet framing of strategic question and answer",
+      "content": {
+        "headline": "We must turn fragmented speech features into a unified multilingual intelligence layer",
+        "subtitle": "The question is how to close critical gaps while scaling quality and governance",
+        "category": "Question",
+        "speaker_intent": "Set up the unified stack as the inevitable answer, not one more feature set.",
+        "sections": [
+          {
+            "title": "Strategic Question",
+            "bullets": [
+              {
+                "text": "How do we deliver interpreter experiences that customers trust for board‑level and public sector meetings, not just casual calls?"
+              },
+              {
+                "text": "How do we systematically improve entity accuracy and tone so Copilot and Recap become reliably valuable, not hit‑or‑miss?"
+              },
+              {
+                "text": "How do we give enterprises governance, reporting, and recording parity so they can standardize on Teams for multilingual work?"
+              }
+            ]
+          },
+          {
+            "title": "Answer Preview",
+            "bullets": [
+              {
+                "text": "Unify Interpreter, Captions, and Transcription on a multilingual‑by‑default stack with entity accuracy as the north star."
+              },
+              {
+                "text": "Layer SIM and Turn‑by‑Turn Interpreter (TBT) for different meeting types, powered by next‑gen models and enrichment."
+              },
+              {
+                "text": "Embed governance, reporting, and recording parity to articulate value and meet enterprise compliance needs."
+              }
+            ]
+          }
+        ]
+      },
+      "atoms": [],
+      "layout": "smart-grid",
+      "widgets": {}
+    },
+    {
+      "id": "slide_05",
+      "rank": 5,
+      "state": "draft",
+      "story": "Answer: present the unified architecture and 6–12 month vision",
+      "density": "dense",
+      "visual_design": "LayoutSplit5050: left=layered architecture diagram (speech capture → multilingual STT → Interpreter/TBT → Enricher → Copilot/Recap/Admin), right=SmartList summarizing 6–12 month strategy",
+      "content": {
+        "headline": "A unified speech stack will power reliable multilingual meetings and AI",
+        "subtitle": "One multilingual backbone for Captions, Transcription, and Interpreter, tuned for entities and governance",
+        "category": "Answer",
+        "speaker_intent": "Show that the solution is coherent, already in motion, and focused on measurable outcomes.",
+        "sections": [
+          {
+            "title": "Unified Stack Architecture",
+            "bullets": [
+              {
+                "text": "Single multilingual STT endpoint with auto language detection and code‑switch tolerance as the foundation."
+              },
+              {
+                "text": "Interpreter layer with dual modes: SIM for fluid conversations; TBT for structured, high‑stakes discussions."
+              },
+              {
+                "text": "Transcript Enricher as a real‑time and post‑meeting quality layer correcting names and domain entities."
+              },
+              {
+                "text": "Shared entity infrastructure (global + custom dictionaries, dynamic vocabulary) feeding both STT and Interpreter."
+              },
+              {
+                "text": "Governance layer with metering, admin reporting, quality gates, and recording parity for interpreted audio."
+              }
+            ]
+          },
+          {
+            "title": "6–12 Month Vision and Strategy",
+            "bullets": [
+              {
+                "text": "Make entity accuracy the north star, with Enricher in‑meeting and post‑meeting across top locales."
+              },
+              {
+                "text": "Broaden language and tone coverage (e.g., zh‑TW, JP/KR quality) to win head‑to‑head in key markets."
+              },
+              {
+                "text": "Strengthen governance with Admin Center dashboards, metering, and ringed rollout discipline."
+              },
+              {
+                "text": "Explore offline/fast catch‑up transcription to reduce CoGS while preserving enterprise‑grade experience."
+              },
+              {
+                "text": "Deliver recording parity for interpreted audio (multi‑track options) to unlock multilingual recap and compliance scenarios."
+              }
+            ]
+          }
+        ]
+      },
+      "atoms": [],
+      "layout": "",
+      "widgets": {}
+    },
+    {
+      "id": "slide_06",
+      "rank": 6,
+      "state": "draft",
+      "story": "Answer: deep dive on Interpreter SIM + TBT as the core user experience",
+      "density": "dense",
+      "visual_design": "LayoutDashboard: main=2-column comparison (SIM vs TBT), sidebar=small table of latest metrics and capabilities",
+      "content": {
+        "headline": "Interpreter SIM and TBT together resolve flow, accuracy, and control gaps",
+        "subtitle": "SIM for continuous flow; TBT for turn precision in formal and public sector meetings",
+        "category": "Answer",
+        "speaker_intent": "Demonstrate that we have a concrete, feasible plan to fix the biggest meeting‑flow pain points.",
+        "sections": [
+          {
+            "title": "Simultaneous Interpreter (SIM) Progress",
+            "bullets": [
+              {
+                "text": "Semantic mode enabled in lower rings improves long‑segment coherence and semantic‑level translation."
+              },
+              {
+                "text": "TTS acceleration (1.2×–1.35×) and audio prefix reduce perceived latency and accumulated translated audio lag."
+              },
+              {
+                "text": "Auto‑update spoken language detection via multilingual STT reduces mis‑detects and manual switching friction."
+              },
+              {
+                "text": "Calling and MTR support is live across rings; CSS meeting‑level license checks enabled for the first support group."
+              }
+            ]
+          },
+          {
+            "title": "Turn‑by‑Turn Interpreter (TBT) as Accuracy Upgrade",
+            "bullets": [
+              {
+                "text": "TBT R0 is available; early JP/KR customer and GBB feedback shows stronger accuracy and clearer turn‑taking."
+              },
+              {
+                "text": "Model stack uses GPT‑4o‑realtime with Azure Voice Live API to improve semantic and tone accuracy."
+              },
+              {
+                "text": "TBT fixes core SIM pain points: reduces translation overlap, clarifies speakers, and supports structured discussions."
+              },
+              {
+                "text": "Known limits (25 concurrent sessions, complex turn edge cases) are identified for capacity and UX investments."
+              }
+            ]
+          },
+          {
+            "title": "Next 1–2 Quarter Interpreter Plan",
+            "bullets": [
+              {
+                "text": "Expand TBT capacity, stabilize edge cases, and add UX cues for turn etiquette."
+              },
+              {
+                "text": "Establish evaluation pipelines for accuracy, tone, and flow across SIM and TBT using LLM‑based metrics."
+              }
+            ]
+          }
+        ]
+      },
+      "atoms": [],
+      "layout": "smart-grid",
+      "widgets": {}
+    },
+    {
+      "id": "slide_07",
+      "rank": 7,
+      "state": "draft",
+      "story": "Answer: deep dive on transcription, multilingual STT, and enrichment as the accuracy engine",
+      "density": "dense",
+      "visual_design": "LayoutSplit5050: left=process flow diagram (raw audio → multilingual STT → Enricher → Copilot/Recap/Admin), right=SmartList with metrics and roadmap",
+      "content": {
+        "headline": "Multilingual STT and Enricher materially improve transcription and AI grounding",
+        "subtitle": "Entity‑aware transcription is the backbone for Copilot, Recap, and Interpreter quality",
+        "category": "Answer",
+        "speaker_intent": "Show quantified gains and a credible path to further accuracy improvements.",
+        "sections": [
+          {
+            "title": "Multilingual STT Foundation",
+            "bullets": [
+              {
+                "text": "Unified multi‑recognizer endpoint with auto language detection shipped to Ring 0 and Ring 1."
+              },
+              {
+                "text": "Supports 9 languages in preview with ongoing adaptation, phrase‑hint, and segmentation tuning."
+              },
+              {
+                "text": "Phrase hint fix mitigates freezes >800 ms; batch S2S entity recall improved from 65.42 to 74.76 in PPE tests."
+              },
+              {
+                "text": "Multilingual STT eliminates setup friction and unlocks bilingual meetings for global customers."
+              }
+            ]
+          },
+          {
+            "title": "Transcript Enricher Impact",
+            "bullets": [
+              {
+                "text": "R4 rollout at 50% for EN/JP and 10% for FR/DE/PT/ES; 1.8M+ meetings weekly are enhanced."
+              },
+              {
+                "text": "Post‑meeting Enricher reduced overall transcription inaccuracy from 19.5% to 12.3% (37% reduction)."
+              },
+              {
+                "text": "Domain entity errors dropped 34% and accent/dialect issues dropped 31%, driving CSAT from 42.95% to 62.32%."
+              },
+              {
+                "text": "In‑meeting enrichment architecture is aligned with R0 targeted for January 2026 and multilingual support planned for CY2026 Q1."
+              }
+            ]
+          },
+          {
+            "title": "Entity Correction and Transcription++ Vision",
+            "bullets": [
+              {
+                "text": "Tier‑1 custom dictionary is GA; global dictionary integration is in progress, with early JP/EN recall around 50% and improving."
+              },
+              {
+                "text": "Transcription++ elevates transcription into an enterprise understanding layer with tiered models and governance‑by‑design."
+              },
+              {
+                "text": "Tenant auto‑dictionary (SLPv2) and dynamic vocabulary will be integrated to further boost entity accuracy."
+              }
+            ]
+          }
+        ]
+      },
+      "atoms": [],
+      "layout": "",
+      "widgets": {}
+    },
+    {
+      "id": "slide_08",
+      "rank": 8,
+      "state": "draft",
+      "story": "Answer: deep dive on evaluation, models, and infrastructure proving feasibility and moat",
+      "density": "dense",
+      "visual_design": "LayoutDashboard: main=Sankey-style or flow chart of evaluation and multi-recognizer platform; sidebar=SmartList on business value and model roadmap",
+      "content": {
+        "headline": "Unified evaluation and multi‑recognizer infra make rapid quality gains feasible",
+        "subtitle": "LLM‑based metrics and flexible infrastructure de‑risk next‑gen model adoption",
+        "category": "Answer",
+        "speaker_intent": "Reassure LT that the plan is buildable and we can choose the best models pragmatically.",
+        "sections": [
+          {
+            "title": "LLM‑Based End‑to‑End Evaluation",
+            "bullets": [
+              {
+                "text": "LLM‑as‑judge metrics now assess transcription and interpreter on semantic quality, tone, latency, and entities."
+              },
+              {
+                "text": "Supports apples‑to‑apples comparison across ST, Semantic, Phi, GPT‑4o real‑time, TBT pipeline, and multilingual STT."
+              },
+              {
+                "text": "Accelerates iteration cycles, reduces human eval cost, and improves rollout decisions with transparent tradeoffs for LT."
+              }
+            ]
+          },
+          {
+            "title": "Next‑Gen Model Exploration",
+            "bullets": [
+              {
+                "text": "Phi‑4‑based streaming translation for SIM shows early promise in long‑segment semantic reasoning."
+              },
+              {
+                "text": "Teams and Speech are exploring unified multilingual models and GPT‑4o for high‑value scenarios."
+              },
+              {
+                "text": "Phi‑4 and LLM multimodal approaches are positioned to complement ST‑based streaming models, not replace them outright."
+              }
+            ]
+          },
+          {
+            "title": "Multi‑Recognizer Platform as Enabler",
+            "bullets": [
+              {
+                "text": "Multi‑recognizer platform for Teams coming January 2026 enables hot‑switching between STS and LRM/LLM‑based models."
+              },
+              {
+                "text": "Simplifies pipelines, supports unified multilingual models, and unlocks faster experimentation across rings."
+              },
+              {
+                "text": "Resource expansion from 10 to 20 environments is being evaluated to support global reliability and experimentation."
+              }
+            ]
+          }
+        ]
+      },
+      "atoms": [],
+      "layout": "smart-grid",
+      "widgets": {}
+    },
+    {
+      "id": "slide_09",
+      "rank": 9,
+      "state": "draft",
+      "story": "Answer: governance, reporting, and recording parity to unlock enterprise standardization",
+      "density": "moderate",
+      "visual_design": "LayoutSplit5050: left=SmartList on governance/reporting, right=SmartList on recording parity and compliance scenarios",
+      "content": {
+        "headline": "Governance, reporting, and recording parity will unlock enterprise standardization",
+        "subtitle": "Making usage, quality, and interpreted audio visible and compliant for admins",
+        "category": "Answer",
+        "speaker_intent": "Connect technical roadmap to the governance and compliance levers executives care about.",
+        "sections": [
+          {
+            "title": "Admin Reporting and Metering",
+            "bullets": [
+              {
+                "text": "Admin Center usage reporting (CFR) and metering integration are underway to surface tenant adoption and meeting types."
+              },
+              {
+                "text": "Usage dashboards public preview is targeted for March 31, 2026, with metering validation in progress."
+              },
+              {
+                "text": "These capabilities will enable enterprise governance and value articulation across language pairs and workloads."
+              }
+            ]
+          },
+          {
+            "title": "Recording Parity and Compliance",
+            "bullets": [
+              {
+                "text": "Recording parity for interpreted audio (multi‑track options) is part of the 6–12 month vision."
+              },
+              {
+                "text": "This unlocks multilingual recap and compliance scenarios that are currently blocked by missing interpreted tracks."
+              },
+              {
+                "text": "Cross‑tenant/guest licensing clarity is a known gap and will be addressed alongside governance improvements."
+              }
+            ]
+          },
+          {
+            "title": "Responsible AI and Tone Control",
+            "bullets": [
+              {
+                "text": "Guardrails for harassment and misgendering risks are being tracked as explicit Responsible AI workstreams."
+              },
+              {
+                "text": "Tone control improvements in JP/KR are a focus area to meet market‑specific expectations and avoid brand risk."
+              }
+            ]
+          }
+        ]
+      },
+      "atoms": [],
+      "layout": "",
+      "widgets": {}
+    },
+    {
+      "id": "slide_10",
+      "rank": 10,
+      "state": "draft",
+      "story": "Risks & Asks: surface key dependencies and decisions needed from LT",
+      "density": "moderate",
+      "visual_design": "LayoutStacked: top=Risk table using Harvey Balls for severity/mitigation, bottom=explicit LT asks list",
+      "content": {
+        "headline": "Targeted LT support will de‑risk GPU, data, and RAi dependencies",
+        "subtitle": "Clear asks around capacity, data ownership, and guardrails to deliver the unified stack",
+        "category": "Answer",
+        "speaker_intent": "Convert concerns into concrete support decisions and show that risks are understood and managed.",
+        "sections": [
+          {
+            "title": "Key Risks",
+            "bullets": [
+              {
+                "text": "GPU capacity and substrate LLM onboarding timelines may constrain real‑time models for SIM/TBT; fallback paths must remain compliant."
+              },
+              {
+                "text": "Single points of failure and error‑handling maturity across rings and environments require tighter incident monitoring alignment."
+              },
+              {
+                "text": "Admin reporting CFR data cooking ownership and data latency are unclear, risking delays to governance features."
+              },
+              {
+                "text": "Responsible AI gaps in tone control (JP/KR) and rare harassment/misgendering cases must be proactively mitigated."
+              }
+            ]
+          },
+          {
+            "title": "Explicit Asks to LT",
+            "bullets": [
+              {
+                "text": "Prioritize GPU allocation and substrate LLM onboarding for real‑time Interpreter and STT workloads."
+              },
+              {
+                "text": "Align incident monitoring and SPOF remediation across Teams, Speech, and Voice Live API environments."
+              },
+              {
+                "text": "Clarify CFR data ownership between IDEAs and PM, including contracts for latency and freshness SLAs."
+              },
+              {
+                "text": "Endorse Responsible AI investments for JP/KR tone control and harassment guardrails as non‑negotiable quality bars."
+              }
+            ]
+          }
+        ]
+      },
+      "atoms": [],
+      "layout": "smart-grid",
+      "widgets": {}
+    },
+    {
+      "id": "slide_11",
+      "rank": 11,
+      "state": "draft",
+      "story": "ending: summarize resolution and action, leave with clear decision frame",
+      "density": "minimal",
+      "visual_design": "LayoutStacked: top=3-bullet summary, bottom=Next steps list",
+      "content": {
+        "headline": "Next‑gen speech intelligence will turn Teams into the default multilingual meeting platform",
+        "subtitle": "Decision: back the unified stack and critical dependencies to unlock higher CSAT and AI value",
+        "category": "ending",
+        "sections": [
+          {
+            "title": "What We Will Deliver in 6–12 Months",
+            "bullets": [
+              {
+                "text": "Unified speech stack across Captions, Transcription, and Interpreter with multilingual STT as the backbone."
+              },
+              {
+                "text": "SIM + TBT Interpreter with improved latency, tone, and entity accuracy for both fluid and structured meetings."
+              },
+              {
+                "text": "Entity‑aware Transcription++ and Enricher, plus governance, reporting, and recording parity for enterprise adoption."
+              }
+            ]
+          },
+          {
+            "title": "Immediate Next Steps",
+            "bullets": [
+              {
+                "text": "Finalize TBT capacity plan and SIM semantic rollout using LLM‑based evaluation to guide model choices."
+              },
+              {
+                "text": "Complete Enricher GA for Tier‑1 locales and integrate tenant auto‑dictionary and dynamic vocabulary."
+              },
+              {
+                "text": "Lock GPU and LLM onboarding commitments, CFR data ownership, and RAi workstreams with LT sponsorship."
+              }
+            ]
+          }
+        ]
+      },
+      "atoms": [],
+      "layout": "",
+      "widgets": {}
+    }
+  ],
+  "created_at": "2026-01-09T17:15:54.977082",
+  "updated_at": "2026-01-09T17:31:59.622118",
+  "version": 1,
+  "instruction_history": []
+}
