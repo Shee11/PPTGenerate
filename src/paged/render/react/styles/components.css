@@ -774,7 +774,8 @@ code {
 /* Card Group - Grid container for cards */
 .card-group {
   display: grid;
-  gap: var(--theme-spacing-gap);
+  column-gap: var(--theme-spacing-gap);
+  row-gap: var(--card-group-row-gap, var(--theme-spacing-gap));
   width: 100%;
 }
 
@@ -864,6 +865,17 @@ code {
 /* Layout: left (media left + divider + content) */
 .card-layout-default .card-media {
   margin-bottom: 1.25rem;
+}
+
+/* Layout: default (stacked) - keep media and text aligned together */
+.card-layout-default {
+  align-items: center;
+  text-align: center;
+}
+
+.card-layout-default .card-content {
+  width: 100%;
+  text-align: inherit;
 }
 
 .card-layout-left {
