@@ -322,8 +322,10 @@ body {
 
 /* LayoutGrid content container spans full width by default */
 .layout-grid > .metric-group-block,
-.layout-grid > .card-group {
+.layout-grid > .card-group,
+.layout-grid > .callout {
   grid-column: 1 / -1;
+  justify-self: stretch;
 }
 
 /* LayoutGrid caption at bottom */
