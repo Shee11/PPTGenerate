@@ -9,6 +9,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import * as fs from 'fs';
 import * as path from 'path';
 import { serialize } from 'next-mdx-remote/serialize';
+import he from 'he';
 
 // Workspace root (4 levels up from src/paged/render/react)
 const WORKSPACE_ROOT = path.join(process.cwd(), '../../../../');
@@ -45,6 +46,13 @@ function fixMdxContent(mdx: string): string {
   });
   
   return fixed;
+}
+
+/**
+ * Decode HTML entities in MDX content.
+ */
+function decodeHtmlEntities(mdx: string): string {
+  return he.decode(mdx);
 }
 
 export async function GET(
@@ -108,7 +116,7 @@ export async function GET(
       }
       
       try {
-        const fixedMdx = fixMdxContent(slide.mdx);
+        const fixedMdx = fixMdxContent(decodeHtmlEntities(slide.mdx));
         const source = await serialize(fixedMdx, {
           parseFrontmatter: false,
         });
