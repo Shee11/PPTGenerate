@@ -241,7 +241,8 @@ body {
   height: 100%;
   gap: var(--theme-spacing-gap);
   padding: var(--theme-spacing-padding);
-  align-items: center; /* Vertically center content */
+  align-items: start; /* Top-align left and right columns with each other */
+  align-content: center; /* Center the row vertically on the page */
 }
 
 .layout-split-left,
@@ -249,8 +250,8 @@ body {
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
-  justify-content: center; /* Center content vertically within column */
-  height: 100%;
+  justify-content: flex-start; /* Top-align content within each column */
+  height: auto; /* Allow natural height instead of forcing 100% */
   max-height: 100%;
 }
 
