@@ -3,11 +3,11 @@
 
 class ReactLayoutEngine:
     """Layout engine for React MDX presentations with semantic components."""
-    
+
     @classmethod
     def get_chart_prompt(cls) -> str:
         """Provide chart component documentation for LLM prompts.
-        
+
         This is the SINGLE SOURCE OF TRUTH for all chart-related documentation.
         Other modules should reference this instead of duplicating chart info.
         """
@@ -118,7 +118,7 @@ Using wrong data properties causes EMPTY charts:
 - Use LayoutSplit to pair chart with explanation text
 - Charts work best in: split, dashboard, stacked layouts
 - **3+ data points** → use Chart, not multiple BigNum/Metrics"""
-    
+
     @classmethod
     def get_layout_prompt(cls) -> str:
         """Provide React MDX layout reference for LLM prompts."""
@@ -177,8 +177,14 @@ You are designing slides as MDX markup. Match layout to the visual_design intent
 - Best: company history, project milestones, annual roadmap with details
 - Use when each milestone needs: title + description (rich content)
 - Creates horizontal timeline with alternating nodes above/below center line
+- **REQUIRED PROPS**: `headline` (string). `subtitle` is optional.
 - Slots: LayoutTimeline.Item (with year prop) × 3-6 items
 - Components inside Item: Heading level={3}, Text (keep brief)
+- **HIGHLIGHT RULE**: You may mark the single MOST IMPORTANT milestone as `highlighted={true}` on that `LayoutTimeline.Item`.
+  - Use at most ONE highlighted item per timeline. E.g., the north star, the biggest milestone, the most critical turning point, etc.
+- **TEXT VARIANT RULE**: `Text`'s `variant` is optional.
+  - Use plain `<Text>...</Text>` for the main body (concise, accurate).
+  - Only use `<Text variant="caption">...</Text>` when you truly need a short caption/source note underneath the main text (e.g., emphasizing milestone).
 - PREFER over ProcessStrip when milestones need detailed explanations
 
 ## CHART & IMAGE EXCLUSIVITY (CRITICAL)
@@ -417,18 +423,21 @@ Each slide wrapped in `<Slide>` with metadata:
 
 // LayoutTimeline: for chronological milestones with rich content (full page layout)
 // Use when you need richer content per milestone (heading + text + callout per item)
-<LayoutTimeline>
+// ALWAYS provide `headline`; `subtitle` is optional.
+<LayoutTimeline headline="Roadmap" subtitle="Key milestones ahead (optional)">
   <LayoutTimeline.Item year="2020">
     <Heading level={3}>Product Launch</Heading>
     <Text>Released v1.0 to market</Text>
+    <Text variant="caption">Reach 1M users</Text>  <!-- optional caption highlight the milestone -->
   </LayoutTimeline.Item>
-  <LayoutTimeline.Item year="2022" highlighted={true}>
+  <LayoutTimeline.Item year="2022">
     <Heading level={3}>Series A</Heading>
-    <Text>Raised $10M funding</Text>
+    <Text variant="caption">Raised $10M funding</Text>  <!-- optional caption highlight the milestone -->
   </LayoutTimeline.Item>
-  <LayoutTimeline.Item year="2024">
+  <LayoutTimeline.Item year="2024"  highlighted={true}>  <!-- highlighted the most important milestone -->
     <Heading level={3}>Global Expansion</Heading>
     <Text>Launched in 50 countries</Text>
+    <Text variant="caption">Opened offices in 10 new cities</Text>  <!-- optional caption highlight the milestone -->
   </LayoutTimeline.Item>
 </LayoutTimeline>
 // NOTE: ProcessStrip is better for simple year labels; LayoutTimeline is better for detailed milestone stories
@@ -493,7 +502,7 @@ Each slide wrapped in `<Slide>` with metadata:
 
 ## TEXT LIMITS
 Display: 6 words | Heading: 8 | Body: 25 | List item: 10 words"""
-    
+
     @classmethod
     def get_layout_constrain(cls) -> str:
         """Provide compact layout constraints."""
@@ -602,7 +611,7 @@ If you don't have enough content for 4+ elements per side, use LayoutStacked ins
 - Split layouts: BOTH sides need visual blocks, not just text
 - **NO GAPS**: content should fill the page, not leave holes
 - **NO REDUNDANCY**: Never show same data twice (e.g., MetricGroup + BigNum with same numbers)"""
-    
+
     @classmethod
     def calculate(cls, slides, theme, style):
         """Not implemented - React engine is render-only."""
