@@ -97,7 +97,8 @@
   background: var(--theme-surface);
   border-radius: var(--theme-radius-lg);
   padding: 1.25rem;
-  margin: 0.5rem 0;
+  text-align: center;
+  min-width: 0; /* Allow shrinking in grid */
 }
 
 .metric-card-title {
@@ -262,7 +263,18 @@
   flex-direction: column;
   gap: 0.75rem;
   margin: 0.5rem 0.75rem;
-  /* Note: height: 100% removed to prevent overflow issues */
+  flex: 1; /* Allow flex growth for auto-fit calculation */
+  min-height: 0; /* Allow shrinking */
+}
+
+.metric-group {
+  display: grid !important;
+  gap: 1rem;
+  grid-auto-flow: row; /* Force row-based flow for wrapping */
+  width: 100%; /* Ensure grid fills container width */
+  flex: 1; /* Fill available height */
+  align-content: center; /* Center rows vertically when there's extra space */
+  /* Grid columns set via inline style from component */
 }
 
 .metrics {
