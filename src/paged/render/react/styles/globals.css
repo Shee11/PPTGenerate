@@ -983,8 +983,8 @@ body {
   align-items: center;
   justify-content: flex-start;
   gap: 0;
-  flex-wrap: wrap;
-  row-gap: 16px;
+  flex-wrap: nowrap;
+  overflow-x: auto;
 }
 
 .process-step {
@@ -1058,17 +1058,26 @@ body {
 
 .process-status-pending {
   background: var(--theme-surface, #f8fafc);
-  border-color: var(--theme-border, #e2e8f0);
-  opacity: 0.7;
+  border-color: var(--theme-border, #cbd5e1);
+  border-style: dashed;
 }
 
 .process-status-pending .process-step-label {
   color: var(--theme-text-muted);
 }
 
+.process-pending-icon {
+  font-size: 16px;
+  color: var(--theme-text-muted);
+}
+
 .process-status-neutral {
   background: var(--theme-surface, #f8fafc);
-  border-color: var(--theme-border, #e2e8f0);
+  border-color: var(--theme-border, #94a3b8);
+}
+
+.process-status-neutral .process-step-label {
+  margin: auto;
 }
 
 /* Connector arrow */
@@ -1080,9 +1089,9 @@ body {
 }
 
 .process-arrow {
-  font-size: 24px;
+  width: 24px;
+  height: 24px;
   color: var(--theme-text-muted);
-  font-weight: 300;
 }
 
 /* Compact variant */
@@ -1100,7 +1109,8 @@ body {
 }
 
 .process-strip-compact .process-arrow {
-  font-size: 18px;
+  width: 18px;
+  height: 18px;
 }
 
 /* Print styles */

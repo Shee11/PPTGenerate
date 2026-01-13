@@ -96,19 +96,24 @@ export function ProcessStrip({
           
           return (
             <React.Fragment key={index}>
-              <div 
+              <div
                 className={`process-step process-status-${status}`}
                 data-status={status}
               >
-                <div className="process-step-indicator">
-                  {status === 'done' && <span className="process-check">✓</span>}
-                  {status === 'active' && <span className="process-dot"></span>}
-                </div>
+                {status !== 'neutral' && (
+                  <div className="process-step-indicator">
+                    {status === 'done' && <span className="process-check">✓</span>}
+                    {status === 'active' && <span className="process-dot"></span>}
+                    {status === 'pending' && <span className="process-pending-icon">○</span>}
+                  </div>
+                )}
                 <span className="process-step-label">{label}</span>
               </div>
               {showConnectors && !isLast && (
                 <div className="process-connector">
-                  <span className="process-arrow">→</span>
+                  <svg className="process-arrow" viewBox="0 0 24 24" fill="none">
+                    <path d="M5 12H19M19 12L13 6M19 12L13 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
                 </div>
               )}
             </React.Fragment>
