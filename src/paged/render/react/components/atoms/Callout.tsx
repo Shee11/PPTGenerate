@@ -26,6 +26,8 @@ export interface CalloutProps {
   intent?: Intent;
   /** Optional title */
   title?: string;
+  /** Text alignment */
+  align?: 'left' | 'center' | 'right';
 }
 
 // =============================================================================
@@ -50,18 +52,25 @@ const icons: Record<Intent, string> = {
  * 
  * @param intent - Semantic intent (info, warning, success, danger)
  * @param title - Optional title text
+ * @param align - Text alignment (left, center, right)
  * @param children - Callout content
  */
 export function Callout({
   children,
   intent = 'info',
   title,
+  align = 'left',
 }: CalloutProps): JSX.Element {
   const className = `callout callout-${intent}`;
   const icon = icons[intent];
   
   return (
-    <aside className={className} role="note" aria-label={`${intent} callout`}>
+    <aside 
+      className={className} 
+      role="note" 
+      aria-label={`${intent} callout`}
+      data-align={align}
+    >
       <span className="callout-icon" aria-hidden="true">
         {icon}
       </span>
