@@ -514,7 +514,7 @@ const ScatterParadigm: React.FC<ParadigmProps> = ({ data, colors, showGrid, Shap
   // Custom shape renderer
   const renderShape = (props: any): JSX.Element => {
     const { cx, cy, payload } = props;
-    if (typeof cx !== 'number' || typeof cy !== 'number') return <g />;
+    if (typeof cx !== 'number' || typeof cy !== 'number') return <></>;
     const colorIndex = scatterData.findIndex(d => d.label === payload?.label);
     return (
       <ShapeComponent
@@ -522,53 +522,67 @@ const ScatterParadigm: React.FC<ParadigmProps> = ({ data, colors, showGrid, Shap
         cy={cy}
         fill={colors.gradient[Math.max(0, colorIndex) % colors.gradient.length]}
         payload={payload}
-        size={20}
+        size={24}
       />
     );
   };
 
   return (
-    <ScatterChart
-      width={320}
-      height={200}
-      margin={{ top: 20, right: 30, bottom: 20, left: 20 }}
-    >
-      {showGrid && <CartesianGrid {...gridStyle} />}
-      <XAxis
-        dataKey="x"
-        type="number"
-        domain={[0, 'dataMax + 1']}
-        tickFormatter={(value) => {
-          const item = scatterData.find(d => d.x === value);
-          return item?.label || '';
-        }}
-        {...axisStyle}
-      />
-      <YAxis
-        dataKey="y"
-        type="number"
-        {...axisStyle}
-      />
-      <Tooltip
-        content={({ active, payload }) => {
-          if (active && payload?.length) {
-            const d = payload[0].payload;
-            return (
-              <div style={tooltipStyle.contentStyle}>
-                <p className="font-medium">{d.label}</p>
-                <p className="text-sm">Value: {d.value}</p>
-              </div>
-            );
-          }
-          return null;
-        }}
-      />
-      <Scatter
-        data={scatterData}
-        shape={renderShape}
-        fill={colors.primary}
-      />
-    </ScatterChart>
+    <ResponsiveContainer height="100%" width="50%" minHeight={300}>
+      <ScatterChart
+        margin={{ top: 20, right: 40, bottom: 80, left: 40 }}
+      >
+        {showGrid && (
+          <CartesianGrid
+            strokeDasharray="3 3"
+            stroke="var(--theme-border)"
+            strokeOpacity={0.8}
+            vertical={true}
+            horizontal={true}
+          />
+        )}
+        <XAxis
+          dataKey="x"
+          type="number"
+          domain={[0, scatterData.length + 1]}
+          ticks={scatterData.map(d => d.x)}
+          tickFormatter={(value) => {
+            const item = scatterData.find(d => d.x === value);
+            return item?.label || '';
+          }}
+          {...axisStyle}
+          angle={-45}
+          textAnchor="end"
+          interval={0}
+          height={70}
+          tick={{ fontSize: 12 }}
+        />
+        <YAxis
+          dataKey="y"
+          type="number"
+          {...axisStyle}
+        />
+        <Tooltip
+          content={({ active, payload }) => {
+            if (active && payload?.length) {
+              const d = payload[0].payload;
+              return (
+                <div style={tooltipStyle.contentStyle}>
+                  <p className="font-medium">{d.label}</p>
+                  <p className="text-sm">Value: {d.value}</p>
+                </div>
+              );
+            }
+            return null;
+          }}
+        />
+        <Scatter
+          data={scatterData}
+          shape={renderShape as any}
+          fill={colors.primary}
+        />
+      </ScatterChart>
+    </ResponsiveContainer>
   );
 };
 
@@ -1355,11 +1369,6 @@ export function ChartCustom({
           {renderParadigm()}
         </ResponsiveContainer>
       )}
-
-      {/* Chart type indicator */}
-      <div className="mt-2 text-xs text-center" style={{ color: 'var(--theme-text-muted)' }}>
-        {paradigm}{shape !== 'circle' ? ` • ${shape}` : ''}{barStyle !== 'default' ? ` • ${barStyle}` : ''}
-      </div>
     </div>
   );
 }
