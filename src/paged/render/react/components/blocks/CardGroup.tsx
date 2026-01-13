@@ -1,33 +1,14 @@
 /**
  * CardGroup Component (L2 Block)
- * 
- * Semantic component for displaying a group of cards.
- * Automatically styled based on current theme.
- * 
- * Usage (array prop):
- * ```mdx
- * <CardGroup 
- *   cards={[
- *     { title: "Feature 1", description: "Description", icon: "🚀" },
- *     { title: "Feature 2", description: "Description", icon: "⚡" },
- *     { title: "Feature 3", description: "Description", icon: "🎯" }
- *   ]}
- *   columns={3}
- * />
- * ```
- * 
- * Usage (child components):
- * ```mdx
- * <CardGroup columns={3}>
- *   <Card title="Feature 1" description="Description" icon="🚀" />
- *   <Card title="Feature 2" description="Description" icon="⚡" />
- *   <Card title="Feature 3" description="Description" icon="🎯" />
- * </CardGroup>
- * ```
+ *
+ * Supports 3 layouts:
+ * - default: icon/image and text stacked in one column
+ * - left: icon/image on the left with a divider
+ * - top: icon/image in a separate top circle
  */
 
 import React, { Children, isValidElement, type ReactNode } from 'react';
-import type { CardData, Size, GridCols } from '@/utils/types';
+import type { CardData, CardLayout, CardMediaSize, Size, GridCols } from '@/utils/types';
 
 // =============================================================================
 // Types
@@ -37,6 +18,10 @@ export interface CardProps extends CardData {
   children?: ReactNode;
   /** Size variant for individual card */
   size?: Size;
+  /** Per-card layout variant */
+  layout?: CardLayout;
+  /** Per-card media (icon/image) size variant */
+  mediaSize?: CardMediaSize;
 }
 
 export interface CardGroupProps {
@@ -50,20 +35,122 @@ export interface CardGroupProps {
   size?: Size;
   /** Card visual variant */
   variant?: 'default' | 'outline' | 'filled';
+  /** Card layout variant (applies to all cards unless overridden per card) */
+  layout?: CardLayout;
+  /** Media (icon/image) size variant (applies to all cards unless overridden per card) */
+  mediaSize?: CardMediaSize;
   /** Optional id for the card group */
   id?: string;
+}
+
+function getMediaSizeVars(mediaSize?: CardMediaSize): React.CSSProperties | undefined {
+  if (!mediaSize) return undefined;
+
+  const map: Record<CardMediaSize, {
+    media: string;
+    icon: string;
+    topMedia: string;
+    topIcon: string;
+    topCircle: string;
+    topOffset: string;
+  }> = {
+    sm: {
+      media: '2.5rem',
+      icon: '1.75rem',
+      topMedia: '3rem',
+      topIcon: '2.25rem',
+      topCircle: '4.25rem',
+      topOffset: '-2rem',
+    },
+    md: {
+      media: '3rem',
+      icon: '2rem',
+      topMedia: '3.5rem',
+      topIcon: '2.5rem',
+      topCircle: '4.75rem',
+      topOffset: '-2.25rem',
+    },
+    lg: {
+      media: '3.5rem',
+      icon: '3.25rem',
+      topMedia: '4.25rem',
+      topIcon: '3rem',
+      topCircle: '5.75rem',
+      topOffset: '-2.75rem',
+    },
+  };
+
+  const s = map[mediaSize];
+  return {
+    ['--card-media-size' as any]: s.media,
+    ['--card-icon-font-size' as any]: s.icon,
+    ['--card-top-media-size' as any]: s.topMedia,
+    ['--card-top-icon-font-size' as any]: s.topIcon,
+    ['--card-top-circle-size' as any]: s.topCircle,
+    ['--card-top-circle-top' as any]: s.topOffset,
+  };
+}
+
+function renderMedia(card: CardData): ReactNode {
+  if (card.image) {
+    return (
+      <div className="card-media">
+        <img className="card-media-img" src={card.image} alt="" loading="lazy" />
+      </div>
+    );
+  }
+  if (card.icon) {
+    return (
+      <div className="card-media">
+        <span className="card-media-icon">{card.icon}</span>
+      </div>
+    );
+  }
+  return null;
+}
+
+function renderCardInner(card: CardData, layout: CardLayout): ReactNode {
+  if (layout === 'left') {
+    return (
+      <>
+        {renderMedia(card)}
+        <div className="card-divider" aria-hidden="true" />
+        <div className="card-content">
+          <h3 className="card-title">{card.title}</h3>
+          {card.description && <p className="card-description">{card.description}</p>}
+        </div>
+      </>
+    );
+  }
+
+  if (layout === 'top') {
+    return (
+      <>
+        <div className="card-top-circle">{renderMedia(card)}</div>
+        <div className="card-content">
+          <h3 className="card-title">{card.title}</h3>
+          {card.description && <p className="card-description">{card.description}</p>}
+        </div>
+      </>
+    );
+  }
+
+  // default
+  return (
+    <>
+      {renderMedia(card)}
+      <div className="card-content">
+        <h3 className="card-title">{card.title}</h3>
+        {card.description && <p className="card-description">{card.description}</p>}
+      </div>
+    </>
+  );
 }
 
 // =============================================================================
 // Card Component
 // =============================================================================
 
-/**
- * Card Component
- * 
- * Individual card item used as child of CardGroup.
- * Also exports for direct use in MDX.
- */
 export function Card({
   title,
   description,
@@ -71,8 +158,9 @@ export function Card({
   image,
   link,
   size = 'md',
+  layout = 'default',
+  mediaSize,
 }: CardProps): JSX.Element {
-  // Size classes
   const sizeClass = {
     sm: 'card-sm',
     md: 'card-md',
@@ -80,26 +168,13 @@ export function Card({
     full: 'card-lg',
   }[size];
 
+  const card: CardData = { title, description, icon, image, link, layout, mediaSize };
+  const style = getMediaSizeVars(mediaSize);
+
   return (
-    <div className={`card ${sizeClass}`}>
-      {icon && (
-        <div className="card-icon">{icon}</div>
-      )}
-      
-      {image && (
-        <div className="card-image">
-          <img src={image} alt="" loading="lazy" />
-        </div>
-      )}
-      
-      <div className="card-content">
-        <h3 className="card-title">{title}</h3>
-        
-        {description && (
-          <p className="card-description">{description}</p>
-        )}
-      </div>
-      
+    <div className={`card ${sizeClass} card-layout-${layout}`} data-layout={layout} style={style}>
+      {renderCardInner(card, layout)}
+
       {link && (
         <div className="card-footer">
           <span className="card-link">Learn more →</span>
@@ -111,30 +186,19 @@ export function Card({
 Card.displayName = 'Card';
 
 // =============================================================================
-// Component
+// CardGroup Component
 // =============================================================================
 
-/**
- * CardGroup Component
- * 
- * Renders a grid of cards with consistent styling.
- * Supports both array prop and child component patterns.
- * 
- * @param cards - Array of card data objects (optional if using children)
- * @param children - Card children (optional if using cards prop)
- * @param columns - Number of columns (2, 3, or 4)
- * @param size - Card size variant
- * @param variant - Visual style variant
- */
 export function CardGroup({
   cards,
   children,
   columns = 3,
   size = 'md',
   variant = 'default',
+  layout = 'top',
+  mediaSize = 'lg',
   id,
 }: CardGroupProps): JSX.Element {
-  // Size classes
   const sizeClass = {
     sm: 'card-sm',
     md: 'card-md',
@@ -142,7 +206,6 @@ export function CardGroup({
     full: 'card-lg',
   }[size];
 
-  // Extract cards from children if no cards prop provided
   const cardsFromChildren: CardData[] = [];
   if (!cards && children) {
     Children.forEach(children, (child) => {
@@ -156,6 +219,8 @@ export function CardGroup({
             icon: props.icon,
             image: props.image,
             link: props.link,
+            layout: props.layout,
+            mediaSize: props.mediaSize,
           });
         }
       }
@@ -163,50 +228,38 @@ export function CardGroup({
   }
 
   const resolvedCards = cards || cardsFromChildren;
-  
+
   return (
-    <div 
+    <div
       className={`card-group layout-grid-${columns}`}
       data-columns={columns}
       data-variant={variant}
+      data-layout={layout}
       id={id}
     >
-      {resolvedCards.map((card, index) => (
-        <div 
-          key={index}
-          className={`card ${sizeClass} card-${variant}`}
-        >
-          {card.icon && (
-            <div className="card-icon">{card.icon}</div>
-          )}
-          
-          {card.image && (
-            <div className="card-image">
-              <img src={card.image} alt="" loading="lazy" />
-            </div>
-          )}
-          
-          <div className="card-content">
-            <h3 className="card-title">{card.title}</h3>
-            
-            {card.description && (
-              <p className="card-description">{card.description}</p>
+      {resolvedCards.map((card, index) => {
+        const resolvedLayout: CardLayout = (card.layout || layout || 'default');
+        const resolvedMediaSize: CardMediaSize | undefined = card.mediaSize || mediaSize;
+        const style = getMediaSizeVars(resolvedMediaSize);
+        return (
+          <div
+            key={index}
+            className={`card ${sizeClass} card-${variant} card-layout-${resolvedLayout}`}
+            data-layout={resolvedLayout}
+            style={style}
+          >
+            {renderCardInner(card, resolvedLayout)}
+
+            {card.link && (
+              <div className="card-footer">
+                <span className="card-link">Learn more →</span>
+              </div>
             )}
           </div>
-          
-          {card.link && (
-            <div className="card-footer">
-              <span className="card-link">Learn more →</span>
-            </div>
-          )}
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }
-
-// =============================================================================
-// Exports
-// =============================================================================
 
 export default CardGroup;

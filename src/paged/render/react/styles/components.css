@@ -1,6 +1,6 @@
 /* =============================================================================
  * Component Styles - Shared between React and HTML Export
- * 
+ *
  * This file contains styles for all visual components.
  * Import in React via globals.css, and in HTML export via mdx_renderer.py
  * ============================================================================= */
@@ -780,9 +780,10 @@ code {
 
 /* Card - Individual card item */
 .card {
+  --card-bg: var(--theme-surface);
   display: flex;
   flex-direction: column;
-  background: var(--theme-surface);
+  background: var(--card-bg);
   border-radius: var(--theme-radius-lg);
   padding: 1.5rem;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -796,12 +797,14 @@ code {
 
 /* Card variants */
 .card-outline {
-  background: transparent;
+  --card-bg: transparent;
+  background: var(--card-bg);
   border: 2px solid var(--theme-border);
 }
 
 .card-filled {
-  background: var(--theme-primary);
+  --card-bg: var(--theme-primary);
+  background: var(--card-bg);
   color: white;
   border: none;
 }
@@ -822,10 +825,100 @@ code {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(124, 58, 237, 0.12);
+  background: transparent; /* rgba(124, 58, 237, 0.12) */
   border-radius: var(--theme-radius-md);
   margin-bottom: 1rem;
   flex-shrink: 0;
+}
+
+/* Card media (icon or image) */
+.card-media {
+  width: var(--card-media-size, 3rem);
+  height: var(--card-media-size, 3rem);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.card-media-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: var(--theme-radius-md);
+  display: block;
+}
+
+.card-media-icon {
+  width: var(--card-media-size, 3rem);
+  height: var(--card-media-size, 3rem);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent; /* rgba(124, 58, 237, 0.12) */
+  border-radius: var(--theme-radius-md);
+  font-size: var(--card-icon-font-size, 2rem);
+  line-height: 1;
+}
+
+/* Layout: left (media left + divider + content) */
+.card-layout-default .card-media {
+  margin-bottom: 1.25rem;
+}
+
+.card-layout-left {
+  flex-direction: row;
+  align-items: center;
+  gap: 1rem;
+}
+
+.card-layout-left .card-divider {
+  width: 1px;
+  align-self: stretch;
+  background: var(--theme-border);
+  opacity: 0.8;
+}
+
+.card-layout-left .card-content {
+  flex: 1;
+}
+
+/* Layout: top (circle at top, content below) */
+.card-layout-top {
+  position: relative;
+  overflow: visible;
+  /* Note: card size variants use `padding: ...` shorthand; keep this from being overridden. */
+  padding-top: calc(var(--card-top-circle-size, 4.75rem) / 2 + 1rem) !important;
+}
+
+.card-layout-top .card-top-circle {
+  position: absolute;
+  top: var(--card-top-circle-top, -2.25rem);
+  left: 1.5rem;
+  width: var(--card-top-circle-size, 4.75rem);
+  height: var(--card-top-circle-size, 4.75rem);
+  border-radius: 9999px;
+  background: var(--card-bg);
+  border: var(--theme-border-width) solid var(--theme-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+
+.card-layout-top .card-top-circle .card-media,
+.card-layout-top .card-top-circle .card-media-icon {
+  width: var(--card-top-media-size, 3.5rem);
+  height: var(--card-top-media-size, 3.5rem);
+}
+
+.card-layout-top .card-top-circle .card-media-img {
+  border-radius: 9999px;
+}
+
+.card-layout-top .card-media-icon {
+  background: transparent;
+  font-size: var(--card-top-icon-font-size, 2.5rem);
 }
 
 /* Card image */
@@ -848,7 +941,7 @@ code {
 }
 
 .card-title {
-  font-size: 1.25rem;
+  font-size: 2rem;
   font-weight: 700;
   color: var(--theme-text);
   margin: 0 0 0.375rem 0;
@@ -856,7 +949,7 @@ code {
 }
 
 .card-description {
-  font-size: 1rem;
+  font-size: 1.2rem;
   color: var(--theme-text-muted);
   margin: 0;
   line-height: 1.5;
@@ -895,11 +988,11 @@ code {
 }
 
 .card-sm .card-title {
-  font-size: 1.125rem;
+  font-size: 2rem;
 }
 
 .card-sm .card-description {
-  font-size: 1rem;
+  font-size: 1.2rem;
 }
 
 .card-md {
@@ -918,11 +1011,11 @@ code {
 }
 
 .card-lg .card-title {
-  font-size: 1.5rem;
+  font-size: 2rem;
 }
 
 .card-lg .card-description {
-  font-size: 1.25rem;
+  font-size: 1.2rem;
 }
 
 /* =============================================================================
@@ -1209,17 +1302,17 @@ svg.mermaid {
   .network-graph-wrapper {
     padding: 1rem;
   }
-  
+
   .network-graph-size-compact .network-graph-container {
     min-height: 180px;
     max-height: 240px;
   }
-  
+
   .network-graph-size-medium .network-graph-container {
     min-height: 260px;
     max-height: 340px;
   }
-  
+
   .network-graph-size-tall .network-graph-container {
     min-height: 360px;
     max-height: 480px;
