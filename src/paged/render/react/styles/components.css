@@ -515,31 +515,56 @@
  * Tables
  * ============================================================================= */
 
+.table-wrapper {
+  background: var(--theme-bg, #ffffff);
+  border-radius: var(--theme-radius-md, 8px);
+  overflow: hidden;
+  border: var(--theme-border-width, 1px) solid var(--theme-border, #e2e8f0);
+}
+
 table {
   width: 100%;
   border-collapse: collapse;
-  margin: 1.75rem 0;
+  margin: 0;
 }
 
 th, td {
   padding: 1.125rem 1.75rem;
   text-align: left;
-  border-bottom: 1px solid var(--theme-border, #e2e8f0);
   font-size: 1.625rem;
 }
 
-th {
+/* Header row - Fluent Design: neutral surface with subtle border */
+thead {
   background: var(--theme-surface, #f8fafc);
+  border-bottom: 2px solid var(--theme-border, #e2e8f0);
+}
+
+th {
   font-weight: 600;
   color: var(--theme-text, #1e293b);
 }
 
+/* Body cells */
 td {
   color: var(--theme-text, #1e293b);
+  background: var(--theme-bg, #ffffff);
+  border-bottom: var(--theme-border-width, 1px) solid var(--theme-border, #e2e8f0);
 }
 
-tbody tr:hover {
-  background: rgba(0, 0, 0, 0.02);
+/* Last row no border */
+tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Striped rows */
+.table-striped tbody tr:nth-child(even) td {
+  background: var(--theme-surface, #f8fafc);
+}
+
+/* Hover effect */
+tbody tr:hover td {
+  background: color-mix(in srgb, var(--theme-primary) 8%, var(--theme-bg, #ffffff));
 }
 
 /* =============================================================================
