@@ -9,6 +9,7 @@ import { NextResponse } from 'next/server';
 import * as fs from 'fs';
 import * as path from 'path';
 import { serialize } from 'next-mdx-remote/serialize';
+import he from 'he';
 
 // Look for state.json in these locations
 const STATE_JSON_PATHS = [
@@ -65,6 +66,13 @@ function fixMdxContent(mdx: string): string {
   });
   
   return fixed;
+}
+
+/**
+ * Decode HTML entities in MDX content.
+ */
+function decodeHtmlEntities(mdx: string): string {
+  return he.decode(mdx);
 }
 
 export async function GET(request: Request) {
@@ -128,7 +136,8 @@ export async function GET(request: Request) {
       }
       
       // Fix multi-line text content that MDX doesn't support
-      const fixedMdx = fixMdxContent(mdxContent);
+      // and decode HTML entities (e.g., &amp; -> &)
+      const fixedMdx = fixMdxContent(decodeHtmlEntities(mdxContent));
       
       // Serialize the MDX content server-side
       try {
