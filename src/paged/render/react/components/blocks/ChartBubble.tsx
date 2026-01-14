@@ -5,7 +5,10 @@
  * 
  * Semantic bubble/scatter chart component using Recharts.
  * Displays data with three dimensions: x position, y position, and bubble size.
- * Automatically styled with translucent bubbles and earthy color palette.
+ * 
+ * Two modes:
+ * 1. Data Visualization Mode - For actual numeric data with tick marks
+ * 2. Positioning Map Mode - For comparing options/strategies (no tick marks, larger bubbles with labels)
  * 
  * Usage:
  * ```mdx
@@ -18,6 +21,7 @@
  *   ]}
  *   xLabel="Price"
  *   yLabel="Sales"
+ *   positioningMap={true}  // Enable positioning map mode
  * />
  * ```
  */
@@ -33,6 +37,7 @@ import {
   Tooltip,
   ResponsiveContainer,
   Cell,
+  Customized,
 } from 'recharts';
 import type { ChartDataPoint, Size } from '@/utils/types';
 import { 
@@ -44,6 +49,27 @@ import {
   axisStyle,
   gridStyle,
 } from './chartUtils';
+
+// =============================================================================
+// Constants
+// =============================================================================
+
+// Gradient color pairs for bubbles [start, end]
+const GRADIENT_COLORS = [
+  { start: '#667eea', end: '#764ba2' },  // Purple-violet
+  { start: '#a18cd1', end: '#fbc2eb' },  // Purple-pink light
+  { start: '#43e97b', end: '#38f9d7' },  // Green-teal
+  { start: '#fa709a', end: '#fee140' },  // Pink-yellow
+  { start: '#a8edea', end: '#fed6e3' },  // Teal-pink light
+  { start: '#ff9a9e', end: '#fecfef' },  // Salmon-pink
+];
+
+// Axis arrow color
+const AXIS_COLOR = '#6b7280';
+
+// Bubble size ranges
+const POSITIONING_BUBBLE_SIZE_RANGE: [number, number] = [4000, 8000];  // Large bubbles for labels
+const DATA_BUBBLE_SIZE_RANGE: [number, number] = [100, 600];  // Smaller for data viz
 
 // =============================================================================
 // Types
@@ -68,7 +94,29 @@ export interface ChartBubbleProps {
   showGrid?: boolean;
   /** Bubble size range [min, max] */
   sizeRange?: [number, number];
+  /** Enable positioning map mode (no ticks, larger bubbles with labels) */
+  positioningMap?: boolean;
 }
+
+// =============================================================================
+// Helper Functions
+// =============================================================================
+
+/**
+ * Generate a unique gradient ID for each bubble
+ */
+const generateGradientId = (index: number) => `bubble-gradient-${index}`;
+
+/**
+ * Auto-detect if this is a positioning map (relative 0-100 scale)
+ */
+const isRelativePositioning = (data: any[]): boolean => {
+  if (data.length < 2) return false;
+  const allInRange = data.every(d => 
+    d.x >= 0 && d.x <= 100 && d.y >= 0 && d.y <= 100
+  );
+  return allInRange;
+};
 
 // =============================================================================
 // Component
@@ -77,18 +125,8 @@ export interface ChartBubbleProps {
 /**
  * ChartBubble Component
  * 
- * Renders a responsive bubble chart with translucent bubbles.
- * Ideal for displaying relationships between three variables.
- * 
- * @param data - Array of { label, x, y, size } objects
- * @param title - Optional chart title
- * @param subtitle - Optional chart subtitle
- * @param size - Chart size (sm, md, lg, full)
- * @param xLabel - Label for X axis
- * @param yLabel - Label for Y axis
- * @param colors - Custom color palette
- * @param showGrid - Whether to show grid lines (default: true)
- * @param sizeRange - Min/max bubble size range (default: [20, 400])
+ * Renders a responsive bubble chart with gradient bubbles and optional labels.
+ * Ideal for displaying relationships between three variables or comparing options.
  */
 export function ChartBubble({
   data,
@@ -99,12 +137,26 @@ export function ChartBubble({
   yLabel,
   colors,
   showGrid = true,
-  sizeRange = [20, 400],
+  sizeRange,
+  positioningMap,
 }: ChartBubbleProps): JSX.Element {
   const chartSize = sizeMap[size] || sizeMap.md;
   
   // Prepare and validate bubble data
   const bubbleData = prepareBubbleData(data);
+  
+  // Auto-detect positioning map mode
+  const isPositioningMode = positioningMap ?? isRelativePositioning(bubbleData);
+  
+  // Adjust size range based on mode
+  const effectiveSizeRange: [number, number] = sizeRange || 
+    (isPositioningMode ? POSITIONING_BUBBLE_SIZE_RANGE : DATA_BUBBLE_SIZE_RANGE);
+
+  // Generate gradient IDs
+  const gradientIds = React.useMemo(
+    () => bubbleData.map((_, i) => generateGradientId(i)),
+    [bubbleData.length]
+  );
   
   // Handle empty data
   if (bubbleData.length === 0) {
@@ -133,15 +185,19 @@ export function ChartBubble({
           <p style={{ ...tooltipStyle.labelStyle, fontWeight: 600, margin: 0 }}>
             {data.label}
           </p>
-          <p style={{ ...tooltipStyle.itemStyle, margin: '4px 0 0 0', fontSize: '0.875rem' }}>
-            {xLabel || 'X'}: {data.x}
-          </p>
-          <p style={{ ...tooltipStyle.itemStyle, margin: '2px 0 0 0', fontSize: '0.875rem' }}>
-            {yLabel || 'Y'}: {data.y}
-          </p>
-          <p style={{ ...tooltipStyle.itemStyle, margin: '2px 0 0 0', fontSize: '0.875rem' }}>
-            Size: {data.size}
-          </p>
+          {!isPositioningMode && (
+            <>
+              <p style={{ ...tooltipStyle.itemStyle, margin: '4px 0 0 0', fontSize: '0.875rem' }}>
+                {xLabel || 'X'}: {data.x}
+              </p>
+              <p style={{ ...tooltipStyle.itemStyle, margin: '2px 0 0 0', fontSize: '0.875rem' }}>
+                {yLabel || 'Y'}: {data.y}
+              </p>
+              <p style={{ ...tooltipStyle.itemStyle, margin: '2px 0 0 0', fontSize: '0.875rem' }}>
+                Size: {data.size}
+              </p>
+            </>
+          )}
         </div>
       );
     }
@@ -149,7 +205,7 @@ export function ChartBubble({
   };
   
   return (
-    <div className="chart-block chart-bubble">
+    <div className="chart-block chart-bubble" style={{ position: 'relative' }}>
       {/* Block Header */}
       {(title || subtitle) && (
         <div className="block-header">
@@ -159,14 +215,62 @@ export function ChartBubble({
       )}
       
       {/* Main Chart Content */}
-      <ResponsiveContainer width="100%" height={chartSize}>
+      <ResponsiveContainer width="100%" height="100%" aspect={1.5}>
         <ScatterChart
-          margin={{ top: 20, right: 20, bottom: 20, left: 20 }}
+          margin={{ 
+            top: 20, 
+            right: 20, 
+            bottom: 10, 
+            left: 10 
+          }}
         >
+          {/* Gradient definitions */}
+          <defs>
+            {bubbleData.map((_, index) => {
+              const gradientColor = GRADIENT_COLORS[index % GRADIENT_COLORS.length];
+              return (
+                <radialGradient
+                  key={gradientIds[index]}
+                  id={gradientIds[index]}
+                  cx="30%"
+                  cy="30%"
+                  r="70%"
+                >
+                  <stop offset="0%" stopColor={gradientColor.start} stopOpacity={0.95} />
+                  <stop offset="100%" stopColor={gradientColor.end} stopOpacity={0.85} />
+                </radialGradient>
+              );
+            })}
+
+            {/* Arrow markers for axis ends */}
+            <marker
+              id="axis-arrow-right"
+              markerWidth="10"
+              markerHeight="10"
+              refX="0"
+              refY="5"
+              orient="auto"
+              markerUnits="strokeWidth"
+            >
+              <path d="M0,0 L0,10 L10,5 z" fill={AXIS_COLOR} />
+            </marker>
+            <marker
+              id="axis-arrow-up"
+              markerWidth="10"
+              markerHeight="10"
+              refX="5"
+              refY="10"
+              orient="auto"
+              markerUnits="strokeWidth"
+            >
+              <path d="M0,10 L5,0 L10,10 z" fill={AXIS_COLOR} />
+            </marker>
+          </defs>
+
           {showGrid && (
             <CartesianGrid 
               strokeDasharray={gridStyle.strokeDasharray}
-              stroke={gridStyle.stroke}
+              stroke={isPositioningMode ? 'rgba(107, 114, 128, 0.2)' : gridStyle.stroke}
             />
           )}
           
@@ -174,34 +278,37 @@ export function ChartBubble({
             dataKey="x" 
             type="number"
             name={xLabel || 'X'}
-            tick={axisStyle.tick}
-            axisLine={axisStyle.axisLine}
-            tickLine={axisStyle.tickLine}
+            tick={isPositioningMode ? false : axisStyle.tick}
+            axisLine={{ stroke: AXIS_COLOR, strokeWidth: 2 }}
+            tickLine={isPositioningMode ? false : axisStyle.tickLine}
+            domain={isPositioningMode ? [0, 100] : ['auto', 'auto']}
             label={xLabel ? { 
-              value: xLabel, 
+              value: isPositioningMode ? `${xLabel}` : xLabel, 
               position: 'insideBottom', 
-              offset: -10,
-              style: { fill: 'var(--theme-text-muted)', fontSize: 12 }
+              offset: isPositioningMode ? 0 : -10,
+              style: { fill: AXIS_COLOR, fontSize: 15, fontWeight: 500 }
             } : undefined}
           />
           <YAxis 
-            dataKey="y" 
+            dataKey="y"
             type="number"
             name={yLabel || 'Y'}
-            tick={axisStyle.tick}
-            axisLine={false}
-            tickLine={axisStyle.tickLine}
+            tick={isPositioningMode ? false : axisStyle.tick}
+            axisLine={{ stroke: AXIS_COLOR, strokeWidth: 2 }}
+            tickLine={isPositioningMode ? false : axisStyle.tickLine}
+            domain={isPositioningMode ? [0, 100] : ['auto', 'auto']}
             label={yLabel ? { 
-              value: yLabel, 
+              value: isPositioningMode ? `${yLabel}` : yLabel, 
               angle: -90, 
               position: 'insideLeft',
-              style: { fill: 'var(--theme-text-muted)', fontSize: 12 }
+              offset: isPositioningMode ? 10 : 0,
+              style: { fill: AXIS_COLOR, fontSize: 15, fontWeight: 500 }
             } : undefined}
           />
           <ZAxis 
             dataKey="size" 
             type="number"
-            range={sizeRange}
+            range={effectiveSizeRange}
             name="Size"
           />
           
@@ -209,18 +316,78 @@ export function ChartBubble({
           
           <Scatter 
             data={bubbleData}
-            fillOpacity={0.65}
+            fillOpacity={1}
           >
             {bubbleData.map((entry, index) => (
               <Cell 
                 key={`cell-${index}`}
-                fill={entry.color || getChartColor(index, colors)}
-                stroke={entry.color || getChartColor(index, colors)}
-                strokeOpacity={0.9}
-                strokeWidth={1.5}
+                fill={`url(#${gradientIds[index]})`}
+                stroke="rgba(255,255,255,0.4)"
+                strokeWidth={2}
+                style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.15))' }}
               />
             ))}
           </Scatter>
+
+          {/* Custom arrows and labels */}
+          {isPositioningMode && (
+            <Customized
+              component={(props: any) => {
+                const { xAxisMap, yAxisMap, formattedGraphicalItems } = props;
+                if (!xAxisMap || !yAxisMap) return null;
+                
+                const xAxis = Object.values(xAxisMap)[0] as any;
+                const yAxis = Object.values(yAxisMap)[0] as any;
+                if (!xAxis || !yAxis) return null;
+
+                // X-axis arrow at the right end
+                const xArrowX = xAxis.x + xAxis.width;
+                const xArrowY = xAxis.y;
+
+                // Y-axis arrow at the top end  
+                const yArrowX = yAxis.x + yAxis.width;
+                const yArrowY = yAxis.y;
+
+                // Get bubble positions from formattedGraphicalItems
+                const scatterItem = formattedGraphicalItems?.[0];
+                const points = scatterItem?.props?.points || [];
+
+                return (
+                  <g>
+                    {/* X-axis arrow pointing right */}
+                    <polygon
+                      points={`${xArrowX},${xArrowY - 5} ${xArrowX + 10},${xArrowY} ${xArrowX},${xArrowY + 5}`}
+                      fill={AXIS_COLOR}
+                    />
+                    {/* Y-axis arrow pointing up */}
+                    <polygon
+                      points={`${yArrowX - 5},${yArrowY} ${yArrowX},${yArrowY - 10} ${yArrowX + 5},${yArrowY}`}
+                      fill={AXIS_COLOR}
+                    />
+                    {/* Bubble labels centered on each bubble */}
+                    {points.map((point: any, index: number) => (
+                      <text
+                        key={`label-${index}`}
+                        x={point.cx}
+                        y={point.cy}
+                        fill="white"
+                        textAnchor="middle"
+                        dominantBaseline="central"
+                        fontSize={13}
+                        fontWeight={600}
+                        style={{ 
+                          pointerEvents: 'none',
+                          textShadow: '0 1px 2px rgba(0,0,0,0.3)'
+                        }}
+                      >
+                        {point.payload?.label || ''}
+                      </text>
+                    ))}
+                  </g>
+                );
+              }}
+            />
+          )}
         </ScatterChart>
       </ResponsiveContainer>
     </div>
