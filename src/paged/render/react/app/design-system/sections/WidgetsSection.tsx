@@ -159,12 +159,13 @@ export function WidgetsSection() {
 
       <ComponentShowcase
         title="ProcessStrip"
-        description="Horizontal process phases with status indicators."
+        description="Horizontal process phases with status indicators. Supports linear and circular modes."
         component={ProcessStrip}
         defaultProps={MOCK_PROCESS_STRIP}
         propConfigs={[
           { name: 'title', type: 'text', label: 'Title' },
           { name: 'items', type: 'json', label: 'Items', description: 'Array of {label, status} objects (status: done/active/pending)' },
+          { name: 'mode', type: 'select', options: ['linear', 'circular'], label: 'Mode' },
           { name: 'showConnectors', type: 'boolean', label: 'Show Connectors' },
           { name: 'variant', type: 'select', options: ['default', 'compact'], label: 'Variant' }
         ]}
