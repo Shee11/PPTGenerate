@@ -32,6 +32,45 @@
 import React, { type ReactNode, Children, isValidElement } from 'react';
 import type { ThemeName, VibeLevel } from '@/utils/types';
 
+const CHART_HEIGHT_PROP_TYPES = new Set([
+  'ChartBar',
+  'ChartLine',
+  'ChartArea',
+  'ChartBubble',
+  'ChartCustom',
+]);
+
+const CHART_SIZE_PROP_TYPES = new Set([
+  'ChartPie',
+  'ChartRadar',
+  'ChartPolar',
+]);
+
+function isBigNumType(type: string): boolean {
+  return type.toLowerCase().includes('bignum');
+}
+
+function isChartType(type: string): boolean {
+  const t = type.toLowerCase();
+  if (t.startsWith('chart')) return true;
+  if (t === 'barstats') return true;
+  return false;
+}
+
+function enhanceChartElementForFill(comp: ComponentInfo): React.ReactElement {
+  const element = comp.element;
+  const type = comp.type;
+  const props = element.props as Record<string, unknown>;
+
+  if (CHART_HEIGHT_PROP_TYPES.has(type) && props.height === undefined) {
+    return React.cloneElement(element, { height: 'full' } as never);
+  }
+  if (CHART_SIZE_PROP_TYPES.has(type) && props.size === undefined) {
+    return React.cloneElement(element, { size: 'full' } as never);
+  }
+  return element;
+}
+
 function nodeToText(node: ReactNode): string {
   if (node === null || node === undefined) return '';
   if (typeof node === 'string' || typeof node === 'number') return String(node);
@@ -292,6 +331,23 @@ function buildSyncedGridRows(mainComponents: ComponentInfo[], sidebarComponents:
     return rows;
   }
 
+  // Special-case: if Main effectively has a single BigNum, center it and
+  // keep Sidebar content in one stack so the BigNum can visually center.
+  // This avoids creating empty Main rows that push the BigNum to the top.
+  if (mainGroupCount === 1 && sidebarGroupCount > 1) {
+    const mainGroup = mainGroups[0];
+    const isSingleMainBigNum = mainGroup.length === 1 && isBigNumType(mainGroup[0].type);
+    const isSingleMainChart = mainGroup.length === 1 && isChartType(mainGroup[0].type);
+    if (isSingleMainBigNum || isSingleMainChart) {
+      rows.push({
+        type: 'one-to-many',
+        main: mainGroup,
+        sidebar: sidebarGroups.flat(),
+      });
+      return rows;
+    }
+  }
+
   if (mainGroupCount === sidebarGroupCount) {
     for (let i = 0; i < mainGroupCount; i++) {
       rows.push({ type: 'matched', main: mainGroups[i], sidebar: sidebarGroups[i] });
@@ -439,6 +495,12 @@ function SyncBody({ rows }: SyncBodyProps): JSX.Element {
         }
 
         // Matched or N:1 / 1:N rows
+        const mainType = row.main[0]?.type;
+        const mainIsSingleBigNum = row.main.length === 1 && !!mainType && isBigNumType(mainType);
+        const mainIsSingleChart = row.main.length === 1 && !!mainType && isChartType(mainType);
+        const shouldCenterMain = row.sidebar.length > 0 && (mainIsSingleBigNum || mainIsSingleChart);
+        const shouldFillMain = row.sidebar.length > 0 && mainIsSingleChart;
+
         return (
           <React.Fragment key={rowKey}>
             <div
@@ -448,11 +510,22 @@ function SyncBody({ rows }: SyncBodyProps): JSX.Element {
                 flexDirection: 'column',
                 gap: '1rem',
                 alignSelf: 'stretch',
+                justifyContent: shouldCenterMain ? 'center' : undefined,
+                alignItems: shouldCenterMain ? (shouldFillMain ? 'stretch' : 'center') : undefined,
+                minHeight: shouldFillMain ? 0 : undefined,
               }}
             >
               {row.main.map((comp, i) => (
-                <div key={`main-${i}`} className="dashboard-cell-item">
-                  {comp.element}
+                <div
+                  key={`main-${i}`}
+                  className="dashboard-cell-item"
+                  style={
+                    shouldFillMain
+                      ? { display: 'flex', flex: 1, minHeight: 0, alignItems: 'stretch' }
+                      : undefined
+                  }
+                >
+                  {shouldFillMain ? enhanceChartElementForFill(comp) : comp.element}
                 </div>
               ))}
             </div>

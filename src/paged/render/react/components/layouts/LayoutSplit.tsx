@@ -296,9 +296,9 @@ function buildSyncedGridRows(leftComponents: ComponentInfo[], rightComponents: C
     if (leftH && rightH) {
       rows.push({ type: 'matched', left: [leftH], right: [rightH] });
     } else if (leftH) {
-      rows.push({ type: 'headline-full', left: [leftH], right: [] });
+      rows.push({ type: 'headline-left', left: [leftH], right: [] });
     } else if (rightH) {
-      rows.push({ type: 'headline-full', left: [], right: [rightH] });
+      rows.push({ type: 'headline-right', left: [], right: [rightH] });
     }
   }
 
@@ -445,17 +445,17 @@ function SyncLayout({ rows, ratio, theme, vibe, timelineHeader }: SyncLayoutProp
         {rows.map((row, rowIndex) => {
           const rowKey = `row-${rowIndex}`;
 
-          // Full-width headline row
-          if (row.type === 'headline-full') {
+          // Headline rows (only one side has a headline at this index)
+          if (row.type === 'headline-left' || row.type === 'headline-right') {
             const headline = row.left[0] || row.right[0];
             return (
               <div
                 key={rowKey}
                 className="layout-split-row layout-split-row-headline"
                 style={{
-                  gridColumn: '1 / -1',
+                  gridColumn: row.type === 'headline-left' ? '1' : '2',
                   display: 'flex',
-                  justifyContent: row.left[0] ? 'flex-start' : 'flex-end',
+                  justifyContent: 'flex-start',
                 }}
               >
                 {headline.element}
