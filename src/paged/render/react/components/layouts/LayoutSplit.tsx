@@ -405,52 +405,108 @@ function SyncLayout({ rows, ratio, theme, vibe, timelineHeader }: SyncLayoutProp
       data-vibe={vibe}
       style={{
         display: 'grid',
-        gridTemplateColumns: gridColumns,
-        alignContent: timelineHeader ? 'start' : 'center',
+        gridTemplateRows: timelineHeader ? 'auto 1fr' : '1fr',
         alignItems: 'stretch',
         gap: 'var(--theme-spacing-gap)',
-        padding: 'var(--theme-spacing-padding)',
+        paddingTop: timelineHeader ? '40px' : 'var(--theme-spacing-padding)',
+        paddingLeft: 'var(--theme-spacing-padding)',
+        paddingRight: 'var(--theme-spacing-padding)',
+        paddingBottom: 'var(--theme-spacing-padding)',
         height: '100%',
       }}
     >
       {timelineHeader && (
         <div
           style={{
-            gridColumn: '1 / -1',
-            marginTop: 'calc(-1 * var(--theme-spacing-padding))',
-            marginLeft: 'calc(-1 * var(--theme-spacing-padding))',
-            marginRight: 'calc(-1 * var(--theme-spacing-padding))',
-            paddingTop: '40px',
-            paddingLeft: '56px',
-            paddingRight: '56px',
+            gridRow: '1',
+            marginLeft: 'calc(-1 * (var(--theme-spacing-padding) - 56px))',
+            marginRight: 'calc(-1 * (var(--theme-spacing-padding) - 56px))',
           }}
         >
           <TimelineStyleHeader headline={timelineHeader.headline} subtitle={timelineHeader.subtitle} />
         </div>
       )}
-      {rows.map((row, rowIndex) => {
-        const rowKey = `row-${rowIndex}`;
+      <div
+        style={{
+          gridRow: timelineHeader ? '2' : '1',
+          display: 'grid',
+          gridTemplateColumns: gridColumns,
+          alignContent: 'center',
+          alignItems: 'stretch',
+          gap: 'var(--theme-spacing-gap)',
+          height: '100%',
+          minHeight: 0,
+          paddingTop: timelineHeader ? '40px' : '0px',
+        }}
+      >
+        {rows.map((row, rowIndex) => {
+          const rowKey = `row-${rowIndex}`;
 
-        // Full-width headline row
-        if (row.type === 'headline-full') {
-          const headline = row.left[0] || row.right[0];
-          return (
-            <div
-              key={rowKey}
-              className="layout-split-row layout-split-row-headline"
-              style={{
-                gridColumn: '1 / -1',
-                display: 'flex',
-                justifyContent: row.left[0] ? 'flex-start' : 'flex-end',
-              }}
-            >
-              {headline.element}
-            </div>
-          );
-        }
+          // Full-width headline row
+          if (row.type === 'headline-full') {
+            const headline = row.left[0] || row.right[0];
+            return (
+              <div
+                key={rowKey}
+                className="layout-split-row layout-split-row-headline"
+                style={{
+                  gridColumn: '1 / -1',
+                  display: 'flex',
+                  justifyContent: row.left[0] ? 'flex-start' : 'flex-end',
+                }}
+              >
+                {headline.element}
+              </div>
+            );
+          }
 
-        // Left-only row
-        if (row.type === 'left-only') {
+          // Left-only row
+          if (row.type === 'left-only') {
+            return (
+              <React.Fragment key={rowKey}>
+                <div
+                  className="layout-split-cell layout-split-cell-left"
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '1rem',
+                  }}
+                >
+                  {row.left.map((comp, i) => (
+                    <div key={`left-${i}`} className="layout-split-cell-item">
+                      {comp.element}
+                    </div>
+                  ))}
+                </div>
+                <div className="layout-split-cell layout-split-cell-right layout-split-cell-empty" />
+              </React.Fragment>
+            );
+          }
+
+          // Right-only row
+          if (row.type === 'right-only') {
+            return (
+              <React.Fragment key={rowKey}>
+                <div className="layout-split-cell layout-split-cell-left layout-split-cell-empty" />
+                <div
+                  className="layout-split-cell layout-split-cell-right"
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '1rem',
+                  }}
+                >
+                  {row.right.map((comp, i) => (
+                    <div key={`right-${i}`} className="layout-split-cell-item">
+                      {comp.element}
+                    </div>
+                  ))}
+                </div>
+              </React.Fragment>
+            );
+          }
+
+          // Matched or 1:N / N:1 rows
           return (
             <React.Fragment key={rowKey}>
               <div
@@ -459,84 +515,40 @@ function SyncLayout({ rows, ratio, theme, vibe, timelineHeader }: SyncLayoutProp
                   display: 'flex',
                   flexDirection: 'column',
                   gap: '1rem',
+                  alignSelf: 'stretch',
                 }}
               >
                 {row.left.map((comp, i) => (
-                  <div key={`left-${i}`} className="layout-split-cell-item">
+                  <div
+                    key={`left-${i}`}
+                    className="layout-split-cell-item"
+                  >
                     {comp.element}
                   </div>
                 ))}
               </div>
-              <div className="layout-split-cell layout-split-cell-right layout-split-cell-empty" />
-            </React.Fragment>
-          );
-        }
-
-        // Right-only row
-        if (row.type === 'right-only') {
-          return (
-            <React.Fragment key={rowKey}>
-              <div className="layout-split-cell layout-split-cell-left layout-split-cell-empty" />
               <div
                 className="layout-split-cell layout-split-cell-right"
                 style={{
                   display: 'flex',
                   flexDirection: 'column',
                   gap: '1rem',
+                  alignSelf: 'stretch',
                 }}
               >
                 {row.right.map((comp, i) => (
-                  <div key={`right-${i}`} className="layout-split-cell-item">
+                  <div
+                    key={`right-${i}`}
+                    className="layout-split-cell-item"
+                  >
                     {comp.element}
                   </div>
                 ))}
               </div>
             </React.Fragment>
           );
-        }
-
-        // Matched or 1:N / N:1 rows
-        return (
-          <React.Fragment key={rowKey}>
-            <div
-              className="layout-split-cell layout-split-cell-left"
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '1rem',
-                alignSelf: 'stretch',
-              }}
-            >
-              {row.left.map((comp, i) => (
-                <div
-                  key={`left-${i}`}
-                  className="layout-split-cell-item"
-                >
-                  {comp.element}
-                </div>
-              ))}
-            </div>
-            <div
-              className="layout-split-cell layout-split-cell-right"
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '1rem',
-                alignSelf: 'stretch',
-              }}
-            >
-              {row.right.map((comp, i) => (
-                <div
-                  key={`right-${i}`}
-                  className="layout-split-cell-item"
-                >
-                  {comp.element}
-                </div>
-              ))}
-            </div>
-          </React.Fragment>
-        );
-      })}
+        })}
+      </div>
     </div>
   );
 }

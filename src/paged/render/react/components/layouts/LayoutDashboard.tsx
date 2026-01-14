@@ -360,10 +360,9 @@ function buildSyncedGridRows(mainComponents: ComponentInfo[], sidebarComponents:
 
 interface SyncBodyProps {
   rows: GridRow[];
-  alignTop?: boolean;
 }
 
-function SyncBody({ rows, alignTop = false }: SyncBodyProps): JSX.Element {
+function SyncBody({ rows }: SyncBodyProps): JSX.Element {
   return (
     <div
       className="dashboard-body dashboard-body-sync"
@@ -371,7 +370,7 @@ function SyncBody({ rows, alignTop = false }: SyncBodyProps): JSX.Element {
         display: 'grid',
         gridTemplateColumns: 'minmax(400px, 640px) 1fr',
         gap: '40px',
-        alignContent: alignTop ? 'start' : 'center',
+        alignContent: 'center',
         alignItems: 'stretch',
         flex: 1,
         minHeight: 0,
@@ -583,12 +582,8 @@ export function LayoutDashboard({
             <div
               className="dashboard-header"
               style={{
-                marginTop: '-56px',
-                marginLeft: '-96px',
-                marginRight: '-96px',
-                paddingTop: '40px',
-                paddingLeft: '56px',
-                paddingRight: '56px',
+                marginLeft: '-40px',
+                marginRight: '-40px',
               }}
             >
               <TimelineStyleHeader headline={headline} subtitle={subtitle} />
@@ -611,7 +606,7 @@ export function LayoutDashboard({
       data-vibe={vibe}
     >
       {renderedHeader}
-      <SyncBody rows={rows} alignTop={Boolean(timelineHeader)} />
+      <SyncBody rows={rows} />
       {footer}
     </div>
   );
