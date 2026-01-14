@@ -64,12 +64,14 @@ Follow the draft slide's `story` and `visual_design` fields exactly:
 - NARRATIVE → `<Text variant="lead">` or `<SmartList>`
 - EVIDENCE (numbers) → `<MetricGroup>`, `<BigNum>`, Charts
 - EVIDENCE (branching graphs) → `<NetworkGraph>` with JSX children (Node, Edge, Group)
-- EVIDENCE (linear flows) → `<ProcessStrip>` for A→B→C sequences
+- EVIDENCE (linear flows) → `<ProcessStrip mode="linear">` for A→B→C sequences
+- EVIDENCE (cyclical flows) → `<ProcessStrip mode="circular">` for recurring cycles
 - TAKEAWAY → `<Callout>` or `<Text variant="caption">`
 
 # VISUAL SELECTION
 - Use NetworkGraph when visual_design mentions branching "architecture", "network", "org chart" (nodes connect to multiple targets)
-- Use ProcessStrip for "flow", "pipeline", "sequence", "stages" (linear A→B→C)
+- Use ProcessStrip mode="linear" for "flow", "pipeline", "sequence", "stages" (linear A→B→C)
+- Use ProcessStrip mode="circular" for "cycle", "loop", "recurring", "continuous" processes
 - Use Chart when visual_design mentions "chart", "comparison", "trend"
 - Default to Text/SmartList for narrative content
 - Each slide should combine text AND visual, but one leads

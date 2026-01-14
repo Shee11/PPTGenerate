@@ -73,7 +73,7 @@ export { NetworkGraph, Node, Edge, Group } from './NetworkGraph';
 export type { NetworkGraphProps, NodeProps, EdgeProps, GroupProps, DiagramSize } from './NetworkGraph';
 
 export { ProcessStrip } from './ProcessStrip';
-export type { ProcessStripProps, ProcessItem, ProcessStatus } from './ProcessStrip';
+export type { ProcessStripProps, ProcessItem, ProcessStatus, ProcessMode } from './ProcessStrip';
 
 // NetworkGraph (Cytoscape-based with JSX syntax) - for branching/network diagrams
 export { diagramTheme, diagramThemeDark } from './NetworkGraph/diagramTheme';
