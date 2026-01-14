@@ -246,6 +246,11 @@ body {
   align-content: center; /* Center the row vertically on the page */
 }
 
+/* LayoutSplit typography tweaks: reduce heading bottom whitespace in dense two-column layouts */
+.layout-split .heading-2 {
+  margin-bottom: 0.25rem;
+}
+
 .layout-split-left,
 .layout-split-right {
   display: flex;
@@ -272,7 +277,8 @@ body {
 }
 
 .layout-split-sync .layout-split-row-headline {
-  padding-bottom: 0.25rem;
+  padding-bottom: 0rem;
+  margin-bottom:-1rem;
 }
 
 .layout-split-sync .layout-split-cell {
