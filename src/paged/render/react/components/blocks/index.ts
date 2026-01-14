@@ -5,7 +5,7 @@
  */
 
 export { SmartList } from './SmartList';
-export type { SmartListProps } from './SmartList';
+export type { SmartListProps, SmartListVariant, SmartListItem } from './SmartList';
 
 export { ChartBar } from './ChartBar';
 export type { ChartBarProps } from './ChartBar';
