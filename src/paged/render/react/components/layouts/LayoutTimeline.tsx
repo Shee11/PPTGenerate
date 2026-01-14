@@ -34,9 +34,9 @@ export interface LayoutTimelineProps {
   /** Extend the timeline at start/end to show continuation.
    * - 'start': leave extra space at the beginning (timeline continues from past)
    * - 'end': leave extra space at the end (timeline continues into future)
-   * - undefined: no extension, items fill the available space
+   * - 'none': no extension, items fill the available space
    */
-  extend?: 'start' | 'end';
+  extend?: 'start' | 'end' | 'none';
 }
 
 export interface LayoutTimelineItemProps {
