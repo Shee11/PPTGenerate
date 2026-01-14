@@ -18,7 +18,7 @@
           "audience": null,
           "purpose": null,
           "tone": "professional",
-          "target_slides": 11,
+          "target_slides": 10,
           "selected_theme": null,
           "selected_vibe": null
         },
@@ -1672,28 +1672,30 @@
       "id": "slide_03",
       "rank": 3,
       "state": "draft",
-      "story": "Complication: Identify specific pain points preventing expansion",
+      "story": "Complication: Identify specific pain points preventing expansion and the proposed solutions",
       "density": "moderate",
-      "visual_design": "Two-column layout: left side bulleted list of gaps, right side high-quality imagery of a professional boardroom.",
+      "visual_design": "Two-column layout: left = gaps/pain points; right = strategic pillars/solution. Optional 1-line connector in the middle: 'So we…'.",
       "content": {
-        "headline": "Quality gaps can stall enterprise expansion",
-        "category": "Complication",
+        "headline": "Close the quality gaps to unlock enterprise scale",
+        "subtitle": "What’s stalling expansion—and the 3-pillar plan to fix it",
+        "category": "Complication → Answer",
         "sections": [
           {
-            "title": "Unresolved Gaps",
+            "title": "What’s stalling enterprise expansion (gaps)",
             "bullets": [
-              {
-                "text": "Entity Errors: Names and technical terms often 'almost right.'"
-              },
-              {
-                "text": "Flow/Latency: Initial delays degrade meeting rhythm."
-              },
-              {
-                "text": "Market Gaps: Tone/naturalness issues in JP/KR markets."
-              },
-              {
-                "text": "Admin Blockers: Incomplete reporting & licensing confusion."
-              }
+              { "text": "Entity errors: names and technical terms are often “almost right.”" },
+              { "text": "Flow/latency: first-turn delays degrade meeting rhythm." },
+              { "text": "Market gaps: tone/naturalness issues in JP/KR." },
+              { "text": "Admin blockers: incomplete reporting + licensing confusion." }
+            ]
+          },
+          {
+            "title": "How we fix it (strategy)",
+            "bullets": [
+              { "text": "Unified platform: converge Interpreter + Captions/Transcription on one multilingual stack with shared endpoints and schemas." },
+              { "text": "Adaptive modes: SIM for fluid conversations; TBT for structured, high-stakes meetings to improve flow and clarity." },
+              { "text": "Quality layer: improve entity correctness with global/custom dictionaries + Enricher at scale." },
+              { "text": "Enterprise controls: admin reporting, metering, and rollout quality gates to enable governance and confident expansion." }
             ]
           }
         ]
@@ -1705,38 +1707,6 @@
     {
       "id": "slide_04",
       "rank": 4,
-      "state": "draft",
-      "story": "Answer: Present the high-level solution/vision",
-      "density": "minimal",
-      "visual_design": "Three-tile grid with icons representing the Unified Platform, Adaptive Modes, and Quality Layer.",
-      "content": {
-        "headline": "Make multilingual meetings accurate, smooth, and scalable",
-        "subtitle": "Unified speech stack + TBT for flow + entity-accurate transcripts at scale",
-        "category": "Answer",
-        "sections": [
-          {
-            "title": "Strategic Pillars",
-            "bullets": [
-              {
-                "text": "Unified Platform: Converge Interpreter + Captions onto one multilingual stack with shared endpoints."
-              },
-              {
-                "text": "Adaptive Modes: SIM for fluid conversations; TBT to structurally fix flow in structured meetings."
-              },
-              {
-                "text": "Quality Layer: Entity correctness via Global/Custom dictionaries and Enricher scaling."
-              }
-            ]
-          }
-        ]
-      },
-      "atoms": [],
-      "layout": "",
-      "widgets": {}
-    },
-    {
-      "id": "slide_05",
-      "rank": 5,
       "state": "draft",
       "story": "Situation: Validating current progress with existing building blocks",
       "density": "moderate",
@@ -1769,8 +1739,8 @@
       "widgets": {}
     },
     {
-      "id": "slide_06",
-      "rank": 6,
+      "id": "slide_05",
+      "rank": 5,
       "state": "draft",
       "story": "Answer: Prove the effectiveness of the Enricher tool with data",
       "density": "dense",
@@ -1803,12 +1773,12 @@
       "widgets": {}
     },
     {
-      "id": "slide_07",
-      "rank": 7,
+      "id": "slide_06",
+      "rank": 6,
       "state": "draft",
       "story": "Answer: Explain the value proposition of Turn-by-Turn (TBT) mode",
       "density": "moderate",
-      "visual_design": "Two-column: left side shows the selection framework; right side shows a 2x2 matrix of meeting structure vs. mode.",
+      "visual_design": "Use a visual to reinforce the main message",
       "content": {
         "headline": "TBT is the accuracy-and-flow escape hatch",
         "category": "Answer",
@@ -1834,8 +1804,8 @@
       "widgets": {}
     },
     {
-      "id": "slide_08",
-      "rank": 8,
+      "id": "slide_07",
+      "rank": 7,
       "state": "draft",
       "story": "Answer: Explain the risk mitigation strategy via Quality Gates",
       "density": "moderate",
@@ -1865,8 +1835,8 @@
       "widgets": {}
     },
     {
-      "id": "slide_09",
-      "rank": 9,
+      "id": "slide_08",
+      "rank": 8,
       "state": "draft",
       "story": "Answer: Detail the administrative and governance strategy",
       "density": "moderate",
@@ -1896,8 +1866,8 @@
       "widgets": {}
     },
     {
-      "id": "slide_10",
-      "rank": 10,
+      "id": "slide_09",
+      "rank": 9,
       "state": "draft",
       "story": "Answer: Visualize the timeline for upcoming releases and goals",
       "density": "moderate",
@@ -1955,8 +1925,8 @@
       "widgets": {}
     },
     {
-      "id": "slide_11",
-      "rank": 11,
+      "id": "slide_10",
+      "rank": 10,
       "state": "draft",
       "story": "ending: Summary of risks and final decision request",
       "density": "dense",
