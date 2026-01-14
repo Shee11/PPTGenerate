@@ -2,15 +2,15 @@
 
 /**
  * LayoutDashboard Component (L1 Layout)
- * 
+ *
  * Multi-panel dashboard layout for KPI and metric displays.
  * Supports flexible grid arrangements with named slots.
- * 
+ *
  * Sync Mode (default):
  * - Components in Main and Sidebar are aligned by row
  * - Headlines/lead text get their own rows
  * - Mismatched counts use N:1 or 1:N distribution
- * 
+ *
  * Usage:
  * ```mdx
  * <LayoutDashboard>
@@ -29,8 +29,64 @@
  * ```
  */
 
-import React, { type ReactNode, type ReactElement, Children, isValidElement } from 'react';
+import React, { type ReactNode, Children, isValidElement } from 'react';
 import type { ThemeName, VibeLevel } from '@/utils/types';
+
+function nodeToText(node: ReactNode): string {
+  if (node === null || node === undefined) return '';
+  if (typeof node === 'string' || typeof node === 'number') return String(node);
+  if (Array.isArray(node)) return node.map(nodeToText).join('');
+  if (!isValidElement(node)) return '';
+  return nodeToText((node.props as { children?: ReactNode }).children);
+}
+
+function isWhitespaceNode(node: ReactNode): boolean {
+  return typeof node === 'string' && !node.trim();
+}
+
+function isHeadingLevel2Element(node: ReactNode): node is React.ReactElement<{ children?: ReactNode; level?: unknown }> {
+  if (!isValidElement(node)) return false;
+  if (typeof node.type === 'string') return node.type === 'h2';
+  const t = node.type as unknown as { name?: string; displayName?: string };
+  const name = t.displayName ?? t.name ?? '';
+  const props = node.props as { level?: unknown };
+  return (name === 'Heading' || props.level !== undefined) && props.level === 2;
+}
+
+function TimelineStyleHeader({ headline, subtitle }: { headline: string; subtitle?: string | null }): JSX.Element {
+  return (
+    <div style={{ textAlign: 'left' }}>
+      <h1
+        className="heading-1"
+        style={{
+          margin: '1.0rem 1.0rem 0 1.0rem',
+          textAlign: 'left',
+          fontSize: '4rem',
+          fontWeight: 700,
+          color: 'var(--theme-text)',
+          textWrap: 'wrap',
+          width: '100%',
+          maxWidth: 'none',
+        }}
+      >
+        {headline}
+      </h1>
+      {subtitle && (
+        <p
+          style={{
+            margin: '0.5rem 1.0rem 0 1.0rem',
+            textAlign: 'left',
+            fontSize: '1.5rem',
+            fontStyle: 'italic',
+            color: 'var(--theme-text-muted)',
+          }}
+        >
+          {subtitle}
+        </p>
+      )}
+    </div>
+  );
+}
 
 // =============================================================================
 // Types
@@ -53,7 +109,7 @@ export interface DashboardSlotProps {
 }
 
 interface ComponentInfo {
-  element: ReactElement;
+  element: React.ReactElement;
   type: string;
   index: number;
   isHeadline: boolean;
@@ -109,7 +165,7 @@ Footer.displayName = 'Footer';
 const HEADLINE_TYPES = ['Heading', 'Title', 'SectionTitle', 'h1', 'h2', 'h3'];
 
 /** Get component type name from element */
-function getComponentType(element: ReactElement): string {
+function getComponentType(element: React.ReactElement): string {
   const type = element.type;
   if (typeof type === 'string') return type;
   if (typeof type === 'function') {
@@ -130,7 +186,7 @@ function isHeadlineComponent(type: string, props?: Record<string, unknown>): boo
 function extractComponents(children: ReactNode): ComponentInfo[] {
   const components: ComponentInfo[] = [];
   let index = 0;
-  
+
   Children.forEach(children, (child) => {
     if (isValidElement(child)) {
       const type = getComponentType(child);
@@ -144,7 +200,7 @@ function extractComponents(children: ReactNode): ComponentInfo[] {
       index++;
     }
   });
-  
+
   return components;
 }
 
@@ -160,7 +216,7 @@ function isTrailingComponent(comp: ComponentInfo): boolean {
 function groupTrailingComponents(components: ComponentInfo[]): ComponentInfo[][] {
   const groups: ComponentInfo[][] = [];
   let currentGroup: ComponentInfo[] = [];
-  
+
   for (const comp of components) {
     if (isTrailingComponent(comp) && currentGroup.length > 0) {
       currentGroup.push(comp);
@@ -171,27 +227,27 @@ function groupTrailingComponents(components: ComponentInfo[]): ComponentInfo[][]
       currentGroup = [comp];
     }
   }
-  
+
   if (currentGroup.length > 0) {
     groups.push(currentGroup);
   }
-  
+
   return groups;
 }
 
 /** Build grid rows from main and sidebar components with sync matching */
 function buildSyncedGridRows(mainComponents: ComponentInfo[], sidebarComponents: ComponentInfo[]): GridRow[] {
   const rows: GridRow[] = [];
-  
+
   // Separate headlines from body content
   const mainHeadlines: ComponentInfo[] = [];
   const mainBody: ComponentInfo[] = [];
   const sidebarHeadlines: ComponentInfo[] = [];
   const sidebarBody: ComponentInfo[] = [];
-  
+
   let mainHeadlinesDone = false;
   let sidebarHeadlinesDone = false;
-  
+
   for (const comp of mainComponents) {
     if (!mainHeadlinesDone && comp.isHeadline) {
       mainHeadlines.push(comp);
@@ -200,7 +256,7 @@ function buildSyncedGridRows(mainComponents: ComponentInfo[], sidebarComponents:
       mainBody.push(comp);
     }
   }
-  
+
   for (const comp of sidebarComponents) {
     if (!sidebarHeadlinesDone && comp.isHeadline) {
       sidebarHeadlines.push(comp);
@@ -209,13 +265,13 @@ function buildSyncedGridRows(mainComponents: ComponentInfo[], sidebarComponents:
       sidebarBody.push(comp);
     }
   }
-  
+
   // Process headlines
   const maxHeadlines = Math.max(mainHeadlines.length, sidebarHeadlines.length);
   for (let i = 0; i < maxHeadlines; i++) {
     const mainH = mainHeadlines[i];
     const sidebarH = sidebarHeadlines[i];
-    
+
     if (mainH && sidebarH) {
       rows.push({ type: 'matched', main: [mainH], sidebar: [sidebarH] });
     } else if (mainH) {
@@ -224,18 +280,18 @@ function buildSyncedGridRows(mainComponents: ComponentInfo[], sidebarComponents:
       rows.push({ type: 'headline-full', main: [], sidebar: [sidebarH] });
     }
   }
-  
+
   // Group trailing components before matching
   const mainGroups = groupTrailingComponents(mainBody);
   const sidebarGroups = groupTrailingComponents(sidebarBody);
-  
+
   const mainGroupCount = mainGroups.length;
   const sidebarGroupCount = sidebarGroups.length;
-  
+
   if (mainGroupCount === 0 && sidebarGroupCount === 0) {
     return rows;
   }
-  
+
   if (mainGroupCount === sidebarGroupCount) {
     for (let i = 0; i < mainGroupCount; i++) {
       rows.push({ type: 'matched', main: mainGroups[i], sidebar: sidebarGroups[i] });
@@ -243,23 +299,23 @@ function buildSyncedGridRows(mainComponents: ComponentInfo[], sidebarComponents:
   } else if (mainGroupCount > sidebarGroupCount && sidebarGroupCount > 0) {
     const ratio = mainGroupCount / sidebarGroupCount;
     let mainIdx = 0;
-    
+
     for (let sidebarIdx = 0; sidebarIdx < sidebarGroupCount; sidebarIdx++) {
       const nextBoundary = Math.round((sidebarIdx + 1) * ratio);
       const mainCombined: ComponentInfo[] = [];
-      
+
       while (mainIdx < nextBoundary && mainIdx < mainGroupCount) {
         mainCombined.push(...mainGroups[mainIdx]);
         mainIdx++;
       }
-      
+
       rows.push({
         type: mainCombined.length > 1 ? 'many-to-one' : 'matched',
         main: mainCombined,
         sidebar: sidebarGroups[sidebarIdx],
       });
     }
-    
+
     while (mainIdx < mainGroupCount) {
       rows.push({ type: 'main-only', main: mainGroups[mainIdx], sidebar: [] });
       mainIdx++;
@@ -267,23 +323,23 @@ function buildSyncedGridRows(mainComponents: ComponentInfo[], sidebarComponents:
   } else if (sidebarGroupCount > mainGroupCount && mainGroupCount > 0) {
     const ratio = sidebarGroupCount / mainGroupCount;
     let sidebarIdx = 0;
-    
+
     for (let mainIdx = 0; mainIdx < mainGroupCount; mainIdx++) {
       const nextBoundary = Math.round((mainIdx + 1) * ratio);
       const sidebarCombined: ComponentInfo[] = [];
-      
+
       while (sidebarIdx < nextBoundary && sidebarIdx < sidebarGroupCount) {
         sidebarCombined.push(...sidebarGroups[sidebarIdx]);
         sidebarIdx++;
       }
-      
+
       rows.push({
         type: sidebarCombined.length > 1 ? 'one-to-many' : 'matched',
         main: mainGroups[mainIdx],
         sidebar: sidebarCombined,
       });
     }
-    
+
     while (sidebarIdx < sidebarGroupCount) {
       rows.push({ type: 'sidebar-only', main: [], sidebar: sidebarGroups[sidebarIdx] });
       sidebarIdx++;
@@ -297,7 +353,7 @@ function buildSyncedGridRows(mainComponents: ComponentInfo[], sidebarComponents:
       rows.push({ type: 'sidebar-only', main: [], sidebar: group });
     }
   }
-  
+
   return rows;
 }
 
@@ -311,7 +367,7 @@ interface SyncBodyProps {
 
 function SyncBody({ rows }: SyncBodyProps): JSX.Element {
   return (
-    <div 
+    <div
       className="dashboard-body dashboard-body-sync"
       style={{
         display: 'grid',
@@ -325,15 +381,15 @@ function SyncBody({ rows }: SyncBodyProps): JSX.Element {
     >
       {rows.map((row, rowIndex) => {
         const rowKey = `row-${rowIndex}`;
-        
+
         // Full-width headline row
         if (row.type === 'headline-full') {
           const headline = row.main[0] || row.sidebar[0];
           return (
-            <div 
+            <div
               key={rowKey}
               className="dashboard-row dashboard-row-headline"
-              style={{ 
+              style={{
                 gridColumn: '1 / -1',
                 display: 'flex',
                 justifyContent: 'flex-start',
@@ -343,12 +399,12 @@ function SyncBody({ rows }: SyncBodyProps): JSX.Element {
             </div>
           );
         }
-        
+
         // Main-only row
         if (row.type === 'main-only') {
           return (
             <React.Fragment key={rowKey}>
-              <div 
+              <div
                 className="dashboard-cell dashboard-cell-main"
                 style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}
               >
@@ -362,13 +418,13 @@ function SyncBody({ rows }: SyncBodyProps): JSX.Element {
             </React.Fragment>
           );
         }
-        
+
         // Sidebar-only row
         if (row.type === 'sidebar-only') {
           return (
             <React.Fragment key={rowKey}>
               <div className="dashboard-cell dashboard-cell-main dashboard-cell-empty" />
-              <div 
+              <div
                 className="dashboard-cell dashboard-cell-sidebar"
                 style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}
               >
@@ -381,11 +437,11 @@ function SyncBody({ rows }: SyncBodyProps): JSX.Element {
             </React.Fragment>
           );
         }
-        
+
         // Matched or N:1 / 1:N rows
         return (
           <React.Fragment key={rowKey}>
-            <div 
+            <div
               className="dashboard-cell dashboard-cell-main"
               style={{
                 display: 'flex',
@@ -400,7 +456,7 @@ function SyncBody({ rows }: SyncBodyProps): JSX.Element {
                 </div>
               ))}
             </div>
-            <div 
+            <div
               className="dashboard-cell dashboard-cell-sidebar"
               style={{
                 display: 'flex',
@@ -431,9 +487,9 @@ function SyncBody({ rows }: SyncBodyProps): JSX.Element {
 
 /**
  * LayoutDashboard Component
- * 
+ *
  * Renders a dashboard-style layout with header, main, sidebar, and footer slots.
- * 
+ *
  * @param children - Dashboard slots (Header, Main, Sidebar, Footer)
  * @param variant - Layout variant affecting proportions
  * @param theme - Optional theme override
@@ -449,13 +505,13 @@ export function LayoutDashboard({
 }: LayoutDashboardProps): JSX.Element {
   // Extract slots from children
   let header: ReactNode = null;
-  let mainSlot: ReactElement | null = null;
-  let sidebarSlot: ReactElement | null = null;
+  let mainSlot: React.ReactElement | null = null;
+  let sidebarSlot: React.ReactElement | null = null;
   let footer: ReactNode = null;
-  
+
   Children.forEach(children, (child) => {
     if (!isValidElement(child)) return;
-    
+
     const displayName = (child.type as any).displayName;
     const componentType = child.type;
 
@@ -470,18 +526,18 @@ export function LayoutDashboard({
       footer = child;
     }
   });
-  
+
   // Variant classes
   const variantClass = {
     default: 'dashboard-default',
     'wide-main': 'dashboard-wide-main',
     'sidebar-focus': 'dashboard-sidebar-focus',
   }[variant];
-  
+
   // NoSync mode: Use traditional layout
   if (nosync) {
     return (
-      <div 
+      <div
         className={`layout-dashboard layout-dashboard-nosync ${variantClass}`}
         data-layout="dashboard"
         data-sync="false"
@@ -498,18 +554,61 @@ export function LayoutDashboard({
       </div>
     );
   }
-  
+
   // Sync mode: Extract and match components
-  const mainChildren = mainSlot?.props?.children;
-  const sidebarChildren = sidebarSlot?.props?.children;
-  
-  const mainComponents = extractComponents(mainChildren);
+  const mainChildren = (mainSlot as React.ReactElement | null)?.props?.children;
+  const sidebarChildren = (sidebarSlot as React.ReactElement | null)?.props?.children;
+
+  let mainComponents = extractComponents(mainChildren);
   const sidebarComponents = extractComponents(sidebarChildren);
-  
+
+  // LayoutTimeline-style headline/subtitle:
+  // If Header contains ONLY a <Heading level={2}>, render it as a LayoutTimeline-style
+  // 4rem headline. If Main contains a lead Text near the top, use it as the subtitle
+  // (and remove it from Main to avoid duplication).
+  let timelineHeader: { headline: string; subtitle?: string | null } | null = null;
+  let renderedHeader: ReactNode = header;
+  if (isValidElement(header)) {
+    const headerEl = header as React.ReactElement;
+    const headerKids = Children.toArray((headerEl.props as { children?: ReactNode }).children)
+      .filter((n) => n !== null && n !== undefined)
+      .filter((n) => !isWhitespaceNode(n));
+
+    if (headerKids.length === 1 && isHeadingLevel2Element(headerKids[0])) {
+      const headline = nodeToText((headerKids[0].props as { children?: ReactNode }).children).trim();
+      if (headline) {
+        const leadCandidate = mainComponents
+          .slice(0, 3)
+          .find((c) => c.type === 'Text' && (c.element.props as { variant?: unknown }).variant === 'lead');
+
+        const subtitle = leadCandidate
+          ? (nodeToText((leadCandidate.element.props as { children?: ReactNode }).children).trim() || null)
+          : null;
+
+        timelineHeader = { headline, subtitle };
+        if (leadCandidate) {
+          mainComponents = mainComponents.filter((c) => c.index !== leadCandidate.index);
+        }
+
+        renderedHeader = (
+          <div
+            className="dashboard-header"
+            style={{
+              marginLeft: '-40px',
+              marginRight: '-40px',
+            }}
+          >
+            <TimelineStyleHeader headline={headline} subtitle={subtitle} />
+          </div>
+        );
+      }
+    }
+  }
+
   const rows = buildSyncedGridRows(mainComponents, sidebarComponents);
-  
+
   return (
-    <div 
+    <div
       className={`layout-dashboard layout-dashboard-sync ${variantClass}`}
       data-layout="dashboard"
       data-sync="true"
@@ -517,7 +616,7 @@ export function LayoutDashboard({
       data-theme={theme}
       data-vibe={vibe}
     >
-      {header}
+      {renderedHeader}
       <SyncBody rows={rows} />
       {footer}
     </div>
