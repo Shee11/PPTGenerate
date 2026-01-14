@@ -2,18 +2,62 @@
   "todos": {
     "todos": [
       {
+        "id": "constitution",
+        "type": "constitution",
+        "status": "completed",
+        "params": {
+          "style_rules": [
+            "optimize content for leadership team review",
+            "be concise and insight-focused"
+          ],
+          "content_exclusions": [],
+          "content_requirements": [],
+          "slide_count_target": null,
+          "slide_count_max": null,
+          "layout_preferences": [],
+          "audience": null,
+          "purpose": null,
+          "tone": "professional",
+          "target_slides": 10,
+          "selected_theme": null,
+          "selected_vibe": null
+        },
+        "created_at": "2026-01-09T17:25:08.804840",
+        "started_at": "2026-01-09T17:29:11.143291",
+        "completed_at": "2026-01-09T17:29:11.157888",
+        "error": null,
+        "depends_on": []
+      },
+      {
+        "id": "atoms",
+        "type": "atoms",
+        "status": "completed",
+        "params": {
+          "source_path": "/home/shuowan/code/gggg/data/context/golden_set.md",
+          "content_type": "text/markdown",
+          "extraction_prompt": ""
+        },
+        "created_at": "2026-01-09T17:25:08.805341",
+        "started_at": "2026-01-09T17:31:11.983008",
+        "completed_at": "2026-01-09T17:31:59.622230",
+        "error": null,
+        "depends_on": [
+          "constitution"
+        ]
+      },
+      {
         "id": "story",
         "type": "story",
         "status": "completed",
         "params": {
           "mode": "generate",
-          "instruction": "Create a 10-page professional presentation based on the source markdown about Teams multilingual speech, following SCQA and existing atoms.",
-          "slide_count": 10,
+          "instruction": "",
+          "slide_count": 11,
           "atom_filter": null
         },
-        "created_at": "2026-01-14T14:12:14.545305",
-        "started_at": "2026-01-14T14:12:14.548382",
-        "completed_at": "2026-01-14T14:12:47.720433",
+        "created_at": "2026-01-09T17:25:08.805565",
+        "started_at": "2026-01-09T17:31:11.990430",
+        "completed_at": "2026-01-09T17:31:57.931973",
         "error": null,
         "depends_on": [
           "constitution"
@@ -29,9 +73,9 @@
           "tone": "professional",
           "generate_new": false
         },
-        "created_at": "2026-01-14T14:12:14.545362",
-        "started_at": "2026-01-14T14:12:14.548508",
-        "completed_at": "2026-01-14T14:12:14.552959",
+        "created_at": "2026-01-09T17:25:08.805746",
+        "started_at": "2026-01-09T17:31:11.991805",
+        "completed_at": "2026-01-09T17:31:12.025019",
         "error": null,
         "depends_on": [
           "constitution"
@@ -43,12 +87,12 @@
         "status": "completed",
         "params": {
           "mode": "generate",
-          "instruction": "Use professional tone and the corp_modern_v1 corporate theme. Start with a strong title slide and balance content density across 10 slides.",
+          "instruction": "",
           "slide_ids": []
         },
-        "created_at": "2026-01-14T14:12:14.545393",
-        "started_at": "2026-01-14T14:12:47.726287",
-        "completed_at": "2026-01-14T14:13:09.066474",
+        "created_at": "2026-01-09T17:25:08.805917",
+        "started_at": "2026-01-14T18:05:05.617634",
+        "completed_at": "2026-01-14T18:05:28.108047",
         "error": null,
         "depends_on": [
           "story",
@@ -64,9 +108,9 @@
           "output_format": "html",
           "output_path": null
         },
-        "created_at": "2026-01-14T14:12:14.545434",
-        "started_at": "2026-01-14T14:13:09.072536",
-        "completed_at": "2026-01-14T14:13:09.083807",
+        "created_at": "2026-01-09T17:25:08.806091",
+        "started_at": "2026-01-14T18:05:28.114424",
+        "completed_at": "2026-01-14T18:05:28.128343",
         "error": null,
         "depends_on": [
           "content"
@@ -75,7 +119,7 @@
     ]
   },
   "source": {
-    "path": "/Users/zhang11/Work/gggg/data/context/golden_set.md",
+    "path": "/home/shuowan/code/gggg/data/context/golden_set.md",
     "content_hash": "065f8ae5d80b7220",
     "content_type": "text/markdown"
   },
@@ -91,8 +135,8 @@
     "layout_preferences": [],
     "audience": null,
     "purpose": null,
-    "tone": "professional",
-    "target_slides": 10,
+    "tone": null,
+    "target_slides": 11,
     "selected_theme": null,
     "selected_vibe": null
   },
@@ -1559,19 +1603,19 @@
       "id": "slide_01",
       "rank": 1,
       "state": "active",
-      "story": "cover: establish topic, outcome-oriented vision, and context",
-      "mdx": "<LayoutCover theme=\"corp_modern_v1\">\n  <Heading level={1}>Next‑Gen Speech Intelligence in Teams</Heading>\n  <Text variant=\"lead\">Unifying interpreter, captions, and transcription into a multilingual, enterprise‑grade stack</Text>\n  <QuoteBlock id=\"cover_presenter\" author=\"Next‑Gen Speech &amp; Interpreter Team\">\n    LT Executive Review · Teams | Speech | AI Experiences · 2025-12-25\n  </QuoteBlock>\n</LayoutCover>",
+      "story": "cover: Presentation Title and Introduction",
+      "mdx": "<LayoutCover theme=\"dark\">\n    <Heading level={1}>Teams Speech &amp; Interpreter: Trust &amp; Scale Plan</Heading>\n    <Text variant=\"lead\">Unifying multilingual stack and expanding Turn-by-Turn (TBT) mode</Text>\n    <QuoteBlock id=\"quote_001\" author=\"Speech &amp; Interpreter Team · Product &amp; Engineering · Microsoft Teams\">\n      LT Executive Review · 2025-12-25\n    </QuoteBlock>\n  </LayoutCover>",
       "density": "minimal",
-      "visual_design": "LayoutCover: center-aligned title and subtitle, lower-left presenter block, lower-right date/context; corp_modern_v1 with clean accent bar.",
+      "visual_design": "Centered title slide with deep purple branding, pill-shaped 'LT Executive Review' tag, and large bold typography.",
       "content": {
-        "headline": "Next‑Gen Speech Intelligence in Teams",
-        "subtitle": "Unifying interpreter, captions, and transcription into a multilingual, enterprise‑grade stack",
+        "headline": "Teams Speech & Interpreter: Trust & Scale Plan",
+        "subtitle": "Unifying multilingual stack and expanding Turn-by-Turn (TBT) mode",
         "category": "cover",
         "presenters": [
           {
-            "name": "Next‑Gen Speech & Interpreter Team",
-            "role": "LT Executive Review",
-            "org": "Teams | Speech | AI Experiences"
+            "name": "Speech & Interpreter Team",
+            "role": "Product & Engineering",
+            "org": "Microsoft Teams"
           }
         ],
         "date": "2025-12-25"
@@ -1582,41 +1626,38 @@
       "id": "slide_02",
       "rank": 2,
       "state": "active",
-      "story": "Situation: quantify current business impact and momentum to create shared baseline",
-      "mdx": "<LayoutDashboard theme=\"corp_modern_v1\">\n  <Header>\n    <Heading level={2}>Interpreter and speech intelligence are already driving measurable value</Heading>\n  </Header>\n  <Main>\n    <BigNum id=\"kpi_01\" value=\"136k\" label=\"Interpreter MAU\" trend=\"+1.9% MoM\"/>\n    <Text variant=\"lead\">Growing adoption, strong reliability, and improving transcript quality underpin Teams AI experiences.</Text>\n  </Main>\n  <Sidebar>\n    <MetricGroup id=\"metrics_02\" cols={3}>\n      <Metric value=\"106k\" label=\"Monthly meetings\" />\n      <Metric value=\"62.2%\" label=\"&gt;5‑min meetings\" />\n      <Metric value=\"99.38%\" label=\"Interpreter reliability\" />\n    </MetricGroup>\n    <SmartList\n      id=\"list_02_impact\"\n      items={[\n        \"Interpreter reliability now matches enterprise bar for critical meetings.\",\n        \"Transcript Enricher enhances 1.8M+ meetings weekly across EN/JP and Tier‑1 languages.\",\n        \"Quality gains reduce transcription inaccuracy from 19.5% → 12.3%, cutting Copilot and Recap DSAT risk.\",\n        \"Domain entity and accent/dialect errors down ~30%+, lifting CSAT in enriched scenarios.\"\n      ]}\n    />\n    <Text variant=\"caption\">Speech &amp; Interpreter are material levers for Teams value and Copilot quality—not experimental features.</Text>\n  </Sidebar>\n</LayoutDashboard>",
-      "density": "moderate",
-      "visual_design": "LayoutDashboard: top BigNum strip for key KPIs, center 2-column text for impact themes, right-side callout for punchline.",
+      "story": "Situation: Establish current momentum and adoption metrics",
+      "mdx": "<LayoutDashboard>\n    <Header>\n      <Heading level={2}>Adoption is rising on 99%+ reliability</Heading>\n    </Header>\n    <Main>\n      <BigNum id=\"stat_002_hero\" value=\"136k\" label=\"Monthly active users (MAU)\" trend=\"↑ strong momentum\"/>\n      <Text variant=\"lead\">Reliability is solved; trust in accuracy and tone is now the constraint.</Text>\n    </Main>\n    <Sidebar>\n      <MetricGroup id=\"metrics_002\" cols={2}>\n        <Metric value=\"62.2%\" label=\"&gt;5-min meeting rate\"/>\n        <Metric value=\"99.38%\" label=\"E2E reliability\"/>\n        <Metric value=\"71%\" label=\"Customer satisfaction\"/>\n        <Metric value=\"1\" label=\"Primary blocker: trust\"/>\n      </MetricGroup>\n      <Callout id=\"callout_002\" tone=\"warning\" title=\"Critical Blocker\">\n        Trust in accuracy and tone is the primary blocker for enterprise scale.\n      </Callout>\n      <Text variant=\"caption\">Focus: move from reliable to trusted for high-stakes enterprise meetings.</Text>\n    </Sidebar>\n  </LayoutDashboard>",
+      "density": "minimal",
+      "visual_design": "KPI grid with four metric cards and a highlighted amber warning box for the primary blocker.",
       "content": {
-        "headline": "Interpreter and speech intelligence are already driving measurable value",
-        "subtitle": "Growing adoption, strong reliability, and improving transcript quality underpin Teams AI experiences",
+        "headline": "Adoption is rising on 99%+ reliability",
+        "subtitle": "Momentum is real; the constraint is trust in accuracy and tone.",
         "category": "Situation",
-        "speaker_intent": "Align LT that speech & interpreter are material levers for Teams value and Copilot quality, not experimental features.",
+        "speaker_intent": "Show the audience that while reliability is solved, trust is the next frontier.",
         "sections": [
           {
-            "title": "Usage and Reliability Momentum",
+            "title": "Key Metrics",
             "bullets": [
               {
-                "text": "Interpreter MAU at 136k (+1.9% MoM), with 106k monthly meetings (+5.4% MoM) and >5‑min meetings at 62.2% (+2.1% MoM)."
+                "text": "136k MAU"
               },
               {
-                "text": "End‑to‑end Interpreter reliability consistently ~99%+ (latest 99.38%, +0.2% MoM), matching enterprise bar for critical meetings."
+                "text": "62.2% >5-min Meeting Rate"
               },
               {
-                "text": "Transcript Enricher now enhancing 1.8M+ meetings weekly with strong online reliability across EN/JP and additional Tier‑1 languages."
+                "text": "99.38% E2E Reliability"
+              },
+              {
+                "text": "71% Customer Sat"
               }
             ]
           },
           {
-            "title": "Quality Gains Powering Downstream AI",
+            "title": "Critical Blocker",
             "bullets": [
               {
-                "text": "Batch S2S display models and Enricher reduce transcription inaccuracy from 19.5% → 12.3% (−37%), cutting Copilot and Recap DSAT risk."
-              },
-              {
-                "text": "Domain entity errors down 34% and accent/dialect issues down 31%, lifting CSAT from 42.95% → 62.32% in enriched scenarios."
-              },
-              {
-                "text": "Multilingual STT with auto language detection and code‑switch tolerance eliminates setup friction, unlocking bilingual meetings at scale."
+                "text": "Trust in accuracy/tone is the primary blocker for enterprise scale."
               }
             ]
           }
@@ -1628,44 +1669,46 @@
       "id": "slide_03",
       "rank": 3,
       "state": "active",
-      "story": "Complication: surface pain points and structural gaps as a crisis of inaction",
-      "mdx": "<LayoutSplit ratio=\"1:1\" theme=\"corp_modern_v1\">\n  <Left>\n    <Heading level={2}>Accuracy, tone, and governance gaps now threaten scale and CSAT</Heading>\n    <SmartList\n      id=\"list_03_pain\"\n      items={[\n        \"Technical terms, names, and numbers still misrecognized; JP/EN entity recall &lt;50% in global dictionary tests.\",\n        \"Simultaneous translations feel too literal with slow first turns and segmentation issues disrupting flow.\",\n        \"Tone and naturalness gaps in JP/KR, including occasional gender/voice mismatches, drive outsized DSAT.\",\n        \"Interpreted audio not captured in recordings, limiting recap and compliance value for multilingual enterprises.\"\n      ]}\n    />\n    <Text variant=\"caption\">Rising usage amplifies visible quality issues in high‑stakes meetings.</Text>\n  </Left>\n  <Right>\n    <Heading level={2}>Cost of inaction</Heading>\n    <BigNum id=\"kpi_03_csat\" value=\"71%\" label=\"Interpreter CSAT\" trend=\"‑2% MoM\"/>\n    <SmartList\n      id=\"list_03_risks\"\n      items={[\n        \"Expectations rising faster than perceived quality improvements in critical markets.\",\n        \"Fragmented speech stack and immature admin reporting make governance and ROI proof difficult.\",\n        \"GPU, SPOF, and Responsible AI gaps (harassment, misgendering, tone) constrain safe rollout at scale.\"\n      ]}\n    />\n    <Text variant=\"caption\">Without targeted investment, we risk revenue, competitive position, and Responsible AI commitments.</Text>\n  </Right>\n</LayoutSplit>",
+      "story": "Complication: Identify specific pain points preventing expansion and the proposed solutions",
+      "mdx": "<LayoutSplit ratio=\"1:1\">\n    <Left>\n      <Heading level={2}>What’s stalling enterprise expansion</Heading>\n      <SmartList\n        id=\"list_003_gaps\"\n        items={[\n          \"Entity errors: names and technical terms are often almost right\",\n          \"First-turn latency and flow issues break meeting rhythm\",\n          \"Tone and naturalness gaps in JP/KR markets\",\n          \"Admin friction: reporting gaps and licensing confusion\"\n        ]}\n      />\n      <Text>These gaps erode trust in high-stakes, multilingual meetings.</Text>\n    </Left>\n    <Right>\n      <Heading level={2}>How we fix it: 3-pillar plan</Heading>\n      <ProcessStrip\n        id=\"process_003_pillars\"\n        items={[\n          \"Unified platform\",\n          \"Adaptive modes\",\n          \"Quality &amp; controls\"\n        ]}\n      />\n      <SmartList\n        id=\"list_003_pillars\"\n        items={[\n          \"Unified platform: one multilingual stack with shared endpoints and schemas\",\n          \"Adaptive modes: SIM for fluid talk; TBT for structured, high-stakes meetings\",\n          \"Quality layer: global/custom dictionaries + Enricher to fix entities at scale\",\n          \"Enterprise controls: reporting, metering, and rollout gates for safe expansion\"\n        ]}\n      />\n      <Text variant=\"caption\">So we close quality gaps and make scale predictable for enterprises.</Text>\n    </Right>\n  </LayoutSplit>",
       "density": "moderate",
-      "visual_design": "LayoutSplit5050: left=SmartList of customer pain points and risks; right=impact summary box highlighting cost of inaction.",
+      "visual_design": "Two-column layout: left = gaps/pain points; right = strategic pillars/solution. Optional 1-line connector in the middle: 'So we…'.",
       "content": {
-        "headline": "Accuracy, tone, and governance gaps now threaten scale and CSAT",
-        "subtitle": "Without targeted investment, rising usage could amplify negative experiences in high‑stakes meetings",
-        "category": "Complication",
-        "speaker_intent": "Increase urgency by connecting current gaps to revenue risk, competitive threats, and Responsible AI exposure.",
+        "headline": "Close the quality gaps to unlock enterprise scale",
+        "subtitle": "What’s stalling expansion—and the 3-pillar plan to fix it",
+        "category": "Complication → Answer",
         "sections": [
           {
-            "title": "Customer‑Visible Friction",
+            "title": "What’s stalling enterprise expansion (gaps)",
             "bullets": [
               {
-                "text": "Technical terms, names, numbers/units still misrecognized or mistranslated; JP/EN entity recall in global dictionary tests <50%."
+                "text": "Entity errors: names and technical terms are often “almost right.”"
               },
               {
-                "text": "Simultaneous mode translations perceived as too literal, with slow first turns and segmentation issues disrupting meeting flow."
+                "text": "Flow/latency: first-turn delays degrade meeting rhythm."
               },
               {
-                "text": "Tone and naturalness issues in JP/KR, including occasional gender/voice mismatches, create outsized DSAT in key markets."
+                "text": "Market gaps: tone/naturalness issues in JP/KR."
               },
               {
-                "text": "Interpreted audio not captured in recordings, limiting recap and compliance value for multilingual enterprises."
+                "text": "Admin blockers: incomplete reporting + licensing confusion."
               }
             ]
           },
           {
-            "title": "Structural Risks if We Do Nothing",
+            "title": "How we fix it (strategy)",
             "bullets": [
               {
-                "text": "CSAT for Interpreter is at 71% (−2% MoM) despite quality work—indicating expectations are rising faster than perceived improvements."
+                "text": "Unified platform: converge Interpreter + Captions/Transcription on one multilingual stack with shared endpoints and schemas."
               },
               {
-                "text": "Fragmented speech stack and immature admin reporting/metering make it hard for enterprises to govern usage and prove ROI."
+                "text": "Adaptive modes: SIM for fluid conversations; TBT for structured, high-stakes meetings to improve flow and clarity."
               },
               {
-                "text": "GPU capacity, SPOF and error‑handling gaps, and Responsible AI risks (harassment/misgendering, tone) could constrain safe rollout."
+                "text": "Quality layer: improve entity correctness with global/custom dictionaries + Enricher at scale."
+              },
+              {
+                "text": "Enterprise controls: admin reporting, metering, and rollout quality gates to enable governance and confident expansion."
               }
             ]
           }
@@ -1677,43 +1720,28 @@
       "id": "slide_04",
       "rank": 4,
       "state": "active",
-      "story": "Answer (core thesis): introduce unified speech stack as the strategic resolution",
-      "mdx": "<LayoutStacked theme=\"corp_modern_v1\">\n  <Heading level={2}>A unified multilingual speech stack converts meetings into trusted AI assets</Heading>\n  <Text variant=\"lead\">Converging Interpreter, captions, and transcription with entity‑first quality and governance‑by‑design.</Text>\n\n  <Heading level={3}>Strategic answer in one line</Heading>\n  <Text>Unify Teams speech experiences on a multilingual, entity‑aware stack that is reliable, governable, and optimized for AI agents.</Text>\n\n  <CardGroup id=\"cards_04_pillars\" columns={3}>\n    <Card\n      title=\"Interpreter 2.0\"\n      description=\"Fluid SIM plus precise TBT for high‑stakes meetings, powered by LLMs and Azure Voice.\"\n    />\n    <Card\n      title=\"Transcription++\"\n      description=\"Tiered transcription and enrichment with global/custom dictionaries, multilingual by default.\"\n    />\n    <Card\n      title=\"Governance &amp; Infra\"\n      description=\"Admin reporting, metering, quality gates, and multi‑recognizer infra for global scale.\"\n    />\n  </CardGroup>\n\n  <Callout id=\"callout_04_punchline\">\n    Speech becomes the operating system for real‑time understanding in Teams, not a collection of features.\n  </Callout>\n</LayoutStacked>",
-      "density": "minimal",
-      "visual_design": "LayoutStacked: top thesis statement, middle 3-column \"pillars\" (Interpreter, Transcription, Governance), bottom punchline callout.",
+      "story": "Situation: Validating current progress with existing building blocks",
+      "mdx": "<LayoutGrid cols={2}>\n    <Heading level={2}>Key building blocks are already in market</Heading>\n    <CardGroup id=\"cards_004\" columns={2}>\n      <Card\n        title=\"Multilingual STT\"\n        description=\"9 languages in preview; R0/R1 completed with a unified endpoint live.\"\n        icon=\"🌐\"\n      />\n      <Card\n        title=\"Enricher scaling\"\n        description=\"1.8M+ meetings enhanced weekly; ~50% EN/JP coverage achieved.\"\n        icon=\"⚙️\"\n      />\n      <Card\n        title=\"TBT readiness\"\n        description=\"Early JP/KR feedback is positive; capacity at 25 concurrent sessions.\"\n        icon=\"🔁\"\n      />\n      <Card\n        title=\"TTS speedup\"\n        description=\"1.2–1.35x faster; audio prefix enabled to reduce perceived latency.\"\n        icon=\"⚡\"\n      />\n    </CardGroup>\n    <MetricGroup id=\"metrics_004\" cols={2}>\n      <Metric value=\"9\" label=\"Preview languages\"/>\n      <Metric value=\"1.8M+\" label=\"Meetings/week enriched\"/>\n      <Metric value=\"25\" label=\"TBT concurrent sessions\"/>\n      <Metric value=\"1.35x\" label=\"Max TTS speedup\"/>\n    </MetricGroup>\n  </LayoutGrid>",
+      "density": "moderate",
+      "visual_design": "Four-card grid highlighting technical achievements like Multilingual STT and Enricher Scaling.",
       "content": {
-        "headline": "A unified multilingual speech stack converts meetings into trusted AI assets",
-        "subtitle": "Converging Interpreter, captions, and transcription with entity‑first quality and governance‑by‑design",
-        "category": "Answer",
-        "speaker_intent": "Anchor LT on the single strategic direction that resolves the pain points and unlocks durable differentiation.",
+        "headline": "Key building blocks are already in market",
+        "category": "Situation",
         "sections": [
           {
-            "title": "Strategic Answer in One Line",
+            "title": "Market Progress",
             "bullets": [
               {
-                "text": "Unify Teams speech experiences on a multilingual, entity‑aware stack that is reliable, governable, and optimized for AI agents."
-              }
-            ]
-          },
-          {
-            "title": "Three Pillars of the Unified Stack",
-            "bullets": [
-              {
-                "text": "Interpreter 2.0 (SIM + TBT): Fluid simultaneous mode plus precise turn‑by‑turn for high‑stakes meetings, powered by LLMs and Azure Voice."
+                "text": "Multilingual STT: 9 languages in preview; R0/R1 completed. Unified endpoint live."
               },
               {
-                "text": "Transcription++: Tiered transcription and enrichment layer with global/custom dictionaries and dynamic vocabulary, multilingual by default."
+                "text": "Enricher Scaling: 1.8M+ meetings enhanced weekly. 50% EN/JP coverage reached."
               },
               {
-                "text": "Governance & Infra: Admin reporting, metering, quality gates, and multi‑recognizer infra to safely operate at global enterprise scale."
-              }
-            ]
-          },
-          {
-            "title": "Punchline",
-            "bullets": [
+                "text": "TBT Readiness: Early feedback from JP/KR positive. Capacity at 25 concurrent sessions."
+              },
               {
-                "text": "Speech becomes the operating system for real‑time understanding in Teams, not a collection of features."
+                "text": "TTS Speedup: 1.2x–1.35x gains shipped; audio prefix enabled to minimize latency."
               }
             ]
           }
@@ -1725,55 +1753,28 @@
       "id": "slide_05",
       "rank": 5,
       "state": "active",
-      "story": "Answer deep dive: show how Interpreter (SIM + TBT) resolves core meeting pain points",
-      "mdx": "<LayoutSplit ratio=\"1:1\" theme=\"corp_modern_v1\">\n  <Left>\n    <Heading level={2}>SIM and Turn‑by‑Turn Interpreter together solve accuracy and flow gaps</Heading>\n    <ProcessStrip\n      id=\"process_05_modes\"\n      items={[\n        {label: \"SIM\", status: \"active\"},\n        {label: \"SIM + TBT\", status: \"done\"},\n        {label: \"TBT\", status: \"pending\"}\n      ]}\n    />\n    <TableData\n      id=\"table_05_fit\"\n      headers={[\"Scenario\", \"SIM fit\", \"TBT fit\"]}\n      rows={[\n        [\"Fluid discussion\", \"●●●○\", \"●●○○\"],\n        [\"Formal / board\", \"●●○○\", \"●●●●\"],\n        [\"Public sector\", \"●●○○\", \"●●●●\"]\n      ]}\n    />\n    <Text variant=\"caption\">Harvey‑style evaluation: SIM optimizes flow; TBT optimizes control and precision.</Text>\n  </Left>\n  <Right>\n    <Heading level={2}>Model stack, quality, and roadmap</Heading>\n    <SmartList\n      id=\"list_05_sim\"\n      items={[\n        \"Semantic mode improves long‑segment coherence and translation quality in simultaneous mode.\",\n        \"TTS acceleration (1.2×–1.35×) and audio prefix reduce perceived latency and accumulated delay.\",\n        \"Auto‑update spoken language detection removes manual switching friction in bilingual meetings.\"\n      ]}\n    />\n    <SmartList\n      id=\"list_05_tbt_quality\"\n      items={[\n        \"TBT R0 with GPT‑4o realtime + Azure Voice Live API shows strong accuracy and tone in JP/KR pilots.\",\n        \"Designed for formal customer, public sector, and board‑style meetings where turn precision is critical.\",\n        \"Next 1–2 quarters: expand beyond 25 concurrent sessions, harden edge cases, add UX cues for turn etiquette.\"\n      ]}\n    />\n    <Text variant=\"caption\">LLM‑as‑judge metrics compare SIM, TBT, and baselines on semantic, tone, latency, and entity quality end‑to‑end.</Text>\n  </Right>\n</LayoutSplit>",
+      "story": "Answer: Prove the effectiveness of the Enricher tool with data",
+      "mdx": "<LayoutSplit ratio=\"2:1\">\n    <Left>\n      <Heading level={2}>Enricher impact: performance vs. baseline</Heading>\n      <TableData\n        id=\"table_005\"\n        headers={[\"Metric\", \"Baseline\", \"Post-Enricher\", \"Improvement\"]}\n        rows={[\n          [\"Transcription inaccuracy\", \"19.5%\", \"12.3%\", \"−37%\"],\n          [\"Domain entity errors\", \"100%\", \"66%\", \"−34%\"],\n          [\"Accent/dialect issues\", \"100%\", \"69%\", \"−31%\"],\n          [\"Reported CSAT\", \"42.95%\", \"62.32%\", \"+19.37 pts\"]\n        ]}\n      />\n      <Text variant=\"caption\">Improvements focus on high-stakes failure modes: entities, accents, and perceived quality.</Text>\n    </Left>\n    <Right>\n      <Heading level={2}>Why this matters</Heading>\n      <SmartList\n        id=\"list_005\"\n        items={[\n          \"Entity and accent fixes directly improve transcript trust\",\n          \"CSAT gains show users feel the quality lift, not just models\",\n          \"Batch S2S display upgrades improve readability without higher CoGS\"\n        ]}\n      />\n      <BigNum id=\"stat_005\" value=\"+37%\" label=\"Error reduction on key transcripts\"/>\n      <Text>Enricher is a proven lever to raise trust where it matters most.</Text>\n    </Right>\n  </LayoutSplit>",
       "density": "dense",
-      "visual_design": "LayoutSplit5050: left=process flow diagram (Harvey Balls evaluation) comparing SIM vs TBT suitability; right=detailed bullets on model stack, quality, and roadmap.",
+      "visual_design": "Comparison table with baseline vs. post-enricher metrics and a highlighted 'Improvement' column.",
       "content": {
-        "headline": "SIM and Turn‑by‑Turn Interpreter together solve accuracy and flow gaps",
-        "subtitle": "Semantic mode, TTS acceleration, and GPT‑4o‑powered TBT target high‑stakes, multilingual meetings",
+        "headline": "Enricher impact: Performance vs. Baseline",
         "category": "Answer",
-        "speaker_intent": "Demonstrate that Interpreter evolution is feasible, targeted to real pain, and already in motion with strong signals.",
         "sections": [
           {
-            "title": "Simultaneous Interpreter: Fluidity with Better Semantics",
+            "title": "Performance Lift",
             "bullets": [
               {
-                "text": "Semantic mode enabled in lower rings improves long‑segment coherence and semantic‑level translation quality."
+                "text": "Post-meeting Enricher impact: transcription inaccuracy reduced 19.5% → 12.3% (↓37%) → direct lift in transcript trust where it matters."
               },
               {
-                "text": "TTS acceleration (1.2×–1.35×) and audio prefix for first turns reduce user‑perceived latency and accumulated delay."
+                "text": "Domain entity errors ↓34% and accent/dialect issues ↓31% → targets the most common “high-stakes meeting” failure modes."
               },
               {
-                "text": "Auto‑update spoken language detection via multilingual STT removes manual switching friction in bilingual meetings."
+                "text": "Corresponding CSAT increased 42.95% → 62.32% (reported) → quality fixes translate into user satisfaction, not just model scores."
               },
               {
-                "text": "SIM now enabled across Calling & MTR rings, with CSS meeting‑level license checks live for first support group."
-              }
-            ]
-          },
-          {
-            "title": "Turn‑by‑Turn Interpreter: Control for High‑Stakes Scenarios",
-            "bullets": [
-              {
-                "text": "TBT R0 available with early JP/KR feedback citing strong accuracy, clearer turn‑taking, and reduced translation overlap."
-              },
-              {
-                "text": "Stack uses GPT‑4o‑realtime plus Azure Voice Live API, delivering improved semantic and tone accuracy for structured meetings."
-              },
-              {
-                "text": "Designed for formal customer meetings, public sector (e.g., Welsh gov), and board‑style discussions where turn precision is critical."
-              },
-              {
-                "text": "Next 1–2 quarters: expand TBT capacity beyond 25 concurrent sessions, stabilize edge cases, and add UX cues for turn etiquette."
-              }
-            ]
-          },
-          {
-            "title": "Quality and Evaluation Discipline",
-            "bullets": [
-              {
-                "text": "LLM‑as‑judge metrics now compare ST, semantic, Phi, GPT‑4o, and TBT on semantic, tone, latency, and entity quality end‑to‑end."
+                "text": "Batch S2S display model upgrades improve readability without increasing CoGS → scalable quality lift across traffic."
               }
             ]
           }
@@ -1785,58 +1786,25 @@
       "id": "slide_06",
       "rank": 6,
       "state": "active",
-      "story": "Answer deep dive: show Transcription++ and Enricher as the enterprise understanding layer",
-      "mdx": "<LayoutDashboard theme=\"corp_modern_v1\">\n  <Header>\n    <Heading level={2}>Transcription++ and Enricher turn raw speech into enterprise understanding</Heading>\n  </Header>\n  <Main>\n    <ChartCustom\n      id=\"chart_06_error_waterfall\"\n      type=\"funnel\"\n      title=\"Error reduction across pipeline\"\n      data={[\n        {label: \"Raw STT\", value: 19.5},\n        {label: \"Batch S2S\", value: 15},\n        {label: \"Post‑meeting Enricher\", value: 12.3}\n      ]}\n      colorScheme=\"blue\"\n      showValues={true}\n    />\n    <Text variant=\"lead\">Multilingual STT, enrichment, and dictionaries materially improve accuracy for Copilot and Recap.</Text>\n  </Main>\n  <Sidebar>\n    <SmartList\n      id=\"list_06_stt\"\n      items={[\n        \"Unified multi‑recognizer endpoint with auto language detection simplifies bilingual meetings and setup.\",\n        \"Observed gains: phrase hint fixes, higher entity recall in batch S2S (65.42 → 74.76 in PPE).\",\n        \"GA focuses on Tier‑1 languages with better code‑switching, segmentation, and adaptation/biasing.\"\n      ]}\n    />\n    <SmartList\n      id=\"list_06_enricher\"\n      items={[\n        \"R4 rollout: 50% EN/JP and 10% FR/DE/PT/ES, enhancing 1.8M+ meetings weekly with strong reliability.\",\n        \"Post‑meeting Enricher cuts inaccuracy from 19.5% → 12.3%, domain entity errors by 34%, accent issues by 31%.\",\n        \"In‑meeting enrichment architecture aligned; R0 January 2026 with multilingual support in CY2026 Q1.\"\n      ]}\n    />\n    <MetricGroup id=\"metrics_06_entities\" cols={3}>\n      <Metric value=\"1.8M+\" label=\"Meetings enriched / week\" />\n      <Metric value=\"34%\" label=\"Domain entity error drop\" />\n      <Metric value=\"31%\" label=\"Accent issue reduction\" />\n    </MetricGroup>\n    <Text variant=\"caption\">Entity‑first strategy: global/custom dictionaries, tenant auto‑dictionary, and dynamic vocabulary as the north star.</Text>\n  </Sidebar>\n</LayoutDashboard>",
-      "density": "dense",
-      "visual_design": "LayoutDashboard: central waterfall chart concept for error reduction, side panel for Enricher architecture (pre/in‑meeting/post), bottom metric group.",
+      "story": "Answer: Explain the value proposition of Turn-by-Turn (TBT) mode",
+      "mdx": "<LayoutStacked>\n    <Heading level={2}>TBT is the accuracy-and-flow escape hatch</Heading>\n    <Text variant=\"lead\">\n      Turn-by-Turn (TBT) mode trades a bit of immediacy for clearer turns, higher accuracy, and better rhythm in complex meetings.\n    </Text>\n    <ProcessStrip\n      id=\"process_006_flow\"\n      items={[\n        {label: \"Speaker turn\", status: \"done\"},\n        {label: \"Capture &amp; interpret\", status: \"active\"},\n        {label: \"Clear playback\", status: \"pending\"}\n      ]}\n    />\n    <SmartList\n      id=\"list_006\"\n      items={[\n        \"TBT (R0) improves turn clarity and reduces overlap vs. SIM\",\n        \"Early JP/KR feedback shows stronger accuracy and clearer turn-taking\",\n        \"Current limit: 25 concurrent sessions; scaling and hardening are next\"\n      ]}\n    />\n    <Text variant=\"caption\">TBT becomes the reliable mode for structured, high-stakes multilingual meetings.</Text>\n  </LayoutStacked>",
+      "density": "moderate",
+      "visual_design": "Use a visual to reinforce the main message",
       "content": {
-        "headline": "Transcription++ and Enricher turn raw speech into enterprise understanding",
-        "subtitle": "Multilingual STT, entity enrichment, and dictionaries materially improve accuracy for Copilot and Recap",
+        "headline": "TBT is the accuracy-and-flow escape hatch",
         "category": "Answer",
-        "speaker_intent": "Prove that transcription quality is already improving at scale and that the roadmap is concrete and impactful.",
         "sections": [
           {
-            "title": "Multilingual STT: Foundation for All Speech Experiences",
+            "title": "Mode Selection",
             "bullets": [
               {
-                "text": "Unified multi‑recognizer endpoint with auto language detection deployed to R0/R1, simplifying bilingual meetings and setup."
+                "text": "TBT (R0 available) improves turn clarity and reduces overlap → directly targets SIM’s interactive-meeting breakdowns."
               },
               {
-                "text": "Observed improvements include phrase hint fixes (mitigating >800ms freezes) and higher entity recall in batch S2S (65.42 → 74.76 in PPE)."
+                "text": "Early JP/KR customer/GBB feedback shows strong accuracy and clearer turn-taking → prioritizes markets with known tone/quality gaps."
               },
               {
-                "text": "GA plan focuses on Tier‑1 languages with improved code‑switching, segmentation, and ongoing adaptation/biasing."
-              }
-            ]
-          },
-          {
-            "title": "Transcript Enricher: Real‑Time and Post‑Meeting Correction",
-            "bullets": [
-              {
-                "text": "R4 rollout at 50% for EN/JP and 10% for FR/DE/PT/ES, enhancing 1.8M+ meetings weekly with strong reliability."
-              },
-              {
-                "text": "Post‑meeting Enricher reduces overall transcription inaccuracy from 19.5% → 12.3%, domain entity errors by 34%, and accent issues by 31%."
-              },
-              {
-                "text": "In‑meeting enrichment architecture aligned, with R0 targeted for January 2026 and multilingual support planned for CY2026 Q1."
-              },
-              {
-                "text": "Supports facilitator skills, Recap AI, and Copilot grounding, turning transcripts into higher‑fidelity knowledge assets."
-              }
-            ]
-          },
-          {
-            "title": "Entity‑First Strategy and Dictionaries",
-            "bullets": [
-              {
-                "text": "Tier‑1 custom dictionary is GA; global dictionary integration underway, with JP/EN recall currently ~50% and improving."
-              },
-              {
-                "text": "Roadmap: integrate tenant auto‑dictionary (SLPv2) and dynamic vocabulary into Enricher to make entity accuracy the north star."
-              },
-              {
-                "text": "zh‑TW treated same as zh‑CN in STT updates, with internal testing planned as part of broader language expansion."
+                "text": "Known current limit: 25 concurrent sessions with edge-case behaviors under complex turns → scaling and hardening are the next constraints."
               }
             ]
           }
@@ -1848,55 +1816,25 @@
       "id": "slide_07",
       "rank": 7,
       "state": "active",
-      "story": "Answer deep dive: show evaluation, infrastructure, and governance making the vision buildable",
-      "mdx": "<LayoutSplit ratio=\"1:1\" theme=\"corp_modern_v1\">\n  <Left>\n    <Heading level={2}>Unified evaluation and rollout pipeline</Heading>\n    <ProcessStrip\n      id=\"process_07_eval\"\n      items={[\n        {label: \"Collect\", status: \"done\"},\n        {label: \"Evaluate\", status: \"active\"},\n        {label: \"Roll out\", status: \"pending\"}\n      ]}\n    />\n    <StepList\n      id=\"steps_07_eval_detail\"\n      items={[\n        {\n          label: \"LLM‑as‑judge\",\n          description: \"Assess semantic fidelity, tone, latency, and entity accuracy for speech and Interpreter.\"\n        },\n        {\n          label: \"Compare pipelines\",\n          description: \"Apples‑to‑apples across ST, semantic, Phi, GPT‑4o realtime, TBT, and multilingual STT.\"\n        },\n        {\n          label: \"Ringed rollout\",\n          description: \"Use metrics to gate progression, reduce human eval cost, and make transparent tradeoffs.\"\n        }\n      ]}\n    />\n    <Text variant=\"caption\">Evaluation and rollout are treated as a single, disciplined pipeline.</Text>\n  </Left>\n  <Right>\n    <Heading level={2}>Infra, metering, and governance</Heading>\n    <SmartList\n      id=\"list_07_infra\"\n      items={[\n        \"Multi‑recognizer platform (Jan 2026) enables hot‑switching between STS and LRM/LLM‑based models.\",\n        \"Foundation for Phi‑4, multimodal LLMs, and unified multilingual models, simplifying pipelines and experimentation.\",\n        \"Resource expansion from 10 → 20 environments under evaluation, with robust error handling for Voice Live API.\"\n      ]}\n    />\n    <SmartList\n      id=\"list_07_governance\"\n      items={[\n        \"Admin Center usage reporting and metering expose tenant adoption, meeting types, and language pairs.\",\n        \"Usage dashboard public preview targeted for March 31, 2026, with metering validation for enterprise governance.\",\n        \"Strengthened quality gates and ringed rollout discipline reduce SPOF risk and align incident monitoring.\"\n      ]}\n    />\n    <Text variant=\"caption\">Scale and safety are achievable with unified metrics, infra, and admin visibility.</Text>\n  </Right>\n</LayoutSplit>",
+      "story": "Answer: Explain the risk mitigation strategy via Quality Gates",
+      "mdx": "<LayoutDashboard>\n    <Header>\n      <Heading level={2}>Quality gates make rollouts predictable</Heading>\n    </Header>\n    <Main>\n      <BigNum id=\"stat_007\" value=\"3\" label=\"Quality gate stages\" trend=\"From lab to global tenants\"/>\n      <Text variant=\"lead\">Each stage catches different risks before broad rollout.</Text>\n    </Main>\n    <Sidebar>\n      <StepList\n        id=\"steps_007\"\n        items={[\n          {\n            label: \"1. LLM-as-judge metrics\",\n            description: \"Semantic consistency and tone checks; entity errors flagged before tenant deployment.\"\n          },\n          {\n            label: \"2. Live performance telemetry\",\n            description: \"Track first sentence latency and segmentation success; halt rollout if rhythm degrades.\"\n          },\n          {\n            label: \"3. R0/R1 ring discipline\",\n            description: \"Mandatory internal and dogfood validation to avoid reliability regressions at scale.\"\n          }\n        ]}\n      />\n      <Text variant=\"caption\">Result: predictable, low-risk rollouts for H2 expansion.</Text>\n    </Sidebar>\n  </LayoutDashboard>",
       "density": "moderate",
-      "visual_design": "LayoutSplit5050: left=process flow diagram of unified evaluation and rollout pipeline; right=SmartList on infra, metering, and governance.",
+      "visual_design": "Vertical flow-step layout with numbered circles and descriptive text blocks.",
       "content": {
-        "headline": "Unified evaluation, infra, and governance make scale and safety achievable",
-        "subtitle": "LLM‑based metrics, multi‑recognizer platform, and admin reporting underpin disciplined rollouts",
+        "headline": "Quality gates make rollouts predictable",
         "category": "Answer",
-        "speaker_intent": "Reassure LT that the plan is operationally grounded with clear mechanisms to manage risk and iterate quickly.",
         "sections": [
           {
-            "title": "LLM‑Based End‑to‑End Evaluation",
+            "title": "Three-Stage Gate Process",
             "bullets": [
               {
-                "text": "LLM‑as‑judge metrics now assess transcription and Interpreter quality on semantic fidelity, tone, latency, and entity accuracy."
+                "text": "LLM-as-judge metrics： Automated semantic consistency checks and tone accuracy verification. Real-time entity error detection before tenant deployment."
               },
               {
-                "text": "Enables apples‑to‑apples comparison across ST, semantic, Phi, GPT‑4o real‑time, TBT, and multilingual STT pipelines."
+                "text": "Live Performance Telemetry： Instrumentation focus on \"First Sentence Latency\" and \"Segmentation Success Rate.\" We stop rollouts if rhythm degradation is detected."
               },
               {
-                "text": "Accelerates iteration cycles, reduces human eval cost, and supports transparent tradeoffs for LT decisions."
-              }
-            ]
-          },
-          {
-            "title": "Infrastructure and Multi‑Recognizer Platform",
-            "bullets": [
-              {
-                "text": "Multi‑recognizer platform coming January 2026 allows hot‑switching between STS and LRM/LLM‑based models."
-              },
-              {
-                "text": "Foundational for Phi‑4, multimodal LLMs, and unified multilingual models, simplifying pipelines and experimentation."
-              },
-              {
-                "text": "Resource expansion from 10→20 environments under evaluation, plus robust error handling for Voice Live API and controller integration."
-              }
-            ]
-          },
-          {
-            "title": "Governance and Admin Visibility",
-            "bullets": [
-              {
-                "text": "Admin Center usage reporting (CFR) and metering integration are in progress to expose tenant adoption, meeting types, and language pairs."
-              },
-              {
-                "text": "Admin Center usage dashboard public preview targeted for March 31, 2026, with metering validation to support enterprise governance."
-              },
-              {
-                "text": "Strengthened quality gates and ringed rollout discipline reduce SPOF risk and align incident monitoring across environments."
+                "text": "R0/R1 Ring Discipline: Mandatory validation cycles in internal and dogfood rings. Ensures zero reliability regressions for global tenants during H2 expansion."
               }
             ]
           }
@@ -1908,55 +1846,25 @@
       "id": "slide_08",
       "rank": 8,
       "state": "active",
-      "story": "Answer: crystallize the 6–12 month strategy and success targets",
-      "mdx": "<LayoutTimeline\n  theme=\"corp_modern_v1\"\n  headline=\"6–12 month plan unifies the stack and targets &gt;80% Interpreter CSAT\"\n  subtitle=\"Focused roadmap across product, quality, language coverage, and recording parity\"\n>\n  <LayoutTimeline.Item year=\"Now\">\n    <Heading level={3}>Experience &amp; quality objectives</Heading>\n    <Text>Pair SIM for fluid conversations with TBT for structured, high‑stakes discussions to reach &gt;80% CSAT.</Text>\n    <Text variant=\"caption\">Unify captions, transcription, and Interpreter on a multilingual stack with entity accuracy as the north star.</Text>\n  </LayoutTimeline.Item>\n  <LayoutTimeline.Item year=\"Next 6 months\" highlighted={true}>\n    <Heading level={3}>Core platform milestones</Heading>\n    <Text>GA multilingual STT for Tier‑1 languages with improved code‑switching, segmentation, and adaptation/biasing.</Text>\n    <Text variant=\"caption\">Complete Enricher GA for Tier‑1 and extend to multilingual with tenant auto‑dictionary and dynamic vocabulary.</Text>\n  </LayoutTimeline.Item>\n  <LayoutTimeline.Item year=\"6–9 months\">\n    <Heading level={3}>Language and quality expansion</Heading>\n    <Text>Broaden coverage (e.g., zh‑TW, NL, VI, TH) and improve JP/KR tone to win competitive head‑to‑head evaluations.</Text>\n    <Text variant=\"caption\">Recording parity for interpreted audio, including multi‑track options, enables multilingual recap and compliance.</Text>\n  </LayoutTimeline.Item>\n  <LayoutTimeline.Item year=\"9–12 months\">\n    <Heading level={3}>Efficiency and reuse</Heading>\n    <Text>Explore offline/fast catch‑up transcription to reduce CoGS while preserving enterprise experience bars.</Text>\n    <Text variant=\"caption\">Every Teams meeting can be reliably understood, governed, and re‑used across languages by humans and AI.</Text>\n  </LayoutTimeline.Item>\n</LayoutTimeline>",
+      "story": "Answer: Detail the administrative and governance strategy",
+      "mdx": "<LayoutSplit ratio=\"1:1\">\n    <Left>\n      <Heading level={2}>Governance makes speech deployable</Heading>\n      <SmartList\n        id=\"list_008\"\n        items={[\n          \"Admin Center usage dashboard: tenant adoption, meeting types, language pairs\",\n          \"Metering integration: enable usage reporting, governance, and value measurement\",\n          \"Licensing clarity: resolve guest and cross-tenant access blockers\"\n        ]}\n      />\n      <Text>Admins get the controls and visibility needed to approve broad rollout.</Text>\n    </Left>\n    <Right>\n      <Heading level={2}>Admin view: what they see</Heading>\n      <ChartBar\n        id=\"chart_008\"\n        title=\"Sample tenant usage by meeting type\"\n        data={[\n          {label: \"Internal\", value: 55},\n          {label: \"Customer\", value: 25},\n          {label: \"Training\", value: 12},\n          {label: \"Events\", value: 8}\n        ]}\n      />\n      <Text variant=\"caption\">\n        Dark-themed dashboard surfaces adoption patterns and language usage for governance decisions.\n      </Text>\n    </Right>\n  </LayoutSplit>",
       "density": "moderate",
-      "visual_design": "LayoutStacked: top=3 strategic objectives, middle=roadmap timeline (6–12 months), bottom=punchline callout.",
+      "visual_design": "Split screen: left side text/bullets; right side dark-themed dashboard visualization.",
       "content": {
-        "headline": "6–12 month plan unifies the stack and targets >80% Interpreter CSAT",
-        "subtitle": "Focused roadmap across product, quality, language coverage, and recording parity",
+        "headline": "Governance makes speech deployable",
         "category": "Answer",
-        "speaker_intent": "Give LT a clear view of where we will be in 6–12 months and how that maps to measurable experience gains.",
         "sections": [
           {
-            "title": "Experience and Quality Objectives",
+            "title": "Admin Deliverables",
             "bullets": [
               {
-                "text": "Achieve >80% CSAT for Interpreter by pairing SIM for fluid conversations with TBT for structured, high‑stakes discussions."
+                "text": "Admin Center Usage Dashboard (Public Preview — Mar 31, 2026): Tenant adoption tracking live; includes meeting types and language pairs by plan"
               },
               {
-                "text": "Unify speech stack for captions, transcription, and Interpreter, multilingual by default with simplified schemas and pipelines."
+                "text": "Metering (in progress): Complete integration and validate data to enable usage reporting, governance, and value measurement"
               },
               {
-                "text": "Make entity accuracy the north star via global/custom dictionaries, dynamic vocabulary, and Enricher in‑meeting and post‑meeting."
-              }
-            ]
-          },
-          {
-            "title": "Key Delivery Milestones (Next 6–12 Months)",
-            "bullets": [
-              {
-                "text": "GA multilingual STT for Tier‑1 languages with improved code‑switching, segmentation, and adaptation/biasing."
-              },
-              {
-                "text": "Complete Enricher GA for Tier‑1 and extend to multilingual, integrating tenant auto‑dictionary (SLPv2) and dynamic vocabulary."
-              },
-              {
-                "text": "Broaden language coverage (e.g., zh‑TW, NL, VI, TH) and improve JP/KR tone quality to win competitive head‑to‑head evaluations."
-              },
-              {
-                "text": "Deliver recording parity for interpreted audio, including multi‑track options, enabling multilingual recap and compliance scenarios."
-              },
-              {
-                "text": "Explore offline/fast catch‑up transcription to reduce CoGS while preserving enterprise experience bars."
-              }
-            ]
-          },
-          {
-            "title": "Punchline",
-            "bullets": [
-              {
-                "text": "Within 12 months, every Teams meeting can be reliably understood, governed, and re‑used across languages by humans and AI."
+                "text": "Licensing clarity (priority): Resolution of guest access blockers (cross-tenant/guest) to prevent rollout delays"
               }
             ]
           }
@@ -1968,47 +1876,53 @@
       "id": "slide_09",
       "rank": 9,
       "state": "active",
-      "story": "Commit: surface key risks and explicit asks to LT",
-      "mdx": "<LayoutSplit ratio=\"1:1\" theme=\"corp_modern_v1\">\n  <Left>\n    <Heading level={2}>Key risks if unaddressed</Heading>\n    <TableData\n      id=\"table_09_risks\"\n      headers={[\"Risk\", \"Impact\", \"Mitigation\"]}\n      rows={[\n        [\n          \"GPU &amp; LLM capacity\",\n          \"Throttles SIM, TBT, and multilingual STT; degraded real‑time experience.\",\n          \"Prioritized GPU allocation and substrate LLM onboarding with compliance‑ready fallback paths.\"\n        ],\n        [\n          \"SPOF &amp; error handling\",\n          \"Higher outage risk and inconsistent incident response across rings/environments.\",\n          \"Aligned ownership for remediation, robust error handling, and unified incident monitoring.\"\n        ],\n        [\n          \"Data &amp; RAI gaps\",\n          \"Slower governance, unclear ROI, and reputational/regulatory exposure in sensitive markets.\",\n          \"Clarify CFR data ownership/latency and invest in harassment, misgendering, and tone guardrails.\"\n        ]\n      ]}\n    />\n  </Left>\n  <Right>\n    <Heading level={2}>Specific asks to LT</Heading>\n    <SmartList\n      id=\"list_09_asks\"\n      items={[\n        \"Endorse GPU allocation and prioritized substrate LLM onboarding for real‑time speech workloads.\",\n        \"Align ownership and resourcing for SPOF remediation, error‑handling maturity, and incident monitoring.\",\n        \"Clarify CFR data cooking ownership, contracts, and latency expectations to unblock Admin reporting.\",\n        \"Sponsor Responsible AI guardrails and tone control improvements for JP/KR, including eval and mitigation investments.\"\n      ]}\n    />\n    <Text variant=\"caption\">Targeted LT support de‑risks execution and accelerates time‑to‑impact.</Text>\n  </Right>\n</LayoutSplit>",
+      "story": "Answer: Visualize the timeline for upcoming releases and goals",
+      "mdx": "<LayoutTimeline headline=\"Strategic Roadmap: From stabilization to scale\" subtitle=\"Near, future, and north-star milestones\">\n    <LayoutTimeline.Item year=\"Q1 2026\">\n      <Heading level={3}>Near plan</Heading>\n      <Text>TBT concurrency scaled to 100 sessions; 9-language unified stack GA; R1 cross-region failover complete.</Text>\n      <Text variant=\"caption\">Goal: stabilize core stack and unblock early scale.</Text>\n    </LayoutTimeline.Item>\n    <LayoutTimeline.Item year=\"Q2 2026\">\n      <Heading level={3}>Future plan</Heading>\n      <Text>Admin governance dashboard in preview; auto-dictionary for tenant terms; full TBT parity on iOS/Android.</Text>\n      <Text variant=\"caption\">Goal: deepen governance and expand device coverage.</Text>\n    </LayoutTimeline.Item>\n    <LayoutTimeline.Item year=\"H2 2026\" highlighted={true}>\n      <Heading level={3}>North star</Heading>\n      <Text>85% satisfaction in JP/KR, predictive zero-latency experience, and 1M+ weekly secured meetings.</Text>\n      <Text variant=\"caption\">Goal: trusted, scalable multilingual meetings across the enterprise.</Text>\n    </LayoutTimeline.Item>\n  </LayoutTimeline>",
       "density": "moderate",
-      "visual_design": "LayoutSplit5050: left=Risk→Impact→Mitigation table (3-row), right=bullet list of specific LT decisions/asks.",
+      "visual_design": "Horizontal timeline with three milestones (Near, Future, North Star) connected by a central axis line.",
       "content": {
-        "headline": "Targeted LT support is needed to de‑risk execution at scale",
-        "subtitle": "GPU, data ownership, SPOF, and Responsible AI are the critical constraints",
+        "headline": "Strategic Roadmap: From Stabilization to Scale",
         "category": "Answer",
-        "speaker_intent": "Convert alignment into concrete support by clarifying where LT decisions unblock the roadmap.",
         "sections": [
           {
-            "title": "Key Risks If Unaddressed",
+            "title": "Near Plan (Q1 2026)",
             "bullets": [
               {
-                "text": "GPU capacity and substrate LLM onboarding timelines may throttle real‑time models (SIM, TBT, multilingual STT) without robust fallback paths."
+                "text": "TBT Expansion: Concurrency scale to 100 sessions."
               },
               {
-                "text": "Single points of failure, immature error handling, and misaligned incident monitoring across rings/environments increase outage risk."
+                "text": "Multilingual GA: Stable 9-language unified stack."
               },
               {
-                "text": "Admin reporting CFR data cooking ownership and data latency remain ambiguous, slowing governance and value articulation."
-              },
-              {
-                "text": "Responsible AI gaps—harassment/misgendering, tone control in JP/KR—create reputational and regulatory exposure in sensitive markets."
+                "text": "R1 Completion: Cross-region failover testing."
               }
             ]
           },
           {
-            "title": "Specific Asks to LT",
+            "title": "Future Plan (Q2 2026)",
             "bullets": [
               {
-                "text": "Endorse GPU allocation and prioritized substrate LLM onboarding for real‑time speech workloads, with compliance‑ready fallback plans."
+                "text": "Admin Preview: Speech Governance Dashboard live."
               },
               {
-                "text": "Align ownership and resourcing for SPOF remediation, error‑handling maturity, and cross‑environment incident monitoring."
+                "text": "Entity Safety: Auto-Dictionary for tenant terms."
               },
               {
-                "text": "Clarify CFR data cooking ownership, contracts, and latency expectations across IDEAs and PM to unblock Admin Center reporting."
+                "text": "Mobile Support: Full TBT parity on iOS/Android."
+              }
+            ]
+          },
+          {
+            "title": "North Star (H2 2026)",
+            "bullets": [
+              {
+                "text": "85% Satisfaction: Target for JP/KR premium markets."
               },
               {
-                "text": "Sponsor Responsible AI guardrails and tone control improvements for JP/KR, including policy, eval, and mitigation investments."
+                "text": "Zero Latency: Predictive prefix buffering GA."
+              },
+              {
+                "text": "Trust at Scale: 1M+ weekly secured meetings."
               }
             ]
           }
@@ -2020,48 +1934,58 @@
       "id": "slide_10",
       "rank": 10,
       "state": "active",
-      "story": "ending: close with decision focus and reinforce strategic payoff",
-      "mdx": "<LayoutStacked theme=\"corp_modern_v1\">\n  <Heading level={2}>Decision and next steps to unlock next‑gen speech in Teams</Heading>\n  <Text variant=\"lead\">From strong momentum to a unified, governed, multilingual experience.</Text>\n\n  <Heading level={3}>Immediate next steps (0–3 months)</Heading>\n  <SmartList\n    id=\"list_10_next\"\n    items={[\n      \"Confirm GPU and LLM onboarding commitments for SIM, TBT, and multilingual STT workloads.\",\n      \"Finalize CFR data ownership and metering integration plan for March 31, 2026 Admin Center preview.\",\n      \"Lock Responsible AI workstream scope for JP/KR tone and harassment/misgendering guardrails.\"\n    ]}\n  />\n\n  <MetricGroup id=\"metrics_10_goals\" cols={3}>\n    <Metric value=\"&gt;80%\" label=\"Target Interpreter CSAT\" />\n    <Metric value=\"1.8M+\" label=\"Meetings enriched weekly\" />\n    <Metric value=\"99%+\" label=\"Reliability in high‑stakes use\" />\n  </MetricGroup>\n\n  <Heading level={3}>What success looks like to LT</Heading>\n  <SmartList\n    id=\"list_10_success\"\n    items={[\n      \"Interpreter CSAT trending toward &gt;80% with 99%+ reliability across SIM and TBT.\",\n      \"Unified multilingual speech stack powering captions, transcription, and Interpreter with measurable entity gains.\",\n      \"Enterprises governing and deriving value from multilingual meetings via Admin dashboards and recording parity.\"\n    ]}\n  />\n\n  <Callout id=\"callout_10_closing\">\n    With LT backing, Teams becomes the place where every meeting is accurately understood and safely amplified—across languages, roles, and AI agents.\n  </Callout>\n</LayoutStacked>",
-      "density": "minimal",
-      "visual_design": "LayoutStacked: top=next steps list, middle=BigNum-style reminder of key goals (e.g., >80% CSAT, 1.8M+ meetings enriched), bottom=closing punchline.",
+      "story": "ending: Summary of risks and final decision request",
+      "mdx": "<LayoutGrid cols={2}>\n    <Heading level={2}>LT decisions: capacity, governance, and safety</Heading>\n    <TableData\n      id=\"table_010\"\n      headers={[\"Area\", \"Decision needed\"]}\n      rows={[\n        [\"Capacity &amp; platform\", \"Confirm GPU plan, LLM onboarding timeline, and fallback/compliance paths.\"],\n        [\"Reliability &amp; ops\", \"Align on SPOF bar, incident ownership, and Voice Live API retry/controller strategy.\"],\n        [\"Enterprise governance\", \"Assign DRI for Admin reporting CFR and metering validation for Mar 31, 2026 preview.\"],\n        [\"Responsible AI / safety\", \"Approve guardrails and launch criteria for harassment/misgendering and JP/KR tone control.\"],\n        [\"Policy / compliance\", \"Decide on recording parity for interpreted audio to unlock recap/compliance scenarios.\"]\n      ]}\n    />\n    <Callout id=\"callout_010\" tone=\"info\" title=\"Action required from LT\">\n      Align on capacity, governance, and safety decisions this review, so we can confidently scale TBT/SIM quality and meet enterprise commitments.\n    </Callout>\n  </LayoutGrid>",
+      "density": "dense",
+      "visual_design": "Standard data table for risks/mitigation followed by a bold 'Action Required' footer box.",
       "content": {
-        "headline": "Decision and next steps to unlock next‑gen speech in Teams",
-        "subtitle": "From strong momentum to a unified, governed, multilingual experience",
-        "category": "ending",
+        "headline": "LT decisions: capacity, governance, and safety",
+        "subtitle": "Decisions to unblock scale, governance, and quality commitments",
+        "speaker_intent": "Get LT alignment on the few cross-org decisions that determine whether we can scale TBT/SIM quality, meet enterprise governance needs, and manage risk.",
         "sections": [
           {
-            "title": "Immediate Next Steps (0–3 Months)",
+            "title": "Capacity & platform dependencies",
             "bullets": [
               {
-                "text": "Confirm GPU and LLM onboarding commitments for SIM, TBT, and multilingual STT real‑time workloads."
+                "text": "Approve/confirm GPU capacity plan for real-time models and the substrate LLM onboarding timeline; align on required fallback paths + compliance controls."
               },
               {
-                "text": "Finalize CFR data ownership and metering integration plan to hit March 31, 2026 Admin Center preview target."
-              },
-              {
-                "text": "Lock Responsible AI workstream scope for JP/KR tone and harassment/misgendering guardrails."
+                "text": "Confirm multi-environment scale direction (e.g., expanding from ~10 → 20 environments) and associated infra priority."
               }
             ]
           },
           {
-            "title": "What Success Looks Like to LT",
+            "title": "Reliability & ops readiness",
             "bullets": [
               {
-                "text": "Interpreter CSAT trending toward >80% with 99%+ reliability across SIM and TBT in high‑stakes meetings."
-              },
-              {
-                "text": "Unified multilingual speech stack powering captions, transcription, and Interpreter with measurable entity accuracy gains."
-              },
-              {
-                "text": "Enterprises using Admin dashboards and recording parity to govern and derive value from multilingual meetings at scale."
+                "text": "Agree on SPOF/error-handling maturity bar and incident monitoring ownership/alignment across rings and environments (including retry/controller strategy for Voice Live API)."
               }
             ]
           },
           {
-            "title": "Closing Punchline",
+            "title": "Enterprise governance (Admin + Metering)",
             "bullets": [
               {
-                "text": "With LT backing, Teams becomes the place where every meeting is accurately understood and safely amplified—across languages, roles, and AI agents."
+                "text": "Assign a single DRI for Admin reporting CFR “data cooking” and data-latency SLAs; align IDEAs + PM on contracts/definitions."
+              },
+              {
+                "text": "Confirm metering validation expectations and what must be ready for Admin Center usage dashboard public preview (target Mar 31, 2026)."
+              }
+            ]
+          },
+          {
+            "title": "Responsible AI / safety",
+            "bullets": [
+              {
+                "text": "Approve RAI guardrails and launch criteria for harassment/misgendering risk mitigation, including JP/KR tone-control quality bar."
+              }
+            ]
+          },
+          {
+            "title": "Policy / compliance direction (recording parity)",
+            "bullets": [
+              {
+                "text": "Decision on recording parity for interpreted audio (e.g., multi-track options) to unlock recap/compliance scenarios—confirm scope and priority."
               }
             ]
           }
@@ -2071,7 +1995,7 @@
     }
   ],
   "created_at": "2026-01-09T17:15:54.977082",
-  "updated_at": "2026-01-14T14:13:09.066410",
+  "updated_at": "2026-01-14T18:05:28.107968",
   "version": 1,
   "instruction_history": []
 }
