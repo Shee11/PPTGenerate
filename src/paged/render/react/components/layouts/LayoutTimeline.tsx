@@ -649,6 +649,9 @@ export function LayoutTimeline({
               fontSize: '4rem',
               fontWeight: 700,
               color: 'var(--theme-text)',
+              textWrap: 'wrap',
+              width: '100%',
+              maxWidth: 'none',
             }}
           >
             {headline}

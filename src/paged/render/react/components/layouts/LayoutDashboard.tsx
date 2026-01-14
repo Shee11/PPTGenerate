@@ -64,6 +64,9 @@ function TimelineStyleHeader({ headline, subtitle }: { headline: string; subtitl
           fontSize: '4rem',
           fontWeight: 700,
           color: 'var(--theme-text)',
+          textWrap: 'wrap',
+          width: '100%',
+          maxWidth: 'none',
         }}
       >
         {headline}
@@ -560,8 +563,9 @@ export function LayoutDashboard({
   const sidebarComponents = extractComponents(sidebarChildren);
 
   // LayoutTimeline-style headline/subtitle:
-  // If Header contains ONLY a <Heading level={2}> and Main begins with a <Text variant="lead">,
-  // render them as a combined slide header (and remove the lead text from Main).
+  // If Header contains ONLY a <Heading level={2}>, render it as a LayoutTimeline-style
+  // 4rem headline. If Main contains a lead Text near the top, use it as the subtitle
+  // (and remove it from Main to avoid duplication).
   let timelineHeader: { headline: string; subtitle?: string | null } | null = null;
   let renderedHeader: ReactNode = header;
   if (isValidElement(header)) {
@@ -573,23 +577,30 @@ export function LayoutDashboard({
     if (headerKids.length === 1 && isHeadingLevel2Element(headerKids[0])) {
       const headline = nodeToText((headerKids[0].props as { children?: ReactNode }).children).trim();
       if (headline) {
-        const firstMain = mainComponents[0];
-        if (firstMain && firstMain.type === 'Text' && (firstMain.element.props as { variant?: unknown }).variant === 'lead') {
-          const subtitle = nodeToText((firstMain.element.props as { children?: ReactNode }).children).trim() || null;
-          timelineHeader = { headline, subtitle };
-          mainComponents = mainComponents.filter((c) => c.index !== firstMain.index);
-          renderedHeader = (
-            <div
-              className="dashboard-header"
-              style={{
-                marginLeft: '-40px',
-                marginRight: '-40px',
-              }}
-            >
-              <TimelineStyleHeader headline={headline} subtitle={subtitle} />
-            </div>
-          );
+        const leadCandidate = mainComponents
+          .slice(0, 3)
+          .find((c) => c.type === 'Text' && (c.element.props as { variant?: unknown }).variant === 'lead');
+
+        const subtitle = leadCandidate
+          ? (nodeToText((leadCandidate.element.props as { children?: ReactNode }).children).trim() || null)
+          : null;
+
+        timelineHeader = { headline, subtitle };
+        if (leadCandidate) {
+          mainComponents = mainComponents.filter((c) => c.index !== leadCandidate.index);
         }
+
+        renderedHeader = (
+          <div
+            className="dashboard-header"
+            style={{
+              marginLeft: '-40px',
+              marginRight: '-40px',
+            }}
+          >
+            <TimelineStyleHeader headline={headline} subtitle={subtitle} />
+          </div>
+        );
       }
     }
   }
