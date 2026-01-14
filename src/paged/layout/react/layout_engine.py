@@ -13,111 +13,113 @@ class ReactLayoutEngine:
         """
         return """# CHART DOCUMENTATION
 
+## CHART DECISION RULES
+
+1. **Related data** (time-series, percentages, comparisons) → USE standard charts
+2. **Options differing across dimensions ("A vs B" comparison)** OR **3D data** (x, y, size) → USE ChartBubble
+4. **Unrelated metrics** → USE BigNum/MetricGroup, NOT charts
+5. **Custom charts** → ONLY when user explicitly requests (e.g., "use rose chart")
+
+**Examples:**
+- ✅ "Q1: $100K, Q2: $150K, Q3: $200K" → ChartBar/ChartLine (related time-series)
+- ✅ "Market share: A 45%, B 30%, C 25%" → ChartPie (related percentages)
+- ✅ "Option A suits high-X/high-Y, Option B suits low-X/low-Y" → ChartBubble (dimensional difference)
+- ❌ "Revenue: $1.2M, Users: 50K, Growth: 25%" → MetricGroup (unrelated metrics)
+- ❌ "99.38% reliability" → BigNum (single metric)
+
 ## CHART TYPE SELECTION
-**PRIORITY: If source content or user instruction explicitly specifies a chart type, USE THAT CHART TYPE.**
 
-When NO chart type is specified, select based on data patterns:
-| Data Pattern | Chart Type | Component |
-|--------------|------------|-----------|
-| Time-series/cumulative | area | `<ChartArea gradient={true}/>` |
-| Categorical comparison | bar | `<ChartBar/>` |
-| Before/after comparison | bar (clustered) | `<ChartBar data={[{label, before, after}]}/>` |
-| Rankings/sorted values | barStats | `<BarStats sortDescending={true}/>` |
-| Proportions (~100%) | pie/doughnut | `<ChartPie variant="donut"/>` |
-| 3D relationships | bubble | `<ChartBubble data={[{label, x, y, size}]}/>` |
-| Multivariate (4+ attrs) | radar | `<ChartRadar/>` (needs 3+ data points) |
-| Cyclical/periodic | polarArea | `<ChartPolar/>` |
-| Direction/wind distribution | rose | `<ChartCustom type="rose"/>` |
+| Data Pattern | Component |
+|--------------|-----------|
+| Categorical comparison | `<ChartBar/>` |
+| Before/after | `<ChartBar data={[{label, before, after}]}/>` |
+| Trends over time | `<ChartLine/>` |
+| Time-series/cumulative | `<ChartArea gradient={true}/>` |
+| Proportions (~100%) | `<ChartPie variant="donut"/>` |
+| Rankings | `<BarStats sortDescending={true}/>` |
+| Multivariate (4+ attrs) | `<ChartRadar/>` |
+| Cyclical/periodic | `<ChartPolar/>` |
+| Options across 2 dimensions / 3D data | `<ChartBubble/>` |
 
-## STANDARD CHART COMPONENTS
-| Component | Best For | Example |
-|-----------|----------|---------|
-| ChartBar | Categorical comparison | Sales by product |
-| ChartLine | Trends over time | Monthly growth |
-| ChartPie | Proportions (variant="donut" for doughnut) | Market share |
-| ChartArea | Cumulative trends, time-series with volume | Revenue over months |
-| ChartBubble | 3D data (x, y, size) | Price vs Sales vs Volume |
-| ChartRadar | 4+ attributes per item | Product comparison matrix |
-| ChartPolar | Cyclical patterns | Monthly distribution |
-| BarStats | Rankings, sorted comparisons | Top 10 products |
+## BUBBLE CHART (ChartBubble)
 
-## CUSTOM CHART (ChartCustom) - For Novel Visualizations
-Use `<ChartCustom>` when standard charts don't fit or user requests custom visualization.
+**Two use cases:**
 
-**Supported Types (type prop):**
-| Type | Description | Best For |
-|------|-------------|----------|
-| `scatter` | Points with custom shapes | Comparing discrete items |
-| `bar` | Vertical bars with custom styles | Category comparison |
-| `horizontal-bar` | Horizontal bars | Rankings, long labels |
-| `line` | Line with custom point shapes | Trends over time |
-| `area` | Filled area with custom styling | Cumulative data |
-| `pie` | Pie/donut chart | Proportions |
-| `pictogram` | Repeating icons (isotype chart) | Making data tangible |
-| `lollipop` | Line + shape markers | Clean comparison |
-| `waffle` | 10x10 grid chart | Percentages out of 100 |
-| `radial` | Circular progress bars | Progress/completion |
-| `rose` | Nightingale/coxcomb chart | Direction distribution, cyclical data with magnitude |
-| `funnel` | Funnel/conversion chart | Sales pipeline, conversion rates |
-| `gauge` | Speedometer/dial | Single value progress |
-| `treemap` | Nested rectangles | Hierarchical proportions |
+### 1. Compare options across 2 dimensions (Strategic Positioning Map)
+When options behave differently across 2 dimensions:
+- Option A excels in one direction, Option B excels in the opposite
+- Position bubbles in opposite corners to show they serve different needs
+- **Use relative values (0-100)** for x/y - NOT real data numbers
+- **Include description** to explain what each option is best for
 
-**Custom Shapes (shape prop):**
-`water droplet`, `star`, `heart`, `cloud`, `flame`, `leaf`, `diamond`, `hexagon`, `circle`
+**Examples:**
+- Tool A (high volume, low complexity) vs Tool B (low volume, high complexity)
+- Mode A (structured, precise) vs Mode B (flexible, interactive)
 
-**Bar Styles (style prop):**
-`default`, `rounded`, `pill`, `gradient`, `striped`, `3d`
-
-**ChartCustom Syntax Examples:**
 ```jsx
-// Pictogram with star icons
-<ChartCustom type="pictogram" shape="star" data={[{label: "Team A", value: 5}]} colorScheme="purple"/>
-
-// Waffle chart for percentages
-<ChartCustom type="waffle" data={[{label: "Complete", value: 73}, {label: "Remaining", value: 27}]}/>
-
-// Rose chart for direction distribution
-<ChartCustom type="rose" data={[{label: "N", value: 145}, {label: "NE", value: 98}, {label: "E", value: 67}]} colorScheme="teal"/>
-
-// Radial progress chart
-<ChartCustom type="radial" data={[{label: "Sales", value: 75}, {label: "Growth", value: 60}]}/>
-
-// Gauge for single value
-<ChartCustom type="gauge" data={[{label: "Performance", value: 85}]} colorScheme="green"/>
+<ChartBubble
+  title="Option Positioning"
+  xLabel="Dimension X"
+  yLabel="Dimension Y"
+  data={[
+    {label: "Option A", description: "Best for X scenarios", x: 25, y: 30, size: 50},
+    {label: "Option B", description: "Best for Y scenarios", x: 80, y: 75, size: 50}
+  ]}
+/>
 ```
 
-**ChartCustom Props:**
-- `type`: Chart paradigm (see table above)
-- `shape`: Custom point/icon shape
-- `style`: Bar style variant
-- `data`: Array of `{label, value}`
-- `colorScheme`: `blue|green|red|purple|orange|teal|pink|rainbow`
-- `showGrid`, `showValues`, `donut`: boolean options
+**Positioning map rules:**
+- x/y values are relative positions (0-100 scale), NOT real measurements
+- Bubbles auto-size to fit labels comfortably (don't set extreme size values)
+- Add `description` field to explain each option's strength (displayed inside bubble)
+- Axis labels describe the dimension conceptually, not numeric values
 
-## CHART DATA FORMAT (CRITICAL)
-Using wrong data properties causes EMPTY charts:
+### 2. Visualize 3-dimensional data
+When you have real numeric data with 3 dimensions (x, y, size):
 
-| Component | Required Format | Example |
-|-----------|----------------|---------|
-| ChartCustom | `{label, value}` | `{label: "Item", value: 50}` |
-| ChartArea | `{label, value}` | `{label: "Jan", value: 100}` |
-| ChartBar (simple) | `{label, value}` | `{label: "Q1", value: 50}` |
+**Examples:**
+- Products by Price (x) vs Quality (y) vs Sales Volume (size)
+- Countries by GDP (x) vs Population (y) vs Growth Rate (size)
+
+```jsx
+<ChartBubble
+  title="Product Analysis"
+  xLabel="Price"
+  yLabel="Quality Score"
+  data={[
+    {label: "Product A", x: 150, y: 85, size: 1200},
+    {label: "Product B", x: 80, y: 60, size: 3500}
+  ]}
+/>
+```
+
+**Rules:** For positioning maps use relative values (0-100); for real data use actual values
+
+## CUSTOM CHARTS (ChartCustom)
+
+**⚠️ ONLY use when user explicitly requests a specific chart type** (e.g., "use rose chart", "show as waffle").
+Otherwise, always use standard charts above.
+
+| Type | Best For |
+|------|----------|
+| `pictogram` | Making data tangible with icons |
+| `waffle` | Percentages out of 100 |
+| `rose` | Cyclical data with magnitude |
+| `funnel` | Conversion rates, pipelines |
+| `gauge` | Single value progress |
+| `radial` | Progress/completion bars |
+| `treemap` | Hierarchical proportions |
+
+## DATA FORMAT
+
+| Component | Format | Example |
+|-----------|--------|---------|
+| ChartBar/Line/Area/Pie/Polar/Radar/BarStats | `{label, value}` | `{label: "Q1", value: 50}` |
 | ChartBar (clustered) | `{label, before, after}` | `{label: "Sales", before: 80, after: 120}` |
-| BarStats | `{label, value}` | `{label: "Region A", value: 85}` |
-| ChartPie/Doughnut | `{label, value}` | `{label: "Segment", value: 30}` |
-| ChartPolar | `{label, value}` | `{label: "Mon", value: 250}` |
-| ChartRadar | `{label, value}` | `{label: "Speed", value: 80}` |
-| ChartBubble | `{label, x, y, size}` | `{label: "Item", x: 10, y: 20, size: 50}` |
+| ChartBubble | `{label, x, y, size, description?}` | `{label: "Option A", description: "Best for X", x: 80, y: 75, size: 50}` |
+| ChartCustom | `{label, value}` | `{label: "Item", value: 50}` |
 
-**⚠️ NEVER use arbitrary keys** like `revenue`, `signups`, `sales` - components ignore unknown properties!
-- BAD: `data={[{label: "Q1", revenue: 50}]}` ← renders EMPTY
-- GOOD: `data={[{label: "Q1", value: 50}]}` ← renders correctly
-
-## CHART LAYOUT RULES
-- **ONE chart per slide** - never 2 charts or chart+image together
-- Use LayoutSplit to pair chart with explanation text
-- Charts work best in: split, dashboard, stacked layouts
-- **3+ data points** → use Chart, not multiple BigNum/Metrics"""
+**⚠️ NEVER use arbitrary keys** like `revenue`, `sales` - components ignore unknown properties!"""
 
     @classmethod
     def get_layout_prompt(cls) -> str:
