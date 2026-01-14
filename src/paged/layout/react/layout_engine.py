@@ -221,6 +221,11 @@ Use when context is needed to INTERPRET the data:
 - "Visual block" = anything that isn't just Heading/Text/SmartList
 - Text-only slides with just Heading + SmartList look INCOMPLETE
 
+**⚠️ VISUAL CONSISTENCY RULE**: Same or analogous concepts on ONE slide MUST use the SAME component type.
+- BAD: Left side uses BigNum for "Revenue", Right side uses Text for "Profit" → visual mismatch confuses readers
+- GOOD: Both use BigNum, or both use Metric inside MetricGroup
+- This applies to: metrics, lists, process steps, cards - keep parallel concepts visually parallel
+
 **Metrics**: BigNum (hero stat with trend), MetricGroup (3-4 KPIs), MetricStrip (inline row)
 **Content**: SmartList (bullet points), CardGroup (feature cards), QuoteBlock, TableData
 **Text**: Heading (level 1-3), Text (lead/body/caption), Highlight (inline emphasis)
