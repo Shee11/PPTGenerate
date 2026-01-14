@@ -18,10 +18,12 @@
  *     <Heading level={2}>Dashboard Title</Heading>
  *   </Header>
  *   <Main>
- *     <ChartBar data={chartData} />
+ *     <BigNum value="$1.2M" label="Revenue" />
+ *     <Text variant="lead">Key summary</Text>
  *   </Main>
  *   <Sidebar>
  *     <MetricGroup metrics={metrics} />
+ *     <ChartBar data={chartData} />
  *   </Sidebar>
  * </LayoutDashboard>
  * ```
@@ -73,7 +75,7 @@ export function Header({ children }: DashboardSlotProps): JSX.Element {
 }
 Header.displayName = 'Header';
 
-/** Dashboard Main Content Slot */
+/** Dashboard Main Content Slot (1/3 width - summary/key metrics) */
 export function Main({ children }: DashboardSlotProps): JSX.Element {
   return (
     <div className="dashboard-main">
@@ -83,7 +85,7 @@ export function Main({ children }: DashboardSlotProps): JSX.Element {
 }
 Main.displayName = 'Main';
 
-/** Dashboard Sidebar Slot */
+/** Dashboard Sidebar Slot (2/3 width - detailed content/appendix) */
 export function Sidebar({ children }: DashboardSlotProps): JSX.Element {
   return (
     <div className="dashboard-sidebar">
@@ -313,7 +315,7 @@ function SyncBody({ rows }: SyncBodyProps): JSX.Element {
       className="dashboard-body dashboard-body-sync"
       style={{
         display: 'grid',
-        gridTemplateColumns: '1fr minmax(400px, 480px)',
+        gridTemplateColumns: 'minmax(400px, 640px) 1fr',
         gap: '40px',
         alignContent: 'center',
         alignItems: 'stretch',
@@ -334,7 +336,7 @@ function SyncBody({ rows }: SyncBodyProps): JSX.Element {
               style={{ 
                 gridColumn: '1 / -1',
                 display: 'flex',
-                justifyContent: row.main[0] ? 'flex-start' : 'flex-end',
+                justifyContent: 'flex-start',
               }}
             >
               {headline.element}
