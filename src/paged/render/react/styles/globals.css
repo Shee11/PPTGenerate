@@ -118,9 +118,13 @@ body {
 }
 
 .slide {
-  /* Fixed slide dimensions - 1920x1080 canvas */
-  width: 1920px;
-  height: 1080px;
+  /* Fixed slide dimensions - 1920x1080 canvas (must override Tailwind preflight) */
+  width: 1920px !important;
+  height: 1080px !important;
+  min-width: 1920px !important;
+  min-height: 1080px !important;
+  max-width: none !important;
+  max-height: none !important;
   aspect-ratio: 16 / 9;
   background: linear-gradient(135deg, var(--theme-bg) 0%, color-mix(in srgb, var(--theme-bg) 95%, var(--theme-primary) 5%) 100%);
   display: flex;
@@ -129,12 +133,7 @@ body {
   overflow: hidden;
   box-shadow: 0 25px 80px rgba(0, 0, 0, 0.5);
   border-radius: 4px;
-
-  /* Scale to fit 95% of viewport while maintaining aspect ratio */
-  --scale-x: calc(95vw / 1920);
-  --scale-y: calc(95vh / 1080);
-  --scale: min(var(--scale-x), var(--scale-y));
-  transform: scale(var(--scale));
+  /* transform is applied via JavaScript for reliable cross-browser scaling */
   transform-origin: center center;
 }
 
@@ -167,11 +166,13 @@ body {
   -webkit-text-fill-color: transparent;
   background-clip: text;
   margin: 0;
+  line-height: 1.2;
+  padding: 0.1em 0;
 }
 
 .layout-cover .text-lead {
   font-size: 1.5rem;
-  max-width: 1000px;
+  max-width: 1400px;
   color: var(--theme-text-muted, #64748b);
 }
 
@@ -245,6 +246,11 @@ body {
   align-content: center; /* Center the row vertically on the page */
 }
 
+/* LayoutSplit typography tweaks: reduce heading bottom whitespace in dense two-column layouts */
+.layout-split .heading-2 {
+  margin-bottom: 0.25rem;
+}
+
 .layout-split-left,
 .layout-split-right {
   display: flex;
@@ -260,6 +266,48 @@ body {
 .layout-split-1-2 { grid-template-columns: 1fr 2fr; }
 .layout-split-3-1 { grid-template-columns: 3fr 1fr; }
 .layout-split-1-3 { grid-template-columns: 1fr 3fr; }
+
+/* LayoutSplit Sync Mode - grid-based component alignment */
+.layout-split-sync {
+  grid-auto-rows: auto;
+}
+
+.layout-split-sync .layout-split-row {
+  min-height: 0;
+}
+
+.layout-split-sync .layout-split-row-headline {
+  padding-bottom: 0rem;
+  margin-bottom:-1rem;
+}
+
+.layout-split-sync .layout-split-cell {
+  min-height: 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.layout-split-sync .layout-split-cell-empty {
+  /* Empty placeholder cell */
+}
+
+.layout-split-sync .layout-split-cell-item {
+  min-height: 0;
+  position: relative;
+}
+
+/* NoSync mode - traditional flex layout */
+.layout-split-nosync .layout-split-left,
+.layout-split-nosync .layout-split-right {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  justify-content: flex-start;
+  height: auto;
+  max-height: 100%;
+}
 
 .layout-grid {
   display: grid;
@@ -280,8 +328,10 @@ body {
 
 /* LayoutGrid content container spans full width by default */
 .layout-grid > .metric-group-block,
-.layout-grid > .card-group {
+.layout-grid > .card-group,
+.layout-grid > .callout {
   grid-column: 1 / -1;
+  justify-self: stretch;
 }
 
 /* LayoutGrid caption at bottom */
@@ -323,36 +373,104 @@ body {
   flex: 1;
   min-height: 0;
   overflow: hidden;
-  align-items: center; /* Vertically center main + sidebar content */
+  align-items: start;
 }
 
 /* Dashboard main content area */
 .dashboard-main {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
-  overflow: auto;
+  overflow: visible;
   min-height: 0;
-  justify-content: center; /* Vertically center content within main */
 }
 
-/* Dashboard sidebar */
+/* Dashboard main inner content wrapper */
+.dashboard-main-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  width: 100%;
+}
+
+/* Dashboard sidebar container */
 .dashboard-sidebar {
+  display: flex;
+  flex-direction: column;
+  overflow: visible;
+  min-height: 0;
+}
+
+/* Dashboard sidebar inner wrapper - matches main content height */
+.dashboard-sidebar-inner {
   display: flex;
   flex-direction: column;
   gap: 1rem;
   background: var(--theme-surface, #f8fafc);
   border-radius: 1rem;
   padding: 1.25rem;
-  overflow: auto;
-  min-height: 0;
-  justify-content: center; /* Vertically center content within sidebar */
+  justify-content: center; /* Center by default */
+  width: 100%;
+}
+
+/* When sidebar has heading, top-align and remove top padding */
+.dashboard-sidebar-inner:has(> .heading-3:first-child) {
+  justify-content: flex-start;
+  padding-top: 0;
+}
+
+/* Dashboard typography balance - match section headers */
+.dashboard-main-content > .text-lead:first-child,
+.dashboard-sidebar-inner > .heading-3:first-child {
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--theme-text);
+  margin-bottom: 1rem;
+  line-height: 1.3;
+  width: 100%;
+  max-width: none;
 }
 
 /* Dashboard footer */
 .layout-dashboard > .dashboard-footer {
   flex-shrink: 0;
   padding-top: 0.5rem;
+}
+
+/* Dashboard Sync Mode */
+.layout-dashboard-sync .dashboard-body-sync {
+  overflow: visible;
+}
+
+.layout-dashboard-sync .dashboard-row {
+  min-height: 0;
+}
+
+.layout-dashboard-sync .dashboard-row-headline {
+  padding-bottom: 0.25rem;
+}
+
+.layout-dashboard-sync .dashboard-cell {
+  min-height: 0;
+  min-width: 0;
+}
+
+.layout-dashboard-sync .dashboard-cell-empty {
+  /* Empty placeholder cell */
+}
+
+.layout-dashboard-sync .dashboard-cell-item {
+  min-height: 0;
+}
+
+/* NoSync mode - traditional layout */
+.layout-dashboard-nosync .dashboard-body {
+  display: grid;
+  grid-template-columns: 1fr minmax(400px, 480px);
+  gap: 40px;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  align-items: start;
 }
 
 /* Fallback: when slots are used as direct children (standalone components) */
@@ -383,6 +501,18 @@ body {
 .layout-dashboard > footer,
 .layout-dashboard > [class*="Footer"]:not(.dashboard-footer) {
   flex-shrink: 0;
+}
+
+/* Dashboard typography balance - match section headers */
+.dashboard-main > .text-lead:first-child,
+.dashboard-sidebar > .heading-3:first-child {
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--theme-text);
+  margin-bottom: 1rem;
+  line-height: 1.3;
+  width: 100%;
+  max-width: none;
 }
 
 .layout-fullbleed {
@@ -983,8 +1113,8 @@ body {
   align-items: center;
   justify-content: flex-start;
   gap: 0;
-  flex-wrap: wrap;
-  row-gap: 16px;
+  flex-wrap: nowrap;
+  overflow-x: auto;
 }
 
 .process-step {
@@ -1058,17 +1188,26 @@ body {
 
 .process-status-pending {
   background: var(--theme-surface, #f8fafc);
-  border-color: var(--theme-border, #e2e8f0);
-  opacity: 0.7;
+  border-color: var(--theme-border, #cbd5e1);
+  border-style: dashed;
 }
 
 .process-status-pending .process-step-label {
   color: var(--theme-text-muted);
 }
 
+.process-pending-icon {
+  font-size: 16px;
+  color: var(--theme-text-muted);
+}
+
 .process-status-neutral {
   background: var(--theme-surface, #f8fafc);
-  border-color: var(--theme-border, #e2e8f0);
+  border-color: var(--theme-border, #94a3b8);
+}
+
+.process-status-neutral .process-step-label {
+  margin: auto;
 }
 
 /* Connector arrow */
@@ -1080,9 +1219,9 @@ body {
 }
 
 .process-arrow {
-  font-size: 24px;
+  width: 24px;
+  height: 24px;
   color: var(--theme-text-muted);
-  font-weight: 300;
 }
 
 /* Compact variant */
@@ -1100,7 +1239,8 @@ body {
 }
 
 .process-strip-compact .process-arrow {
-  font-size: 18px;
+  width: 18px;
+  height: 18px;
 }
 
 /* Print styles */

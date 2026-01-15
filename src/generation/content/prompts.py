@@ -82,12 +82,14 @@ Follow the draft slide's `story` and `visual_design` fields exactly:
 - NARRATIVE → `<Text variant="lead">` or `<SmartList>`
 - EVIDENCE (numbers) → `<MetricGroup>`, `<BigNum>`, Charts
 - EVIDENCE (branching graphs) → `<NetworkGraph>` with JSX children (Node, Edge, Group)
-- EVIDENCE (linear flows) → `<ProcessStrip>` for A→B→C sequences
+- EVIDENCE (linear flows) → `<ProcessStrip mode="linear">` for A→B→C sequences
+- EVIDENCE (cyclical flows) → `<ProcessStrip mode="circular">` for recurring cycles
 - TAKEAWAY → `<Callout>` or `<Text variant="caption">`
 
 # VISUAL SELECTION
 - Use NetworkGraph when visual_design mentions branching "architecture", "network", "org chart" (nodes connect to multiple targets)
-- Use ProcessStrip for "flow", "pipeline", "sequence", "stages" (linear A→B→C)
+- Use ProcessStrip mode="linear" for "flow", "pipeline", "sequence", "stages" (linear A→B→C)
+- Use ProcessStrip mode="circular" for "cycle", "loop", "recurring", "continuous" processes
 - Use Chart when visual_design mentions "chart", "comparison", "trend"
 - Default to Text/SmartList for narrative content
 - Each slide should combine text AND visual, but one leads
@@ -106,6 +108,21 @@ Follow the draft slide's `story` and `visual_design` fields exactly:
 - BAD: SmartList followed by another SmartList without Heading between them
 - GOOD: Single SmartList with all related items combined in one items array
 - If lists represent different topics, each MUST have its own Heading before it
+
+# SMARTLIST VARIANT SELECTION (choose appropriate variant based on content)
+- **default**: Standard bullet or numbered list - use for general narrative points
+- **cards**: Each item in a card with left accent border - use for key insights, feature lists, or when items need visual emphasis
+- **highlight**: Text with highlighted keywords - use for data-focused content where numbers or key terms need to stand out
+  - Provide items as objects: `{{ text: "Revenue grew by 40%", highlight: "40%" }}`
+- **checklist**: Green checkmark items - use for completed items, requirements met, or success criteria
+- **timeline**: Vertical timeline with dots - use for sequential steps, milestones, or chronological events
+- **compact**: Dense small-font list - use for supplementary info, footnotes, or sidebar content
+
+# SMARTLIST HIGHLIGHT BEST PRACTICES
+- Use highlight variant when content contains metrics, percentages, or key terms that should pop
+- Keep highlights short (1-3 words) - the highlighted text should be the key data point
+- Example: `{{ text: "Customer satisfaction improved to 85%", highlight: "85%" }}`
+- Example: `{{ text: "Launch scheduled for Q3 2024", highlight: "Q3 2024" }}`
 
 # SPACE MANAGEMENT (70% MINIMUM COVERAGE)
 - **EVERY PAGE must fill ≥70% of vertical space** with content

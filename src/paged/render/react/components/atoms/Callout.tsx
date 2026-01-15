@@ -1,9 +1,9 @@
 /**
  * Callout Component (L3 Atom)
- * 
+ *
  * Semantic callout/alert component for highlighting important information.
  * Supports different intents (info, warning, success, danger).
- * 
+ *
  * Usage:
  * ```mdx
  * <Callout intent="info">This is informational</Callout>
@@ -26,6 +26,8 @@ export interface CalloutProps {
   intent?: Intent;
   /** Optional title */
   title?: string;
+  /** Text alignment */
+  align?: 'left' | 'center' | 'right';
 }
 
 // =============================================================================
@@ -45,26 +47,29 @@ const icons: Record<Intent, string> = {
 
 /**
  * Callout Component
- * 
+ *
  * Renders a highlighted callout box with intent-based styling.
- * 
+ *
  * @param intent - Semantic intent (info, warning, success, danger)
  * @param title - Optional title text
+ * @param align - Text alignment (left, center, right)
  * @param children - Callout content
  */
 export function Callout({
   children,
   intent = 'info',
   title,
+  align = 'left',
 }: CalloutProps): JSX.Element {
   const className = `callout callout-${intent}`;
-  const icon = icons[intent];
-  
+
   return (
-    <aside className={className} role="note" aria-label={`${intent} callout`}>
-      <span className="callout-icon" aria-hidden="true">
-        {icon}
-      </span>
+    <aside
+      className={className}
+      role="note"
+      aria-label={`${intent} callout`}
+      data-align={align}
+    >
       <div className="callout-content">
         {title && <strong className="callout-title">{title}</strong>}
         <div className="callout-body">{children}</div>

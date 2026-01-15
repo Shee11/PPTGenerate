@@ -501,9 +501,17 @@ class ReactMDXRenderer:
             intent = params.get("intent", "info")
             title = params.get("title", "")
             text = params.get("text", "")
+            align = params.get("align", "left")
+            
+            # Build props
+            props = [f'intent="{intent}"']
             if title:
-                return f'{self._indent()}<Callout intent="{intent}" title="{title}">{text}</Callout>'
-            return f'{self._indent()}<Callout intent="{intent}">{text}</Callout>'
+                props.append(f'title="{title}"')
+            if align and align != "left":
+                props.append(f'align="{align}"')
+            
+            props_str = " ".join(props)
+            return f'{self._indent()}<Callout {props_str}>{text}</Callout>'
         
         # Default: render as Text
         text = params.get("text", str(params))
