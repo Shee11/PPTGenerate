@@ -138,7 +138,7 @@ You are designing slides as MDX markup. Match layout to the visual_design intent
 - Cover pages should feel SPACIOUS and IMPACTFUL, not cramped with data
 
 **LayoutSplit** — Use when pairing text with visual, or showing two related concepts.
-- Best: metric + context, chart + explanation, before/after
+- Best: metric + context, chart + explanation, before/after, **ChartBubble comparisons** (Left: Context, Right: Bubble)
 - Slots: Left, Right | ratio: 1:1, 2:1, 1:2, 3:1, 1:3
 - Components: Any combination of Heading, Text, BigNum, SmartList, Charts
 - **HEADING RULE**: Use the SAME heading level on both sides (both level={2} or both level={3}). Never mix heading levels in a split layout.
@@ -157,21 +157,20 @@ You are designing slides as MDX markup. Match layout to the visual_design intent
 - Best: storytelling, explanations, step-by-step instructions
 - Components: Heading, Text, SmartList, TableData
 
-**LayoutGrid** — Use for parallel items of equal importance.
-- Best: features, team, products, categories
-- Slots: Col ×2-4 | cols: 2, 3, 4
-- Components: CardGroup, MetricGroup, Heading
-
 **LayoutFullBleed** — Use for visual impact with background image.
 - Best: hero moments, emotional beats, section transitions
 - Components: Heading, QuoteBlock, BigNum (overlay on image)
+- **🚫 FORBIDDEN on LayoutFullBleed**: TableData, SmartList, MetricGroup, Charts, CardGroup
+- FullBleed is for IMPACT, not data - use Split/Dashboard for data-heavy content
 
 **LayoutDashboard** — Use for data-dense KPI displays.
-- Best: metrics overview, performance summary, status report
+- Best: metrics overview, performance summary, status report, **Process Flows**
 - Slots: Header, Main, Sidebar, Footer
 - **Header slot**: Heading level={2} ONLY (no Text, no lead paragraph)
-- **Main slot (1/3 width)**: Summary only - BigNum, Text variant="lead" (NO MetricGroup - too narrow)
-- **Sidebar slot (2/3 width)**: Detailed content - MetricGroup, Charts, Tables, SmartList
+- **Main slot (Left, 1/3 width)**: Narrow context column. Best for Vertical Lists (SmartList, StepList), Key Takeaways (Callout), or Summary Text.
+- **Sidebar slot (Right, 2/3 width)**: Wide visual column. Best for Hero Charts, ProcessStrips, MetricGroups.
+- **CRITICAL**: Put visual anchors (Charts/Process) in **Sidebar** (Wide). Put text/lists in **Main** (Narrow).
+- **NOTE**: Dashboard body (Main + Sidebar) is vertically centered; Header stays at top
 - **NOTE**: Dashboard body (Main + Sidebar) is vertically centered; Header stays at top
 
 **LayoutTimeline** — Use for chronological milestones with rich content per event.
@@ -541,7 +540,9 @@ If you don't have enough content for 4+ elements per side, use LayoutStacked ins
 - Lists max 4 items, body max 25 words
 - Split layouts: BOTH sides need visual blocks, not just text
 - **NO GAPS**: content should fill the page, not leave holes
-- **NO REDUNDANCY**: Never show same data twice (e.g., MetricGroup + BigNum with same numbers)"""
+- **NO REDUNDANCY**: Never show same data twice (e.g., MetricGroup + BigNum with same numbers)
+- **NEVER NEST LAYOUTS**: LayoutDashboard, LayoutGrid, LayoutTimeline, LayoutCover, LayoutFullBleed are TOP-LEVEL ONLY. Never place inside <Left>, <Right>, <Main>, <Sidebar>, or any slot. Only components (Heading, BigNum, SmartList, etc.) go inside slots.
+- **NO DUPLICATE PROCESS VISUALS**: Never use both ProcessStrip AND StepList on same slide - they serve same purpose. Pick ONE."""
 
     @classmethod
     def calculate(cls, slides, theme, style):
