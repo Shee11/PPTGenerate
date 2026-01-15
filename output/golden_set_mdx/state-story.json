@@ -18,7 +18,7 @@
           "audience": null,
           "purpose": null,
           "tone": "professional",
-          "target_slides": 11,
+          "target_slides": 10,
           "selected_theme": null,
           "selected_vibe": null
         },
@@ -33,7 +33,7 @@
         "type": "atoms",
         "status": "completed",
         "params": {
-          "source_path": "/home/shuowan/code/gggg/data/context/golden_set.md",
+          "source_path": "data/context/golden_set.md",
           "content_type": "text/markdown",
           "extraction_prompt": ""
         },
@@ -119,7 +119,7 @@
     ]
   },
   "source": {
-    "path": "/home/shuowan/code/gggg/data/context/golden_set.md",
+    "path": "data/context/golden_set.md",
     "content_hash": "065f8ae5d80b7220",
     "content_type": "text/markdown",
     "storyline_path": "/data2/shuo/ppt_gen/output/storyline_results/story_demo/storyline_Next‑Gen Speech & Interpreter — LT Executive Review_gemini.txt"
@@ -894,7 +894,7 @@
         "abstract": "Teams speech experiences are converging onto a unified multilingual stack.",
         "source_ref": {
           "source_id": "065f8ae5d80b7220",
-          "file_path": "/home/shuowan/code/gggg/data/context/golden_set.md",
+          "file_path": "data/context/golden_set.md",
           "offset": 0,
           "length": 330,
           "line_number": null
@@ -917,7 +917,7 @@
         "abstract": "Turn‑by‑Turn Interpreter is introduced to fix SIM accuracy and flow gaps.",
         "source_ref": {
           "source_id": "065f8ae5d80b7220",
-          "file_path": "/home/shuowan/code/gggg/data/context/golden_set.md",
+          "file_path": "data/context/golden_set.md",
           "offset": 330,
           "length": 520,
           "line_number": null
@@ -940,7 +940,7 @@
         "abstract": "Multilingual STT has shipped to R0/R1 with auto language detection.",
         "source_ref": {
           "source_id": "065f8ae5d80b7220",
-          "file_path": "/home/shuowan/code/gggg/data/context/golden_set.md",
+          "file_path": "data/context/golden_set.md",
           "offset": 850,
           "length": 420,
           "line_number": null
@@ -958,7 +958,7 @@
         "abstract": "Transcript Enricher is correcting high‑value meetings at scale.",
         "source_ref": {
           "source_id": "065f8ae5d80b7220",
-          "file_path": "/home/shuowan/code/gggg/data/context/golden_set.md",
+          "file_path": "data/context/golden_set.md",
           "offset": 1270,
           "length": 420,
           "line_number": null
@@ -976,7 +976,7 @@
         "abstract": "Batch S2S display models improved readability across Tier‑1 locales.",
         "source_ref": {
           "source_id": "065f8ae5d80b7220",
-          "file_path": "/home/shuowan/code/gggg/data/context/golden_set.md",
+          "file_path": "data/context/golden_set.md",
           "offset": 1690,
           "length": 220,
           "line_number": null
@@ -994,7 +994,7 @@
         "abstract": "Customers see accuracy issues on technical terms, names, and numbers.",
         "source_ref": {
           "source_id": "065f8ae5d80b7220",
-          "file_path": "/home/shuowan/code/gggg/data/context/golden_set.md",
+          "file_path": "data/context/golden_set.md",
           "offset": 1910,
           "length": 260,
           "line_number": null
@@ -1013,7 +1013,7 @@
         "abstract": "Latency and flow issues in SIM affect meeting experience.",
         "source_ref": {
           "source_id": "065f8ae5d80b7220",
-          "file_path": "/home/shuowan/code/gggg/data/context/golden_set.md",
+          "file_path": "data/context/golden_set.md",
           "offset": 2170,
           "length": 260,
           "line_number": null
@@ -1032,7 +1032,7 @@
         "abstract": "Tone and gender/voice mismatches in JP/KR raise RAI concerns.",
         "source_ref": {
           "source_id": "065f8ae5d80b7220",
-          "file_path": "/home/shuowan/code/gggg/data/context/golden_set.md",
+          "file_path": "data/context/golden_set.md",
           "offset": 2430,
           "length": 260,
           "line_number": null
@@ -1051,7 +1051,7 @@
         "abstract": "SIM semantic mode and TTS acceleration improve quality and latency.",
         "source_ref": {
           "source_id": "065f8ae5d80b7220",
-          "file_path": "/home/shuowan/code/gggg/data/context/golden_set.md",
+          "file_path": "data/context/golden_set.md",
           "offset": 2690,
           "length": 330,
           "line_number": null
@@ -1069,7 +1069,7 @@
         "abstract": "TBT R0 is available with strong JP/KR feedback but 25‑session limit.",
         "source_ref": {
           "source_id": "065f8ae5d80b7220",
-          "file_path": "/home/shuowan/code/gggg/data/context/golden_set.md",
+          "file_path": "data/context/golden_set.md",
           "offset": 3020,
           "length": 420,
           "line_number": null
@@ -1087,7 +1087,7 @@
         "abstract": "SIM latency mitigations include speedup mode and audio prefix.",
         "source_ref": {
           "source_id": "065f8ae5d80b7220",
-          "file_path": "/home/shuowan/code/gggg/data/context/golden_set.md",
+          "file_path": "data/context/golden_set.md",
           "offset": 4700,
           "length": 420,
           "line_number": null
@@ -1105,7 +1105,7 @@
         "abstract": "Transcription++ elevates transcription into an enterprise understanding layer.",
         "source_ref": {
           "source_id": "065f8ae5d80b7220",
-          "file_path": "/home/shuowan/code/gggg/data/context/golden_set.md",
+          "file_path": "data/context/golden_set.md",
           "offset": 3650,
           "length": 360,
           "line_number": null
@@ -1127,7 +1127,7 @@
         "abstract": "Real‑time quality layer focuses on entity enrichment and latency mitigation.",
         "source_ref": {
           "source_id": "065f8ae5d80b7220",
-          "file_path": "/home/shuowan/code/gggg/data/context/golden_set.md",
+          "file_path": "data/context/golden_set.md",
           "offset": 8420,
           "length": 320,
           "line_number": null
@@ -1150,7 +1150,7 @@
         "abstract": "Admin Center reporting and metering enable governance and value articulation.",
         "source_ref": {
           "source_id": "065f8ae5d80b7220",
-          "file_path": "/home/shuowan/code/gggg/data/context/golden_set.md",
+          "file_path": "data/context/golden_set.md",
           "offset": 2110,
           "length": 260,
           "line_number": null
@@ -1168,7 +1168,7 @@
         "abstract": "Unified evaluation uses LLM‑as‑judge for end‑to‑end quality metrics.",
         "source_ref": {
           "source_id": "065f8ae5d80b7220",
-          "file_path": "/home/shuowan/code/gggg/data/context/golden_set.md",
+          "file_path": "data/context/golden_set.md",
           "offset": 6760,
           "length": 420,
           "line_number": null
@@ -1187,7 +1187,7 @@
         "abstract": "Multi‑recognizer platform enables hot‑switching between model families.",
         "source_ref": {
           "source_id": "065f8ae5d80b7220",
-          "file_path": "/home/shuowan/code/gggg/data/context/golden_set.md",
+          "file_path": "data/context/golden_set.md",
           "offset": 7180,
           "length": 320,
           "line_number": null
@@ -1206,7 +1206,7 @@
         "abstract": "GPU capacity and LLM onboarding timelines are key risks.",
         "source_ref": {
           "source_id": "065f8ae5d80b7220",
-          "file_path": "/home/shuowan/code/gggg/data/context/golden_set.md",
+          "file_path": "data/context/golden_set.md",
           "offset": 4760,
           "length": 260,
           "line_number": null
@@ -1225,7 +1225,7 @@
         "abstract": "Admin reporting data ownership and latency need alignment.",
         "source_ref": {
           "source_id": "065f8ae5d80b7220",
-          "file_path": "/home/shuowan/code/gggg/data/context/golden_set.md",
+          "file_path": "data/context/golden_set.md",
           "offset": 5020,
           "length": 260,
           "line_number": null
@@ -1244,7 +1244,7 @@
         "abstract": "Responsible AI risks include harassment and misgendering.",
         "source_ref": {
           "source_id": "065f8ae5d80b7220",
-          "file_path": "/home/shuowan/code/gggg/data/context/golden_set.md",
+          "file_path": "data/context/golden_set.md",
           "offset": 5280,
           "length": 260,
           "line_number": null
@@ -1263,7 +1263,7 @@
         "abstract": "North star is >80% CSAT for interpreter with SIM and TBT modes.",
         "source_ref": {
           "source_id": "065f8ae5d80b7220",
-          "file_path": "/home/shuowan/code/gggg/data/context/golden_set.md",
+          "file_path": "data/context/golden_set.md",
           "offset": 8060,
           "length": 260,
           "line_number": null
@@ -1284,7 +1284,7 @@
         "abstract": "Interpreter MAU is 136k with +1.9% MoM growth.",
         "source_ref": {
           "source_id": "065f8ae5d80b7220",
-          "file_path": "/home/shuowan/code/gggg/data/context/golden_set.md",
+          "file_path": "data/context/golden_set.md",
           "offset": 5520,
           "length": 80,
           "line_number": null
@@ -1303,7 +1303,7 @@
         "abstract": "Interpreter WAU is 38.3k with −2.5% WoW change.",
         "source_ref": {
           "source_id": "065f8ae5d80b7220",
-          "file_path": "/home/shuowan/code/gggg/data/context/golden_set.md",
+          "file_path": "data/context/golden_set.md",
           "offset": 5600,
           "length": 80,
           "line_number": null
@@ -1322,7 +1322,7 @@
         "abstract": "Monthly meeting count is 106k with +5.4% MoM growth.",
         "source_ref": {
           "source_id": "065f8ae5d80b7220",
-          "file_path": "/home/shuowan/code/gggg/data/context/golden_set.md",
+          "file_path": "data/context/golden_set.md",
           "offset": 5680,
           "length": 80,
           "line_number": null
@@ -1341,7 +1341,7 @@
         "abstract": ">5‑min meeting rate is 62.2% with +2.1% MoM.",
         "source_ref": {
           "source_id": "065f8ae5d80b7220",
-          "file_path": "/home/shuowan/code/gggg/data/context/golden_set.md",
+          "file_path": "data/context/golden_set.md",
           "offset": 5760,
           "length": 80,
           "line_number": null
@@ -1360,7 +1360,7 @@
         "abstract": "E2E reliability is 99.38% with +0.2% MoM.",
         "source_ref": {
           "source_id": "065f8ae5d80b7220",
-          "file_path": "/home/shuowan/code/gggg/data/context/golden_set.md",
+          "file_path": "data/context/golden_set.md",
           "offset": 5840,
           "length": 80,
           "line_number": null
@@ -1379,7 +1379,7 @@
         "abstract": "Interpreter CSAT is 71% with −2% MoM.",
         "source_ref": {
           "source_id": "065f8ae5d80b7220",
-          "file_path": "/home/shuowan/code/gggg/data/context/golden_set.md",
+          "file_path": "data/context/golden_set.md",
           "offset": 5920,
           "length": 80,
           "line_number": null
@@ -1398,7 +1398,7 @@
         "abstract": "Multilingual STT entity recall improved from 65.42 to 74.76.",
         "source_ref": {
           "source_id": "065f8ae5d80b7220",
-          "file_path": "/home/shuowan/code/gggg/data/context/golden_set.md",
+          "file_path": "data/context/golden_set.md",
           "offset": 6320,
           "length": 120,
           "line_number": null
@@ -1417,7 +1417,7 @@
         "abstract": "Post‑meeting inaccuracy reduced from 19.5% to 12.3% (−37%).",
         "source_ref": {
           "source_id": "065f8ae5d80b7220",
-          "file_path": "/home/shuowan/code/gggg/data/context/golden_set.md",
+          "file_path": "data/context/golden_set.md",
           "offset": 6480,
           "length": 140,
           "line_number": null
@@ -1436,7 +1436,7 @@
         "abstract": "Domain entity errors decreased by 34% with Enricher.",
         "source_ref": {
           "source_id": "065f8ae5d80b7220",
-          "file_path": "/home/shuowan/code/gggg/data/context/golden_set.md",
+          "file_path": "data/context/golden_set.md",
           "offset": 6620,
           "length": 80,
           "line_number": null
@@ -1455,7 +1455,7 @@
         "abstract": "Accent/dialect issues decreased by 31% with Enricher.",
         "source_ref": {
           "source_id": "065f8ae5d80b7220",
-          "file_path": "/home/shuowan/code/gggg/data/context/golden_set.md",
+          "file_path": "data/context/golden_set.md",
           "offset": 6700,
           "length": 80,
           "line_number": null
@@ -1474,7 +1474,7 @@
         "abstract": "CSAT increased from 42.95% to 62.32% after Enricher.",
         "source_ref": {
           "source_id": "065f8ae5d80b7220",
-          "file_path": "/home/shuowan/code/gggg/data/context/golden_set.md",
+          "file_path": "data/context/golden_set.md",
           "offset": 6780,
           "length": 120,
           "line_number": null
@@ -1493,7 +1493,7 @@
         "abstract": "Target interpreter CSAT is >80% vs current 71%.",
         "source_ref": {
           "source_id": "065f8ae5d80b7220",
-          "file_path": "/home/shuowan/code/gggg/data/context/golden_set.md",
+          "file_path": "data/context/golden_set.md",
           "offset": 8060,
           "length": 120,
           "line_number": null
@@ -1512,7 +1512,7 @@
         "abstract": "Vision tagline: unified real‑time multilingual understanding in Teams.",
         "source_ref": {
           "source_id": "065f8ae5d80b7220",
-          "file_path": "/home/shuowan/code/gggg/data/context/golden_set.md",
+          "file_path": "data/context/golden_set.md",
           "offset": 6040,
           "length": 220,
           "line_number": null
@@ -1531,7 +1531,7 @@
         "abstract": "TBT uses GPT‑4o‑realtime and Azure Voice Live API for better tone.",
         "source_ref": {
           "source_id": "065f8ae5d80b7220",
-          "file_path": "/home/shuowan/code/gggg/data/context/golden_set.md",
+          "file_path": "data/context/golden_set.md",
           "offset": 7320,
           "length": 220,
           "line_number": null
@@ -1549,7 +1549,7 @@
         "abstract": "Tier‑1 custom dictionary is GA; global dictionary under integration.",
         "source_ref": {
           "source_id": "065f8ae5d80b7220",
-          "file_path": "/home/shuowan/code/gggg/data/context/golden_set.md",
+          "file_path": "data/context/golden_set.md",
           "offset": 6940,
           "length": 260,
           "line_number": null
@@ -1567,7 +1567,7 @@
         "abstract": "Vision includes unified multilingual model for transcription and interpretation.",
         "source_ref": {
           "source_id": "065f8ae5d80b7220",
-          "file_path": "/home/shuowan/code/gggg/data/context/golden_set.md",
+          "file_path": "data/context/golden_set.md",
           "offset": 8320,
           "length": 260,
           "line_number": null
@@ -1585,7 +1585,7 @@
         "abstract": "Visual: KPI snapshot table for Interpreter usage and quality.",
         "source_ref": {
           "source_id": "065f8ae5d80b7220",
-          "file_path": "/home/shuowan/code/gggg/data/context/golden_set.md",
+          "file_path": "data/context/golden_set.md",
           "offset": 5520,
           "length": 480,
           "line_number": null
@@ -1672,28 +1672,30 @@
       "id": "slide_03",
       "rank": 3,
       "state": "draft",
-      "story": "Complication: Identify specific pain points preventing expansion",
+      "story": "Complication: Identify specific pain points preventing expansion and the proposed solutions",
       "density": "moderate",
-      "visual_design": "Two-column layout: left side bulleted list of gaps, right side high-quality imagery of a professional boardroom.",
+      "visual_design": "Two-column layout: left = gaps/pain points; right = strategic pillars/solution. Optional 1-line connector in the middle: 'So we…'.",
       "content": {
-        "headline": "Quality gaps can stall enterprise expansion",
-        "category": "Complication",
+        "headline": "Close the quality gaps to unlock enterprise scale",
+        "subtitle": "What’s stalling expansion—and the 3-pillar plan to fix it",
+        "category": "Complication → Answer",
         "sections": [
           {
-            "title": "Unresolved Gaps",
+            "title": "What’s stalling enterprise expansion (gaps)",
             "bullets": [
-              {
-                "text": "Entity Errors: Names and technical terms often 'almost right.'"
-              },
-              {
-                "text": "Flow/Latency: Initial delays degrade meeting rhythm."
-              },
-              {
-                "text": "Market Gaps: Tone/naturalness issues in JP/KR markets."
-              },
-              {
-                "text": "Admin Blockers: Incomplete reporting & licensing confusion."
-              }
+              { "text": "Entity errors: names and technical terms are often “almost right.”" },
+              { "text": "Flow/latency: first-turn delays degrade meeting rhythm." },
+              { "text": "Market gaps: tone/naturalness issues in JP/KR." },
+              { "text": "Admin blockers: incomplete reporting + licensing confusion." }
+            ]
+          },
+          {
+            "title": "How we fix it (strategy)",
+            "bullets": [
+              { "text": "Unified platform: converge Interpreter + Captions/Transcription on one multilingual stack with shared endpoints and schemas." },
+              { "text": "Adaptive modes: SIM for fluid conversations; TBT for structured, high-stakes meetings to improve flow and clarity." },
+              { "text": "Quality layer: improve entity correctness with global/custom dictionaries + Enricher at scale." },
+              { "text": "Enterprise controls: admin reporting, metering, and rollout quality gates to enable governance and confident expansion." }
             ]
           }
         ]
@@ -1705,38 +1707,6 @@
     {
       "id": "slide_04",
       "rank": 4,
-      "state": "draft",
-      "story": "Answer: Present the high-level solution/vision",
-      "density": "minimal",
-      "visual_design": "Three-tile grid with icons representing the Unified Platform, Adaptive Modes, and Quality Layer.",
-      "content": {
-        "headline": "Make multilingual meetings accurate, smooth, and scalable",
-        "subtitle": "Unified speech stack + TBT for flow + entity-accurate transcripts at scale",
-        "category": "Answer",
-        "sections": [
-          {
-            "title": "Strategic Pillars",
-            "bullets": [
-              {
-                "text": "Unified Platform: Converge Interpreter + Captions onto one multilingual stack with shared endpoints."
-              },
-              {
-                "text": "Adaptive Modes: SIM for fluid conversations; TBT to structurally fix flow in structured meetings."
-              },
-              {
-                "text": "Quality Layer: Entity correctness via Global/Custom dictionaries and Enricher scaling."
-              }
-            ]
-          }
-        ]
-      },
-      "atoms": [],
-      "layout": "",
-      "widgets": {}
-    },
-    {
-      "id": "slide_05",
-      "rank": 5,
       "state": "draft",
       "story": "Situation: Validating current progress with existing building blocks",
       "density": "moderate",
@@ -1769,8 +1739,8 @@
       "widgets": {}
     },
     {
-      "id": "slide_06",
-      "rank": 6,
+      "id": "slide_05",
+      "rank": 5,
       "state": "draft",
       "story": "Answer: Prove the effectiveness of the Enricher tool with data",
       "density": "dense",
@@ -1803,12 +1773,12 @@
       "widgets": {}
     },
     {
-      "id": "slide_07",
-      "rank": 7,
+      "id": "slide_06",
+      "rank": 6,
       "state": "draft",
       "story": "Answer: Explain the value proposition of Turn-by-Turn (TBT) mode",
       "density": "moderate",
-      "visual_design": "Two-column: left side shows the selection framework; right side shows a 2x2 matrix of meeting structure vs. mode.",
+      "visual_design": "Use a visual to reinforce the main message",
       "content": {
         "headline": "TBT is the accuracy-and-flow escape hatch",
         "category": "Answer",
@@ -1834,8 +1804,8 @@
       "widgets": {}
     },
     {
-      "id": "slide_08",
-      "rank": 8,
+      "id": "slide_07",
+      "rank": 7,
       "state": "draft",
       "story": "Answer: Explain the risk mitigation strategy via Quality Gates",
       "density": "moderate",
@@ -1865,8 +1835,8 @@
       "widgets": {}
     },
     {
-      "id": "slide_09",
-      "rank": 9,
+      "id": "slide_08",
+      "rank": 8,
       "state": "draft",
       "story": "Answer: Detail the administrative and governance strategy",
       "density": "moderate",
@@ -1896,8 +1866,8 @@
       "widgets": {}
     },
     {
-      "id": "slide_10",
-      "rank": 10,
+      "id": "slide_09",
+      "rank": 9,
       "state": "draft",
       "story": "Answer: Visualize the timeline for upcoming releases and goals",
       "density": "moderate",
@@ -1955,8 +1925,8 @@
       "widgets": {}
     },
     {
-      "id": "slide_11",
-      "rank": 11,
+      "id": "slide_10",
+      "rank": 10,
       "state": "draft",
       "story": "ending: Summary of risks and final decision request",
       "density": "dense",

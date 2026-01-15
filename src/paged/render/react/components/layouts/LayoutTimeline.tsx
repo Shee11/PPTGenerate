@@ -31,6 +31,12 @@ export interface LayoutTimelineProps {
   start?: string;
   /** Optional explicit axis end (e.g. "H2 2026") */
   end?: string;
+  /** Extend the timeline at start/end to show continuation.
+   * - 'start': leave extra space at the beginning (timeline continues from past)
+   * - 'end': leave extra space at the end (timeline continues into future)
+   * - 'none': no extension, items fill the available space
+   */
+  extend?: 'start' | 'end' | 'none';
 }
 
 export interface LayoutTimelineItemProps {
@@ -355,6 +361,7 @@ export function LayoutTimeline({
   subtitle,
   start,
   end,
+  extend = 'end',
 }: LayoutTimelineProps): JSX.Element {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const measureRef = useRef<null | ((text: string, font: string) => number)>(null);
@@ -579,15 +586,28 @@ export function LayoutTimeline({
       const maxWidthFromContainer = Math.floor(w - 2 * marginPx);
       targetWidth = Math.min(targetWidth, maxWidthFromContainer);
 
+      // Extension space: reserve extra space at start/end for visual continuation
+      // Dynamically adjust based on number of items: less items = more space, more items = less space
+      const extendStart = extend === 'start';
+      const extendEnd = extend === 'end';
+
       const isFeasible = (candidateWidth: number): { centers: number[]; lefts: number[] } | null => {
-        const leftBound = marginPx + candidateWidth / 2;
-        const rightBound = w - marginPx - candidateWidth / 2;
+        // Scale extendSpace inversely with item count:
+        // - 1-2 items: 60% of box width
+        // - 3-4 items: 40% of box width
+        // - 5+ items: 20% of box width
+        const extendRatio = n <= 2 ? 0.6 : n <= 4 ? 0.4 : 0.2;
+        const extendSpace = candidateWidth * extendRatio;
+        const leftBound = marginPx + candidateWidth / 2 + (extendStart ? extendSpace : 0);
+        const rightBound = w - marginPx - candidateWidth / 2 - (extendEnd ? extendSpace : 0);
         if (leftBound > rightBound) return null;
 
         const span = rightBound - leftBound;
         const desiredCenters = tByIndex.map((t) => leftBound + t * span);
 
-        const minSep = candidateWidth + minGap;
+        // Allow up to 15% overlap between adjacent nodes to preserve box width
+        const overlapAllowance = candidateWidth * 0.15;
+        const minSep = candidateWidth - overlapAllowance + minGap;
         const centers = computeFeasibleCenters({ desiredCenters, leftBound, rightBound, minSep });
         if (!centers) return null;
 
@@ -629,7 +649,7 @@ export function LayoutTimeline({
     const ro = new ResizeObserver(() => compute());
     ro.observe(container);
     return () => ro.disconnect();
-  }, [items, start, end]);
+  }, [items, start, end, extend]);
 
   return (
     <div
@@ -649,6 +669,9 @@ export function LayoutTimeline({
               fontSize: '4rem',
               fontWeight: 700,
               color: 'var(--theme-text)',
+              textWrap: 'wrap',
+              width: '100%',
+              maxWidth: 'none',
             }}
           >
             {headline}

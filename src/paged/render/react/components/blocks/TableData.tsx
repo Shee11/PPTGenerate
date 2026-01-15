@@ -113,9 +113,10 @@ export function TableData({
       )}
       
       {/* Main Table Content */}
-      <div className="table-wrapper">
+      <div className="table-wrapper" style={{ width: '100%' }}>
         <table 
           className={`data-table ${sizeClass} ${striped ? 'table-striped' : ''}`}
+          style={{ width: '100%' }}
         >
           <thead className={headerHighlight ? 'header-highlight' : ''}>
             <tr>
