@@ -298,6 +298,21 @@ body {
   position: relative;
 }
 
+.layout-split-cell-left[data-mirror="true"] .smart-list-card {
+  border-left: none;
+  border-right: 4px solid var(--theme-accent, #3b82f6);
+}
+
+.layout-split-cell-left[data-mirror="true"] .smart-list-card:hover {
+  transform: translateX(-4px); /* Flip hover direction */
+}
+
+.layout-split-cell-left[data-mirror="true"] .callout,
+.layout-split-cell-left[data-mirror="true"] .block-callout {
+  border-left: none;
+  border-right: 3px solid var(--theme-accent);
+}
+
 /* NoSync mode - traditional flex layout */
 .layout-split-nosync .layout-split-left,
 .layout-split-nosync .layout-split-right {

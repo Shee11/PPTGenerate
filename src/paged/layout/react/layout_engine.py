@@ -142,6 +142,10 @@ You are designing slides as MDX markup. Match layout to the visual_design intent
 - Slots: Left, Right | ratio: 1:1, 2:1, 1:2, 3:1, 1:3
 - Components: Any combination of Heading, Text, BigNum, SmartList, Charts
 - **HEADING RULE**: Use the SAME heading level on both sides (both level={2} or both level={3}). Never mix heading levels in a split layout.
+- **MIRROR VARIANT**: Use `mirrorLeft={true}` when:
+  - The left and right sides represent a **direct comparison** (e.g., "Problem vs Solution", "Before vs After", "Old vs New", "Option A vs Option B").
+  - This variant aligns the Left content to the right (towards the center) and Right content to the left (towards the center), creating a symmetric "mirror" effect.
+  - **Best with ratio="1:1"**, but works with others if content is balanced.
 - **DIAGRAM RULE for Split Layouts**:
   - NetworkGraph in ANY split layout should use `direction="TB"` (vertical/top-to-bottom) to maximize height
   - Split columns are narrow → horizontal diagrams look cramped and short
