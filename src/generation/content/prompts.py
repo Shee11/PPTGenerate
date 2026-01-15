@@ -83,11 +83,13 @@ Don't just list facts; visualize relationships.
 |--------|----------|------------------|
 | `LayoutCover` | Transitions, Titles, Closings | Minimalist. Headline + Subtitle + Quote. No heavy data. |
 | LayoutSplit | Comparisons (A vs B), Visual Proof | Context on Left, Data/Visual on Right. **SYMMETRY RULE**: In `LayoutSplit`, **BOTH** Left and Right slots **MUST** begin with a Header. **NO EXCEPTIONS**. |
-| LayoutDashboard | KPI Overview, Process Flows | **Main (Narrow/Left)**: Context/Lists. **Sidebar (Wide/Right)**: Hero Visuals (Charts, Process). |
+| LayoutDashboard | KPI Overview, Process Flows | **Main (Narrow/Left)**: Context/Lists. **Sidebar (Wide/Right)**: Hero Visuals (Charts, Process). **ABSOLUTELY NO TABLES**. |
 | `LayoutTimeline` | History, Roadmaps | Chronological flow. Text-heavy but visually structured. |
-| `LayoutStacked` | Narrative Flow, Wide Tables | Linear storytelling or **Dense Tables** that need full width. |
+| `LayoutStacked` | Narrative Flow, Wide Tables | **Primary Choice for Tables**. Use when you have a large Table or CardGroup that needs full width. |
 
 # CONTENT MAPPING (STORY → COMPONENT)
+- **Table Data**: If the story provides a structured table (rows/cols), use `TableData` inside `LayoutStacked`. **DO NOT** try to break it into a List + Table (Mirroring). Just show the Table once, beautifully explanation above or below it.
+
 
 | Story Element | Component | Note |
 |---------------|-----------|------|
@@ -102,10 +104,24 @@ Don't just list facts; visualize relationships.
 | TAKEAWAY | `Callout` | Boxed summary or insight |
 
 # DEDUPLICATION & ECONOMY (NO REDUNDANCY)
+- **One Concept, One Component**: Do not visualize the same data twice.
+    - **Chart vs List**: If you have a Chart showing data, do NOT write a list of those exact data points next to it.
+    - **Process vs List**: If you have a `ProcessStrip`, do NOT write a `StepList` repeating the steps.
+    - **Table vs List**: If you have a `TableData`, do NOT summarize the rows in a `SmartList`.
 - **Mutual Exclusion**: `ProcessStrip` and `StepList` are **MUTUALLY EXCLUSIVE**.
     - **Scenario A (Visual Focus)**: Use `ProcessStrip` (in Main) + `SmartList` (in Sidebar/Text). Best for `LayoutDashboard`.
     - **Scenario B (Text Focus)**: Use `StepList` (Detailed descriptions). Best for `LayoutSplit` or `LayoutStacked`.
     - **CRITICAL**: Never use `ProcessStrip` and `StepList` together.
+
+# ANTI-PATTERNS (STRICTLY FORBIDDEN)
+- **The "Mirroring" Trap**: In `LayoutSplit`, **NEVER** use the Right side to summarize or "list" the content of the Left side.
+    - **Forbidden**: Left = Table of 5 items; Right = List of the same 5 items.
+    - **Forbidden**: Left = Text description; Right = Checklist of the same points.
+    - **Correction**: If you have a detailed List/Table on one side, use the other side for:
+        1. A **Visual Anchor**: `BigNum` (Key Stat), `Chart` (Impact), or `NetworkGraph` (Concept).
+        2. An **Insight**: `Callout` or `QuoteBlock` comprising the "So What?".
+        3. **Never** just repeat the list.
+- **The "Counting" Metrics**: **NEVER** use `BigNum` to count the number of rows in a table or items in a list (e.g., "5 Decisions", "3 Pillars"). This is noise, not data.
 - **Footer Discipline**: In `LayoutStacked`, the last element is the bottom anchor. Do not put heavy detailed lists (like `StepList`) at the very bottom. Use the bottom slot for a `Callout` (Takeaway) or a `QuoteBlock`.
 
 *Block = A functional unit (e.g., a Chart, a List, a Heading Group).*
@@ -129,7 +145,11 @@ Don't just list facts; visualize relationships.
 - **If using BigNum**: You can use more text, as BigNum takes less space.
 
 # TEXT-ONLY SLIDES ARE FORBIDDEN
-- Every slide MUST have at least one visual block (BigNum, MetricGroup, Chart, CardGroup, ProcessStrip, TableData)
+- Every slide MUST have at least one visual block (BigNum, MetricGroup, Chart, CardGroup, ProcessStrip, TableData).
+- **TableData IS A VISUAL**: A dense `TableData` counts as the visual anchor. You do NOT need to add a Chart or BigNum if you have a good Table.
+- **Layout Choice for Tables**: If you have a Table, use `LayoutStacked`. This is the ONLY layout that handles tables well.
+    - **Forbidden**: Do not put Tables in `LayoutDashboard` (Sidebar is too narrow).
+    - **Forbidden**: Do not put Tables in `LayoutSplit` (Half-width is usually too narrow).
 
 # SMARTLIST VARIANT SELECTION (choose appropriate variant based on content)
 - **default**: Standard bullet or numbered list - use for general narrative points
