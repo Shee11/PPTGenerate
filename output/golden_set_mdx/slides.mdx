@@ -8,261 +8,325 @@ export const meta = {
 };
 
 {/* Slide 1 */}
-<LayoutCover theme="dark">
-    <Heading level={1}>Teams Speech &amp; Interpreter: Trust &amp; Scale Plan</Heading>
-    <Text variant="lead">Unifying multilingual stack and expanding Turn-by-Turn (TBT) mode</Text>
-    <QuoteBlock id="quote_001" author="Speech &amp; Interpreter Team · Product &amp; Engineering · Microsoft Teams">
-      LT Executive Review · 2025-12-25
-    </QuoteBlock>
-  </LayoutCover>
+<LayoutCover theme="corp_modern_v1">
+  <Heading level={1}>Teams Speech &amp; Interpreter: Trust &amp; Scale Plan</Heading>
+  <Text variant="lead">
+    Unifying the multilingual stack and expanding Turn-by-Turn mode for enterprise-grade trust.
+  </Text>
+  <QuoteBlock id="quote_001" author="Speech &amp; Interpreter · Microsoft Teams">
+    LT Executive Review · Dec 25, 2025
+  </QuoteBlock>
+</LayoutCover>
 
 {/* Slide 2 */}
-<LayoutDashboard>
-    <Header>
-      <Heading level={2}>Adoption is rising on 99%+ reliability</Heading>
-    </Header>
-    <Main>
-      <BigNum id="stat_002_hero" value="136k" label="Monthly active users (MAU)" trend="↑ strong momentum"/>
-      <Text variant="lead">Reliability is solved; trust in accuracy and tone is now the constraint.</Text>
-    </Main>
-    <Sidebar>
-      <MetricGroup id="metrics_002" cols={2}>
-        <Metric value="62.2%" label="&gt;5-min meeting rate"/>
-        <Metric value="99.38%" label="E2E reliability"/>
-        <Metric value="71%" label="Customer satisfaction"/>
-        <Metric value="1" label="Primary blocker: trust"/>
-      </MetricGroup>
-      <Callout id="callout_002" tone="warning" title="Critical Blocker">
-        Trust in accuracy and tone is the primary blocker for enterprise scale.
-      </Callout>
-      <Text variant="caption">Focus: move from reliable to trusted for high-stakes enterprise meetings.</Text>
-    </Sidebar>
-  </LayoutDashboard>
+<LayoutDashboard theme="corp_modern_v1">
+  <Header>
+    <Heading level={2}>Adoption is rising on 99%+ reliability</Heading>
+  </Header>
+  <Main>
+    <Text variant="lead">
+      Momentum is strong; the next constraint is <Highlight color="warning">trust in accuracy and tone</Highlight>.
+    </Text>
+    <Callout id="callout_002" variant="warning">
+      Trust in accuracy/tone is the primary blocker for enterprise scale.
+    </Callout>
+  </Main>
+  <Sidebar>
+    <MetricGroup id="metrics_001" cols={2}>
+      <Metric value="136k" label="Monthly active users"/>
+      <Metric value="62.2%" label="&gt;5-min meeting rate"/>
+      <Metric value="99.38%" label="E2E reliability"/>
+      <Metric value="71%" label="Customer satisfaction"/>
+    </MetricGroup>
+    <SmartList
+      id="list_002"
+      items={[
+        "Reliability is effectively solved for current scale.",
+        "Usage and engagement are growing across tenants.",
+        "Perceived accuracy and tone now gate further rollout."
+      ]}
+    />
+  </Sidebar>
+</LayoutDashboard>
 
 {/* Slide 3 */}
-<LayoutSplit ratio="1:1">
-    <Left>
-      <Heading level={2}>What’s stalling enterprise expansion</Heading>
-      <SmartList
-        id="list_003_gaps"
-        items={[
-          "Entity errors: names and technical terms are often almost right",
-          "First-turn latency and flow issues break meeting rhythm",
-          "Tone and naturalness gaps in JP/KR markets",
-          "Admin friction: reporting gaps and licensing confusion"
-        ]}
-      />
-      <Text>These gaps erode trust in high-stakes, multilingual meetings.</Text>
-    </Left>
-    <Right>
-      <Heading level={2}>How we fix it: 3-pillar plan</Heading>
-      <ProcessStrip
-        id="process_003_pillars"
-        items={[
-          "Unified platform",
-          "Adaptive modes",
-          "Quality &amp; controls"
-        ]}
-      />
-      <SmartList
-        id="list_003_pillars"
-        items={[
-          "Unified platform: one multilingual stack with shared endpoints and schemas",
-          "Adaptive modes: SIM for fluid talk; TBT for structured, high-stakes meetings",
-          "Quality layer: global/custom dictionaries + Enricher to fix entities at scale",
-          "Enterprise controls: reporting, metering, and rollout gates for safe expansion"
-        ]}
-      />
-      <Text variant="caption">So we close quality gaps and make scale predictable for enterprises.</Text>
-    </Right>
-  </LayoutSplit>
-
-{/* Slide 4 */}
-<LayoutGrid cols={2}>
-    <Heading level={2}>Key building blocks are already in market</Heading>
-    <CardGroup id="cards_004" columns={2}>
-      <Card
-        title="Multilingual STT"
-        description="9 languages in preview; R0/R1 completed with a unified endpoint live."
-        icon="🌐"
-      />
-      <Card
-        title="Enricher scaling"
-        description="1.8M+ meetings enhanced weekly; ~50% EN/JP coverage achieved."
-        icon="⚙️"
-      />
-      <Card
-        title="TBT readiness"
-        description="Early JP/KR feedback is positive; capacity at 25 concurrent sessions."
-        icon="🔁"
-      />
-      <Card
-        title="TTS speedup"
-        description="1.2–1.35x faster; audio prefix enabled to reduce perceived latency."
-        icon="⚡"
-      />
-    </CardGroup>
-    <MetricGroup id="metrics_004" cols={2}>
-      <Metric value="9" label="Preview languages"/>
-      <Metric value="1.8M+" label="Meetings/week enriched"/>
-      <Metric value="25" label="TBT concurrent sessions"/>
-      <Metric value="1.35x" label="Max TTS speedup"/>
-    </MetricGroup>
-  </LayoutGrid>
-
-{/* Slide 5 */}
-<LayoutSplit ratio="2:1">
-    <Left>
-      <Heading level={2}>Enricher impact: performance vs. baseline</Heading>
-      <TableData
-        id="table_005"
-        headers={["Metric", "Baseline", "Post-Enricher", "Improvement"]}
-        rows={[
-          ["Transcription inaccuracy", "19.5%", "12.3%", "−37%"],
-          ["Domain entity errors", "100%", "66%", "−34%"],
-          ["Accent/dialect issues", "100%", "69%", "−31%"],
-          ["Reported CSAT", "42.95%", "62.32%", "+19.37 pts"]
-        ]}
-      />
-      <Text variant="caption">Improvements focus on high-stakes failure modes: entities, accents, and perceived quality.</Text>
-    </Left>
-    <Right>
-      <Heading level={2}>Why this matters</Heading>
-      <SmartList
-        id="list_005"
-        items={[
-          "Entity and accent fixes directly improve transcript trust",
-          "CSAT gains show users feel the quality lift, not just models",
-          "Batch S2S display upgrades improve readability without higher CoGS"
-        ]}
-      />
-      <BigNum id="stat_005" value="+37%" label="Error reduction on key transcripts"/>
-      <Text>Enricher is a proven lever to raise trust where it matters most.</Text>
-    </Right>
-  </LayoutSplit>
-
-{/* Slide 6 */}
-<LayoutStacked>
-    <Heading level={2}>TBT is the accuracy-and-flow escape hatch</Heading>
-    <Text variant="lead">
-      Turn-by-Turn (TBT) mode trades a bit of immediacy for clearer turns, higher accuracy, and better rhythm in complex meetings.
-    </Text>
-    <ProcessStrip
-      id="process_006_flow"
+<LayoutSplit theme="corp_modern_v1" ratio="1:1">
+  <Left>
+    <Heading level={2}>What’s stalling enterprise expansion</Heading>
+    <StepList
+      id="steps_003"
       items={[
-        {label: "Speaker turn", status: "done"},
-        {label: "Capture &amp; interpret", status: "active"},
-        {label: "Clear playback", status: "pending"}
+        {label: "Entity errors", description: "Names and technical terms are often almost right."},
+        {label: "Flow & latency", description: "First-turn delays break meeting rhythm."},
+        {label: "Market gaps", description: "Tone and naturalness issues in JP/KR."},
+        {label: "Admin blockers", description: "Reporting gaps and licensing confusion."}
+      ]}
+    />
+    <Text>
+      These gaps erode <Highlight color="warning">trust in high-stakes meetings</Highlight>, even when sessions are reliable.
+    </Text>
+  </Left>
+  <Right>
+    <Heading level={2}>How we fix it: 3-pillar plan</Heading>
+    <ProcessStrip
+      id="process_003"
+      items={[
+        {label: "Unified platform", status: "active"},
+        {label: "Adaptive modes", status: "pending"},
+        {label: "Quality & controls", status: "pending"}
       ]}
     />
     <SmartList
+      id="list_003"
+      items={[
+        "Converge Interpreter + Captions/Transcription on one multilingual stack.",
+        "Use SIM for fluid talk; TBT for structured, high-stakes meetings.",
+        "Improve entities with global/custom dictionaries and Enricher at scale.",
+        "Add admin reporting, metering, and rollout quality gates."
+      ]}
+    />
+  </Right>
+</LayoutSplit>
+
+{/* Slide 4 */}
+<LayoutStacked theme="corp_modern_v1">
+  <Heading level={2}>Key building blocks are already in market</Heading>
+  <Text variant="lead">
+    Core capabilities for trust and scale are live; we’re now orchestrating them into a unified experience.
+  </Text>
+  <CardGroup id="cards_004" columns={2}>
+    <Card
+      title="Multilingual STT"
+      description="9 languages in preview; R0/R1 completed with a unified endpoint."
+      icon="🌐"
+    />
+    <Card
+      title="Enricher scaling"
+      description="1.8M+ meetings enhanced weekly; ~50% EN/JP coverage achieved."
+      icon="✨"
+    />
+    <Card
+      title="TBT readiness"
+      description="Positive JP/KR feedback; capacity at 25 concurrent sessions today."
+      icon="🎧"
+    />
+    <Card
+      title="TTS speedup"
+      description="1.2–1.35x faster; audio prefix enabled to cut perceived latency."
+      icon="⚡"
+    />
+  </CardGroup>
+  <Callout id="callout_004" variant="info">
+    The foundation for a unified multilingual stack and TBT expansion is already deployed.
+  </Callout>
+</LayoutStacked>
+
+{/* Slide 5 */}
+<LayoutSplit theme="corp_modern_v1" ratio="2:1">
+  <Left>
+    <Heading level={2}>Enricher impact: performance vs. baseline</Heading>
+    <Text variant="lead">
+      Enricher delivers <Highlight color="success">material quality gains</Highlight> where transcript trust matters most.
+    </Text>
+    <TableData
+      id="table_005"
+      headers={["Metric", "Baseline", "Post-Enricher", "Improvement"]}
+      rows={[
+        ["Transcription inaccuracy", "19.5%", "12.3%", "−37%"],
+        ["Domain entity errors", "100%", "66%", "−34%"],
+        ["Accent/dialect issues", "100%", "69%", "−31%"],
+        ["Reported CSAT", "42.95%", "62.32%", "+19.37 pts"]
+      ]}
+    />
+  </Left>
+  <Right>
+    <Heading level={2}>Where it moves the needle</Heading>
+    <SmartList
+      id="list_005"
+      items={[
+        "Targets high-stakes failure modes: entities, accents, and tone.",
+        "Quality gains show up in CSAT, not just offline scores.",
+        "Batch S2S display upgrades improve readability with no CoGS increase."
+      ]}
+    />
+    <Callout id="callout_005" variant="success">
+      Enricher is a proven lever to convert reliability into <Highlight color="success">perceived quality and trust</Highlight>.
+    </Callout>
+  </Right>
+</LayoutSplit>
+
+{/* Slide 6 */}
+<LayoutDashboard theme="corp_modern_v1">
+  <Header>
+    <Heading level={2}>TBT is the accuracy-and-flow escape hatch</Heading>
+  </Header>
+  <Main>
+    <Text variant="lead">
+      TBT restores <Highlight color="primary">turn clarity</Highlight> where SIM breaks down, especially in JP/KR.
+    </Text>
+    <SmartList
       id="list_006"
       items={[
-        "TBT (R0) improves turn clarity and reduces overlap vs. SIM",
-        "Early JP/KR feedback shows stronger accuracy and clearer turn-taking",
-        "Current limit: 25 concurrent sessions; scaling and hardening are next"
+        "R0 TBT improves turn boundaries and reduces overlap.",
+        "Early JP/KR feedback shows stronger accuracy and clearer turns.",
+        "Current limit: 25 concurrent sessions; scale and hardening next."
       ]}
     />
-    <Text variant="caption">TBT becomes the reliable mode for structured, high-stakes multilingual meetings.</Text>
-  </LayoutStacked>
+  </Main>
+  <Sidebar>
+    <ChartBubble
+      id="chart_006"
+      title="SIM vs. TBT: Flow vs. Structure"
+      xLabel="Turn structure & clarity"
+      yLabel="Conversation fluidity"
+      data={[
+        {
+          label: "SIM mode",
+          description: "Best for free-flowing, low-stakes conversations.",
+          x: 35,
+          y: 85,
+          size: 60
+        },
+        {
+          label: "TBT mode",
+          description: "Best for high-stakes, interpreted meetings.",
+          x: 85,
+          y: 55,
+          size: 60
+        }
+      ]}
+    />
+    <Text variant="caption">
+      TBT complements SIM: customers can choose the right mode for meeting risk and style.
+    </Text>
+  </Sidebar>
+</LayoutDashboard>
 
 {/* Slide 7 */}
-<LayoutDashboard>
-    <Header>
-      <Heading level={2}>Quality gates make rollouts predictable</Heading>
-    </Header>
-    <Main>
-      <BigNum id="stat_007" value="3" label="Quality gate stages" trend="From lab to global tenants"/>
-      <Text variant="lead">Each stage catches different risks before broad rollout.</Text>
-    </Main>
-    <Sidebar>
-      <StepList
-        id="steps_007"
-        items={[
-          {
-            label: "1. LLM-as-judge metrics",
-            description: "Semantic consistency and tone checks; entity errors flagged before tenant deployment."
-          },
-          {
-            label: "2. Live performance telemetry",
-            description: "Track first sentence latency and segmentation success; halt rollout if rhythm degrades."
-          },
-          {
-            label: "3. R0/R1 ring discipline",
-            description: "Mandatory internal and dogfood validation to avoid reliability regressions at scale."
-          }
-        ]}
-      />
-      <Text variant="caption">Result: predictable, low-risk rollouts for H2 expansion.</Text>
-    </Sidebar>
-  </LayoutDashboard>
+<LayoutStacked theme="corp_modern_v1">
+  <Heading level={2}>Quality gates make rollouts predictable</Heading>
+  <Text variant="lead">
+    A three-stage gate turns quality and safety into <Highlight color="primary">preconditions</Highlight> for scale, not afterthoughts.
+  </Text>
+  <StepList
+    id="steps_007"
+    items={[
+      {
+        label: "LLM-as-judge metrics",
+        description: "Semantic consistency and tone checks; entity errors flagged before tenant exposure."
+      },
+      {
+        label: "Live performance telemetry",
+        description: "Track first-sentence latency and segmentation success; halt rollout if rhythm degrades."
+      },
+      {
+        label: "R0/R1 ring discipline",
+        description: "Mandatory validation in internal and dogfood rings to avoid reliability regressions."
+      }
+    ]}
+  />
+  <Callout id="callout_007" variant="info">
+    Quality gates de-risk H2 expansion by catching issues before they reach global tenants.
+  </Callout>
+</LayoutStacked>
 
 {/* Slide 8 */}
-<LayoutSplit ratio="1:1">
-    <Left>
-      <Heading level={2}>Governance makes speech deployable</Heading>
-      <SmartList
-        id="list_008"
-        items={[
-          "Admin Center usage dashboard: tenant adoption, meeting types, language pairs",
-          "Metering integration: enable usage reporting, governance, and value measurement",
-          "Licensing clarity: resolve guest and cross-tenant access blockers"
-        ]}
-      />
-      <Text>Admins get the controls and visibility needed to approve broad rollout.</Text>
-    </Left>
-    <Right>
-      <Heading level={2}>Admin view: what they see</Heading>
-      <ChartBar
-        id="chart_008"
-        title="Sample tenant usage by meeting type"
-        data={[
-          {label: "Internal", value: 55},
-          {label: "Customer", value: 25},
-          {label: "Training", value: 12},
-          {label: "Events", value: 8}
-        ]}
-      />
-      <Text variant="caption">
-        Dark-themed dashboard surfaces adoption patterns and language usage for governance decisions.
-      </Text>
-    </Right>
-  </LayoutSplit>
-
-{/* Slide 9 */}
-<LayoutTimeline headline="Strategic Roadmap: From stabilization to scale" subtitle="Near, future, and north-star milestones">
-    <LayoutTimeline.Item year="Q1 2026">
-      <Heading level={3}>Near plan</Heading>
-      <Text>TBT concurrency scaled to 100 sessions; 9-language unified stack GA; R1 cross-region failover complete.</Text>
-      <Text variant="caption">Goal: stabilize core stack and unblock early scale.</Text>
-    </LayoutTimeline.Item>
-    <LayoutTimeline.Item year="Q2 2026">
-      <Heading level={3}>Future plan</Heading>
-      <Text>Admin governance dashboard in preview; auto-dictionary for tenant terms; full TBT parity on iOS/Android.</Text>
-      <Text variant="caption">Goal: deepen governance and expand device coverage.</Text>
-    </LayoutTimeline.Item>
-    <LayoutTimeline.Item year="H2 2026" highlighted={true}>
-      <Heading level={3}>North star</Heading>
-      <Text>85% satisfaction in JP/KR, predictive zero-latency experience, and 1M+ weekly secured meetings.</Text>
-      <Text variant="caption">Goal: trusted, scalable multilingual meetings across the enterprise.</Text>
-    </LayoutTimeline.Item>
-  </LayoutTimeline>
-
-{/* Slide 10 */}
-<LayoutGrid cols={2}>
-    <Heading level={2}>LT decisions: capacity, governance, and safety</Heading>
-    <TableData
-      id="table_010"
-      headers={["Area", "Decision needed"]}
-      rows={[
-        ["Capacity &amp; platform", "Confirm GPU plan, LLM onboarding timeline, and fallback/compliance paths."],
-        ["Reliability &amp; ops", "Align on SPOF bar, incident ownership, and Voice Live API retry/controller strategy."],
-        ["Enterprise governance", "Assign DRI for Admin reporting CFR and metering validation for Mar 31, 2026 preview."],
-        ["Responsible AI / safety", "Approve guardrails and launch criteria for harassment/misgendering and JP/KR tone control."],
-        ["Policy / compliance", "Decide on recording parity for interpreted audio to unlock recap/compliance scenarios."]
+<LayoutSplit theme="corp_modern_v1" ratio="1:2">
+  <Left>
+    <Heading level={2}>Governance makes speech deployable</Heading>
+    <SmartList
+      id="list_008"
+      items={[
+        "Usage dashboard: track tenant adoption, meeting types, and language pairs.",
+        "Metering: validated data for reporting, governance, and value measurement.",
+        "Licensing clarity: resolve guest and cross-tenant blockers."
       ]}
     />
-    <Callout id="callout_010" tone="info" title="Action required from LT">
-      Align on capacity, governance, and safety decisions this review, so we can confidently scale TBT/SIM quality and meet enterprise commitments.
+    <Text>
+      These are the <Highlight color="primary">admin levers</Highlight> customers need to safely roll out speech at scale.
+    </Text>
+  </Left>
+  <Right>
+    <Heading level={2}>Admin center view (conceptual)</Heading>
+    <ChartBar
+      id="chart_008"
+      title="Sample tenant usage by language pair"
+      data={[
+        {label: "EN↔JP", value: 45},
+        {label: "EN↔KR", value: 30},
+        {label: "EN↔ES", value: 15},
+        {label: "Other pairs", value: 10}
+      ]}
+    />
+    <Text variant="caption">
+      Dark-themed usage dashboard surfaces adoption patterns and governance signals at a glance.
+    </Text>
+    <Callout id="callout_008" variant="info">
+      Public preview of the Admin Center usage dashboard is targeted for Mar 31, 2026.
     </Callout>
-  </LayoutGrid>
+  </Right>
+</LayoutSplit>
+
+{/* Slide 9 */}
+<LayoutTimeline theme="corp_modern_v1" headline="Strategic Roadmap: From Stabilization to Scale" subtitle="Near, Future, and North Star milestones">
+  <LayoutTimeline.Item year="Q1 2026">
+    <Heading level={3}>Near Plan</Heading>
+    <Text>
+      TBT concurrency scaled to 100 sessions; 9-language unified stack GA; R1 cross-region failover complete.
+    </Text>
+  </LayoutTimeline.Item>
+  <LayoutTimeline.Item year="Q2 2026">
+    <Heading level={3}>Future Plan</Heading>
+    <Text>
+      Admin preview of Speech Governance Dashboard; auto-dictionary for tenant terms; full TBT parity on iOS/Android.
+    </Text>
+  </LayoutTimeline.Item>
+  <LayoutTimeline.Item year="H2 2026" highlighted={true}>
+    <Heading level={3}>North Star</Heading>
+    <Text>
+      85% satisfaction in JP/KR premium markets, near-zero perceived latency, and 1M+ weekly secured interpreted meetings.
+    </Text>
+  </LayoutTimeline.Item>
+</LayoutTimeline>
+
+{/* Slide 10 */}
+<LayoutStacked theme="corp_modern_v1">
+  <Heading level={2}>LT decisions: capacity, governance, and safety</Heading>
+  <Text variant="lead">
+    A small set of <Highlight color="primary">cross-org decisions</Highlight> will determine whether we can safely scale SIM/TBT.
+  </Text>
+  <TableData
+    id="table_010"
+    headers={["Area", "Key decision", "Owner?"]}
+    rows={[
+      [
+        "Capacity & platform",
+        "Approve GPU plan and LLM onboarding timeline; align on fallbacks and compliance controls.",
+        ""
+      ],
+      [
+        "Reliability & ops",
+        "Set SPOF/error-handling bar and incident ownership across rings and environments.",
+        ""
+      ],
+      [
+        "Governance (Admin + metering)",
+        "Assign DRI for Admin reporting and metering validation for usage dashboard preview.",
+        ""
+      ],
+      [
+        "Responsible AI / safety",
+        "Approve guardrails and launch criteria for harassment/misgendering and JP/KR tone bar.",
+        ""
+      ],
+      [
+        "Policy / compliance",
+        "Decide on recording parity for interpreted audio to unlock recap/compliance scenarios.",
+        ""
+      ]
+    ]}
+  />
+  <Callout id="callout_010" variant="warning">
+    <Highlight color="warning" bold>Action required:</Highlight> Align on these decisions this review to unblock H2 scale and governance commitments.
+  </Callout>
+</LayoutStacked>

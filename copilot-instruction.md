@@ -36,7 +36,7 @@ TAKEAWAY: What audience should remember
 - Diagram needs (flowchart, architecture, etc.)
 
 ### Phase 3: Content & Layout Execution
-**Tool**: `ContentTool` in `src/tools/content.py`  
+**Tool**: `ContentTool` in `src/tools/content.py`
 **Prompts**: `src/generation/content/prompts.py`
 **Input**: Draft slides with `story` + `visual_design` + AtomCollection
 **Output**: Active slides with `layout` + `widgets` + `mdx` populated
@@ -44,7 +44,7 @@ TAKEAWAY: What audience should remember
 **Responsibility**:
 - Select concrete layout based on `visual_design`
 - Populate widgets with atoms to render the `story`
-- Render NARRATIVE from story as `<Text variant="lead">` 
+- Render NARRATIVE from story as `<Text variant="lead">`
 - Render TAKEAWAY from story as `<Text variant="caption">` or `<Callout>`
 - Fill visual space effectively (no empty areas)
 
@@ -66,30 +66,30 @@ TAKEAWAY: What audience should remember
 
 ## Prompt Update Guidelines
 
-### Rule 1: Update/Merge, Never Append
+### Rule 1: Update/Merge, Never Append or Patch Loosely
 
 When modifying prompts in any generation stage:
-- **UPDATE** existing sections with new content
-- **MERGE** new rules into existing rule lists
-- **NEVER append** new sections at the end creating duplicate concepts
-- **REMOVE** conflicting or outdated instructions when adding new ones
+1. **READ AS A WHOLE**: Before editing, understand the entire prompt structure.
+2. **MERGE NEW CONTENT**: Do not just tack on new rules at the end or patch small specific lines. Refactor the relevant section to include the new logic naturally.
+3. **MAINTAINABLE STRUCTURE**: Keep the prompt organized (e.g., by Principles, Layouts, Content rules).
+4. **REMOVE OBSOLETE**: If adding a new rule contradicts an old one, remove the old one.
 
-**Anti-pattern**:
-```python
-# BAD: Appending creates bloated, contradictory prompts
-prompt = existing_prompt + """
-## NEW SECTION
-New rules that may conflict with existing rules above...
-"""
-```
+**Anti-pattern (Patching)**:
+- Using `replace_string_in_file` to change one line of a 10-line block, making the block incoherent.
+- Appending "NEW RULE: Don't do X" at the bottom when "Do X" is still at the top.
 
-**Correct pattern**:
-```python
-# GOOD: Find and replace the relevant section
-# If adding VISUAL SELECTION rules, find existing visual guidance and update it
-```
+**Correct Pattern (refactoring)**:
+- Read the whole block.
+- Rewrite the block with the new logic integrated.
+- Replace the whole block.
 
-### Rule 2: Length Restriction
+### Rule 2: Creative Prompts > Micro-Management
+
+- **Use Creative Principles**: Instead of "FORBIDDEN: don't use X with Y", say "PRINCIPLE: X and Y serve distinct purposes; use X for flow and Y for structure."
+- **Fewer Examples**: Don't list 10 "BAD" examples. Give 1-2 powerful "GOOD" examples or a clear principle.
+- **Micro-management is brittle**: Forbidden lists grow indefinitely. Principles scale.
+
+### Rule 3: Length Restriction
 
 | Stage | Max Prompt Lines | Prompt File | Formatter File |
 |-------|------------------|-------------|----------------|
@@ -99,13 +99,13 @@ New rules that may conflict with existing rules above...
 | Layout (how) | ≤100 lines | `src/paged/layout/react/layout_engine.py` | `layout_generator.py` |
 
 **Architecture**:
-- `prompts.py` → Content prompts (WHAT to say: storytelling, narrative, evidence)
-- `layout_engine.py` → Layout prompts (HOW to render: layouts, widgets, MDX syntax)
-- `layout_generator.py` → Orchestrator only (composes prompts, NO actual prompt text)
+- `prompts.py` → Content generation instruction (System Prompt Construction)
+- `layout_engine.py` → Layout/Component documentation (Three parts: Chart, Layout, Constrain)
+- `layout_generator.py` → Orchestrator only
 
 **Why**: Longer prompts dilute key instructions. LLMs follow the most recent/prominent rules, causing earlier rules to be ignored.
 
-### Rule 3: Single Source of Truth
+### Rule 4: Single Source of Truth
 
 Each concept should appear in ONE place:
 - **Density interpretation** → Story stage only
@@ -115,7 +115,7 @@ Each concept should appear in ONE place:
 
 If you find the same concept in multiple files, consolidate it.
 
-### Rule 4: Module Boundaries
+### Rule 5: Module Boundaries
 
 `src/generation/content/` must be **layout-engine agnostic**:
 - Should NOT know about MDX, React, Slidev, or any specific rendering format
@@ -164,7 +164,7 @@ When asked to "run e2e cli" or "test e2e" or "regenerate" or "full generation", 
 To regenerate slides from scratch (creates new state.json with fresh content):
 
 ```powershell
-.venv\Scripts\python.exe -m cli --source "data/context/golden_set.md" --user-instruction-file "data/context/golden_set_instruction_singlestep.md" --project react-mdx --mdx-theme purple --export-html --output "output/golden_set_mdx/"
+.venv\Scripts\python.exe -m cli --source "data/context/golden_set.md" --user-instruction-file "data/context/golden_set_instruction_singlestep.md" --project react-mdx --mdx-theme purple --export-html --output "output/golden_set_mdx/"  
 ```
 
 This will:
