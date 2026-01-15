@@ -131,6 +131,30 @@ Don't just list facts; visualize relationships.
 # TEXT-ONLY SLIDES ARE FORBIDDEN
 - Every slide MUST have at least one visual block (BigNum, MetricGroup, Chart, CardGroup, ProcessStrip, TableData)
 
+# SMARTLIST VARIANT SELECTION (choose appropriate variant based on content)
+- **default**: Standard bullet or numbered list - use for general narrative points
+- **cards**: Each item in a card with left accent border - use for key insights, feature lists, or when items need visual emphasis
+- **highlight**: Text with highlighted keywords - use for data-focused content where numbers or key terms need to stand out
+  - Provide items as objects: `{{ text: "Revenue grew by 40%", highlight: "40%" }}`
+- **checklist**: Green checkmark items - use for completed items, requirements met, or success criteria
+- **timeline**: Vertical timeline with dots - use for sequential steps, milestones, or chronological events
+- **compact**: Dense small-font list - use for supplementary info, footnotes, or sidebar content
+
+# SMARTLIST HIGHLIGHT BEST PRACTICES
+- Use highlight variant when content contains metrics, percentages, or key terms that should pop
+- Keep highlights short (1-3 words) - the highlighted text should be the key data point
+- Example: `{{ text: "Customer satisfaction improved to 85%", highlight: "85%" }}`
+- Example: `{{ text: "Launch scheduled for Q3 2024", highlight: "Q3 2024" }}`
+
+# SPACE MANAGEMENT (70% MINIMUM COVERAGE)
+- **EVERY PAGE must fill ≥70% of vertical space** with content
+- Split layouts: BOTH sides need 4+ elements EACH (Heading + visual + text + support)
+- Both sides of split must span similar vertical height (visual overlap)
+- Dashboard/Stacked: ALL slots need content, no empty or sparse slots
+- Never leave gaps/holes - content should flow continuously
+- AVOID: sparse pages that look like work-in-progress
+- If content is limited, use simpler layout (LayoutStacked) rather than leave gaps
+
 {chart_docs}
 
 {layout_docs}
