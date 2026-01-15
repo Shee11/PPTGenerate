@@ -26,7 +26,7 @@
  * ```
  */
 
-import React from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import {
   ScatterChart,
   Scatter,
@@ -67,9 +67,24 @@ const GRADIENT_COLORS = [
 // Axis arrow color
 const AXIS_COLOR = '#6b7280';
 
-// Bubble size ranges
-const POSITIONING_BUBBLE_SIZE_RANGE: [number, number] = [4000, 8000];  // Large bubbles for labels
+// Base bubble size ranges (will be scaled based on chart size)
 const DATA_BUBBLE_SIZE_RANGE: [number, number] = [100, 600];  // Smaller for data viz
+
+/**
+ * Calculate bubble size range based on chart dimensions
+ * For positioning mode, bubbles should be ~15-25% of the smaller chart dimension
+ */
+const calculateBubbleSizeRange = (width: number, height: number, bubbleCount: number): [number, number] => {
+  const minDimension = Math.min(width, height);
+  // Target bubble diameter: 15-25% of chart for positioning maps
+  // Adjust based on number of bubbles to prevent overlap
+  const scaleFactor = Math.max(0.6, 1 - (bubbleCount - 2) * 0.1); // Reduce size if many bubbles
+  const targetDiameter = minDimension * 0.20 * scaleFactor;
+  // ZAxis range is area (πr²), so we need to convert diameter to area
+  const minArea = Math.PI * Math.pow(targetDiameter * 0.4, 2);
+  const maxArea = Math.PI * Math.pow(targetDiameter * 0.6, 2);
+  return [Math.round(minArea), Math.round(maxArea)];
+};
 
 // =============================================================================
 // Types
@@ -141,6 +156,28 @@ export function ChartBubble({
   positioningMap,
 }: ChartBubbleProps): JSX.Element {
   const chartSize = sizeMap[size] || sizeMap.md;
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [dimensions, setDimensions] = useState({ width: 400, height: 300 });
+  
+  // Track container dimensions
+  useEffect(() => {
+    const updateDimensions = () => {
+      if (containerRef.current) {
+        const { width, height } = containerRef.current.getBoundingClientRect();
+        if (width > 0 && height > 0) {
+          setDimensions({ width, height });
+        }
+      }
+    };
+    
+    updateDimensions();
+    const resizeObserver = new ResizeObserver(updateDimensions);
+    if (containerRef.current) {
+      resizeObserver.observe(containerRef.current);
+    }
+    
+    return () => resizeObserver.disconnect();
+  }, []);
   
   // Prepare and validate bubble data
   const bubbleData = prepareBubbleData(data);
@@ -148,9 +185,12 @@ export function ChartBubble({
   // Auto-detect positioning map mode
   const isPositioningMode = positioningMap ?? isRelativePositioning(bubbleData);
   
+  // Calculate dynamic bubble size range based on chart dimensions
+  const dynamicSizeRange = calculateBubbleSizeRange(dimensions.width, dimensions.height, bubbleData.length);
+  
   // Adjust size range based on mode
   const effectiveSizeRange: [number, number] = sizeRange || 
-    (isPositioningMode ? POSITIONING_BUBBLE_SIZE_RANGE : DATA_BUBBLE_SIZE_RANGE);
+    (isPositioningMode ? dynamicSizeRange : DATA_BUBBLE_SIZE_RANGE);
 
   // Generate gradient IDs
   const gradientIds = React.useMemo(
@@ -205,7 +245,7 @@ export function ChartBubble({
   };
   
   return (
-    <div className="chart-block chart-bubble" style={{ position: 'relative' }}>
+    <div ref={containerRef} className="chart-block chart-bubble" style={{ position: 'relative' }}>
       {/* Block Header */}
       {(title || subtitle) && (
         <div className="block-header">
@@ -215,7 +255,7 @@ export function ChartBubble({
       )}
       
       {/* Main Chart Content */}
-      <ResponsiveContainer width="100%" height="100%" aspect={1.5}>
+      <ResponsiveContainer width="50%" aspect={1.5}>
         <ScatterChart
           margin={{ 
             top: 20, 
