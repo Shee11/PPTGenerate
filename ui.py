@@ -433,7 +433,7 @@ def export_progress(
             "instruction": str(session.get("instruction", "")),
             "use_cache": bool(session.get("use_cache", True)),
             "project": str(state_json.get("project") or ""),
-            "active_theme": str(state_json.get("active_theme") or ""),
+            "active_theme": str(state_json.get("active_theme_id") or state_json.get("active_theme") or ""),
         },
         "state": state_json,
         "prompts": {
@@ -458,7 +458,12 @@ def export_progress(
 
 
 def import_progress(progress_file):
-    """Import a progress JSON file and restore session + UI fields."""
+    """Import a progress JSON file and restore session + UI fields.
+    
+    Supports two formats:
+    1. Progress JSON (exported by export_progress): contains state, session, prompts, llm_trace
+    2. State JSON (state.json directly): contains slides, atoms, themes, etc.
+    """
     def _empty(msg: str):
         empty_session: Session = {}
         return (
@@ -505,8 +510,38 @@ def import_progress(progress_file):
     except Exception as e:  # noqa: BLE001
         return _empty("")
 
-    state_json = payload.get("state") or {}
-    sess = payload.get("session") or {}
+    # Detect format: Progress JSON has "state" key, State JSON has "slides" or "atoms" keys
+    is_state_json = "slides" in payload or "atoms" in payload or "source" in payload
+    
+    if is_state_json:
+        # Direct state.json format - wrap it in progress format
+        state_json = payload
+        # Try to infer output_dir from source path or generate a unique name
+        source_info = payload.get("source", {})
+        source_file_path = source_info.get("path", "") if isinstance(source_info, dict) else ""
+        if source_file_path:
+            # Use a directory name based on source file
+            source_name = Path(source_file_path).stem
+            out_dir = Path(f"output/{source_name}_imported_{_now_id()}")
+        else:
+            # Generate a unique output directory
+            out_dir = Path(f"output/imported_{_now_id()}")
+        sess = {
+            "output_dir": str(out_dir),
+            "instruction": "",
+            "use_cache": True,
+            "project": payload.get("project", "react-mdx"),
+            "active_theme": payload.get("active_theme_id", "business"),
+        }
+        # No prompts or trace in state.json
+        prompts = {}
+        llm_trace = []
+    else:
+        # Progress JSON format (original)
+        state_json = payload.get("state") or {}
+        sess = payload.get("session") or {}
+        prompts = payload.get("prompts") or {}
+        llm_trace = payload.get("llm_trace") or []
     out_dir = Path(str(sess.get("output_dir") or state_json.get("output_dir") or "output/imported"))
     out_dir.mkdir(parents=True, exist_ok=True)
 
@@ -517,7 +552,6 @@ def import_progress(progress_file):
         return _empty("")
 
     trace_path = out_dir / "llm_trace.jsonl"
-    llm_trace = payload.get("llm_trace") or []
     if isinstance(llm_trace, list) and llm_trace:
         try:
             trace_path.write_text("\n".join(json.dumps(r, ensure_ascii=False) for r in llm_trace) + "\n", encoding="utf-8")
@@ -527,10 +561,13 @@ def import_progress(progress_file):
     instruction = str(sess.get("instruction") or "")
     use_cache = bool(sess.get("use_cache", True))
     project = str(sess.get("project") or state_json.get("project") or "react-mdx")
-    active_theme = str(sess.get("active_theme") or state_json.get("active_theme") or "business")
+    
+    # Validate active_theme against available dropdown choices
+    VALID_THEME_CHOICES = {"base", "business", "cyber", "minimal", "academic", "creative", "duolingo", "dark"}
+    raw_theme = str(sess.get("active_theme") or state_json.get("active_theme_id") or state_json.get("active_theme") or "")
+    active_theme = raw_theme if raw_theme in VALID_THEME_CHOICES else None
 
     # Restore prompts from imported file
-    prompts = payload.get("prompts") or {}
     def _p(step: str, k: str) -> str:
         v = (prompts.get(step) or {}).get(k)
         return str(v or "")
@@ -704,7 +741,8 @@ def _read_new_trace(trace_path: Path, from_pos: int) -> Tuple[int, List[dict]]:
 
 
 def _filter_records_for_step(records: List[dict], step: str) -> List[dict]:
-    return [r for r in records if r.get("step") == step] or records
+    """Filter records to only those matching the given step name."""
+    return [r for r in records if r.get("step") == step]
 
 
 def _format_llm_sent(records: List[dict]) -> str:
@@ -1394,6 +1432,7 @@ def build_default_prompts(session: Session, step: str) -> Tuple[str, str, str]:
         use_source = True
         
         from src.generation.content import story_generator
+        from src.generation.content.story_generator import SCQA_SYSTEM_PROMPT
         
         slide_count = None
         c = state.get_constitution()
@@ -1409,7 +1448,7 @@ def build_default_prompts(session: Session, step: str) -> Tuple[str, str, str]:
             # Preview only first 50k chars
             content = source_path.read_text(encoding="utf-8")[:50000]
             prompt = story_generator._get_scqa_prompt(content, instruction, slide_count or 10, intent_guidance)
-            return "", "You are an elite Strategy Consultant specialized in high-stakes venture capital pitches and executive reviews.", prompt
+            return "", SCQA_SYSTEM_PROMPT, prompt
         else:
             atoms = state.get_atoms()
             if not atoms:
@@ -2047,9 +2086,15 @@ def _render_slides_list_html(
         .invented-pending { color: #f59e0b; font-style: italic; display: inline-block; }
         .invented-generated { color: #10b981; text-decoration: underline; cursor: pointer; display: inline-block; }
         .atom-abstract { margin-top: 4px; padding: 6px; background: #1f2937; border-radius: 4px; color: #d1d5db; font-size: 0.9em; border-left: 3px solid #60a5fa; }
-        details > summary { list-style: none; }
+        details > summary { list-style: none; cursor: pointer; }
         details > summary::-webkit-details-marker { display: none; }
         .content-cell { font-family: monospace; font-size: 11px; white-space: pre-wrap; color: #e5e7eb; background: #1f2937; padding: 4px; border-radius: 2px; }
+        .content-header { font-weight: bold; color: #60a5fa; margin-bottom: 4px; }
+        .content-section { margin-top: 6px; padding: 4px 0 4px 8px; border-left: 2px solid #374151; }
+        .content-section-title { font-weight: bold; color: #9ca3af; font-size: 11px; margin-bottom: 2px; }
+        .content-bullet { color: #d1d5db; font-size: 11px; margin-left: 8px; padding: 1px 0; }
+        .content-expand-btn { color: #9ca3af; font-size: 10px; cursor: pointer; user-select: none; }
+        .content-expand-btn:hover { color: #60a5fa; }
         </style>
         <table class="slide-table">
         <thead>
@@ -2087,23 +2132,74 @@ def _render_slides_list_html(
                 if isinstance(raw_content, str):
                    content_display = f"<div class='content-cell'>{_html.escape(raw_content)}</div>"
                 elif isinstance(raw_content, dict):
-                    # Format nice summary of content object
-                    lines = []
-                    if "headline" in raw_content:
-                        lines.append(f"H: {raw_content['headline']}")
-                    if "subtitle" in raw_content:
-                        lines.append(f"S: {raw_content['subtitle']}")
-                    if "category" in raw_content:
-                        lines.append(f"Cat: {raw_content['category']}")
-                    if "sections" in raw_content:
-                        secs = raw_content["sections"]
-                        if isinstance(secs, list):
-                            lines.append(f"Sections: {len(secs)}")
-                    elif "bullets" in raw_content: # Backwards compat
-                        lines.append(f"Bullets: {len(raw_content['bullets'])}")
+                    # Build full content display with collapsible sections
+                    content_parts = []
                     
-                    content_text = "\n".join(lines)
-                    content_display = f"<div class='content-cell'>{_html.escape(content_text)}</div>"
+                    # Header info (always visible)
+                    header_parts = []
+                    if "headline" in raw_content:
+                        header_parts.append(f"<div class='content-header'>{_html.escape(str(raw_content['headline']))}</div>")
+                    if "subtitle" in raw_content:
+                        header_parts.append(f"<div style='color:#9ca3af;font-size:11px;font-style:italic;margin-bottom:4px;'>{_html.escape(str(raw_content['subtitle']))}</div>")
+                    if "category" in raw_content:
+                        header_parts.append(f"<div style='color:#6b7280;font-size:10px;margin-bottom:4px;'>Category: {_html.escape(str(raw_content['category']))}</div>")
+                    if "speaker_intent" in raw_content:
+                        header_parts.append(f"<div style='color:#6b7280;font-size:10px;margin-bottom:4px;'>Intent: {_html.escape(str(raw_content['speaker_intent']))}</div>")
+                    
+                    if header_parts:
+                        content_parts.append("".join(header_parts))
+                    
+                    # Sections (collapsible)
+                    sections = raw_content.get("sections", [])
+                    if isinstance(sections, list) and sections:
+                        sections_html = ""
+                        for sec in sections:
+                            if not isinstance(sec, dict):
+                                continue
+                            sec_title = sec.get("title", "")
+                            bullets = sec.get("bullets", [])
+                            
+                            sections_html += f"<div class='content-section'>"
+                            if sec_title:
+                                sections_html += f"<div class='content-section-title'>{_html.escape(str(sec_title))}</div>"
+                            
+                            if isinstance(bullets, list):
+                                for bullet in bullets:
+                                    if isinstance(bullet, dict):
+                                        text = bullet.get("text", "")
+                                    else:
+                                        text = str(bullet)
+                                    if text:
+                                        sections_html += f"<div class='content-bullet'>• {_html.escape(str(text))}</div>"
+                            sections_html += "</div>"
+                        
+                        # Wrap sections in collapsible details
+                        content_parts.append(
+                            f"<details style='margin-top:4px;'>"
+                            f"<summary class='content-expand-btn'>▶ {len(sections)} section(s) - click to expand</summary>"
+                            f"<div style='margin-top:4px;'>{sections_html}</div>"
+                            f"</details>"
+                        )
+                    elif "bullets" in raw_content:  # Backwards compat
+                        bullets = raw_content["bullets"]
+                        if isinstance(bullets, list) and bullets:
+                            bullets_html = ""
+                            for bullet in bullets:
+                                if isinstance(bullet, dict):
+                                    text = bullet.get("text", "")
+                                else:
+                                    text = str(bullet)
+                                if text:
+                                    bullets_html += f"<div class='content-bullet'>• {_html.escape(str(text))}</div>"
+                            
+                            content_parts.append(
+                                f"<details style='margin-top:4px;'>"
+                                f"<summary class='content-expand-btn'>▶ {len(bullets)} bullet(s) - click to expand</summary>"
+                                f"<div style='margin-top:4px;'>{bullets_html}</div>"
+                                f"</details>"
+                            )
+                    
+                    content_display = f"<div class='content-cell'>{''.join(content_parts)}</div>"
             
             # If atoms exist, show them too (legacy/refinement)
             atoms_list = slide.get("atoms", [])
@@ -2228,10 +2324,15 @@ def _render_slides_list_html(
                          href = f"/component-preview?name={quote(t)}&run_id={quote(run_id)}"
                          comps_display_list.append(f"<a class='invented-generated' href='{href}' target='_blank'>{_html.escape(t)}</a>")
                     else:
-                         # Predefined -> Plain text
-                         comps_display_list.append(f"<span>{_html.escape(t)}</span>")
+                         # Predefined -> Link to source code
+                         href = f"/component?name={quote(t)}"
+                         comps_display_list.append(f"<a class='component-link' href='{href}' target='_blank'>{_html.escape(t)}</a>")
 
-            comps_html = ", ".join(comps_display_list)
+            # Display components as a vertical list
+            if comps_display_list:
+                comps_html = "<br>".join(comps_display_list)
+            else:
+                comps_html = "<span style='opacity:0.3'>-</span>"
 
             html += f"""
             <tr>
@@ -2509,10 +2610,10 @@ def run_step_codegen_stream_timed(session: Session, override_system: Optional[st
         yield session, calls_html, resp_html, elapsed
 
 
-def run_step_export(session: Session, active_theme_val: str = None) -> Tuple[Session, List[str], str]:
+def run_step_export(session: Session, active_theme_val: str = None) -> Tuple[Session, List[str], str, str]:
     session = _ensure_session(session)
     if not session.get("output_dir"):
-        return session, [], "[error] Initialize first."
+        return session, [], "[error] Initialize first.", ""
 
     output_dir, state_path, _ = _session_paths(session)
     state = PipelineState.load(state_path)
@@ -2535,7 +2636,7 @@ def run_step_export(session: Session, active_theme_val: str = None) -> Tuple[Ses
 
     todo = _find_todo(state, TodoType.EXPORT)
     if todo is None:
-        return session, _as_downloadable_files(_collect_outputs(output_dir)), "[export] todo missing (run planner first)"
+        return session, _as_downloadable_files(_collect_outputs(output_dir)), "[export] todo missing (run planner first)", ""
 
     executor = TodoExecutor(
         verbose=True,
@@ -2553,7 +2654,32 @@ def run_step_export(session: Session, active_theme_val: str = None) -> Tuple[Ses
     files = _collect_outputs(output_dir)
     downloads = _as_downloadable_files(files)
     preview = "\n\n".join([log, "\n--- slides.mdx preview ---\n", _read_mdx_preview(output_dir)]).strip()
-    return session, downloads, preview
+    
+    # Auto-generate the preview iframe
+    preview_html = ""
+    if state.slides:
+        ok, err = _ensure_react_preview_server()
+        if ok:
+            # Add timestamp to bust cache and force iframe refresh
+            import time
+            cache_bust = int(time.time() * 1000)
+            url = f"http://127.0.0.1:3000/{output_dir.name}?t={cache_bust}"
+            preview_html = (
+                "<div style='margin-bottom:8px; display: flex; align-items: center; gap: 12px;'>"
+                "<strong>Preview (React MDX renderer)</strong> "
+                f"<a href=\"{_html.escape(url, quote=True)}\" target=\"_blank\" "
+                "style=\"display: inline-block; padding: 6px 12px; background-color: #2563eb; color: white; "
+                "text-decoration: none; border-radius: 6px; font-size: 0.9em; font-weight: 500;\">"
+                "Open Slides in New Tab ↗</a>"
+                "</div>"
+                "<iframe "
+                "style='width:100%;height:85vh;min-height:900px;border:1px solid #ddd;overflow:hidden;border-radius:8px;' "
+                f"src=\"{_html.escape(url, quote=True)}\"></iframe>"
+            )
+        else:
+            preview_html = f"<div>Preview failed: {_html.escape(err)}</div>"
+    
+    return session, downloads, preview, preview_html
 
 
 _REACT_PREVIEW_PROC: Optional[subprocess.Popen] = None
@@ -2635,7 +2761,10 @@ def get_export_preview(session: Session) -> Tuple[Session, str]:
     if not ok:
         return session, f"<div>Preview failed: {_html.escape(err)}</div>"
 
-    url = f"http://127.0.0.1:3000/{output_dir.name}"
+    # Add timestamp to bust cache and force iframe refresh
+    import time
+    cache_bust = int(time.time() * 1000)
+    url = f"http://127.0.0.1:3000/{output_dir.name}?t={cache_bust}"
     iframe = (
         "<div style='margin-bottom:8px; display: flex; align-items: center; gap: 12px;'>"
         "<strong>Preview (React MDX renderer)</strong> "
@@ -3165,7 +3294,7 @@ def build_ui() -> gr.Blocks:
         export_run.click(
             fn=run_step_export,
             inputs=[session_state, active_theme],
-            outputs=[session_state, output_files, export_preview],
+            outputs=[session_state, output_files, export_preview, export_preview_link],
         )
 
         export_preview_btn.click(
