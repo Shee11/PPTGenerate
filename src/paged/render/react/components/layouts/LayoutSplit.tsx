@@ -439,7 +439,7 @@ function SyncLayout({ rows, ratio, theme, vibe, timelineHeader, mirrorLeft = fal
           gridTemplateColumns: gridColumns,
           alignContent: 'center',
           alignItems: 'stretch',
-          gap: mirrorLeft ? '4rem' : 'var(--theme-spacing-gap)',
+          gap: 'var(--theme-spacing-gap)',
           height: '100%',
           minHeight: 0,
           paddingTop: timelineHeader ? '40px' : '0px',
