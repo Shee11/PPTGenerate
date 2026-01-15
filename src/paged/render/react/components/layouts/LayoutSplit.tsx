@@ -111,6 +111,8 @@ export interface LayoutSplitProps {
   vibe?: VibeLevel;
   /** Disable sync mode - use independent flex columns */
   nosync?: boolean;
+  /** Enable mirror layout - left column content aligns right with RTL direction */
+  mirrorLeft?: boolean;
 }
 
 export interface LayoutSplitSlotProps {
@@ -393,9 +395,10 @@ interface SyncLayoutProps {
   theme?: ThemeName;
   vibe?: VibeLevel;
   timelineHeader?: { headline: string; subtitle?: string | null } | null;
+  mirrorLeft?: boolean;
 }
 
-function SyncLayout({ rows, ratio, theme, vibe, timelineHeader }: SyncLayoutProps): JSX.Element {
+function SyncLayout({ rows, ratio, theme, vibe, timelineHeader, mirrorLeft = false }: SyncLayoutProps): JSX.Element {
   const gridColumns = ratioGridMap[ratio] || ratioGridMap['1:1'];
 
   return (
@@ -436,7 +439,7 @@ function SyncLayout({ rows, ratio, theme, vibe, timelineHeader }: SyncLayoutProp
           gridTemplateColumns: gridColumns,
           alignContent: 'center',
           alignItems: 'stretch',
-          gap: 'var(--theme-spacing-gap)',
+          gap: mirrorLeft ? '4rem' : 'var(--theme-spacing-gap)',
           height: '100%',
           minHeight: 0,
           paddingTop: timelineHeader ? '40px' : '0px',
@@ -473,10 +476,17 @@ function SyncLayout({ rows, ratio, theme, vibe, timelineHeader }: SyncLayoutProp
                     display: 'flex',
                     flexDirection: 'column',
                     gap: '1rem',
+                    // Mirror layout: align items to right (towards center)
+                    alignItems: mirrorLeft ? 'flex-start' : undefined,
+                    direction: mirrorLeft ? 'rtl' : undefined,
                   }}
+                  data-mirror={mirrorLeft ? 'true' : undefined}
                 >
                   {row.left.map((comp, i) => (
-                    <div key={`left-${i}`} className="layout-split-cell-item">
+                    <div 
+                      key={`left-${i}`} 
+                      className="layout-split-cell-item"
+                    >
                       {comp.element}
                     </div>
                   ))}
@@ -519,7 +529,11 @@ function SyncLayout({ rows, ratio, theme, vibe, timelineHeader }: SyncLayoutProp
                   flexDirection: 'column',
                   gap: '1rem',
                   alignSelf: 'stretch',
+                  // Mirror layout: align items to right (towards center)
+                  alignItems: mirrorLeft ? 'flex-start' : undefined,
+                  direction: mirrorLeft ? 'rtl' : undefined,
                 }}
+                data-mirror={mirrorLeft ? 'true' : undefined}
               >
                 {row.left.map((comp, i) => (
                   <div
@@ -578,6 +592,7 @@ export function LayoutSplit({
   theme,
   vibe,
   nosync = false,
+  mirrorLeft = false,
 }: LayoutSplitProps): JSX.Element {
   // Extract Left and Right slots from children
   let leftSlot: React.ReactElement | null = null;
@@ -672,6 +687,7 @@ export function LayoutSplit({
       theme={theme}
       vibe={vibe}
       timelineHeader={timelineHeader}
+      mirrorLeft={mirrorLeft}
     />
   );
 }
